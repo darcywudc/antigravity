@@ -66,7 +66,12 @@ const App = {
             'ch12': 'e12-cramer',
             'ch13': 'e13-change-basis',
             'ch14': 'e14-eigen',
-            'ch15': 'e15-abstract'
+            'ch15': 'e15-abstract',
+            // Also support direct e01 style hashes
+            'e01': 'e01-vectors',
+            'e02': 'e02-combinations',
+            'e03': 'e03-transformations',
+            'e04': 'e04-multiplication'
         };
         if (map[hash]) chapterId = map[hash];
 

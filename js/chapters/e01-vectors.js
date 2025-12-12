@@ -11,13 +11,11 @@ window.chapterScripts['e01-vectors'] = function () {
     const vector = new Vector2D(2, 1);
 
     // Add draggable vector
-    canvas.addVector(vector, {
-        color: '#4a9eff',
-        label: 'v',
-        isDraggable: true,
-        onDrag: (v) => {
-            updateDisplay(v);
-        }
+    const vecObj = canvas.addVector(vector, '#4a9eff', 'v');
+
+    // Make it draggable
+    canvas.makeDraggable(vecObj, (v) => {
+        updateDisplay(v);
     });
 
     // Update the math display text

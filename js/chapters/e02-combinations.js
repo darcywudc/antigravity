@@ -81,23 +81,14 @@ window.chapterScripts['e02-combinations'] = function () {
     };
 
     // Add draggable basis vectors
-    canvas.addVector(i_hat, {
-        color: '#f97316', // Orange
-        label: 'i',
-        isDraggable: true,
-        onDrag: (v) => {
-            i_hat = v; // Update reference
-            // Canvas will auto redraw
-        }
+    const iObj = canvas.addVector(i_hat, '#f97316', 'i');
+    canvas.makeDraggable(iObj, (v) => {
+        i_hat = v;
     });
 
-    canvas.addVector(j_hat, {
-        color: '#10b981', // Green
-        label: 'j',
-        isDraggable: true,
-        onDrag: (v) => {
-            j_hat = v;
-        }
+    const jObj = canvas.addVector(j_hat, '#10b981', 'j');
+    canvas.makeDraggable(jObj, (v) => {
+        j_hat = v;
     });
 
     // Reset button
