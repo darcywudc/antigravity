@@ -1,0 +1,118 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 5 章 | Chapter 5</span>
+    <h1 class="chapter-title">特征值与特征向量 <br><small style="font-size: 0.6em; color: var(--text-muted);">Eigenvalues and
+            Eigenvectors</small></h1>
+    <p class="chapter-description">
+        如果说矩阵是一个变换机器，那么特征向量就是这台机器的"主轴"。
+        它们揭示了矩阵内在的几何结构，告诉我们变换实际上是在沿着哪些方向进行拉伸或压缩。
+    </p>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">5.1 寻找不变的方向 <small
+            style="font-weight: normal; color: var(--text-muted); font-size: 0.8em;">Invariant Directions</small></h2>
+
+    <div class="content-block">
+        <p>
+            大多数向量在经过线性变换后，方向都会发生改变。它们被旋转、剪切或甩到新的位置。
+            但是，对于几乎所有的方阵，都存在一些特殊的非零向量，它们在变换前后<strong>方向保持不变</strong>（或者只反向180度）。
+        </p>
+        <p>
+            这些特殊的向量被称为<strong>特征向量 (Eigenvectors)</strong>。
+            变换对这些向量的作用仅仅是进行缩放（拉伸或压缩）。缩放的倍数被称为<strong>特征值 (Eigenvalues)</strong>。
+        </p>
+
+        <div class="definition-card">
+            <div class="definition-title">基本方程</div>
+            <p>
+                向量 $\mathbf{x}$ 是矩阵 $A$ 的特征向量，$\lambda$ 是对应的特征值，如果满足：
+            </p>
+            <div class="math-block">
+                $$ A\mathbf{x} = \lambda \mathbf{x} $$
+            </div>
+            <p>
+                其中 $\mathbf{x} \neq \mathbf{0}$。
+                这个方程的含义是：矩阵 $A$ 作用在向量 $\mathbf{x}$ 上（左边），等效于简单的标量乘法（右边）。矩阵变成了一个数字！
+            </p>
+        </div>
+    </div>
+
+    <div class="viz-container">
+        <div class="viz-header">
+            <span class="viz-title">交互演示：捕捉特征向量</span>
+            <span class="viz-badge">Interactive</span>
+        </div>
+        <div class="viz-canvas-wrapper" style="height: 500px;">
+            <canvas id="viz-eigen" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="viz-controls">
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; margin-bottom: 1rem; border-radius: 8px;">
+                <p class="control-label" style="margin:0;">
+                    <strong>任务：</strong> 拖拽 <span style="color: #4a9eff; font-weight: bold;">蓝色向量 x</span> 绕原点 360° 旋转。
+                    寻找那些让 <span style="color: #4a9eff;">x</span> 和 <span style="color: #fbbf24;">Ax</span>
+                    <strong>共线</strong>（重合或反向）的位置。
+                </p>
+            </div>
+
+            <!-- Matrix Selection -->
+            <div style="display: flex; gap: 1rem; justify-content: center; margin: 1.5rem 0;">
+                <button class="btn btn-primary" id="btn-eigen-1">水平拉伸 (Stretch)</button>
+                <button class="btn btn-secondary" id="btn-eigen-2">剪切 (Shear)</button>
+                <button class="btn btn-secondary" id="btn-eigen-3">对称矩阵 (Symmetric)</button>
+            </div>
+
+            <div class="math-block" id="eigen-status"
+                style="min-height: 4rem; display: flex; align-items: center; justify-content: center;">
+                $$ A\mathbf{x} \neq \lambda\mathbf{x} $$
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">5.2 特征值的物理意义 <small
+            style="font-weight: normal; color: var(--text-muted); font-size: 0.8em;">Physical Meaning</small></h2>
+
+    <div class="content-block">
+        <p>
+            特征值 $\lambda$ 的大小告诉了我们在特征向量方向上发生了什么：
+        </p>
+        <ul>
+            <li>$|\lambda| > 1$: <strong>扩展 (Expansion)</strong>。如果不稳定系统，状态会指数级发散。</li>
+            <li>$|\lambda| < 1$: <strong>收缩 (Contraction)</strong>。如果是动态系统，状态会逐渐衰减到零（稳定）。</li>
+            <li>$\lambda = 1$: <strong>稳态 (Steady State)</strong>。向量不变。</li>
+            <li>$\lambda = 0$: <strong>奇异 (Singular)</strong>。向量被压缩到原点，维度丢失。</li>
+        </ul>
+        <p>
+            这就是为什么 Google 的 PageRank 算法如此关注 $\lambda=1$ 的特征向量——它代表了互联网浏览者的长期稳态分布。
+        </p>
+    </div>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">5.3 常用词汇表 <small
+            style="font-weight: normal; color: var(--text-muted); font-size: 0.8em;">Vocabulary</small></h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="definition-card" style="margin:0">
+            <strong style="color: var(--accent-blue)">中文术语</strong>
+            <ul style="list-style: none; padding: 0; margin-top: 0.5rem; color: var(--text-secondary);">
+                <li>特征值</li>
+                <li>特征向量</li>
+                <li>特征空间</li>
+                <li>迹 (对角线之和)</li>
+                <li>对角化</li>
+            </ul>
+        </div>
+        <div class="definition-card" style="margin:0">
+            <strong style="color: var(--accent-purple)">English Terms</strong>
+            <ul style="list-style: none; padding: 0; margin-top: 0.5rem; color: var(--text-secondary);">
+                <li>Eigenvalue</li>
+                <li>Eigenvector</li>
+                <li>Eigenspace</li>
+                <li>Trace</li>
+                <li>Diagonalization</li>
+            </ul>
+        </div>
+    </div>
+</div>

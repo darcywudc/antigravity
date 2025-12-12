@@ -1,0 +1,107 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 7 章 | Chapter 7</span>
+    <h1 class="chapter-title">对称矩阵与二次型 <br><small style="font-size: 0.6em; color: var(--text-muted);">Symmetric Matrices
+            and Quadratic Forms</small></h1>
+    <p class="chapter-description">
+        对称矩阵是矩阵家族中的"贵族"。它们拥有最完美的性质：实数的特征值和正交的特征向量。
+        它们在物理学（能量）、统计学（协方差）和优化理论（Hessian矩阵）中无处不在。
+    </p>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">7.1 对称矩阵的谱定理 <small
+            style="font-weight: normal; color: var(--text-muted); font-size: 0.8em;">The Spectral Theorem</small></h2>
+
+    <div class="content-block">
+        <p>
+            如果一个矩阵满足 $A = A^T$（转置等于自身），我们称之为<strong>对称矩阵 (Symmetric Matrix)</strong>。
+            这种看似简单的对称性导致了一个深刻的数学奇迹——<strong>谱定理 (Spectral Theorem)</strong>：
+        </p>
+        <div class="theorem-card">
+            <div class="theorem-title">谱定理</div>
+            <p>对于任何实对称矩阵 $A$：</p>
+            <ol>
+                <li>它的所有特征值 $\lambda$ 都是<strong>实数</strong>（没有虚数）。</li>
+                <li>它的特征向量可以被选为<strong>相互正交</strong>（相互垂直）。</li>
+            </ol>
+        </div>
+        <p>
+            这意味着任何对称矩阵都可以被分解为沿着一组相互垂直的主轴进行的纯粹拉伸。
+            这使得对角化对称矩阵（$A = Q\Lambda Q^T$）变得异常简单和重要。
+        </p>
+    </div>
+
+    <div class="section-title">7.2 二次型与几何形状 <small
+            style="font-weight: normal; color: var(--text-muted); font-size: 0.8em;">Quadratic Forms</small></div>
+    <div class="content-block">
+        <p>
+            与对称矩阵紧密相关的是<strong>二次型 (Quadratic Form)</strong>函数：
+        </p>
+        <div class="math-block">
+            $$ Q(\mathbf{x}) = \mathbf{x}^TA\mathbf{x} = ax_1^2 + 2bx_1x_2 + cx_2^2 $$
+        </div>
+        <p>
+            这个函数将向量映射为标量，常用于表示系统的能量。
+            如果我们画出方程 $\mathbf{x}^TA\mathbf{x} = 1$ 的图像（等值线），我们会得到圆锥曲线。形状完全由特征值的符号决定：
+        </p>
+        <ul>
+            <li><strong>椭圆 (Ellipse)</strong>：所有特征值均为正（正定矩阵）。这就像一个碗，有唯一的最低点。</li>
+            <li><strong>双曲线 (Hyperbola)</strong>：特征值一正一负（不定矩阵）。这就像一个马鞍面，有鞍点。</li>
+            <li><strong>抛物线退化</strong>：有特征值为零。</li>
+        </ul>
+    </div>
+
+    <div class="viz-container">
+        <div class="viz-header">
+            <span class="viz-title">交互演示：二次型几何</span>
+            <span class="viz-badge">Interactive</span>
+        </div>
+        <div class="viz-canvas-wrapper" style="height: 500px;">
+            <canvas id="viz-quadratic" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="viz-controls">
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+                <div class="matrix-input">
+                    <div class="matrix-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div style="grid-column: 1/3; text-align: center; color: #aaa; margin-bottom: 5px;">对称矩阵 A</div>
+                        <input type="number" class="matrix-cell" id="q-a" value="2" step="0.5">
+                        <input type="number" class="matrix-cell" id="q-b" value="0" step="0.5">
+                        <input type="number" class="matrix-cell" id="q-c" value="0" step="0.5" disabled
+                            style="opacity: 0.5;">
+                        <input type="number" class="matrix-cell" id="q-d" value="1" step="0.5">
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: center; color: #a0a0b0;">
+                <span style="color: #4a9eff">蓝色曲线</span>是 $\mathbf{x}^TA\mathbf{x}=1$ 的轨迹。<br>
+                <span style="color: #ef4444">红色箭头</span>是矩阵的主轴（特征向量）。<br>
+                尝试将 $d$ 改为 -1 来制造双曲线（鞍点）。
+            </p>
+        </div>
+    </div>
+
+    <div class="section-title">7.3 常用词汇表 <small
+            style="font-weight: normal; color: var(--text-muted); font-size: 0.8em;">Vocabulary</small></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="definition-card" style="margin:0">
+            <strong style="color: var(--accent-blue)">中文术语</strong>
+            <ul style="list-style: none; padding: 0; margin-top: 0.5rem; color: var(--text-secondary);">
+                <li>对称矩阵</li>
+                <li>二次型</li>
+                <li>正定矩阵</li>
+                <li>主轴定理</li>
+                <li>鞍点</li>
+            </ul>
+        </div>
+        <div class="definition-card" style="margin:0">
+            <strong style="color: var(--accent-purple)">English Terms</strong>
+            <ul style="list-style: none; padding: 0; margin-top: 0.5rem; color: var(--text-secondary);">
+                <li>Symmetric Matrix</li>
+                <li>Quadratic Form</li>
+                <li>Positive Definite</li>
+                <li>Principal Axis Theorem</li>
+                <li>Saddle Point</li>
+            </ul>
+        </div>
+    </div>
+</div>
