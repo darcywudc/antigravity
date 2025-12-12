@@ -3,112 +3,122 @@
     <h1 class="chapter-title">矩阵乘法与复合变换 <br><small style="font-size: 0.6em; color: var(--text-muted);">Matrix
             Multiplication as Composition</small></h1>
     <p class="chapter-description">
-        矩阵乘法通常被教导为一堆枯燥的"行乘以列"的算术规则。但这就好比见树木而不见森林。
-        在几何上，矩阵乘法不仅简单，而且直观：它就是<strong>变换的叠加（复合）</strong>。
+        如果你曾经死记硬背过"行乘以列"的规则，现在请把你对它的恐惧暂时放下。
+        在几何世界里，矩阵乘法拥有一个极其优雅的含义：<strong>变换的叠加</strong>。
     </p>
 </div>
 
+<!-- SECTION 1: Composition -->
 <div class="section fade-in">
-    <h2 class="section-title">4.1 复合变换 (Composition of Transformations)</h2>
+    <h2 class="section-title">4.1 复合变换 (Composition)</h2>
     <div class="content-block">
         <p>
-            想象我们想对一个向量进行两次操作：
-        </p>
-        <ol>
-            <li>首先，进行<strong>旋转 (Rotate)</strong>。</li>
-            <li>然后，进行<strong>剪切 (Shear)</strong>。</li>
-        </ol>
-        <p>
-            如果旋转是函数 $f(\vec{v})$，剪切是函数 $g(\vec{v})$，那么整个过程就是 $g(f(\vec{v}))$。
-            我们把这个整体称为<strong>复合变换</strong>。
+            经常地，我们想要连续应用多个变换。例如：先<strong>旋转</strong>，然后<strong>剪切</strong>。
         </p>
 
-        <div class="viz-container">
-            <div class="viz-header">
-                <span class="viz-title">交互演示：分步 vs 复合</span>
-                <span class="viz-badge">Key Insight</span>
-            </div>
-            <!-- Split canvas concept: Left shows linear animation, Right shows result? Or just one big one -->
-            <div class="viz-canvas-wrapper" style="height: 500px;">
-                <canvas id="viz-composition" style="width: 100%; height: 100%;"></canvas>
-            </div>
-            <div class="viz-controls">
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
-                    <button class="btn btn-primary" id="btn-step-by-step">分步执行 (Rotate then Shear)</button>
-                    <button class="btn btn-secondary" id="btn-composite">一次性复合 (Composite Matrix)</button>
-                    <button class="btn btn-secondary" id="btn-reset-comp">重置 (Reset)</button>
+        <div style="display: flex; justify-content: center; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
+            <!-- Step 1 diagram -->
+            <div style="text-align: center;">
+                <div
+                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items:center; justify-content:center; margin: 0 auto 1rem auto; border: 2px solid var(--accent-blue);">
+                    <span style="font-weight: bold;">v</span>
                 </div>
-                <p style="text-align: center; color: var(--text-secondary);">
-                    <strong>观察：</strong> 无论是分两步走，还是用一个"复合矩阵"一步到位，最终 $\hat{i}$ 和 $\hat{j}$ 落脚的地方是<strong>完全一样</strong>的。
+                <p>Input Vector</p>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </div>
+
+            <!-- Transform M1 -->
+            <div style="text-align: center;">
+                <div
+                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; margin: 0 auto 1rem auto; border: 1px solid #666;">
+                    Rotate (M1)
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </div>
+
+            <!-- Transform M2 -->
+            <div style="text-align: center;">
+                <div
+                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; margin: 0 auto 1rem auto; border: 1px solid #666;">
+                    Shear (M2)
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 2rem;">=</span>
+            </div>
+
+            <!-- Composite -->
+            <div style="text-align: center;">
+                <div
+                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; margin: 0 auto 1rem auto; border: 2px solid var(--accent-purple);">
+                    Composite Matrix <br> (M2 $\times$ M1)
+                </div>
+            </div>
+        </div>
+
+        <p>
+            两个矩阵相乘 $M_2 \times M_1$，几何上意味着：
+            先应用 $M_1$，再应用 $M_2$。
+            结果等效于一个单独的"复合矩阵"。
+        </p>
+    </div>
+
+    <div class="viz-container">
+        <div class="viz-header">
+            <span class="viz-title">交互演示：分步 vs 复合</span>
+            <span class="viz-badge">Comparison</span>
+        </div>
+        <div class="viz-canvas-wrapper" style="height: 500px;">
+            <canvas id="viz-composition" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="viz-controls">
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+                <button class="btn btn-primary" id="btn-step-by-step">分两步走 (Rotate $\to$ Shear)</button>
+                <button class="btn btn-secondary" id="btn-composite">一步到位 (Product Matrix)</button>
+                <button class="btn btn-secondary" id="btn-reset-comp">重置 (Reset)</button>
+            </div>
+            <p style="text-align: center; color: var(--text-secondary); font-size: 0.9em;">
+                点击上方按钮对比。你会发现最终的网格状态是完全一样的。<br>
+                这就证明了：矩阵乘法就是变换的复合。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 2: Non-Commutativity -->
+<div class="section fade-in">
+    <h2 class="section-title">4.2 顺序很重要 (Order Matters)</h2>
+    <div class="content-block">
+        <p>
+            在矩阵乘法中，$A \times B$ 通常<strong>不等于</strong> $B \times A$。这在几何上很容易理解：
+        </p>
+        <div style="display: flex; gap: 2rem; justify-content: center; margin: 1rem 0;">
+            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 12px; max-width: 300px;">
+                <strong style="color: var(--accent-red)">情况 A: 先旋转，后剪切</strong>
+                <p style="font-size: 0.9em; margin-top: 0.5rem;">
+                    你的 $\hat{i}$ 向量先转到了上面，然后再被剪切（这回它的方向变了，剪切对它的影响也变了）。
+                </p>
+            </div>
+            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 12px; max-width: 300px;">
+                <strong style="color: var(--accent-blue)">情况 B: 先剪切，后旋转</strong>
+                <p style="font-size: 0.9em; margin-top: 0.5rem;">
+                    你的 $\hat{i}$ 先被拉长并斜向上，然后再整体旋转。
                 </p>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="section fade-in">
-    <h2 class="section-title">4.2 为什么是 "行乘以列"？ (Why Row times Column?)</h2>
-    <div class="content-block">
         <p>
-            这并不是随意的约定，而是追踪基向量的必然结果。
+            这就像"先穿袜子再穿鞋"和"先穿鞋再穿袜子"的区别一样明显。
         </p>
-        <p>
-            假设我们有两个矩阵（变换）：
-            $$ M_1 = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix} \text{(Shear)}, \quad M_2 = \begin{bmatrix} 0 & -1 \\
-            1 & 0 \end{bmatrix} \text{(Rotation)} $$
-        </p>
-        <p>
-            想要计算 $M_2 M_1$（注意顺序！先应用右边的 $M_1$），我们需要问：
-            <strong>$M_1$ 的基向量 $\hat{i}_{new}$ 在经过 $M_2$ 变换后去了哪里？</strong>
-        </p>
-
-        <div class="math-block">
-            $$
-            \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}
-            \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}
-            =
-            \begin{bmatrix}
-            (0)(1) + (-1)(0) & (0)(1) + (-1)(1) \\
-            (1)(1) + (0)(0) & (1)(1) + (0)(1)
-            \end{bmatrix}
-            =
-            \begin{bmatrix} 0 & -1 \\ 1 & 1 \end{bmatrix}
-            $$
-        </div>
-
-        <div class="theorem-card">
-            <div class="theorem-title">几何解释</div>
-            <p>
-                当你计算乘积矩阵的<strong>第一列</strong>时，你实际上是在计算：
-                <br>
-                <em>"变换 $M_2$ 是如何作用于 $M_1$ 的第一个基向量 $\hat{i}$ 的？"</em>
-            </p>
-        </div>
-    </div>
-</div>
-
-<div class="section fade-in">
-    <h2 class="section-title">4.3 顺序很重要 (Order Matters)</h2>
-    <div class="content-block">
-        <p>
-            在实数乘法中，$a \times b = b \times a$。但在矩阵乘法中，这通常<strong>不成立</strong>。
-        </p>
-        <p>
-            <strong>几何直觉：</strong>
-            <br>
-            "先脱袜子，再穿鞋" $\neq$ "先穿鞋，再脱袜子"。
-            <br>
-            同理，"先旋转后剪切"通常不同于"先剪切后旋转"。
-        </p>
-
-        <div class="example-card">
-            <div class="example-title">思考实验</div>
-            <p>
-                想象 $\hat{i}$ 指向右边。
-                <br>1. 先<strong>右移</strong> (Shear right)，它变长并斜向上了。再<strong>旋转90度</strong>，它指向左上方了。
-                <br>2. 先<strong>旋转90度</strong>，它指向上面了。再<strong>右移</strong> (Shear right)，它向右倒了。
-                <br>结果位置显然不同。
-            </p>
-        </div>
     </div>
 </div>
