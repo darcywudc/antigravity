@@ -1,0 +1,109 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">Chapter 3</span>
+    <h1 class="chapter-title">线性变换与矩阵 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
+            Transformations and Matrices</small></h1>
+    <p class="chapter-description">
+        "矩阵"不仅仅是一个装满数字的这种方块。它是对"空间变换"的一种描述。一旦你接受了"矩阵即变换"的观点，线性代数的大门就真正为你打开了。
+    </p>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">3.1 什么是"线性变换"？ (What is a Linear Transformation?)</h2>
+    <div class="content-block">
+        <p>
+            你可以把"变换"想象成一个<strong>函数</strong>。它输入一个向量，然后输出另一个向量。
+            $$ \vec{v}_{out} = T(\vec{v}_{in}) $$
+        </p>
+        <p>
+            但不是所有的变换都是"线性"的。要成为线性变换，它必须满足两个直观的几何规则：
+        </p>
+        <ol>
+            <li><strong>原点必须固定不动</strong> (The origin remains fixed)。</li>
+            <li><strong>网格线必须保持平行且等距</strong> (Grid lines remain parallel and evenly spaced)。</li>
+        </ol>
+        <p>
+            换句话说，线性变换可以拉伸、旋转、剪切空间，但不能弯曲它（那是微积分的事情），也不能破坏原点。
+        </p>
+    </div>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">3.2 矩阵是变换的数字语言 (Matrices as Numerical Descriptions)</h2>
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心洞察 (Key Insight)</div>
+            <p>
+                如果你想描述一个线性变换，你只需要记录<strong>两个向量</strong>的去向：
+                也就是基向量 $\hat{i}$ 和 $\hat{j}$ 变换后的位置。
+            </p>
+        </div>
+        <p>
+            假设变换后：
+            $$ \hat{i} \to \begin{bmatrix} a \\ c \end{bmatrix}, \quad \hat{j} \to \begin{bmatrix} b \\ d \end{bmatrix}
+            $$
+        </p>
+        <p>
+            那么整个矩阵就是把这两个向量并排放在一起：
+            $$ A = \begin{bmatrix} a & b \\ c & d \end{bmatrix} $$
+        </p>
+    </div>
+
+    <div class="viz-container">
+        <div class="viz-header">
+            <span class="viz-title">交互演示：观察基向量的运动</span>
+            <span class="viz-badge">Core Visual</span>
+        </div>
+        <div class="viz-canvas-wrapper" style="height: 500px;">
+            <canvas id="viz-matrix-transform" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="viz-controls">
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+                <button class="btn btn-secondary" id="btn-shear">剪切 (Shear)</button>
+                <button class="btn btn-secondary" id="btn-rotate">旋转 (Rotate)</button>
+                <button class="btn btn-secondary" id="btn-scale">缩放 (Scale)</button>
+            </div>
+
+            <div style="display: flex; gap: 2rem; justify-content: center; align-items: center;">
+                <div class="matrix-input">
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.8em; margin-bottom: 0.5rem;">
+                        Transformed Basis <br> (Matrix A)
+                    </div>
+                    <div class="matrix-grid">
+                        <input type="number" class="matrix-cell" id="val-a" value="1" step="0.1">
+                        <input type="number" class="matrix-cell" id="val-b" value="0" step="0.1">
+                        <input type="number" class="matrix-cell" id="val-c" value="0" step="0.1">
+                        <input type="number" class="matrix-cell" id="val-d" value="1" step="0.1">
+                    </div>
+                </div>
+
+                <div style="font-size: 2rem; color: var(--text-muted);">$\times$</div>
+
+                <div class="math-block" style="margin:0; padding: 1rem;">
+                    $$ \vec{v} = \begin{bmatrix} x \\ y \end{bmatrix} $$
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                <span style="color:#f97316">第一列</span> 是 $\hat{i}$ 变换后的位置。<br>
+                <span style="color:#10b981">第二列</span> 是 $\hat{j}$ 变换后的位置。
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">3.3 为什么这有效？ (Why does this work?)</h2>
+    <div class="content-block">
+        <p>
+            因为任何向量 $\vec{v} = x\hat{i} + y\hat{j}$。
+            应用变换 $L$ 后：
+        </p>
+        <div class="math-block">
+            $$ L(\vec{v}) = L(x\hat{i} + y\hat{j}) = xL(\hat{i}) + yL(\hat{j}) $$
+        </div>
+        <p>
+            这就是所谓的<strong>线性性质</strong>。这意味着，如果你知道 $\hat{i}$ 和 $\hat{j}$ 去了哪里，你就知道<strong>所有</strong>向量去了哪里。
+            矩阵乘法 $A\vec{x}$ 其实就是计算这个线性组合的简写。
+        </p>
+    </div>
+</div>

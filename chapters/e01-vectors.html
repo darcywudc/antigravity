@@ -1,0 +1,92 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">Chapter 1</span>
+    <h1 class="chapter-title">向量 (Vectors) <br><small style="font-size: 0.6em; color: var(--text-muted);">Essence of
+            Linear Algebra</small></h1>
+    <p class="chapter-description">
+        线性代数的核心始于向量。在不同的领域，人们对"向量"有不同的看法。要理解这门学科，你需要能够在这三种视角之间自由切换。
+    </p>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">1.1 三种视角 (Three Perspectives)</h2>
+
+    <div class="content-block">
+        <p>你可能会遇到三种对于向量的定义，它们听起来截然不同：</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+            <div class="definition-card" style="margin:0; border-top: 4px solid var(--accent-blue);">
+                <div class="definition-title" style="color:var(--accent-blue)">物理学视角</div>
+                <p style="font-size: 0.9em">
+                    向量是空间中的<strong>箭头</strong>。它由<strong>长度</strong>和<strong>方向</strong>定义。只要保持这两者不变，你可以在空间中任意移动它。</p>
+            </div>
+            <div class="definition-card" style="margin:0; border-top: 4px solid var(--accent-green);">
+                <div class="definition-title" style="color:var(--accent-green)">计算机视角</div>
+                <p style="font-size: 0.9em">向量是<strong>有序的数字列表</strong>。例如 `[房价值, 面积]`。顺序很重要。</p>
+            </div>
+            <div class="definition-card" style="margin:0; border-top: 4px solid var(--accent-purple);">
+                <div class="definition-title" style="color:var(--accent-purple)">数学家视角</div>
+                <p style="font-size: 0.9em">向量是任何满足加法和数乘规则的对象。它是最抽象的概括。</p>
+            </div>
+        </div>
+
+        <p>
+            在线性代数中，我们通常结合前两者：我们将向量看作是以原点为起点的箭头，而它的终点坐标就是那个数字列表。
+        </p>
+    </div>
+
+    <div class="viz-container">
+        <div class="viz-header">
+            <span class="viz-title">交互演示：坐标与箭头的一一对应</span>
+        </div>
+        <div class="viz-canvas-wrapper" style="height: 400px;">
+            <canvas id="viz-vector-basic" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="viz-controls">
+            <p style="text-align: center; color: var(--text-secondary);">
+                拖拽蓝色向量的尖端。注意观察：<br>
+                <span style="color: var(--accent-blue)">几何位置 (箭头)</span> $\longleftrightarrow$ <span
+                    style="color: var(--accent-green)">代数数值 (列表)</span>
+            </p>
+            <div class="math-block" id="vector-display">
+                $$ \vec{v} = \begin{bmatrix} 2 \\ 1 \end{bmatrix} $$
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">1.2 向量加法 (Vector Addition)</h2>
+    <div class="content-block">
+        <p>
+            为什么我们要把数字列表对应到几何箭头？因为这让我们能直观地理解运算。
+        </p>
+        <p>
+            <strong>加法</strong>拥有清晰的几何意义：想象一下运动。
+            首先沿着向量 $\vec{v}$ 移动，然后从那里开始，沿着向量 $\vec{w}$ 移动。
+            你最终的位置就是 $\vec{v} + \vec{w}$ 的终点。
+        </p>
+        <p>这就是著名的<strong>三角形法则</strong>（或平行四边形法则）。</p>
+    </div>
+
+    <div class="math-block">
+        $$ \begin{bmatrix} 1 \\ 2 \end{bmatrix} + \begin{bmatrix} 3 \\ -1 \end{bmatrix} = \begin{bmatrix} 1+3 \\ 2+(-1)
+        \end{bmatrix} = \begin{bmatrix} 4 \\ 1 \end{bmatrix} $$
+    </div>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">1.3 标量乘法 (Scalar Multiplication)</h2>
+    <div class="content-block">
+        <p>
+            第二个基本运算是将向量乘以一个纯数字。在线性代数中，这个纯数字被称为<strong>标量 (Scalar)</strong>——因为它主要作用是"缩放" (Scale) 向量。
+        </p>
+        <ul>
+            <li>如果乘以 2，向量长度翻倍。</li>
+            <li>如果乘以 0.5，向量长度减半。</li>
+            <li>如果乘以 -1，向量反向。</li>
+        </ul>
+        <p>
+            实际上，<strong>所有的</strong>线性代数操作，归根结底都只是这两种运算的组合：加法和数乘。我们在下一章"线性组合"中会看到这一点的威力。
+        </p>
+    </div>
+</div>

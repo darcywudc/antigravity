@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互动线性代数 | Interactive Linear Algebra</title>
+    <title>线性代数的本质 | Identity of Linear Algebra</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/content.css">
     <!-- 引入 KaTeX 用于数学公式渲染 -->
@@ -12,7 +12,6 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"></script>
     <style>
-        /* Hidden debug console for production feel */
         #debug-console {
             display: none;
         }
@@ -25,54 +24,102 @@
         <!-- 侧边栏导航 -->
         <aside class="sidebar">
             <div class="logo">
-                <div class="logo-icon">LA</div>
-                <div class="logo-text">Linear Algebra</div>
+                <div class="logo-icon">EO</div>
+                <div class="logo-text">Essence of<br>Linear Algebra</div>
             </div>
 
             <nav class="nav-content">
                 <div class="nav-section">
-                    <div class="nav-section-title">核心课程</div>
+                    <div class="nav-section-title">Chapter List</div>
                     <ul class="nav-list">
                         <li class="nav-item">
-                            <a href="#ch1" class="nav-link active" data-chapter="ch1-vectors">
+                            <a href="#ch1" class="nav-link active" data-chapter="e01-vectors">
                                 <span class="chapter-num">1</span>
-                                向量与向量空间
+                                向量
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#ch2" class="nav-link" data-chapter="ch2-matrices">
+                            <a href="#ch2" class="nav-link" data-chapter="e02-combinations">
                                 <span class="chapter-num">2</span>
-                                矩阵与线性变换
+                                线性组合与张成空间
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#ch3" class="nav-link" data-chapter="ch3-systems">
+                            <a href="#ch3" class="nav-link" data-chapter="e03-transformations">
                                 <span class="chapter-num">3</span>
-                                线性方程组
+                                线性变换与矩阵
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#ch4" class="nav-link" data-chapter="ch4-determinants">
+                            <a href="#ch4" class="nav-link" data-chapter="e04-multiplication">
                                 <span class="chapter-num">4</span>
+                                矩阵乘法与复合
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch5" class="nav-link" data-chapter="e05-3d-transform">
+                                <span class="chapter-num">5</span>
+                                三维线性变换
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch6" class="nav-link" data-chapter="e06-determinant">
+                                <span class="chapter-num">6</span>
                                 行列式
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#ch5" class="nav-link" data-chapter="ch5-eigen">
-                                <span class="chapter-num">5</span>
+                            <a href="#ch7" class="nav-link" data-chapter="e07-inverse">
+                                <span class="chapter-num">7</span>
+                                逆矩阵与列空间
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch8" class="nav-link" data-chapter="e08-nonsquare">
+                                <span class="chapter-num">8</span>
+                                非方阵
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch9" class="nav-link" data-chapter="e09-dot-product">
+                                <span class="chapter-num">9</span>
+                                点积与对偶性
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch10" class="nav-link" data-chapter="e10-cross-product">
+                                <span class="chapter-num">10</span>
+                                叉积
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch11" class="nav-link" data-chapter="e11-cross-transform">
+                                <span class="chapter-num">11</span>
+                                叉积与变换
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch12" class="nav-link" data-chapter="e12-cramer">
+                                <span class="chapter-num">12</span>
+                                克莱姆法则
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch13" class="nav-link" data-chapter="e13-change-basis">
+                                <span class="chapter-num">13</span>
+                                基变换
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#ch14" class="nav-link" data-chapter="e14-eigen">
+                                <span class="chapter-num">14</span>
                                 特征值与特征向量
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#ch6" class="nav-link" data-chapter="ch6-orthogonality">
-                                <span class="chapter-num">6</span>
-                                正交性
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#ch7" class="nav-link" data-chapter="ch7-quadratic">
-                                <span class="chapter-num">7</span>
-                                二次型
+                            <a href="#ch15" class="nav-link" data-chapter="e15-abstract">
+                                <span class="chapter-num">15</span>
+                                抽象向量空间
                             </a>
                         </li>
                     </ul>

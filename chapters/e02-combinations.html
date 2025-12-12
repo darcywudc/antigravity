@@ -1,0 +1,81 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">Chapter 2</span>
+    <h1 class="chapter-title">线性组合与张成空间 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
+            Combinations, Span, and Basis Vectors</small></h1>
+    <p class="chapter-description">
+        如果你理解了"线性组合"，你就掌握了线性代数的一半。我们将看到，整个坐标系本身——那个网格——其实只是两个特殊基向量的线性组合。
+    </p>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">2.1 基向量 (Basis Vectors)</h2>
+    <div class="content-block">
+        <p>
+            当我们写下坐标 $\begin{bmatrix} 3 \\ -2 \end{bmatrix}$ 时，我们实际上是在说一个隐含的公式。
+        </p>
+        <p>
+            这里的 3 和 -2 是<strong>标量</strong>。它们在缩放两个非常特殊的向量：
+            向右的单位向量 $\hat{i}$ (read as "i-hat") 和向上的单位向量 $\hat{j}$ ("j-hat")。
+        </p>
+        <div class="math-block">
+            $$ \begin{bmatrix} 3 \\ -2 \end{bmatrix} = 3\hat{i} + (-2)\hat{j} $$
+        </div>
+        <p>
+            这对向量 $\hat{i}$ and $\hat{j}$ 被称为这个坐标系的<strong>基 (Basis)</strong>。
+        </p>
+    </div>
+
+    <div class="viz-container">
+        <div class="viz-header">
+            <span class="viz-title">交互演示：改变基向量</span>
+            <span class="viz-badge">Core Concept</span>
+        </div>
+        <div class="viz-canvas-wrapper" style="height: 500px;">
+            <canvas id="viz-basis-change" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="viz-controls">
+            <p style="margin-bottom: 1rem;">
+                下图中，<span style="color:#f97316"><strong>红色是 $\hat{i}$</strong></span>，<span
+                    style="color:#10b981"><strong>绿色是 $\hat{j}$</strong></span>。
+                黄色的点代表向量 $\vec{v} = 2\hat{i} + 1\hat{j}$。
+            </p>
+            <p>
+                <strong>任务：</strong> 拖拽红色和绿色的基向量。如果你把 $\hat{i}$ 变得很长，或者让 $\hat{i}$ 和 $\hat{j}$ 夹角不再是 90 度，
+                那个黄色的点（代表 "2个i 和 1个j"）会去哪里？
+            </p>
+            <p style="font-size:0.9em; color:var(--text-muted)">
+                注意整张网格是如何随着基向量变形的。这就是所谓的"坐标系"。
+            </p>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="btn btn-secondary" id="reset-basis">重置标准基 (Reset Basis)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section fade-in">
+    <h2 class="section-title">2.2 张成空间 (Span)</h2>
+    <div class="content-block">
+        <p>
+            这就引出了一个大问题：如果我们固定 $\hat{i}$ 和 $\hat{j}$ 的方向，只改变标量 $a$ 和 $b$，
+            向量 $a\hat{i} + b\hat{j}$ 能到达平面的哪些地方？
+        </p>
+        <div class="definition-card">
+            <div class="definition-title">定义：张成空间 (Span)</div>
+            <p>
+                一组向量 $\vec{v}_1, \vec{v}_2, \dots$ 的<strong>张成空间 (Span)</strong>，就是这组向量所有可能的线性组合的集合。
+            </p>
+        </div>
+        <p>
+            对于两个二维向量：
+        </p>
+        <ul>
+            <li><strong>通常情况</strong>：它们张成整个 2D 平面（你能到达任何点）。</li>
+            <li><strong>共线情况</strong>：如果 $\vec{v}$ 和 $\vec{w}$ 在一条线上，它们只能张成一条直线。</li>
+            <li><strong>零向量情况</strong>：如果它们都是零，只能张成原点。</li>
+        </ul>
+        <p>
+            如果两个向量共线，我们称它们是<strong>线性相关 (Linearly Dependent)</strong>的——因为其中一个是另一个的多余副本，并没有给张成空间增加新的维度。
+        </p>
+    </div>
+</div>

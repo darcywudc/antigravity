@@ -48,17 +48,25 @@ const App = {
     loadInitialChapter() {
         const hash = window.location.hash.slice(1);
         window.logDebug(`Initial hash: ${hash}`);
-        let chapterId = 'ch1-vectors';
+        let chapterId = 'e01-vectors';
 
         // Map short hash to ID
         const map = {
-            'ch1': 'ch1-vectors',
-            'ch2': 'ch2-matrices',
-            'ch3': 'ch3-systems',
-            'ch4': 'ch4-determinants',
-            'ch5': 'ch5-eigen',
-            'ch6': 'ch6-orthogonality',
-            'ch7': 'ch7-quadratic'
+            'ch1': 'e01-vectors',
+            'ch2': 'e02-combinations',
+            'ch3': 'e03-transformations',
+            'ch4': 'e04-multiplication',
+            'ch5': 'e05-3d-transform',
+            'ch6': 'e06-determinant',
+            'ch7': 'e07-inverse',
+            'ch8': 'e08-nonsquare',
+            'ch9': 'e09-dot-product',
+            'ch10': 'e10-cross-product',
+            'ch11': 'e11-cross-transform',
+            'ch12': 'e12-cramer',
+            'ch13': 'e13-change-basis',
+            'ch14': 'e14-eigen',
+            'ch15': 'e15-abstract'
         };
         if (map[hash]) chapterId = map[hash];
 
