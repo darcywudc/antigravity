@@ -3,122 +3,323 @@
     <h1 class="chapter-title">矩阵乘法与复合变换 <br><small style="font-size: 0.6em; color: var(--text-muted);">Matrix
             Multiplication as Composition</small></h1>
     <p class="chapter-description">
-        如果你曾经死记硬背过"行乘以列"的规则，现在请把你对它的恐惧暂时放下。
-        在几何世界里，矩阵乘法拥有一个极其优雅的含义：<strong>变换的叠加</strong>。
+        如果你曾经对"行乘以列"的规则感到困惑，这一章将彻底改变你的认知。
+        矩阵乘法不是随机发明的计算规则——它是<strong>变换叠加</strong>的自然结果。
+        当你理解了这一点，"行乘以列"将变得如呼吸般自然。
     </p>
 </div>
 
-<!-- SECTION 1: Composition -->
+<!-- ==================== SECTION 1: COMPOSITION ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">4.1 复合变换 (Composition)</h2>
+    <h2 class="section-title">4.1 变换的复合 (Composition)</h2>
+
     <div class="content-block">
+        <h3>4.1.1 连续变换</h3>
         <p>
-            经常地，我们想要连续应用多个变换。例如：先<strong>旋转</strong>，然后<strong>剪切</strong>。
+            在实际应用中，我们经常需要连续施加多个变换。例如：
+        </p>
+        <ul>
+            <li>先<strong>旋转</strong>一个图形，然后再<strong>缩放</strong>它</li>
+            <li>先<strong>剪切</strong>，然后<strong>反射</strong></li>
+        </ul>
+        <p>
+            问题来了：这两步操作的<strong>总效果</strong>能不能用一个单独的矩阵来描述？
         </p>
 
-        <div style="display: flex; justify-content: center; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
-            <!-- Step 1 diagram -->
+        <div class="theorem-card">
+            <div class="theorem-title">答案：可以！</div>
+            <p>
+                如果变换 $M_1$ 后紧接着变换 $M_2$，总效果等于矩阵乘积 $M_2 \cdot M_1$。
+            </p>
+            <p style="font-size: 0.9em; color: var(--text-secondary);">
+                注意顺序：先作用的矩阵写在<strong>右边</strong>。这与函数复合 $f(g(x))$ 的写法一致。
+            </p>
+        </div>
+    </div>
+
+    <div class="content-block">
+        <h3>4.1.2 图解：变换的叠加</h3>
+
+        <div
+            style="display: flex; gap: 1rem; align-items: center; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
+            <!-- Step 1: Original -->
             <div style="text-align: center;">
-                <div
-                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items:center; justify-content:center; margin: 0 auto 1rem auto; border: 2px solid var(--accent-blue);">
-                    <span style="font-weight: bold;">v</span>
-                </div>
-                <p>Input Vector</p>
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                    <rect x="20" y="20" width="60" height="60" fill="none" stroke="#666" stroke-width="1" />
+                    <line x1="20" y1="80" x2="50" y2="80" stroke="#f97316" stroke-width="2" />
+                    <line x1="20" y1="80" x2="20" y2="50" stroke="#10b981" stroke-width="2" />
+                    <circle cx="20" cy="80" r="3" fill="#fff" />
+                </svg>
+                <p style="font-size: 0.85em;">原始</p>
             </div>
 
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
+            <!-- Arrow -->
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; color: var(--text-muted);">→</div>
+                <p style="font-size: 0.75em; color: var(--text-secondary);">$M_1$<br>(旋转)</p>
+            </div>
+
+            <!-- Step 2: After M1 -->
+            <div style="text-align: center;">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                    <!-- Rotated square -->
+                    <polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="#4a9eff" stroke-width="1" />
+                    <line x1="50" y1="90" x2="70" y2="70" stroke="#f97316" stroke-width="2" />
+                    <line x1="50" y1="90" x2="30" y2="70" stroke="#10b981" stroke-width="2" />
+                    <circle cx="50" cy="90" r="3" fill="#fff" />
+                </svg>
+                <p style="font-size: 0.85em;">旋转后</p>
+            </div>
+
+            <!-- Arrow -->
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; color: var(--text-muted);">→</div>
+                <p style="font-size: 0.75em; color: var(--text-secondary);">$M_2$<br>(剪切)</p>
+            </div>
+
+            <!-- Step 3: After M2 -->
+            <div style="text-align: center;">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                    <!-- Sheared rotated shape -->
+                    <polygon points="60,10 100,50 60,90 20,50" fill="none" stroke="#ec4899" stroke-width="2" />
+                    <line x1="60" y1="90" x2="80" y2="70" stroke="#f97316" stroke-width="2" />
+                    <line x1="60" y1="90" x2="40" y2="50" stroke="#10b981" stroke-width="2" />
+                    <circle cx="60" cy="90" r="3" fill="#fff" />
+                </svg>
+                <p style="font-size: 0.85em;">剪切后</p>
+            </div>
+
+            <!-- Equals -->
+            <div style="font-size: 1.5rem; color: var(--text-muted);">=</div>
+
+            <!-- Combined -->
+            <div style="text-align: center;">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                    <polygon points="60,10 100,50 60,90 20,50" fill="none" stroke="#fbbf24" stroke-width="2" />
+                </svg>
+                <p style="font-size: 0.85em; color: var(--accent-purple);">$M_2 \cdot M_1$</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2: COMPUTING PRODUCT ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">4.2 如何计算矩阵乘积</h2>
+
+    <div class="content-block">
+        <h3>4.2.1 几何方法</h3>
+        <p>
+            要计算 $M_2 \cdot M_1$，我们只需要追踪基向量：
+        </p>
+        <ol>
+            <li>先看 $M_1$ 把 $\hat{i}$ 变到哪里（$M_1$ 的第一列）</li>
+            <li>然后用 $M_2$ 再变换一次这个结果</li>
+            <li>对 $\hat{j}$ 重复同样的过程</li>
+            <li>最终结果的两列就是复合矩阵的两列</li>
+        </ol>
+    </div>
+
+    <div class="content-block">
+        <h3>4.2.2 数值例子</h3>
+
+        <div class="example-card">
+            <p><strong>问题：</strong> 计算下列矩阵乘积</p>
+            <div class="math-block">
+                $$
+                M_2 \cdot M_1 =
+                \underbrace{\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}}_{旋转 90°}
+                \cdot
+                \underbrace{\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}}_{剪切}
+                $$
+            </div>
+
+            <p><strong>解法（追踪基向量）：</strong></p>
+
+            <p style="margin-left: 1rem;">
+                <strong>Step 1：</strong> $M_1$ 把 $\hat{i}$ 变成 $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$（$M_1$ 的第一列）
+            </p>
+            <p style="margin-left: 1rem;">
+                然后 $M_2$ 把 $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ 变成：
+                $1 \cdot \begin{bmatrix} 0 \\ 1 \end{bmatrix} + 0 \cdot \begin{bmatrix} -1 \\ 0 \end{bmatrix} =
+                \begin{bmatrix} 0 \\ 1 \end{bmatrix}$
+            </p>
+
+            <p style="margin-left: 1rem; margin-top: 1rem;">
+                <strong>Step 2：</strong> $M_1$ 把 $\hat{j}$ 变成 $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$（$M_1$ 的第二列）
+            </p>
+            <p style="margin-left: 1rem;">
+                然后 $M_2$ 把 $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ 变成：
+                $1 \cdot \begin{bmatrix} 0 \\ 1 \end{bmatrix} + 1 \cdot \begin{bmatrix} -1 \\ 0 \end{bmatrix} =
+                \begin{bmatrix} -1 \\ 1 \end{bmatrix}$
+            </p>
+
+            <p style="margin-top: 1rem;"><strong>答案：</strong></p>
+            <div class="math-block">
+                $$
+                M_2 \cdot M_1 = \begin{bmatrix} 0 & -1 \\ 1 & 1 \end{bmatrix}
+                $$
+            </div>
+        </div>
+    </div>
+
+    <div class="content-block">
+        <h3>4.2.3 "行乘以列"规则的来源</h3>
+        <p>
+            传统的"行×列"公式：
+        </p>
+        <div class="math-block">
+            $$ (AB)_{ij} = \sum_k A_{ik} \cdot B_{kj} $$
+        </div>
+        <p>
+            其实就是上面追踪基向量过程的代数表达。当你用 $A$ 的行去"点乘" $B$ 的列时，
+            你实际上在计算 $B$ 的某一列（某个基向量）被 $A$ 变换后的对应分量。
+        </p>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3: ORDER MATTERS ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">4.3 顺序很重要！(Non-Commutativity)</h2>
+
+    <div class="content-block">
+        <p>
+            矩阵乘法<strong>不满足交换律</strong>：通常 $AB \neq BA$。
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+            <div class="definition-card" style="border-left-color: var(--accent-blue);">
+                <div class="definition-title" style="color: var(--accent-blue);">先旋转，后剪切</div>
+                <svg width="100%" height="80" viewBox="0 0 200 80" style="display: block; margin: 1rem auto;">
+                    <rect x="10" y="10" width="40" height="40" fill="none" stroke="#666" />
+                    <text x="30" y="65" fill="#666" font-size="10" text-anchor="middle">原始</text>
+                    <text x="75" y="35" fill="#666" font-size="14">→</text>
+                    <polygon points="110,10 130,30 110,50 90,30" fill="none" stroke="#4a9eff" />
+                    <text x="110" y="65" fill="#4a9eff" font-size="10" text-anchor="middle">旋转</text>
+                    <text x="145" y="35" fill="#666" font-size="14">→</text>
+                    <polygon points="190,10 210,30 190,50 160,30" fill="none" stroke="#ec4899" stroke-width="2" />
+                    <text x="185" y="65" fill="#ec4899" font-size="10" text-anchor="middle">剪切</text>
                 </svg>
             </div>
 
-            <!-- Transform M1 -->
-            <div style="text-align: center;">
-                <div
-                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; margin: 0 auto 1rem auto; border: 1px solid #666;">
-                    Rotate (M1)
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
+            <div class="definition-card" style="border-left-color: var(--accent-orange);">
+                <div class="definition-title" style="color: var(--accent-orange);">先剪切，后旋转</div>
+                <svg width="100%" height="80" viewBox="0 0 200 80" style="display: block; margin: 1rem auto;">
+                    <rect x="10" y="10" width="40" height="40" fill="none" stroke="#666" />
+                    <text x="30" y="65" fill="#666" font-size="10" text-anchor="middle">原始</text>
+                    <text x="75" y="35" fill="#666" font-size="14">→</text>
+                    <polygon points="90,10 110,10 130,50 110,50" fill="none" stroke="#f97316" />
+                    <text x="110" y="65" fill="#f97316" font-size="10" text-anchor="middle">剪切</text>
+                    <text x="145" y="35" fill="#666" font-size="14">→</text>
+                    <polygon points="160,30 180,10 200,30 180,50" fill="none" stroke="#10b981" stroke-width="2" />
+                    <text x="180" y="65" fill="#10b981" font-size="10" text-anchor="middle">旋转</text>
                 </svg>
-            </div>
-
-            <!-- Transform M2 -->
-            <div style="text-align: center;">
-                <div
-                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; margin: 0 auto 1rem auto; border: 1px solid #666;">
-                    Shear (M2)
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 2rem;">=</span>
-            </div>
-
-            <!-- Composite -->
-            <div style="text-align: center;">
-                <div
-                    style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px; margin: 0 auto 1rem auto; border: 2px solid var(--accent-purple);">
-                    Composite Matrix <br> (M2 $\times$ M1)
-                </div>
             </div>
         </div>
 
         <p>
-            两个矩阵相乘 $M_2 \times M_1$，几何上意味着：
-            先应用 $M_1$，再应用 $M_2$。
-            结果等效于一个单独的"复合矩阵"。
+            <strong>关键洞见：</strong> 就像"先穿袜子再穿鞋"和"先穿鞋再穿袜子"会导致完全不同的结果，
+            变换的顺序改变最终的形状。
+        </p>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4: INTERACTIVE ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">4.4 交互实验：对比分步与复合</h2>
+
+    <div class="content-block">
+        <p>
+            在下面的实验中，你可以观察：
+        </p>
+        <ul>
+            <li><strong>分步执行</strong>：先看旋转的效果，再看剪切的效果</li>
+            <li><strong>复合矩阵</strong>：直接用乘积矩阵一步到位</li>
+        </ul>
+        <p>
+            两种方式的最终结果是<strong>完全相同</strong>的——这就是矩阵乘法的几何意义。
         </p>
     </div>
 
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">交互演示：分步 vs 复合</span>
-            <span class="viz-badge">Comparison</span>
+            <span class="viz-title">变换复合可视化</span>
+            <span class="viz-badge" style="background: var(--accent-purple);">动画演示</span>
         </div>
         <div class="viz-canvas-wrapper" style="height: 500px;">
             <canvas id="viz-composition" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
-            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
-                <button class="btn btn-primary" id="btn-step-by-step">分两步走 (Rotate $\to$ Shear)</button>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="btn-step-by-step">分两步 (Rotate → Shear)</button>
                 <button class="btn btn-secondary" id="btn-composite">一步到位 (Product Matrix)</button>
-                <button class="btn btn-secondary" id="btn-reset-comp">重置 (Reset)</button>
+                <button class="btn btn-secondary" id="btn-reset-comp">重置</button>
             </div>
-            <p style="text-align: center; color: var(--text-secondary); font-size: 0.9em;">
-                点击上方按钮对比。你会发现最终的网格状态是完全一样的。<br>
-                这就证明了：矩阵乘法就是变换的复合。
+            <p style="text-align: center; margin-top: 1rem; font-size: 0.9em; color: var(--text-muted);">
+                点击按钮对比两种方式。最终结果完全一致，证明了 $M_2 \cdot M_1$ 的正确性。
             </p>
         </div>
     </div>
 </div>
 
-<!-- SECTION 2: Non-Commutativity -->
+<!-- ==================== SECTION 5: APPLICATIONS ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">4.2 顺序很重要 (Order Matters)</h2>
+    <h2 class="section-title">4.5 为什么这很重要？</h2>
+
     <div class="content-block">
-        <p>
-            在矩阵乘法中，$A \times B$ 通常<strong>不等于</strong> $B \times A$。这在几何上很容易理解：
-        </p>
-        <div style="display: flex; gap: 2rem; justify-content: center; margin: 1rem 0;">
-            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 12px; max-width: 300px;">
-                <strong style="color: var(--accent-red)">情况 A: 先旋转，后剪切</strong>
-                <p style="font-size: 0.9em; margin-top: 0.5rem;">
-                    你的 $\hat{i}$ 向量先转到了上面，然后再被剪切（这回它的方向变了，剪切对它的影响也变了）。
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div class="definition-card">
+                <div class="definition-title">🎮 3D 图形渲染</div>
+                <p>
+                    游戏中的物体需要经历多次变换：模型空间 → 世界空间 → 相机空间 → 屏幕空间。
+                    预先计算复合矩阵可以大幅提升渲染效率。
                 </p>
             </div>
-            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 12px; max-width: 300px;">
-                <strong style="color: var(--accent-blue)">情况 B: 先剪切，后旋转</strong>
-                <p style="font-size: 0.9em; margin-top: 0.5rem;">
-                    你的 $\hat{i}$ 先被拉长并斜向上，然后再整体旋转。
+
+            <div class="definition-card">
+                <div class="definition-title">🦾 机器人运动学</div>
+                <p>
+                    机械臂的每个关节都是一个旋转矩阵。
+                    末端执行器的位置 = 所有关节变换的连乘。
+                </p>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">🔐 密码学</div>
+                <p>
+                    某些加密算法（如 Hill Cipher）使用矩阵乘法来编码信息。
+                    解密需要求逆矩阵（下一章内容）。
+                </p>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">🧮 高效计算</div>
+                <p>
+                    GPU 的核心优势就是并行矩阵乘法。
+                    深度学习的反向传播本质上就是一系列矩阵乘法。
                 </p>
             </div>
         </div>
-        <p>
-            这就像"先穿袜子再穿鞋"和"先穿鞋再穿袜子"的区别一样明显。
+    </div>
+</div>
+
+<!-- ==================== SECTION 6: SUMMARY ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">本章总结</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
+                <li><strong>矩阵乘法</strong> = 变换的复合（先右后左）。</li>
+                <li>计算 $M_2 \cdot M_1$：追踪 $\hat{i}$ 和 $\hat{j}$ 经过两次变换后的位置。</li>
+                <li><strong>顺序重要</strong>：$AB \neq BA$（大多数情况）。</li>
+                <li>"行×列"规则是追踪基向量的代数等价形式。</li>
+            </ol>
+        </div>
+
+        <p style="margin-top: 2rem;">
+            下一章，我们将探讨三维空间中的线性变换——当我们从 2D 进入 3D，一切变得更加有趣！
         </p>
     </div>
 </div>
