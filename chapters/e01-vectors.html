@@ -3,90 +3,247 @@
     <h1 class="chapter-title">向量 (Vectors) <br><small style="font-size: 0.6em; color: var(--text-muted);">Essence of
             Linear Algebra</small></h1>
     <p class="chapter-description">
-        线性代数的核心始于向量。在不同的领域，人们对"向量"有不同的看法。要理解这门学科，你需要能够在这三种视角之间自由切换。
+        向量是线性代数的基石。在深入矩阵和变换之前，我们需要建立对向量的深刻直觉。我们将从三种不同的视角来审视它，并统一我们的理解。
     </p>
 </div>
 
+<!-- SECTION 1: Three Perspectives -->
 <div class="section fade-in">
     <h2 class="section-title">1.1 三种视角 (Three Perspectives)</h2>
-
     <div class="content-block">
-        <p>你可能会遇到三种对于向量的定义，它们听起来截然不同：</p>
+        <p>不同领域的人对"向量"一词有不同的心理模型：</p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+        <!-- Rich Visual Cards using Inline SVG for diagrams -->
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+
+            <!-- Physics Card -->
             <div class="definition-card" style="margin:0; border-top: 4px solid var(--accent-blue);">
-                <div class="definition-title" style="color:var(--accent-blue)">物理学视角</div>
-                <p style="font-size: 0.9em">
-                    向量是空间中的<strong>箭头</strong>。它由<strong>长度</strong>和<strong>方向</strong>定义。只要保持这两者不变，你可以在空间中任意移动它。</p>
+                <div class="definition-title" style="color:var(--accent-blue)">1. 物理学视角 (Physics)</div>
+                <div style="text-align: center; margin: 1rem 0;">
+                    <!-- SVG Diagram: Arrow in Space -->
+                    <svg width="150" height="100" viewBox="0 0 150 100">
+                        <defs>
+                            <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5"
+                                orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff" />
+                            </marker>
+                        </defs>
+                        <line x1="20" y1="80" x2="120" y2="20" stroke="#4a9eff" stroke-width="3"
+                            marker-end="url(#arrowhead-blue)" />
+                        <text x="70" y="60" fill="#4a9eff" font-size="14" font-family="sans-serif">Length &
+                            Direction</text>
+                    </svg>
+                </div>
+                <p style="font-size: 0.9em; color: var(--text-secondary);">
+                    向量是空间中的<strong>箭头</strong>。由<strong>长度</strong>和<strong>方向</strong>定义。
+                    <br><br>
+                    <small>关键点：位置不重要。只要保持长度和方向，它可以在空间中自由移动。</small>
+                </p>
             </div>
+
+            <!-- CS Card -->
             <div class="definition-card" style="margin:0; border-top: 4px solid var(--accent-green);">
-                <div class="definition-title" style="color:var(--accent-green)">计算机视角</div>
-                <p style="font-size: 0.9em">向量是<strong>有序的数字列表</strong>。例如 `[房价值, 面积]`。顺序很重要。</p>
+                <div class="definition-title" style="color:var(--accent-green)">2. 计算机视角 (CS)</div>
+                <div style="text-align: center; margin: 1rem 0; font-family: monospace; font-size: 1.2rem;">
+                    <div
+                        style="background: rgba(16, 185, 129, 0.1); display: inline-block; padding: 1rem; border-radius: 8px; color: #10b981;">
+                        [ 350,000, <br> &nbsp;&nbsp;98.5 ]
+                    </div>
+                </div>
+                <p style="font-size: 0.9em; color: var(--text-secondary);">
+                    向量是<strong>有序的数字列表</strong>。用于对数据建模（如房屋价格、面积）。
+                    <br><br>
+                    <small>关键点：顺序至关重要。维度即列表的长度。</small>
+                </p>
             </div>
+
+            <!-- Math Card -->
             <div class="definition-card" style="margin:0; border-top: 4px solid var(--accent-purple);">
-                <div class="definition-title" style="color:var(--accent-purple)">数学家视角</div>
-                <p style="font-size: 0.9em">向量是任何满足加法和数乘规则的对象。它是最抽象的概括。</p>
+                <div class="definition-title" style="color:var(--accent-purple)">3. 数学家视角 (Math)</div>
+                <div style="text-align: center; margin: 1rem 0;">
+                    <span style="font-size: 2rem; color: var(--accent-purple);">$\mathbb{V}$</span>
+                </div>
+                <p style="font-size: 0.9em; color: var(--text-secondary);">
+                    向量是任何满足<strong>加法</strong>和<strong>数乘</strong>公理的对象。
+                    <br><br>
+                    <small>关键点：最抽象。可以包容前两者。</small>
+                </p>
             </div>
         </div>
 
         <p>
-            在线性代数中，我们通常结合前两者：我们将向量看作是以原点为起点的箭头，而它的终点坐标就是那个数字列表。
+            <strong>我们的视角：</strong> 在线性代数中，我们融合前两者。我们将向量看作是<strong>根植于原点 (0,0) 的箭头</strong>。
+            箭头的终点坐标，就是那个数字列表。
+        </p>
+    </div>
+</div>
+
+<!-- SECTION 2: Coordinate System Interactive -->
+<div class="section fade-in">
+    <h2 class="section-title">1.2 坐标系与一一对应 (The Connection)</h2>
+    <div class="content-block">
+        <p>
+            这是几何直觉（箭头）与数值计算（列表）之间的桥梁。
+            当我们写下 $\begin{bmatrix} 2 \\ 1 \end{bmatrix}$ 时，它指导我们在几何空间中如何从原点出发到达目的地。
         </p>
     </div>
 
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">交互演示：坐标与箭头的一一对应</span>
+            <span class="viz-title">交互演示：以坐标为指南</span>
+            <span class="viz-badge">Interactive</span>
         </div>
-        <div class="viz-canvas-wrapper" style="height: 400px;">
+        <div class="viz-canvas-wrapper" style="height: 400px; border-bottom: 1px solid rgba(255,255,255,0.05);">
             <canvas id="viz-vector-basic" style="width: 100%; height: 100%;"></canvas>
         </div>
-        <div class="viz-controls">
-            <p style="text-align: center; color: var(--text-secondary);">
-                拖拽蓝色向量的尖端。注意观察：<br>
-                <span style="color: var(--accent-blue)">几何位置 (箭头)</span> $\longleftrightarrow$ <span
-                    style="color: var(--accent-green)">代数数值 (列表)</span>
-            </p>
-            <div class="math-block" id="vector-display">
+        <div class="viz-controls" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="width: 60%;">
+                <p style="color: var(--text-secondary); margin: 0;">
+                    <strong>尝试操作：</strong> 拖拽画面中的 <span style="color:#4a9eff">蓝色箭头</span>。
+                    <br>
+                    第一行数字代表沿着 x 轴（水平）走的距离。
+                    第二行数字代表沿着 y 轴（垂直）走的距离。
+                </p>
+            </div>
+            <div class="math-block" id="vector-display" style="margin: 0; min-width: 150px;">
                 $$ \vec{v} = \begin{bmatrix} 2 \\ 1 \end{bmatrix} $$
             </div>
         </div>
     </div>
 </div>
 
+<!-- SECTION 3: Vector Addition -->
 <div class="section fade-in">
-    <h2 class="section-title">1.2 向量加法 (Vector Addition)</h2>
+    <h2 class="section-title">1.3 向量加法 (Vector Addition)</h2>
     <div class="content-block">
-        <p>
-            为什么我们要把数字列表对应到几何箭头？因为这让我们能直观地理解运算。
-        </p>
-        <p>
-            <strong>加法</strong>拥有清晰的几何意义：想象一下运动。
-            首先沿着向量 $\vec{v}$ 移动，然后从那里开始，沿着向量 $\vec{w}$ 移动。
-            你最终的位置就是 $\vec{v} + \vec{w}$ 的终点。
-        </p>
-        <p>这就是著名的<strong>三角形法则</strong>（或平行四边形法则）。</p>
-    </div>
+        <div style="display: flex; gap: 2rem; align-items: start; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <p>
+                    为什么我们将加法定义为 $\begin{bmatrix} x_1 \\ y_1 \end{bmatrix} + \begin{bmatrix} x_2 \\ y_2 \end{bmatrix} =
+                    \begin{bmatrix} x_1+x_2 \\ y_1+y_2 \end{bmatrix}$？
+                </p>
+                <p>
+                    这不仅仅是定义，它是<strong>运动的自然结果</strong>。想象向量是唯一位移：
+                </p>
+                <ol>
+                    <li>首先沿着 $\vec{v}$ 移动。</li>
+                    <li>然后从那个点开始，沿着 $\vec{w}$ 移动。</li>
+                    <li>你的净位移就是 $\vec{v} + \vec{w}$。</li>
+                </ol>
+                <p>这就是著名的<strong>三角形法则</strong>。</p>
+            </div>
 
-    <div class="math-block">
-        $$ \begin{bmatrix} 1 \\ 2 \end{bmatrix} + \begin{bmatrix} 3 \\ -1 \end{bmatrix} = \begin{bmatrix} 1+3 \\ 2+(-1)
-        \end{bmatrix} = \begin{bmatrix} 4 \\ 1 \end{bmatrix} $$
+            <!-- Static SVG Diagram for Addition -->
+            <div
+                style="flex: 1; min-width: 300px; background: var(--bg-tertiary); padding: 20px; border-radius: 12px; text-align: center;">
+                <h4 style="margin-top:0; color: var(--text-muted); font-size: 0.9em;">图解：三角形法则</h4>
+                <svg width="280" height="200" viewBox="0 0 280 200">
+                    <defs>
+                        <marker id="arrow-v" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff" />
+                        </marker>
+                        <marker id="arrow-w" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#f97316" />
+                        </marker>
+                        <marker id="arrow-sum" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#10b981" />
+                        </marker>
+                    </defs>
+
+                    <!-- Guide lines -->
+                    <line x1="20" y1="180" x2="260" y2="180" stroke="#333" stroke-width="1" />
+                    <line x1="20" y1="20" x2="20" y2="180" stroke="#333" stroke-width="1" />
+                    <text x="10" y="195" fill="#666" font-size="12">Origin</text>
+
+                    <!-- Vector v -->
+                    <line x1="20" y1="180" x2="120" y2="100" stroke="#4a9eff" stroke-width="3"
+                        marker-end="url(#arrow-v)" />
+                    <text x="60" y="130" fill="#4a9eff" font-weight="bold">v</text>
+
+                    <!-- Vector w (starting from v's tip) -->
+                    <line x1="120" y1="100" x2="220" y2="100" stroke="#f97316" stroke-width="3" stroke-dasharray="5,5"
+                        marker-end="url(#arrow-w)" />
+                    <text x="170" y="90" fill="#f97316" font-weight="bold">w</text>
+
+                    <!-- Sum Vector -->
+                    <line x1="20" y1="180" x2="220" y2="100" stroke="#10b981" stroke-width="3"
+                        marker-end="url(#arrow-sum)" />
+                    <text x="110" y="150" fill="#10b981" font-weight="bold">v + w</text>
+                </svg>
+            </div>
+        </div>
     </div>
 </div>
 
+<!-- SECTION 4: Scalar Multiplication -->
 <div class="section fade-in">
-    <h2 class="section-title">1.3 标量乘法 (Scalar Multiplication)</h2>
+    <h2 class="section-title">1.4 标量乘法 (Scaling)</h2>
     <div class="content-block">
         <p>
-            第二个基本运算是将向量乘以一个纯数字。在线性代数中，这个纯数字被称为<strong>标量 (Scalar)</strong>——因为它主要作用是"缩放" (Scale) 向量。
+            这就是为什么数字在线性代数中常被称为<strong>标量 (Scalar)</strong>——它们的作用是<strong>缩放 (Scale)</strong> 向量。
         </p>
-        <ul>
-            <li>如果乘以 2，向量长度翻倍。</li>
-            <li>如果乘以 0.5，向量长度减半。</li>
-            <li>如果乘以 -1，向量反向。</li>
-        </ul>
-        <p>
-            实际上，<strong>所有的</strong>线性代数操作，归根结底都只是这两种运算的组合：加法和数乘。我们在下一章"线性组合"中会看到这一点的威力。
-        </p>
+
+        <div
+            style="display: flex; justify-content: space-around; background: var(--bg-tertiary); padding: 2rem; border-radius: 12px; margin-top: 1rem;">
+            <!-- Scaling Diagrams -->
+            <div style="text-align: center;">
+                <svg width="100" height="150" viewBox="0 0 100 150">
+                    <defs>
+                        <marker id="arrow-orig" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+                        </marker>
+                    </defs>
+                    <line x1="50" y1="140" x2="50" y2="80" stroke="#666" stroke-width="2"
+                        marker-end="url(#arrow-orig)" />
+                    <text x="60" y="110" fill="#666" font-size="12">v</text>
+                </svg>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">原始向量</p>
+            </div>
+
+            <div style="text-align: center;">
+                <svg width="100" height="150" viewBox="0 0 100 150">
+                    <defs>
+                        <marker id="arrow-2v" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff" />
+                        </marker>
+                    </defs>
+                    <line x1="50" y1="140" x2="50" y2="20" stroke="#4a9eff" stroke-width="4"
+                        marker-end="url(#arrow-2v)" />
+                    <text x="60" y="80" fill="#4a9eff" font-weight="bold">2v</text>
+                </svg>
+                <p style="font-size: 0.8rem; color: var(--text-primary);">2倍缩放</p>
+            </div>
+
+            <div style="text-align: center;">
+                <svg width="100" height="150" viewBox="0 0 100 150">
+                    <defs>
+                        <marker id="arrow-hav" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#f97316" />
+                        </marker>
+                    </defs>
+                    <line x1="50" y1="140" x2="50" y2="110" stroke="#f97316" stroke-width="2"
+                        marker-end="url(#arrow-hav)" />
+                    <text x="60" y="125" fill="#f97316">0.5v</text>
+                </svg>
+                <p style="font-size: 0.8rem; color: var(--text-primary);">0.5倍缩放</p>
+            </div>
+
+            <div style="text-align: center;">
+                <svg width="100" height="150" viewBox="0 0 100 150">
+                    <defs>
+                        <marker id="arrow-neg" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#ec4899" />
+                        </marker>
+                    </defs>
+                    <!-- Origin at 50, 80 -->
+                    <circle cx="50" cy="80" r="2" fill="#333" />
+                    <line x1="50" y1="80" x2="50" y2="140" stroke="#ec4899" stroke-width="2"
+                        marker-end="url(#arrow-neg)" />
+                    <text x="60" y="110" fill="#ec4899">-1v</text>
+                </svg>
+                <p style="font-size: 0.8rem; color: var(--text-primary);">反向 (-1)</p>
+            </div>
+        </div>
     </div>
 </div>
