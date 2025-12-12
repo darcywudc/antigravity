@@ -65,13 +65,24 @@ const App = {
             'ch11': 'e11-cross-transform',
             'ch12': 'e12-cramer',
             'ch13': 'e13-change-basis',
-            'ch14': 'e14-eigen',
+            'ch14': 'e14-eigenvectors',
             'ch15': 'e15-abstract',
-            // Also support direct e01 style hashes
+            // Also support direct e0X style hashes
             'e01': 'e01-vectors',
             'e02': 'e02-combinations',
             'e03': 'e03-transformations',
-            'e04': 'e04-multiplication'
+            'e04': 'e04-multiplication',
+            'e05': 'e05-3d-transform',
+            'e06': 'e06-determinant',
+            'e07': 'e07-inverse',
+            'e08': 'e08-nonsquare',
+            'e09': 'e09-dot-product',
+            'e10': 'e10-cross-product',
+            'e11': 'e11-cross-transform',
+            'e12': 'e12-cramer',
+            'e13': 'e13-change-basis',
+            'e14': 'e14-eigenvectors',
+            'e15': 'e15-abstract'
         };
         if (map[hash]) chapterId = map[hash];
 
