@@ -1,186 +1,216 @@
 /**
- * Chapter 2: Linear Combinations & Span (Enhanced)
+ * Chapter 2: Linear Combinations & Span
+ * 
+ * IMPORTANT: This file follows the EXACT same pattern as e01-vectors.js
+ * which is confirmed working. Key patterns:
+ * 1. Use baseDraw = canvas.draw.bind(canvas) to save original draw
+ * 2. Override canvas.draw and call baseDraw() first
+ * 3. Add custom rendering AFTER baseDraw()
+ * 4. Use this.toCanvas(0, 0) for origin, NOT this.origin
  */
 window.chapterScripts['e02-combinations'] = function () {
-    console.log('Initializing Chapter 2 (Enhanced Essence)');
+    console.log('Initializing Chapter 2 (Linear Combinations)');
 
-    // --- 1. Changing Basis Interactive (The Twisted Grid) ---
+    // === INTERACTIVE 1: Basis Change (Twisted Grid) ===
     (function initBasisChange() {
-        const canvas = new CanvasSpace('viz-basis-change', {
-            interactive: true,
-            gridColor: 'rgba(255,255,255,0.05)'
-        });
+        const canvasEl = document.getElementById('viz-basis-change');
+        if (!canvasEl) {
+            console.error('Canvas viz-basis-change not found');
+            return;
+        }
 
-        // Initial Basis
+        const canvas = new CanvasSpace('viz-basis-change', { interactive: true });
+
+        // Basis vectors (mutable)
         let i_hat = new Vector2D(1, 0);
         let j_hat = new Vector2D(0, 1);
 
-        // Coefficients fixed: v = 2i + 1j
+        // Linear combination coefficients for the result vector
         const c1 = 2;
         const c2 = 1;
 
-        // Custom draw for skewed grid
-        canvas.draw = function () {
-            this.clear();
-            const ctx = this.ctx;
+        // Add basis vectors to canvas
+        const iObj = canvas.addVector(i_hat, '#f97316', 'î');
+        const jObj = canvas.addVector(j_hat, '#10b981', 'ĵ');
 
-            // Draw skewed grid lines
+        // Make them draggable
+        canvas.makeDraggable(iObj, (v) => {
+            i_hat = v;
+            canvas.draw();
+        });
+        canvas.makeDraggable(jObj, (v) => {
+            j_hat = v;
+            canvas.draw();
+        });
+
+        // Save original draw method
+        const baseDraw = canvas.draw.bind(canvas);
+
+        // Override draw to add custom grid and result vector
+        canvas.draw = function () {
+            // 1. Clear and draw standard axes (not the standard grid, we'll draw our own)
+            this.clear();
+
+            const ctx = this.ctx;
+            const origin = this.toCanvas(0, 0);
+
+            // 2. Draw custom skewed grid based on current basis
             ctx.save();
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'rgba(74, 158, 255, 0.15)';
 
             const range = 15;
 
-            // Lines parallel to j (stepping along i)
+            // Lines parallel to j_hat (stepping along i_hat direction)
             for (let k = -range; k <= range; k++) {
-                const s = this.toCanvas(
-                    k * i_hat.x - range * j_hat.x,
-                    k * i_hat.y - range * j_hat.y
-                );
-                const e = this.toCanvas(
-                    k * i_hat.x + range * j_hat.x,
-                    k * i_hat.y + range * j_hat.y
-                );
-                ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(e.x, e.y); ctx.stroke();
+                const startX = k * i_hat.x - range * j_hat.x;
+                const startY = k * i_hat.y - range * j_hat.y;
+                const endX = k * i_hat.x + range * j_hat.x;
+                const endY = k * i_hat.y + range * j_hat.y;
+
+                const s = this.toCanvas(startX, startY);
+                const e = this.toCanvas(endX, endY);
+
+                ctx.beginPath();
+                ctx.moveTo(s.x, s.y);
+                ctx.lineTo(e.x, e.y);
+                ctx.stroke();
             }
-            // Lines parallel to i (stepping along j)
+
+            // Lines parallel to i_hat (stepping along j_hat direction)
             for (let k = -range; k <= range; k++) {
-                const s = this.toCanvas(
-                    -range * i_hat.x + k * j_hat.x,
-                    -range * i_hat.y + k * j_hat.y
-                );
-                const e = this.toCanvas(
-                    range * i_hat.x + k * j_hat.x,
-                    range * i_hat.y + k * j_hat.y
-                );
-                ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(e.x, e.y); ctx.stroke();
+                const startX = -range * i_hat.x + k * j_hat.x;
+                const startY = -range * i_hat.y + k * j_hat.y;
+                const endX = range * i_hat.x + k * j_hat.x;
+                const endY = range * i_hat.y + k * j_hat.y;
+
+                const s = this.toCanvas(startX, startY);
+                const e = this.toCanvas(endX, endY);
+
+                ctx.beginPath();
+                ctx.moveTo(s.x, s.y);
+                ctx.lineTo(e.x, e.y);
+                ctx.stroke();
             }
             ctx.restore();
 
-            // Draw resulting vector v = 2i + 1j
+            // 3. Draw the result vector v = c1*i + c2*j (Yellow)
             const vx = c1 * i_hat.x + c2 * j_hat.x;
             const vy = c1 * i_hat.y + c2 * j_hat.y;
-            // Draw it yellow and thicker
-            this.drawArrow(this.origin, this.toCanvas(vx, vy), '#fbbf24', 'v', 3);
+            const vEnd = this.toCanvas(vx, vy);
+            this.drawArrow(origin, vEnd, '#fbbf24', 'v');
 
-            // We rely on base draw for i and j vectors? 
-            // Actually base draw() loops through this.vectors and draws them.
-            // So we just need to Add them effectively.
-            // But we want i and j on TOP. The iteration order matters.
-
-            // Manually draw draggables on top if we want? 
-            // CanvasSpace.draw() draws grid then vectors. 
-            // So calling base draw here (this.draw is overridden) is tricky unless we manually reproduce logic.
-
-            // Let's manually render the basis vectors here to ensure they are on top of our custom grid
-            // But wait, the standard loop is usually fine.
-            // Let's iterate through registered vectors and draw them.
-            for (let item of this.vectors) {
-                const start = this.toCanvas(0, 0); // Assume origin based
-                const end = this.toCanvas(item.v.x, item.v.y);
-                this.drawArrow(start, end, item.color, item.label);
-            }
+            // 4. Draw the basis vectors (on top)
+            const iEnd = this.toCanvas(i_hat.x, i_hat.y);
+            const jEnd = this.toCanvas(j_hat.x, j_hat.y);
+            this.drawArrow(origin, iEnd, '#f97316', 'î');
+            this.drawArrow(origin, jEnd, '#10b981', 'ĵ');
         };
 
-        // Add draggable basis vectors
-        const iObj = canvas.addVector(i_hat, '#f97316', 'i');
-        canvas.makeDraggable(iObj, (v) => { i_hat = v; });
-
-        const jObj = canvas.addVector(j_hat, '#10b981', 'j');
-        canvas.makeDraggable(jObj, (v) => { j_hat = v; });
-
-        // Reset
+        // Reset button
         const btnReset = document.getElementById('reset-basis');
         if (btnReset) {
-            btnReset.onclick = () => {
+            btnReset.addEventListener('click', () => {
+                // Reset to standard basis
                 i_hat.x = 1; i_hat.y = 0;
                 j_hat.x = 0; j_hat.y = 1;
+                // Also update the vector objects
+                iObj.v.x = 1; iObj.v.y = 0;
+                jObj.v.x = 0; jObj.v.y = 1;
                 canvas.draw();
-            };
+            });
         }
 
+        // Initial draw
         canvas.draw();
     })();
 
 
-    // --- 2. Span & Independence Visualizer (New) ---
+    // === INTERACTIVE 2: Span Visualizer ===
     (function initSpanCheck() {
+        const canvasEl = document.getElementById('viz-span-check');
+        if (!canvasEl) {
+            console.error('Canvas viz-span-check not found');
+            return;
+        }
+
         const canvas = new CanvasSpace('viz-span-check', { interactive: true });
 
-        // Two vectors
+        // Two vectors to check for linear independence
         let v1 = new Vector2D(2, 1);
-        let v2 = new Vector2D(-1, 2); // Independent initially
+        let v2 = new Vector2D(-1, 2);
 
-        const v1Obj = canvas.addVector(v1, '#4a9eff', 'v1');
-        const v2Obj = canvas.addVector(v2, '#f97316', 'v2');
+        // Add to canvas
+        const v1Obj = canvas.addVector(v1, '#4a9eff', 'v₁');
+        const v2Obj = canvas.addVector(v2, '#f97316', 'v₂');
 
         const statusEl = document.getElementById('span-status');
 
-        function checkSpan() {
-            // Check determinant (2D cross product)
+        // Function to check if vectors are linearly dependent
+        function updateSpanStatus() {
+            // Calculate determinant (2D "cross product")
             const det = v1.x * v2.y - v1.y * v2.x;
-            const isLine = Math.abs(det) < 0.2; // Threshold for UX ease
+            const isCollinear = Math.abs(det) < 0.3;
 
-            // Update Text
             if (statusEl) {
-                if (isLine) {
-                    statusEl.textContent = "直线 (1D) - 线性相关!";
-                    statusEl.style.color = "var(--accent-red)";
+                if (isCollinear) {
+                    statusEl.textContent = '直线 (1D) - 线性相关!';
+                    statusEl.style.color = '#ef4444'; // Red
                 } else {
-                    statusEl.textContent = "平面 (2D) - 线性无关";
-                    statusEl.style.color = "var(--accent-blue)";
+                    statusEl.textContent = '平面 (2D) - 线性无关';
+                    statusEl.style.color = '#4a9eff'; // Blue
                 }
             }
-
-            // Update Canvas Visuals
-            canvas.draw = function () {
-                this.clear();
-
-                const ctx = this.ctx;
-
-                if (isLine) {
-                    // Draw the infinite line they are stuck on
-                    // Line passes through origin and v1 (since v1 ~= v2 direction)
-                    // If v1 is zero, try v2. If both zero, just point.
-                    let dir = v1;
-                    if (v1.length() < 0.1) dir = v2;
-
-                    if (dir.length() > 0.1) {
-                        // Draw line
-                        ctx.save();
-                        ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)'; // Red tint
-                        ctx.lineWidth = 4;
-                        const farPos = this.toCanvas(dir.x * 100, dir.y * 100);
-                        const farNeg = this.toCanvas(dir.x * -100, dir.y * -100);
-                        ctx.beginPath();
-                        ctx.moveTo(farNeg.x, farNeg.y);
-                        ctx.lineTo(farPos.x, farPos.y);
-                        ctx.stroke();
-                        ctx.restore();
-                    }
-                } else {
-                    // Draw Plane Visual (Faint Blue Field)
-                    this.clear(); // Black bg
-                    this.ctx.fillStyle = 'rgba(74, 158, 255, 0.05)';
-                    this.ctx.fillRect(0, 0, this.width, this.height);
-
-                    this.drawGrid(); // Standard grid on top
-                }
-
-                // Draw vectors
-                for (let item of this.vectors) {
-                    const start = this.toCanvas(0, 0);
-                    const end = this.toCanvas(item.v.x, item.v.y);
-                    this.drawArrow(start, end, item.color, item.label);
-                }
-            };
-
-            canvas.draw();
         }
 
-        canvas.makeDraggable(v1Obj, (v) => { v1 = v; checkSpan(); });
-        canvas.makeDraggable(v2Obj, (v) => { v2 = v; checkSpan(); });
+        // Make draggable with update callback
+        canvas.makeDraggable(v1Obj, (v) => {
+            v1 = v;
+            updateSpanStatus();
+            canvas.draw();
+        });
+        canvas.makeDraggable(v2Obj, (v) => {
+            v2 = v;
+            updateSpanStatus();
+            canvas.draw();
+        });
 
-        checkSpan(); // Initial check
+        // Save original draw
+        const baseDraw = canvas.draw.bind(canvas);
+
+        // Override draw to add span visualization
+        canvas.draw = function () {
+            // 1. Call base draw (clears, draws grid, draws vectors)
+            baseDraw();
+
+            const ctx = this.ctx;
+            const det = v1.x * v2.y - v1.y * v2.x;
+            const isCollinear = Math.abs(det) < 0.3;
+
+            if (isCollinear && (v1.x !== 0 || v1.y !== 0)) {
+                // Draw the line they span
+                ctx.save();
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+                ctx.lineWidth = 8;
+
+                // Direction from whichever vector is non-zero
+                let dir = v1;
+                if (Math.abs(v1.x) < 0.01 && Math.abs(v1.y) < 0.01) dir = v2;
+
+                // Draw infinite line through origin
+                const farPos = this.toCanvas(dir.x * 50, dir.y * 50);
+                const farNeg = this.toCanvas(-dir.x * 50, -dir.y * 50);
+
+                ctx.beginPath();
+                ctx.moveTo(farNeg.x, farNeg.y);
+                ctx.lineTo(farPos.x, farPos.y);
+                ctx.stroke();
+                ctx.restore();
+            }
+        };
+
+        // Initial state
+        updateSpanStatus();
+        canvas.draw();
     })();
 };

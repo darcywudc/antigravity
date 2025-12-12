@@ -174,7 +174,10 @@ class CanvasSpace {
 
     drawGrid() {
         const ctx = this.ctx;
-        const { width, height, origin, scale } = this;
+        const width = this.width;
+        const height = this.height;
+        const origin = this.options.origin;
+        const scale = this.options.scale;
         if (!origin) return;
 
         ctx.lineWidth = 1;
