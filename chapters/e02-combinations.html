@@ -3,162 +3,193 @@
     <h1 class="chapter-title">线性组合与张成空间 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
             Combinations, Span, and Basis</small></h1>
     <p class="chapter-description">
-        如果你理解了"线性组合"，你就掌握了线性代数的一半。
-        我们将看到，整个二维平面——那个我们习以为常的网格——其实只是两个特殊基向量的线性组合。
+        在第一章，我们学习了向量加法和数乘。现在，我们将这两种运算结合起来，得到线性代数中最核心的概念之一：<strong>线性组合</strong>。
+        这一章将揭示坐标系的本质，并回答一个根本问题：即使我们拥有多个向量，我们究竟能到达空间的哪些地方？
     </p>
 </div>
 
-<!-- SECTION 1: Basis Vectors -->
+<!-- SECTION 1: Linear Combinations -->
 <div class="section fade-in">
-    <h2 class="section-title">2.1 基向量 (Basis Vectors)</h2>
+    <h2 class="section-title">2.1 什么是线性组合？ (Linear Combinations)</h2>
     <div class="content-block">
-        <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap-reverse;">
-            <div style="flex: 1; min-width: 300px;">
-                <p>
-                    当我们写下坐标 $\begin{bmatrix} 3 \\ -2 \end{bmatrix}$ 时，我们实际上是在描述一个隐含的公式。
-                </p>
-                <p>
-                    这里的 3 和 -2 是标量。它们在缩放两个<strong>单位向量</strong>：
-                    向右的 $\hat{i}$ (i-hat) 和向上的 $\hat{j}$ (j-hat)。
-                </p>
-                <div class="math-block">
-                    $$ \vec{v} = 3\hat{i} + (-2)\hat{j} $$
+        <p>
+            "线性组合"这个听起来很高级的术语，其实只意味着一件事：
+            <strong>缩放 (Scale)</strong> 两个向量，然后<strong>相加 (Add)</strong> 它们。
+        </p>
+        <div class="math-block">
+            $$ a\vec{v} + b\vec{w} $$
+        </div>
+        <p>
+            其中 $a$ and $b$ 是标量（也就是你选择的"配方比例"）。
+            不管你选什么数字，结果永远是一个新向量。
+        </p>
+
+        <!-- Visual Explainer -->
+        <div style="display: flex; gap: 2rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
+            <div
+                style="flex: 1; min-width: 300px; background: var(--bg-tertiary); padding: 1.5rem; border-radius: 12px;">
+                <h4 style="margin-top:0; color: var(--accent-blue);">配方 (Recipe)</h4>
+                <ul style="line-height: 1.8;">
+                    <li>取 <strong>2</strong> 份的 $\vec{v}$ ($\color{#4a9eff}2\vec{v}$)</li>
+                    <li>取 <strong>3</strong> 份的 $\vec{w}$ ($\color{#f97316}3\vec{w}$)</li>
+                    <li>把它们放在一起 (加法)</li>
+                </ul>
+                <div style="text-align: center; margin-top: 1rem; font-weight: bold; color: var(--text-primary);">
+                    结果 = 线性组合
                 </div>
             </div>
 
-            <div style="flex: 1; min-width: 250px; text-align: center;">
-                <!-- SVG: i and j decomposition -->
-                <svg width="250" height="200" viewBox="0 0 250 200">
+            <div style="flex: 1; min-width: 300px; text-align: center;">
+                <svg width="250" height="180" viewBox="0 0 250 180">
                     <defs>
-                        <marker id="arrow-i" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <marker id="arr-v" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff" />
+                        </marker>
+                        <marker id="arr-w" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
                             <polygon points="0 0, 10 3.5, 0 7" fill="#f97316" />
                         </marker>
-                        <marker id="arrow-j" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <marker id="arr-res" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
                             <polygon points="0 0, 10 3.5, 0 7" fill="#10b981" />
                         </marker>
                     </defs>
-                    <!-- Grid -->
-                    <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#333" stroke-width="0.5" />
-                    </pattern>
-                    <rect width="100%" height="100%" fill="url(#smallGrid)" />
-
-                    <!-- Axes -->
-                    <line x1="20" y1="180" x2="230" y2="180" stroke="#666" stroke-width="1" />
-                    <line x1="20" y1="20" x2="20" y2="180" stroke="#666" stroke-width="1" />
-
-                    <!-- i-hat * 3 -->
-                    <line x1="20" y1="180" x2="140" y2="180" stroke="#f97316" stroke-width="3" />
-                    <line x1="20" y1="185" x2="60" y2="185" stroke="#f97316" stroke-width="5"
-                        marker-end="url(#arrow-i)" /> <!-- The unit i -->
-                    <text x="40" y="170" fill="#f97316" font-weight="bold" font-size="14">i</text>
-                    <text x="100" y="170" fill="#f97316">3i</text>
-
-                    <!-- j-hat * -2 (Down) -->
-                    <!-- Actually let's just show vector v -->
-                    <line x1="140" y1="180" x2="140" y2="100" stroke="#10b981" stroke-width="3"
-                        stroke-dasharray="4,2" />
-                    <line x1="20" y1="180" x2="20" y2="140" stroke="#10b981" stroke-width="5"
-                        marker-end="url(#arrow-j)" /> <!-- unit j -->
-                    <text x="30" y="160" fill="#10b981" font-weight="bold" font-size="14">j</text>
-
-                    <!-- Result v -->
-                    <line x1="20" y1="180" x2="140" y2="100" stroke="#fbbf24" stroke-width="3" />
-                    <circle cx="140" cy="100" r="4" fill="#fbbf24" />
-                    <text x="150" y="100" fill="#fbbf24" font-weight="bold">v = 3i + 2j</text>
-                    <!-- Diagram uses +2j for clearer visual layout than -2 -->
+                    <circle cx="20" cy="160" r="3" fill="#666" />
+                    <!-- 2v -->
+                    <line x1="20" y1="160" x2="100" y2="100" stroke="#4a9eff" stroke-width="2" />
+                    <text x="50" y="145" fill="#4a9eff" font-size="12">2v</text>
+                    <!-- 3w attached -->
+                    <line x1="100" y1="100" x2="220" y2="80" stroke="#f97316" stroke-width="2" />
+                    <text x="160" y="80" fill="#f97316" font-size="12">3w</text>
+                    <!-- Result -->
+                    <line x1="20" y1="160" x2="220" y2="80" stroke="#10b981" stroke-width="3"
+                        marker-end="url(#arr-res)" />
+                    <text x="120" y="130" fill="#10b981" font-weight="bold">Linear Combo</text>
                 </svg>
-                <p style="font-size: 0.8em; color: var(--text-muted); margin-top:0.5rem;">
-                    示意图：向量如何分解为 $\hat{i}$ 和 $\hat{j}$ 的组合
-                </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- SECTION 2: Grid Interactive -->
+<!-- SECTION 2: Basis Vectors Interactive -->
 <div class="section fade-in">
-    <h2 class="section-title">2.2 变换基向量 = 变换坐标系 (Changing Basis)</h2>
+    <h2 class="section-title">2.2 坐标系的本质：特殊的线性组合</h2>
     <div class="content-block">
         <p>
-            现在的关键问题来了：<strong>如果我们改变 $\hat{i}$ 和 $\hat{j}$ 呢？</strong>
+            这给了我们从一个全新角度看世界的视角。
+            坐标 $\begin{bmatrix} x \\ y \end{bmatrix}$ 其实只是一组标量。
+            它告诉我们如何**线性组合**两个特殊的基向量 $\hat{i}$ 和 $\hat{j}$。
         </p>
+        <div class="math-block">
+            $$ \vec{v} = x\hat{i} + y\hat{j} $$
+        </div>
         <p>
-            如果 $\hat{i}$ 变长了，或者 $\hat{j}$ 歪了，坐标 $\begin{bmatrix} 2 \\ 1 \end{bmatrix}$ 代表的位置也会随之改变。
-            这就是"线性变换"的本质——通过改变基向量来扭曲空间。
+            但谁规定 $\hat{i}$ 必须是向右的单位向量？谁规定它们必须垂直？
+            <strong>如果我们改变基向量，会发生什么？</strong>
         </p>
     </div>
 
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">交互演示：坐标系的本质</span>
-            <span class="viz-badge">Core Concept</span>
+            <span class="viz-title">交互实验 I：扭曲的网格</span>
+            <span class="viz-badge" style="background: var(--accent-purple)">核心实验</span>
         </div>
         <div class="viz-canvas-wrapper" style="height: 500px;">
             <canvas id="viz-basis-change" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
             <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between;">
-                <div>
-                    <p style="margin: 0; color: var(--text-primary);">
-                        <strong>任务：</strong> 拖拽 <span style="color:#f97316">橙色 i</span> 和 <span style="color:#10b981">绿色
-                            j</span>。
+                <div style="flex: 1;">
+                    <p style="margin: 0; color: var(--text-primary); margin-bottom: 0.5rem;">
+                        <strong>你的任务：</strong> 抓住并拖拽 <span style="color:#f97316">橙色 $\hat{i}$</span> 或 <span
+                            style="color:#10b981">绿色 $\hat{j}$</span>。
                     </p>
-                    <p style="margin-top: 5px; font-size: 0.9em; color: var(--text-muted);">
-                        观察那个黄色的点 $v = 2\hat{i} + 1\hat{j}$ 是如何随着网格的变形而移动的。
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        注意：黄色的点 $\vec{v} = 2\hat{i} + 1\hat{j}$ 始终保持相对于网格线的位置不变。<br>
+                        你实际上在定义一个新的<strong>"现实" (坐标系)</strong>。
                     </p>
                 </div>
-                <button class="btn btn-secondary" id="reset-basis">重置 (Reset)</button>
+                <button class="btn btn-secondary" id="reset-basis">重置回标准基</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- SECTION 3: Span -->
+<!-- SECTION 3: Span and Linear Independence -->
 <div class="section fade-in">
-    <h2 class="section-title">2.3 张成空间 (Span)</h2>
+    <h2 class="section-title">2.3 张成空间 (Span) 与 线性相关性</h2>
     <div class="content-block">
-        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 300px;">
-                <div class="definition-card">
-                    <div class="definition-title">定义：张成空间 (Span)</div>
-                    <p>
-                        一组向量的 <strong>Span</strong>，就是通过<strong>线性组合</strong>这组向量所能到达的所有点的集合。
-                    </p>
-                </div>
+        <p>
+            现在，让我们思考更大的图景：如果你固定两个向量 $\vec{v}$ 和 $\vec{w}$，然后允许 $a$ 和 $b$ 取<strong>任何</strong>值，
+            你能到达这个 2D 平面的每一个点吗？
+        </p>
+
+        <div class="definition-card">
+            <div class="definition-title">Span (张成空间)</div>
+            <p>
+                一组向量的 Span 是它们所有可能的线性组合的集合。
+                <br>
+                <small>也就是问："如果我们只有这两个向量作为积木，我们能以此构建出什么？"</small>
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+            <!-- Case 1: Plane -->
+            <div>
+                <h4 style="color: var(--accent-blue)">情况 A: 整个平面 (The Plane)</h4>
                 <p>
-                    对于两个 2D 向量 $\vec{v}$ 和 $\vec{w}$：
+                    通常情况下，如果有两个不重合的向量，你可以通过线性组合到达平面上的<strong>任何位置</strong>。
+                    <br>
+                    这时我们说这两个向量是<strong>线性无关 (Linearly Independent)</strong> 的。
                 </p>
-                <ul style="color: var(--text-secondary);">
-                    <li style="margin-bottom: 0.5rem;"><strong style="color:var(--text-primary)">通常情况：</strong> 它们张成整个
-                        2D 平面（也就是你可以去任何地方）。</li>
-                    <li style="margin-bottom: 0.5rem;"><strong style="color:var(--text-primary)">共线情况：</strong>
-                        如果它们在一条线上，它们被困在一条直线上 (Line)。</li>
-                </ul>
+                <svg width="200" height="120" viewBox="0 0 200 120"
+                    style="background: rgba(74, 158, 255, 0.1); border-radius: 8px; margin-top:1rem;">
+                    <line x1="20" y1="100" x2="80" y2="100" stroke="#f97316" stroke-width="2" /> <!-- i -->
+                    <line x1="20" y1="100" x2="40" y2="40" stroke="#10b981" stroke-width="2" /> <!-- j (angled) -->
+                    <text x="100" y="60" fill="#4a9eff" opacity="0.6" font-size="20" font-weight="bold">Span = 2D</text>
+                </svg>
             </div>
 
-            <!-- Span Visuals -->
-            <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem; min-width: 200px;">
-                <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 8px; text-align: center;">
-                    <svg width="200" height="100" viewBox="0 0 200 100">
-                        <rect x="0" y="0" width="200" height="100" fill="rgba(74, 158, 255, 0.2)" />
-                        <text x="100" y="50" text-anchor="middle" fill="#4a9eff" opacity="0.8" font-size="14">Whole
-                            Plane (2D)</text>
-                        <line x1="100" y1="50" x2="130" y2="20" stroke="#fff" stroke-width="2" />
-                        <line x1="100" y1="50" x2="80" y2="80" stroke="#fff" stroke-width="2" />
-                    </svg>
-                    <p style="font-size: 0.8em; margin: 5px 0 0 0;">独立向量 -> 面</p>
-                </div>
-                <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 8px; text-align: center;">
-                    <svg width="200" height="100" viewBox="0 0 200 100">
-                        <line x1="0" y1="100" x2="200" y2="0" stroke="rgba(249, 115, 22, 0.5)" stroke-width="4" />
-                        <text x="140" y="30" text-anchor="middle" fill="#f97316" font-size="14">Just a Line (1D)</text>
-                        <line x1="100" y1="50" x2="120" y2="40" stroke="#fff" stroke-width="2" />
-                        <line x1="100" y1="50" x2="60" y2="70" stroke="#fff" stroke-width="2" />
-                    </svg>
-                    <p style="font-size: 0.8em; margin: 5px 0 0 0;">共线向量 -> 线</p>
-                </div>
+            <!-- Case 2: Line -->
+            <div>
+                <h4 style="color: var(--accent-red)">情况 B: 一条线 (A Line)</h4>
+                <p>
+                    如果这 $\vec{w}$ 正好落在 $\vec{v}$ 所在的直线上（即 $\vec{w}$ 是 $\vec{v}$ 的缩放），
+                    那么不管你怎么组合，你都永远被困在那条线上！
+                    <br>
+                    这时它们是<strong>线性相关 (Linearly Dependent)</strong> 的。
+                </p>
+                <svg width="200" height="120" viewBox="0 0 200 120"
+                    style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin-top:1rem;">
+                    <!-- Dashed line -->
+                    <line x1="0" y1="110" x2="200" y2="10" stroke="rgba(255,255,255,0.2)" stroke-dasharray="4,4" />
+                    <!-- Vectors on line -->
+                    <line x1="40" y1="90" x2="80" y2="70" stroke="#f97316" stroke-width="2" />
+                    <line x1="40" y1="90" x2="120" y2="50" stroke="#10b981" stroke-width="2" />
+                    <text x="100" y="100" fill="#f97316" font-size="20" font-weight="bold" opacity="0.6">Span =
+                        1D</text>
+                </svg>
             </div>
+        </div>
+    </div>
+
+    <!-- Interactive: Span Check -->
+    <div class="viz-container">
+        <div class="viz-header">
+            <span class="viz-title">交互实验 II：检测线性相关性</span>
+            <span class="viz-badge">Span Visualizer</span>
+        </div>
+        <div class="viz-canvas-wrapper" style="height: 400px;">
+            <canvas id="viz-span-check" style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="viz-controls">
+            <p style="text-align: center;">
+                当前状态: <span id="span-status" style="font-weight: bold; font-size: 1.2rem; color: var(--accent-blue);">平面
+                    (2D)</span>
+            </p>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9em;">
+                尝试把两个向量拖拽到<strong>共线</strong>（重叠或反向）。看看状态会发生什么变化。
+                <br>
+                当它们共线时，它们就无法张成一个面了（降维打击）。
+            </p>
         </div>
     </div>
 </div>
