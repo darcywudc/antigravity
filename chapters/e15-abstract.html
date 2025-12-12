@@ -1,0 +1,212 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">Chapter 15</span>
+    <h1 class="chapter-title">抽象向量空间 <br><small style="font-size: 0.6em; color: var(--text-muted);">Abstract Vector
+            Spaces</small></h1>
+    <p class="chapter-description">
+        到目前为止，我们一直把向量想象成带有坐标的箭头。但线性代数的真正力量在于：
+        <strong>任何满足特定规则的对象都可以是"向量"</strong>。
+        函数是向量，多项式是向量，甚至声音信号也是向量。这是本系列的终极抽象。
+    </p>
+</div>
+
+<!-- ==================== SECTION 1: BEYOND ARROWS ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">15.1 超越箭头</h2>
+
+    <div class="content-block">
+        <h3>15.1.1 向量的本质</h3>
+        <p>
+            回想一下我们对向量做过的操作：
+        </p>
+        <ul>
+            <li><strong>加法</strong>：两个向量相加得到一个新向量</li>
+            <li><strong>数乘</strong>：用标量缩放一个向量</li>
+        </ul>
+        <p>
+            这就是向量的<strong>全部本质</strong>。任何能做这两件事的对象集合，都可以叫做<strong>向量空间</strong>。
+        </p>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2: AXIOMS ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">15.2 向量空间的公理</h2>
+
+    <div class="content-block">
+        <p>
+            正式地，一个向量空间必须满足 8 条公理：
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+            <div class="definition-card">
+                <div class="definition-title">加法公理</div>
+                <ol style="font-size: 0.9em; line-height: 1.8;">
+                    <li>$\vec{u} + \vec{v} = \vec{v} + \vec{u}$（交换律）</li>
+                    <li>$(\vec{u} + \vec{v}) + \vec{w} = \vec{u} + (\vec{v} + \vec{w})$（结合律）</li>
+                    <li>存在零向量 $\vec{0}$</li>
+                    <li>每个向量有逆元 $-\vec{v}$</li>
+                </ol>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">数乘公理</div>
+                <ol style="font-size: 0.9em; line-height: 1.8;">
+                    <li>$c(d\vec{v}) = (cd)\vec{v}$</li>
+                    <li>$1 \cdot \vec{v} = \vec{v}$</li>
+                    <li>$c(\vec{u} + \vec{v}) = c\vec{u} + c\vec{v}$</li>
+                    <li>$(c + d)\vec{v} = c\vec{v} + d\vec{v}$</li>
+                </ol>
+            </div>
+        </div>
+
+        <p>
+            这些规则看起来"显然"，但它们的力量在于：<strong>任何满足这些规则的系统，所有线性代数的理论都自动适用！</strong>
+        </p>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3: EXAMPLES ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">15.3 令人惊奇的例子</h2>
+
+    <div class="content-block">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div class="definition-card" style="border-left-color: var(--accent-blue);">
+                <div class="definition-title">函数空间</div>
+                <p>
+                    所有从 $\mathbb{R}$ 到 $\mathbb{R}$ 的函数构成向量空间。
+                </p>
+                <ul style="font-size: 0.9em;">
+                    <li>加法：$(f + g)(x) = f(x) + g(x)$</li>
+                    <li>数乘：$(cf)(x) = c \cdot f(x)$</li>
+                </ul>
+            </div>
+
+            <div class="definition-card" style="border-left-color: var(--accent-green);">
+                <div class="definition-title">多项式空间</div>
+                <p>
+                    所有次数 ≤ n 的多项式构成向量空间 $P_n$。
+                </p>
+                <p style="font-size: 0.9em;">
+                    基：$\{1, x, x^2, \ldots, x^n\}$<br>
+                    维度：$n + 1$
+                </p>
+            </div>
+
+            <div class="definition-card" style="border-left-color: var(--accent-orange);">
+                <div class="definition-title">矩阵空间</div>
+                <p>
+                    所有 m×n 矩阵构成向量空间。
+                </p>
+                <p style="font-size: 0.9em;">
+                    维度：$m \times n$
+                </p>
+            </div>
+
+            <div class="definition-card" style="border-left-color: var(--accent-purple);">
+                <div class="definition-title">信号空间</div>
+                <p>
+                    音频信号可以看作函数向量。
+                    傅里叶变换是换基操作！
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4: LINEAR TRANSFORMATIONS ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">15.4 抽象的线性变换</h2>
+
+    <div class="content-block">
+        <p>
+            在抽象向量空间中，线性变换的定义不变：
+        </p>
+        <div class="math-block">
+            $$ T(\vec{u} + \vec{v}) = T(\vec{u}) + T(\vec{v}) \quad,\quad T(c\vec{v}) = cT(\vec{v}) $$
+        </div>
+
+        <div class="example-card">
+            <p><strong>例子：微分算子</strong></p>
+            <p>
+                $D: P_n \to P_{n-1}$，定义为 $D(p) = p'$（求导）。
+            </p>
+            <p>
+                这是线性的！$(f + g)' = f' + g'$ 且 $(cf)' = cf'$。
+            </p>
+            <p style="margin-top: 1rem;">
+                微分可以表示成矩阵！如果基是 $\{1, x, x^2, x^3\}$：
+            </p>
+            <div class="math-block">
+                $$ D = \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 3 \\ 0 & 0 & 0 & 0 \end{bmatrix} $$
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 5: THE BIG PICTURE ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">15.5 大图景</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">线性代数的普适性</div>
+            <p>
+                不论向量是箭头、函数、还是多项式——只要满足向量空间公理，
+                我们学过的<strong>所有概念</strong>都适用：
+            </p>
+            <ul style="margin-top: 1rem;">
+                <li>基与维度</li>
+                <li>线性变换与矩阵</li>
+                <li>行列式与逆</li>
+                <li>特征值与特征向量</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                这就是抽象的力量：一套理论，无限应用。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 6: SUMMARY ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">本章总结 & 系列回顾</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
+                <li><strong>向量空间</strong>：满足 8 条公理的任何对象集合。</li>
+                <li>函数、多项式、矩阵、信号都可以是向量。</li>
+                <li>线性变换（如微分）可以表示为矩阵。</li>
+                <li>所有线性代数概念在抽象空间中普适。</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="content-block" style="margin-top: 3rem;">
+        <h3>"线性代数的本质"系列回顾</h3>
+
+        <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 12px; margin-top: 1rem;">
+            <p>
+                从第一章的"向量是什么"开始，我们走过了一段漫长的旅程：
+            </p>
+            <ol style="line-height: 2; margin-top: 1rem;">
+                <li><strong>向量</strong>：既是箭头，也是数字列表</li>
+                <li><strong>线性组合</strong>：构建空间的积木</li>
+                <li><strong>线性变换</strong>：用矩阵扭曲空间</li>
+                <li><strong>矩阵乘法</strong>：变换的复合</li>
+                <li><strong>行列式</strong>：面积/体积的缩放因子</li>
+                <li><strong>逆矩阵</strong>：撤销变换</li>
+                <li><strong>点积与叉积</strong>：投影与垂直</li>
+                <li><strong>基变换</strong>：不同视角的翻译</li>
+                <li><strong>特征值</strong>：变换的不变方向</li>
+                <li><strong>抽象空间</strong>：向量概念的无限延伸</li>
+            </ol>
+
+            <p style="margin-top: 2rem; font-size: 1.1em; text-align: center;">
+                🎉 <strong>恭喜你！你已经掌握了线性代数的"本质"。</strong> 🎉
+            </p>
+        </div>
+    </div>
+</div>

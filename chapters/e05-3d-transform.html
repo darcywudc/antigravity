@@ -1,0 +1,232 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">Chapter 5</span>
+    <h1 class="chapter-title">三维线性变换 <br><small style="font-size: 0.6em; color: var(--text-muted);">Three-Dimensional
+            Linear Transformations</small></h1>
+    <p class="chapter-description">
+        前几章我们在 2D 平面上建立了直觉。现在，让我们把视野扩展到三维空间。
+        好消息是：<strong>所有的核心思想完全一样</strong>——只是多了一个维度。
+        坏消息是：我们的画布是 2D 的，所以需要一些想象力。
+    </p>
+</div>
+
+<!-- ==================== SECTION 1: 3D BASICS ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">5.1 回顾：从 2D 到 3D</h2>
+
+    <div class="content-block">
+        <h3>5.1.1 三个基向量</h3>
+        <p>
+            在 3D 空间中，我们有三个标准基向量：
+        </p>
+        <div class="math-block">
+            $$
+            \hat{i} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}, \quad
+            \hat{j} = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}, \quad
+            \hat{k} = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+            $$
+        </div>
+        <p>
+            任何 3D 向量都可以写成这三个基向量的线性组合：
+        </p>
+        <div class="math-block">
+            $$ \vec{v} = x\hat{i} + y\hat{j} + z\hat{k} = \begin{bmatrix} x \\ y \\ z \end{bmatrix} $$
+        </div>
+    </div>
+
+    <div class="content-block">
+        <h3>5.1.2 3×3 矩阵</h3>
+        <p>
+            与 2D 类似，3D 线性变换由一个 <strong>3×3 矩阵</strong>完全描述：
+        </p>
+        <div class="math-block">
+            $$
+            A = \begin{bmatrix}
+            | & | & | \\
+            \hat{i}' & \hat{j}' & \hat{k}' \\
+            | & | & |
+            \end{bmatrix}
+            $$
+        </div>
+        <p>
+            矩阵的三列分别是 $\hat{i}$、$\hat{j}$、$\hat{k}$ 变换后的位置。
+        </p>
+
+        <div class="theorem-card">
+            <div class="theorem-title">核心规则不变</div>
+            <p>
+                要计算 $A\vec{v}$，只需用 $\vec{v}$ 的分量对矩阵的三列做线性组合：
+                $$ A\vec{v} = x \cdot (\text{第一列}) + y \cdot (\text{第二列}) + z \cdot (\text{第三列}) $$
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2: EXAMPLES ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">5.2 常见 3D 变换</h2>
+
+    <div class="content-block">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+
+            <!-- Rotation around Z -->
+            <div class="definition-card">
+                <div class="definition-title">🔄 绕 z 轴旋转</div>
+                <p>绕 z 轴逆时针旋转 $\theta$ 角：</p>
+                <div style="text-align: center; margin: 1rem 0;">
+                    $R_z = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1
+                    \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    $\hat{k}$ 保持不动，$\hat{i}$ 和 $\hat{j}$ 在 xy 平面内旋转——本质上是 2D 旋转。
+                </p>
+            </div>
+
+            <!-- Rotation around X -->
+            <div class="definition-card">
+                <div class="definition-title">🔄 绕 x 轴旋转</div>
+                <div style="text-align: center; margin: 1rem 0;">
+                    $R_x = \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta
+                    \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    $\hat{i}$ 保持不动，$\hat{j}$ 和 $\hat{k}$ 在 yz 平面内旋转。
+                </p>
+            </div>
+
+            <!-- Scaling -->
+            <div class="definition-card">
+                <div class="definition-title">↔️ 3D 缩放</div>
+                <div style="text-align: center; margin: 1rem 0;">
+                    $S = \begin{bmatrix} s_x & 0 & 0 \\ 0 & s_y & 0 \\ 0 & 0 & s_z \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    沿三个轴分别缩放。对角矩阵 = 独立缩放各轴。
+                </p>
+            </div>
+
+            <!-- Projection -->
+            <div class="definition-card">
+                <div class="definition-title">📽️ 投影到 xy 平面</div>
+                <div style="text-align: center; margin: 1rem 0;">
+                    $P_{xy} = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    $\hat{k}$ 变成 $\vec{0}$——3D 物体被"压扁"到 xy 平面。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3: NUMERICAL EXAMPLE ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">5.3 数值例子</h2>
+
+    <div class="content-block">
+        <div class="example-card">
+            <p><strong>问题：</strong> 计算下列 3D 变换</p>
+            <div class="math-block">
+                $$
+                A\vec{v} = \begin{bmatrix} 1 & 0 & 2 \\ 0 & 1 & 0 \\ -1 & 0 & 1 \end{bmatrix}
+                \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}
+                $$
+            </div>
+
+            <p><strong>解法：</strong></p>
+            <div class="math-block">
+                $$
+                = 1 \cdot \begin{bmatrix} 1 \\ 0 \\ -1 \end{bmatrix}
+                + 2 \cdot \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}
+                + 3 \cdot \begin{bmatrix} 2 \\ 0 \\ 1 \end{bmatrix}
+                $$
+            </div>
+            <div class="math-block">
+                $$
+                = \begin{bmatrix} 1 \\ 0 \\ -1 \end{bmatrix}
+                + \begin{bmatrix} 0 \\ 2 \\ 0 \end{bmatrix}
+                + \begin{bmatrix} 6 \\ 0 \\ 3 \end{bmatrix}
+                = \begin{bmatrix} 7 \\ 2 \\ 2 \end{bmatrix}
+                $$
+            </div>
+
+            <p><strong>答案：</strong> $\vec{v}$ 被变换到 $\begin{bmatrix} 7 \\ 2 \\ 2 \end{bmatrix}$。</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4: VISUALIZATION NOTE ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">5.4 可视化的挑战</h2>
+
+    <div class="content-block">
+        <div class="definition-card" style="border-left-color: var(--accent-orange);">
+            <div class="definition-title">⚠️ 关于 3D 可视化</div>
+            <p>
+                由于我们的屏幕是 2D 的，完整展示 3D 变换需要：
+            </p>
+            <ul>
+                <li>透视投影（远小近大）</li>
+                <li>可旋转的 3D 视角</li>
+                <li>深度线索（阴影、遮挡）</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                建议观看 <strong>3Blue1Brown</strong> 的原视频获得最佳 3D 动画体验。
+                本课程的核心思想（矩阵列 = 变换后的基向量）在任何维度都成立。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 5: APPLICATIONS ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">5.5 应用</h2>
+
+    <div class="content-block">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div class="definition-card">
+                <div class="definition-title">🎮 3D 游戏渲染</div>
+                <p>
+                    模型变换、视角变换、投影变换——3D 渲染管线的每一步都是矩阵乘法。
+                    现代 GPU 每秒执行数十亿次这样的运算。
+                </p>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">✈️ 飞行模拟</div>
+                <p>
+                    飞机的姿态（俯仰、偏航、滚转）用三个旋转矩阵的乘积表示。
+                    这就是所谓的"欧拉角"。
+                </p>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">🤖 机器人视觉</div>
+                <p>
+                    相机的位姿（位置+朝向）用 4×4 齐次变换矩阵描述。
+                    这是 3D 变换的自然扩展。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 6: SUMMARY ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">本章总结</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
+                <li>3D 有三个基向量：$\hat{i}$, $\hat{j}$, $\hat{k}$。</li>
+                <li>3D 线性变换用 <strong>3×3 矩阵</strong>描述，三列分别是变换后的基向量。</li>
+                <li>计算方法与 2D 相同：用输入向量的分量对矩阵列做线性组合。</li>
+                <li>常见变换：绕轴旋转、缩放、投影。</li>
+            </ol>
+        </div>
+
+        <p style="margin-top: 2rem;">
+            下一章，我们将探索一个神奇的数字——<strong>行列式</strong>，它揭示了变换对"面积/体积"的影响。
+        </p>
+    </div>
+</div>

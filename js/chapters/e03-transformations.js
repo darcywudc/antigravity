@@ -2,138 +2,114 @@
  * Chapter 3: Linear Transformations
  */
 window.chapterScripts['e03-transformations'] = function () {
-    console.log('Initializing Chapter 3 (Essence)');
+    console.log('Initializing Chapter 3 (Linear Transformations)');
 
-    const canvas = new CanvasSpace('viz-matrix-transform', {
-        interactive: true,
-        bg: '#0d0d12'
-    });
-
-    // Current transformation matrix values
-    let a = 1, b = 0, c = 0, d = 1;
-
-    // Inputs
-    const inputA = document.getElementById('val-a');
-    const inputB = document.getElementById('val-b');
-    const inputC = document.getElementById('val-c');
-    const inputD = document.getElementById('val-d');
-
-    function updateMatrix(newA, newB, newC, newD, updateInputs = false) {
-        a = Number(newA); b = Number(newB);
-        c = Number(newC); d = Number(newD);
-
-        if (updateInputs) {
-            inputA.value = a; inputB.value = b;
-            inputC.value = c; inputD.value = d;
-        }
-        canvas.draw();
+    const canvasEl = document.getElementById('viz-matrix-transform');
+    if (!canvasEl) {
+        console.warn('Canvas viz-matrix-transform not found');
+        return;
     }
 
-    [inputA, inputB, inputC, inputD].forEach(input => {
-        input.addEventListener('input', () => {
-            updateMatrix(inputA.value, inputB.value, inputC.value, inputD.value);
-        });
-    });
+    const canvas = new CanvasSpace('viz-matrix-transform', { interactive: true });
 
-    // Preset Buttons
-    document.getElementById('btn-shear').addEventListener('click', () => {
-        // Shear i-hat stays, j-hat moves to (1,1)
-        animateMatrix(1, 1, 0, 1);
-    });
+    // Current transformation matrix
+    let matrix = { a: 1, b: 0, c: 0, d: 1 };
 
-    document.getElementById('btn-rotate').addEventListener('click', () => {
-        // Rotate 45 degrees
-        // i -> (cos45, sin45), j -> (-sin45, cos45)
-        // 0.707
-        animateMatrix(0.707, -0.707, 0.707, 0.707);
-    });
+    // Input elements
+    const valA = document.getElementById('val-a');
+    const valB = document.getElementById('val-b');
+    const valC = document.getElementById('val-c');
+    const valD = document.getElementById('val-d');
 
-    document.getElementById('btn-scale').addEventListener('click', () => {
-        // Simple scaling
-        animateMatrix(2, 0, 0, 2);
-    });
-
-    // Animation helper
-    function animateMatrix(targetA, targetB, targetC, targetD) {
-        // Simple linear interpolation
-        const steps = 30;
-        const startA = a, startB = b, startC = c, startD = d;
-        let frame = 0;
-
-        function loop() {
-            frame++;
-            const t = frame / steps;
-            // Ease out
-            const ease = t * (2 - t);
-
-            updateMatrix(
-                startA + (targetA - startA) * ease,
-                startB + (targetB - startB) * ease,
-                startC + (targetC - startC) * ease,
-                startD + (targetD - startD) * ease,
-                true // update inputs during animation
-            );
-
-            if (frame < steps) requestAnimationFrame(loop);
-        }
-        loop();
+    // Update matrix from inputs
+    function readMatrix() {
+        matrix.a = parseFloat(valA?.value) || 0;
+        matrix.b = parseFloat(valB?.value) || 0;
+        matrix.c = parseFloat(valC?.value) || 0;
+        matrix.d = parseFloat(valD?.value) || 0;
     }
 
+    // Set matrix to inputs
+    function writeMatrix() {
+        if (valA) valA.value = matrix.a.toFixed(1);
+        if (valB) valB.value = matrix.b.toFixed(1);
+        if (valC) valC.value = matrix.c.toFixed(1);
+        if (valD) valD.value = matrix.d.toFixed(1);
+    }
 
+    // Draw transformed grid
     canvas.draw = function () {
         this.clear();
         const ctx = this.ctx;
-
-        // Custom Grid Transformation Logic
-        // Transform function
-        const transform = (x, y) => {
-            // Apply matrix [a b; c d]
-            const tx = a * x + b * y;
-            const ty = c * x + d * y;
-            return this.toCanvas(tx, ty);
-        };
-
-        // Draw Transformed Grid
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = 'rgba(74, 158, 255, 0.2)';
-
-        // Vertical lines (initially vertical, now transformed)
-        // They represent x = constant lines. Moving along y changes the point.
-        // We iterate x from -10 to 10
-        for (let i = -15; i <= 15; i++) {
-            ctx.beginPath();
-            // Line corresponding to x = i. y goes from min to max.
-            const start = transform(i, -15);
-            const end = transform(i, 15);
-            ctx.moveTo(start.x, start.y);
-            ctx.lineTo(end.x, end.y);
-            ctx.stroke();
-        }
-
-        // Horizontal lines (initially horizontal)
-        for (let j = -15; j <= 15; j++) {
-            ctx.beginPath();
-            const start = transform(-15, j);
-            const end = transform(15, j);
-            ctx.moveTo(start.x, start.y);
-            ctx.lineTo(end.x, end.y);
-            ctx.stroke();
-        }
-
-        // Draw Basis Vectors
         const origin = this.toCanvas(0, 0);
 
-        // Transformed i-hat: (1, 0) -> (a, c)
-        const i_hat_trans = transform(1, 0);
-        this.drawArrow(origin, i_hat_trans, '#f97316', 'i', 3);
+        // Apply transformation to basis vectors
+        const i_hat = { x: matrix.a, y: matrix.c };
+        const j_hat = { x: matrix.b, y: matrix.d };
 
-        // Transformed j-hat: (0, 1) -> (b, d)
-        const j_hat_trans = transform(0, 1); // logic error here? matrix is [a b; c d]
-        // [a b] * [0] = [b]
-        // [c d]   [1]   [d]
-        // Yes correct.
-        this.drawArrow(origin, j_hat_trans, '#10b981', 'j', 3);
+        // Draw transformed grid
+        ctx.save();
+        ctx.strokeStyle = 'rgba(74, 158, 255, 0.15)';
+        ctx.lineWidth = 1;
+
+        const range = 10;
+        for (let k = -range; k <= range; k++) {
+            // Lines parallel to j
+            const s1 = this.toCanvas(k * i_hat.x - range * j_hat.x, k * i_hat.y - range * j_hat.y);
+            const e1 = this.toCanvas(k * i_hat.x + range * j_hat.x, k * i_hat.y + range * j_hat.y);
+            ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(e1.x, e1.y); ctx.stroke();
+
+            // Lines parallel to i
+            const s2 = this.toCanvas(-range * i_hat.x + k * j_hat.x, -range * i_hat.y + k * j_hat.y);
+            const e2 = this.toCanvas(range * i_hat.x + k * j_hat.x, range * i_hat.y + k * j_hat.y);
+            ctx.beginPath(); ctx.moveTo(s2.x, s2.y); ctx.lineTo(e2.x, e2.y); ctx.stroke();
+        }
+        ctx.restore();
+
+        // Draw transformed basis vectors
+        const iEnd = this.toCanvas(i_hat.x, i_hat.y);
+        const jEnd = this.toCanvas(j_hat.x, j_hat.y);
+
+        this.drawArrow(origin, iEnd, '#f97316', 'î\'');
+        this.drawArrow(origin, jEnd, '#10b981', 'ĵ\'');
     };
 
+    // Input listeners
+    [valA, valB, valC, valD].forEach(el => {
+        if (el) {
+            el.addEventListener('input', () => {
+                readMatrix();
+                canvas.draw();
+            });
+        }
+    });
+
+    // Preset buttons
+    document.getElementById('btn-shear')?.addEventListener('click', () => {
+        matrix = { a: 1, b: 1, c: 0, d: 1 };
+        writeMatrix();
+        canvas.draw();
+    });
+
+    document.getElementById('btn-rotate')?.addEventListener('click', () => {
+        const angle = Math.PI / 4;
+        matrix = {
+            a: Math.cos(angle),
+            b: -Math.sin(angle),
+            c: Math.sin(angle),
+            d: Math.cos(angle)
+        };
+        writeMatrix();
+        canvas.draw();
+    });
+
+    document.getElementById('btn-scale')?.addEventListener('click', () => {
+        matrix = { a: 2, b: 0, c: 0, d: 2 };
+        writeMatrix();
+        canvas.draw();
+    });
+
+    // Initial draw
+    writeMatrix();
     canvas.draw();
 };

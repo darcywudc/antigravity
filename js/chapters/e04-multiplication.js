@@ -1,160 +1,116 @@
 /**
- * Chapter 4: Matrix Multiplication
- * Visualizing Composition
+ * Chapter 4: Matrix Multiplication as Composition
  */
 window.chapterScripts['e04-multiplication'] = function () {
-    console.log('Initializing Chapter 4 (Essence)');
+    console.log('Initializing Chapter 4 (Matrix Multiplication)');
 
-    const canvas = new CanvasSpace('viz-composition', {
-        interactive: false, // Animation driven
-        bg: '#0d0d12'
-    });
-
-    // We will simulate 2 matrices
-    // M1: Rotate 90 deg (Counter-clockwise) = [0 -1; 1 0]
-    // M2: Shear right = [1 1; 0 1]
-
-    // Note in text I used Rotate then Shear.
-    // Let's stick to the button labels.
-    // "Rotate then Shear" means Shear(Rotate(v)) => Matrix is M_shear * M_rotate
-
-    // Matrix definitions
-    const M_rotate = new Matrix(2, 2, [[0, -1], [1, 0]]); // 90 deg
-    const M_shear = new Matrix(2, 2, [[1, 1], [0, 1]]);   // Shear x
-
-    // We need to animate the grid state
-    // State is simply the current transformation matrix applied to the grid
-    let currentMatrix = Matrix.identity(2);
-    let animationQueue = [];
-    let isAnimating = false;
-
-    // Helper to linear interpolate matrices
-    function lerpMatrix(m1, m2, t) {
-        const res = new Matrix(2, 2);
-        for (let r = 0; r < 2; r++) {
-            for (let c = 0; c < 2; c++) {
-                const val = m1.get(r, c) + (m2.get(r, c) - m1.get(r, c)) * t;
-                res.set(r, c, val);
-            }
-        }
-        return res;
+    const canvasEl = document.getElementById('viz-composition');
+    if (!canvasEl) {
+        console.warn('Canvas viz-composition not found');
+        return;
     }
 
-    function processQueue() {
-        if (isAnimating || animationQueue.length === 0) return;
+    const canvas = new CanvasSpace('viz-composition', { interactive: true });
 
-        isAnimating = true;
-        const targetConfig = animationQueue.shift();
-        const startMatrix = currentMatrix.clone();
-        const targetMatrix = targetConfig.matrix;
+    // Two preset transformations
+    // M1 = Rotation 45°, M2 = Shear
+    const M1 = {
+        a: Math.cos(Math.PI / 4), b: -Math.sin(Math.PI / 4),
+        c: Math.sin(Math.PI / 4), d: Math.cos(Math.PI / 4)
+    };
+    const M2 = { a: 1, b: 0.5, c: 0, d: 1 };
 
-        let frame = 0;
-        const totalFrames = 60;
-
-        function loop() {
-            frame++;
-            const t = frame / totalFrames;
-            const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // Ease in out
-
-            currentMatrix = lerpMatrix(startMatrix, targetMatrix, ease);
-            canvas.draw();
-
-            if (frame < totalFrames) {
-                requestAnimationFrame(loop);
-            } else {
-                isAnimating = false;
-                processQueue(); // Next step
-            }
-        }
-        loop();
+    // Composite M2 * M1
+    function multiplyMatrices(A, B) {
+        return {
+            a: A.a * B.a + A.b * B.c,
+            b: A.a * B.b + A.b * B.d,
+            c: A.c * B.a + A.d * B.c,
+            d: A.c * B.b + A.d * B.d
+        };
     }
 
-    // Button: Step by Step
-    // 1. Rotate
-    // 2. Then Shear
-    // Result = M_shear * M_rotate
-    document.getElementById('btn-step-by-step').addEventListener('click', () => {
-        // Reset first
-        currentMatrix = Matrix.identity(2);
-        animationQueue = [];
+    const M_composite = multiplyMatrices(M2, M1);
 
-        // Step 1: Rotate input IDENTITY
-        // Target is M_rotate
-        animationQueue.push({ matrix: M_rotate });
+    // Animation state
+    let animState = 'identity'; // identity, after_m1, after_m2, composite
+    let currentMatrix = { a: 1, b: 0, c: 0, d: 1 };
 
-        // Step 2: Apply Shear TO the current state
-        // If current state is M_rot, new state is M_shear * M_rot
-        const finalMat = M_shear.multiply(M_rotate); // Order: Shear(Rotate)
-        animationQueue.push({ matrix: finalMat });
-
-        processQueue();
-    });
-
-    // Button: Composite
-    // Go straight to M_shear * M_rotate
-    document.getElementById('btn-composite').addEventListener('click', () => {
-        currentMatrix = Matrix.identity(2);
-        animationQueue = [];
-
-        const finalMat = M_shear.multiply(M_rotate);
-        animationQueue.push({ matrix: finalMat });
-
-        processQueue();
-    });
-
-    document.getElementById('btn-reset-comp').addEventListener('click', () => {
-        animationQueue = [];
-        animationQueue.push({ matrix: Matrix.identity(2) });
-        processQueue();
-    });
-
+    // Draw function
     canvas.draw = function () {
         this.clear();
         const ctx = this.ctx;
-
-        // Use the currentMatrix to store 'a,b,c,d'
-        const a = currentMatrix.get(0, 0);
-        const b = currentMatrix.get(0, 1);
-        const c = currentMatrix.get(1, 0);
-        const d = currentMatrix.get(1, 1);
-
-        const transform = (x, y) => {
-            const tx = a * x + b * y;
-            const ty = c * x + d * y;
-            return this.toCanvas(tx, ty);
-        };
-
-        // Draw Grid
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-
-        for (let i = -10; i <= 10; i++) {
-            ctx.beginPath();
-            const start = transform(i, -10);
-            const end = transform(i, 10);
-            ctx.moveTo(start.x, start.y);
-            ctx.lineTo(end.x, end.y);
-            ctx.stroke();
-
-            ctx.beginPath();
-            const startH = transform(-10, i);
-            const endH = transform(10, i);
-            ctx.moveTo(startH.x, startH.y);
-            ctx.lineTo(endH.x, endH.y);
-            ctx.stroke();
-        }
-
-        // Draw Basis
         const origin = this.toCanvas(0, 0);
-        const i_hat = transform(1, 0);
-        const j_hat = transform(0, 1);
 
-        this.drawArrow(origin, i_hat, '#f97316', 'i', 3);
-        this.drawArrow(origin, j_hat, '#10b981', 'j', 3);
+        const i_hat = { x: currentMatrix.a, y: currentMatrix.c };
+        const j_hat = { x: currentMatrix.b, y: currentMatrix.d };
 
-        // Display Matrix Values on screen?
-        // Maybe later.
+        // Draw grid
+        ctx.save();
+        ctx.strokeStyle = 'rgba(74, 158, 255, 0.15)';
+        ctx.lineWidth = 1;
+
+        const range = 10;
+        for (let k = -range; k <= range; k++) {
+            const s1 = this.toCanvas(k * i_hat.x - range * j_hat.x, k * i_hat.y - range * j_hat.y);
+            const e1 = this.toCanvas(k * i_hat.x + range * j_hat.x, k * i_hat.y + range * j_hat.y);
+            ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(e1.x, e1.y); ctx.stroke();
+
+            const s2 = this.toCanvas(-range * i_hat.x + k * j_hat.x, -range * i_hat.y + k * j_hat.y);
+            const e2 = this.toCanvas(range * i_hat.x + k * j_hat.x, range * i_hat.y + k * j_hat.y);
+            ctx.beginPath(); ctx.moveTo(s2.x, s2.y); ctx.lineTo(e2.x, e2.y); ctx.stroke();
+        }
+        ctx.restore();
+
+        // Draw basis vectors
+        const iEnd = this.toCanvas(i_hat.x, i_hat.y);
+        const jEnd = this.toCanvas(j_hat.x, j_hat.y);
+        this.drawArrow(origin, iEnd, '#f97316', 'î');
+        this.drawArrow(origin, jEnd, '#10b981', 'ĵ');
+
+        // State label
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px sans-serif';
+        let label = '';
+        if (animState === 'identity') label = '初始状态 (Identity)';
+        else if (animState === 'after_m1') label = '第一步: 旋转 45° (M₁)';
+        else if (animState === 'after_m2') label = '第二步: 剪切 (M₂)';
+        else if (animState === 'composite') label = '一步到位: M₂·M₁';
+        ctx.fillText(label, 20, 30);
     };
 
+    // Buttons
+    document.getElementById('btn-step-by-step')?.addEventListener('click', () => {
+        // Animate step by step
+        animState = 'identity';
+        currentMatrix = { a: 1, b: 0, c: 0, d: 1 };
+        canvas.draw();
+
+        setTimeout(() => {
+            animState = 'after_m1';
+            currentMatrix = M1;
+            canvas.draw();
+        }, 800);
+
+        setTimeout(() => {
+            animState = 'after_m2';
+            currentMatrix = multiplyMatrices(M2, M1);
+            canvas.draw();
+        }, 1600);
+    });
+
+    document.getElementById('btn-composite')?.addEventListener('click', () => {
+        animState = 'composite';
+        currentMatrix = M_composite;
+        canvas.draw();
+    });
+
+    document.getElementById('btn-reset-comp')?.addEventListener('click', () => {
+        animState = 'identity';
+        currentMatrix = { a: 1, b: 0, c: 0, d: 1 };
+        canvas.draw();
+    });
+
+    // Initial draw
     canvas.draw();
 };
