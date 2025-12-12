@@ -4,8 +4,11 @@ FROM nginx:alpine
 # 将当前目录下的所有文件复制到 Nginx 的默认静态文件目录
 COPY . /usr/share/nginx/html
 
-# 暴露 80 端口
-EXPOSE 80
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 启动 Nginx
+# Expose port 8080 (Cloud Run expectation)
+EXPOSE 8080
+
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
