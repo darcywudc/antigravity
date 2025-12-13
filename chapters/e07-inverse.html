@@ -227,6 +227,72 @@
                 注意：如果 ad - bc = 0（行列式为零），则无法求逆！
             </p>
         </div>
+
+        <!-- 新增：练习题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>求下列矩阵的逆矩阵（如果存在）：</strong></p>
+            <ol>
+                <li>$\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$</li>
+                <li>$\begin{bmatrix} 4 & 2 \\ 2 & 1 \end{bmatrix}$</li>
+            </ol>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <ol>
+                        <li>
+                            det = $2 \times 1 - 1 \times 1 = 1 \neq 0$ ✓ 可逆<br>
+                            $A^{-1} = \frac{1}{1}\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix} =
+                            \mathbf{\begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}}$
+                        </li>
+                        <li>
+                            det = $4 \times 1 - 2 \times 2 = 4 - 4 = 0$<br>
+                            <strong>不可逆！</strong>（列向量 (4,2) 和 (2,1) 成比例，空间被压扁了）
+                        </li>
+                    </ol>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：思考题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🤔 想一想</div>
+            <p><strong>如果 A 的逆是 B，那么 B 的逆是什么？</strong></p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p><strong>答案</strong>：A！</p>
+                    <p>如果 $A^{-1} = B$，那么 $B^{-1} = A$</p>
+                    <p style="margin-top: 0.5rem;">
+                        <strong>直觉</strong>：如果 B 是 A 的"撤销键"，那么 A 也是 B 的"撤销键"。
+                        撤销-撤销 = 回到原来 = 再撤销一次!
+                    </p>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：常见误区 -->
+        <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+            <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+            <p><strong>误区</strong>："所有矩阵都有逆矩阵"</p>
+            <p><strong>纠正</strong>：只有<strong>行列式不为零</strong>的方阵才有逆！</p>
+            <p style="margin-top: 0.5rem;">
+                非方阵（行列数不相等）没有"标准"逆矩阵。det = 0 的方阵也没有逆。
+            </p>
+        </div>
+
+        <!-- 新增：趣味知识 -->
+        <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🔐 趣味应用：密码学中的逆矩阵</div>
+            <p>
+                希尔密码（Hill Cipher）使用矩阵加密信息：用一个可逆矩阵"打乱"字母。
+            </p>
+            <p style="margin-top: 0.5rem;">
+                解密时，只需要用逆矩阵"还原"就可以了！如果矩阵不可逆，就没办法解密——这就是为什么密钥必须是可逆矩阵。
+            </p>
+        </div>
     </div>
 </div>
 
