@@ -211,6 +211,46 @@
             一个 60 帧的游戏，意味着每秒要完整计算 60 次整个 3D 场景！
         </p>
     </div>
+
+    <!-- 新增：练习题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">✍️ 动手练习</div>
+        <p><strong>下列 3D 变换对应什么样的 3×3 矩阵？</strong></p>
+        <ol>
+            <li>把所有东西放大 2 倍</li>
+            <li>沿 z 轴（高度）压缩到原来的一半</li>
+        </ol>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <ol>
+                    <li>$\begin{bmatrix} 2 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix}$ — 三个基向量都变成 2 倍长</li>
+                    <li>$\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0.5 \end{bmatrix}$ — î 和 ĵ 不变，k̂ 变成一半</li>
+                </ol>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：常见误区 -->
+    <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+        <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+        <p><strong>误区</strong>："3D 变换比 2D 难很多"</p>
+        <p><strong>纠正</strong>：其实规则完全一样！只是从 2×2 变成 3×3，多了一个基向量 k̂ 而已。</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+            每一列仍然代表一个基向量变换后的位置——这个核心思想不变。
+        </p>
+    </div>
+
+    <!-- 新增：趣味知识 -->
+    <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+        <div class="deep-title">🕹️ 趣味应用：飞行模拟中的欧拉角</div>
+        <p>
+            飞行员描述飞机姿态用三个角度：俯仰（Pitch）、偏航（Yaw）、滚转（Roll）。
+        </p>
+        <p style="margin-top: 0.5rem;">
+            每个角度对应绕一个坐标轴旋转的 3D 矩阵。把三个矩阵相乘，就得到飞机的完整姿态变换！
+        </p>
+    </div>
 </div>
 
 <!-- 总结 -->

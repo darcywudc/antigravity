@@ -141,13 +141,61 @@
         <div class="real-world-item">
             <div class="rw-icon">🎮</div>
             <div class="rw-title">3D 渲染</div>
-            <div class="rw-desc">把 3D 场景投影到 2D 屏幕</div>
         </div>
         <div class="real-world-item">
             <div class="rw-icon">📱</div>
             <div class="rw-title">图像压缩</div>
             <div class="rw-desc">减少存储维度</div>
         </div>
+    </div>
+
+    <!-- 新增：练习题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">✍️ 动手练习</div>
+        <p><strong>判断下列矩阵代表"升维"（嵌入）还是"降维"（投影）：</strong></p>
+        <ol>
+            <li>一个 $3 \times 2$ 矩阵</li>
+            <li>一个 $1 \times 3$ 矩阵</li>
+            <li>一个 $100 \times 10$ 矩阵</li>
+        </ol>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <ol>
+                    <li><strong>升维 (2D → 3D)</strong>：2 列输入，3 行输出。信息保留（嵌入）。</li>
+                    <li><strong>降维 (3D → 1D)</strong>：3 列输入，1 行输出。信息丢失（投影）。</li>
+                    <li><strong>升维 (10D → 100D)</strong>：10 列输入，100 行输出。通常用于特征提取。</li>
+                </ol>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：思考题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">🤔 想一想</div>
+        <p><strong>如果把一个 3D 物体投影到 2D 照片上（降维），还能把它完全还原回 3D 吗？</strong></p>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <p><strong>答案</strong>：不能（通常情况下）。</p>
+                <p>投影过程丢失了"深度"信息。同一个 2D 点可能对应原来 3D 空间中一条线上的无数个点。</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                    💡 这就是为什么只有一张照片很难建模出精确的 3D 模型，通常需要从不同角度拍多张照片！
+                </p>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：趣味知识 -->
+    <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+        <div class="deep-title">🧠 趣味应用：ChatGPT 的"词向量"</div>
+        <p>
+            在大型语言模型中，每个单词都被表示为一个巨大的向量（比如 12288 维！）。
+            为了在屏幕上显示单词之间的关系，我们会用"降维矩阵"把它们投影到 2D 或 3D 空间。
+        </p>
+        <p style="margin-top: 0.5rem;">
+            这就是为什么我们能画出"国王-男人+女人=女王"这样的向量关系图。
+        </p>
     </div>
 </div>
 

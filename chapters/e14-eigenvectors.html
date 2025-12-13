@@ -223,12 +223,65 @@
         <div class="vocab-summary">
             <div class="vocab-title">词汇复习</div>
             <div class="vocab-list">
-                <div class="vocab-item"><span class="vocab-zh">特征向量</span><span class="vocab-en">变换后方向不变</span></div>
-                <div class="vocab-item"><span class="vocab-zh">特征值</span><span class="vocab-en">拉伸/压缩倍数</span></div>
-                <div class="vocab-item"><span class="vocab-zh">特征方程</span><span class="vocab-en">det(A-λI)=0</span>
-                </div>
+                <div class="vocab-item"><span class="vocab-zh">特征向量</span><span class="vocab-en">方向不变的向量</span></div>
+                <div class="vocab-item"><span class="vocab-zh">特征值</span><span class="vocab-en">拉伸倍数</span></div>
+                <div class="vocab-item"><span class="vocab-zh">特征基</span><span class="vocab-en">最好的坐标系</span></div>
                 <div class="vocab-item"><span class="vocab-zh">对角化</span><span class="vocab-en">用特征向量为基</span></div>
             </div>
+        </div>
+
+        <!-- 新增：练习题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>不用计算，凭几何直觉判断下列矩阵的特征向量：</strong></p>
+            <ol>
+                <li>$I = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$（什么都不做）</li>
+                <li>$S = \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix}$（均匀放大 2 倍）</li>
+                <li>$P = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$（投影到 x 轴）</li>
+            </ol>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <ol>
+                        <li><strong>所有非零向量！</strong> 因为 $I\vec{v} = 1\vec{v}$，每个向量方向都不变，特征值是 1。</li>
+                        <li><strong>所有非零向量！</strong> 因为 $S\vec{v} = 2\vec{v}$，每个向量都变成 2 倍长，方向不变，特征值是 2。</li>
+                        <li>
+                            <strong>x 轴上的向量</strong>（方向不变，$\lambda=1$）<br>
+                            <strong>y 轴上的向量</strong>（变成零向量，$\lambda=0$）
+                        </li>
+                    </ol>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：思考题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🤔 想一想</div>
+            <p><strong>旋转 90° 的矩阵有实数特征向量吗？</strong></p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p><strong>答案</strong>：没有（在实数范围内）。</p>
+                    <p>
+                        因为每个非零向量都被旋转了，方向都改变了！<br>
+                        （注：如果在复数范围内，是有特征向量的，但这超出了本课程范围 😉）
+                    </p>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：趣味知识 -->
+        <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🌐 趣味应用：Google 搜索的秘密</div>
+            <p>
+                Google 为什么这么强？最早的核心算 PageRank 本质上就是求一个<strong>巨大矩阵的特征向量</strong>（特征值为 1）。
+            </p>
+            <p style="margin-top: 0.5rem;">
+                它把整个互联网看作一个巨大的图，每个网页是一个节点。
+                计算出的特征向量中，每个分量的大小就代表了对应网页的"重要性"或"排名"。
+            </p>
         </div>
 
         <div class="theorem-card">

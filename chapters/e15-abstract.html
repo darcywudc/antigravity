@@ -187,6 +187,49 @@
     </div>
 </div>
 
+<!-- 新增：练习题 -->
+<div class="section fade-in">
+    <div class="content-block">
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>判断下列集合是否构成向量空间：</strong></p>
+            <ol>
+                <li>所有经过原点的直线（包含原点）</li>
+                <li>所有不经过原点的直线</li>
+                <li>所有形如 $ax^2 + bx$ 的多项式（没有常数项）</li>
+            </ol>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <ol>
+                        <li><strong>是</strong>。任意两条直线叠加还在原点，数乘也还在原点。</li>
+                        <li><strong>不是</strong>！因为它没有<strong>零向量</strong>（不包含原点）。也没法相加（加起来可能就不过那个点了）。</li>
+                        <li><strong>是</strong>。两个这样的多项式相加，还是没有常数项。数乘也一样。</li>
+                    </ol>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：思考题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🤔 想一想</div>
+            <p><strong>$3 \times 3$ 魔方阵（每行每列和相等）构成的集合也是向量空间吗？</strong></p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p><strong>是！</strong></p>
+                    <p>
+                        如果矩阵 A 和 B 都是魔方阵（和为 $S_A, S_B$），那么 $A+B$ 的每行和就是 $S_A+S_B$，仍然相等。
+                        数乘 $cA$ 的和是 $c S_A$，也满足条件。
+                    </p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>
+
 <!-- 总结 & 毕业 -->
 <div class="section fade-in">
     <h2 class="section-title">🎓 恭喜毕业！</h2>

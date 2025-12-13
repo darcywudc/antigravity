@@ -140,6 +140,41 @@
                 </ul>
             </div>
         </div>
+
+        <!-- 新增：练习题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>用克莱默法则解下列方程组：</strong></p>
+            <div class="math-block">
+                $$ \begin{cases} x + y = 3 \\ x - y = 1 \end{cases} $$
+            </div>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>矩阵 $A = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$，$\vec{b} = \begin{bmatrix} 3 \\ 1
+                        \end{bmatrix}$</p>
+                    <ol>
+                        <li>$\det(A) = 1(-1) - 1(1) = -2$</li>
+                        <li>$\det(A_x) = \det\begin{bmatrix} 3 & 1 \\ 1 & -1 \end{bmatrix} = -3 - 1 = -4 \Rightarrow x =
+                            -4/-2 = \mathbf{2}$</li>
+                        <li>$\det(A_y) = \det\begin{bmatrix} 1 & 3 \\ 1 & 1 \end{bmatrix} = 1 - 3 = -2 \Rightarrow y =
+                            -2/-2 = \mathbf{1}$</li>
+                    </ol>
+                    <p style="color: var(--accent-green); font-weight: bold;">验证：2+1=3, 2-1=1 ✅</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：常见误区 -->
+        <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+            <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+            <p><strong>误区</strong>："写程序解方程总是用克莱默法则"</p>
+            <p><strong>纠正</strong>：虽然公式漂亮，但实际编程（特别是大矩阵）时，<strong>高斯消元法</strong>快得多！</p>
+            <p style="margin-top: 0.5rem;">
+                比如解 100个变量的方程组，克莱默法则可能要算几亿年，而高斯消元只要几毫秒。
+            </p>
+        </div>
     </div>
 </div>
 

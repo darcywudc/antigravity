@@ -149,6 +149,47 @@
                 变换矩阵会变成最简单的形式——对角矩阵！
             </p>
         </div>
+
+        <!-- 新增：练习题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>标准基下的点 (2, 3)，在新基 $\vec{b_1}=(1,0), \vec{b_2}=(0,1)$ 下的坐标是多少？</strong></p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p><strong>答案</strong>：还是 (2, 3)！</p>
+                    <p>因为新基就是标准基 ($\vec{b_1}=\hat{i}, \vec{b_2}=\hat{j}$)，所以坐标不需要"翻译"。</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="challenge-box" style="margin-top: 1rem;">
+            <p><strong>进阶：如果新基是 $\vec{b_1}=(2,0), \vec{b_2}=(0,3)$ 呢？</strong></p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p><strong>答案</strong>：(1, 1)</p>
+                    <p>
+                        因为 $1 \times (2,0) + 1 \times (0,3) = (2,3)$。<br>
+                        基向量变长了，坐标数值就变小了（为了覆盖同样的距离）。
+                    </p>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：趣味知识 -->
+        <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🖼️ 趣味应用：JPEG 图片压缩</div>
+            <p>
+                JPEG 压缩的核心（DCT 变换）本质上就是<strong>基变换</strong>！
+            </p>
+            <p style="margin-top: 0.5rem;">
+                它把图片的像素块从"颜色基"转换到"频率基"。在这个新基下，
+                很多高频系数接近 0，可以直接丢弃而不影响视觉效果，从而大大减小文件体积。
+            </p>
+        </div>
     </div>
 </div>
 

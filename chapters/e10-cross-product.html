@@ -226,6 +226,48 @@
             <div class="rw-desc">确定"左边"和"右边"</div>
         </div>
     </div>
+
+    <!-- 新增：练习题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">✍️ 动手练习</div>
+        <p><strong>用右手定则判断下列叉积的方向：</strong></p>
+        <ol>
+            <li>$\hat{i} \times \hat{j} = ?$（x轴叉乘y轴）</li>
+            <li>$\hat{j} \times \hat{i} = ?$（y轴叉乘x轴）</li>
+        </ol>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <ol>
+                    <li>$\hat{i} \times \hat{j} = \mathbf{\hat{k}}$（指向 z 轴正方向，朝上）</li>
+                    <li>$\hat{j} \times \hat{i} = \mathbf{-\hat{k}}$（指向 z 轴负方向，朝下）——顺序反了，结果反向！</li>
+                </ol>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：思考题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">🤔 想一想</div>
+        <p><strong>$\vec{v} \times \vec{v}$ 等于多少？为什么？</strong></p>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <p><strong>答案</strong>：$\vec{0}$（零向量）</p>
+                <p style="margin-top: 0.5rem;">
+                    自己和自己叉乘，平行四边形"退化"成一条线，面积为 0！<br>
+                    另一个理解：没有"垂直于自己"的唯一方向。
+                </p>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：常见误区 -->
+    <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+        <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+        <p><strong>误区</strong>："叉积在所有维度都有"</p>
+        <p><strong>纠正</strong>：叉积只在 <strong>3D</strong> 中有意义！在 2D 中没有"垂直平面"的向量，在 4D+ 中定义更复杂。</p>
+    </div>
 </div>
 
 <!-- 总结 -->
