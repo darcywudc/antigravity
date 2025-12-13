@@ -1,0 +1,480 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 17 章</span>
+    <h1 class="chapter-title">正交性与投影 <br><small style="font-size: 0.6em; color: var(--text-muted);">Orthogonality and
+            Projection</small></h1>
+    <p class="chapter-intro">
+        "垂直"在线性代数中有着特殊的地位。正交向量之间互不干扰，<br>
+        投影则是把信息"压到"特定方向上——这是数据分析和机器学习的基石。
+    </p>
+
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">正交</span><span class="vocab-en">Orthogonal</span></div>
+            <div class="vocab-item"><span class="vocab-zh">投影</span><span class="vocab-en">Projection</span></div>
+            <div class="vocab-item"><span class="vocab-zh">正交矩阵</span><span class="vocab-en">Orthogonal Matrix</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">最小二乘</span><span class="vocab-en">Least Squares</span></div>
+            <div class="vocab-item"><span class="vocab-zh">正交分解</span><span class="vocab-en">Orthogonal
+                    Decomposition</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">⊥ 17.1 正交的含义</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">正交 (Orthogonal) = 垂直</div>
+            <p>两个向量 $\vec{u}$ 和 $\vec{v}$ 正交，当且仅当：</p>
+            <div class="math-block">
+                $$\vec{u} \cdot \vec{v} = 0$$
+            </div>
+            <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                这就是第9章点积的核心结论：点积为0 ⟺ 夹角90°。
+            </p>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 1.5rem;">
+            <div class="deep-title">🎮 类比：独立的游戏控制</div>
+            <p>
+                想象游戏手柄上的两个摇杆：左右推和上下推是<strong>正交</strong>的操作。
+            </p>
+            <ul>
+                <li>推左右不会影响上下位置</li>
+                <li>推上下不会影响左右位置</li>
+            </ul>
+            <p style="margin-top: 0.5rem;">
+                正交向量就像这样：沿一个方向移动，<strong>完全不影响</strong>另一个方向的分量。
+            </p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 1.5rem;">
+            <div class="example-step">
+                <div class="step-number">例1</div>
+                <div class="step-content">
+                    <div class="step-label">标准基向量是正交的</div>
+                    <p>$\hat{i} = (1, 0)$，$\hat{j} = (0, 1)$</p>
+                    <p>$\hat{i} \cdot \hat{j} = 1 \times 0 + 0 \times 1 = 0$ ✓</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">例2</div>
+                <div class="step-content">
+                    <div class="step-label">验证两个向量是否正交</div>
+                    <p>$\vec{u} = (3, 4)$，$\vec{v} = (-4, 3)$</p>
+                    <p>$\vec{u} \cdot \vec{v} = 3(-4) + 4(3) = -12 + 12 = 0$ ✓</p>
+                    <p style="color: var(--accent-green);">它们正交！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📽️ 17.2 向量投影：压扁到一条线上</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">向量投影 (Projection)</div>
+            <p>把向量 $\vec{v}$ "投影"到向量 $\vec{u}$ 的方向上：</p>
+            <div class="math-block">
+                $$\text{proj}_{\vec{u}}(\vec{v}) = \frac{\vec{v} \cdot \vec{u}}{|\vec{u}|^2} \vec{u} = \frac{\vec{v}
+                \cdot \vec{u}}{\vec{u} \cdot \vec{u}} \vec{u}$$
+            </div>
+        </div>
+
+        <div class="aha-box" style="margin-top: 1.5rem;">
+            <div class="aha-title">💡 直觉理解</div>
+            <p>
+                想象阳光从正上方照下来，$\vec{v}$ 是一根棍子，$\vec{u}$ 方向是地面。<br>
+                投影就是棍子在地面上的<strong>影子</strong>！
+            </p>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 1.5rem;">
+            <div class="deep-title">✍️ 具体例子</div>
+            <p>把 $\vec{v} = (3, 4)$ 投影到 $\vec{u} = (1, 0)$（x 轴）上：</p>
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">计算点积</div>
+                        <p>$\vec{v} \cdot \vec{u} = 3 \times 1 + 4 \times 0 = 3$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算 $|\vec{u}|^2$</div>
+                        <p>$|\vec{u}|^2 = 1^2 + 0^2 = 1$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">代入公式</div>
+                        <p>$\text{proj} = \frac{3}{1} \times (1, 0) = (3, 0)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>投影是 $(3, 0)$ —— 正是 $\vec{v}$ 的 x 分量！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 1.5rem;">
+            <div class="theorem-title">投影的几何分解</div>
+            <p>任何向量 $\vec{v}$ 都可以分解为：</p>
+            <div class="math-block">
+                $$\vec{v} = \underbrace{\text{proj}_{\vec{u}}(\vec{v})}_{\text{平行分量}} + \underbrace{(\vec{v} -
+                \text{proj}_{\vec{u}}(\vec{v}))}_{\text{垂直分量}}$$
+            </div>
+            <p style="margin-top: 0.5rem;">这两个分量是正交的！</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🔲 17.3 投影矩阵</h2>
+
+    <div class="content-block">
+        <p>投影可以用一个<strong>矩阵</strong>来表示！这让批量投影变得简单。</p>
+
+        <div class="definition-card">
+            <div class="definition-title">投影到向量 $\vec{u}$ 的投影矩阵</div>
+            <p>设 $\vec{u}$ 是单位向量，投影矩阵为：</p>
+            <div class="math-block">
+                $$P = \vec{u} \vec{u}^T$$
+            </div>
+            <p style="margin-top: 0.5rem;">对于任意向量 $\vec{v}$：$P\vec{v} = \text{proj}_{\vec{u}}(\vec{v})$</p>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 1.5rem;">
+            <div class="deep-title">✍️ 例子：投影到 45° 方向</div>
+            <p>单位向量 $\vec{u} = (\frac{\sqrt{2}}{2}, \frac{\sqrt{2}}{2})$（45° 方向）</p>
+            <div class="math-block">
+                $$P = \vec{u}\vec{u}^T = \begin{bmatrix}\frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2}\end{bmatrix}
+                \begin{bmatrix}\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{bmatrix} = \begin{bmatrix}0.5 & 0.5\\0.5 &
+                0.5\end{bmatrix}$$
+            </div>
+            <p style="margin-top: 1rem;">验证：对 $\vec{v} = (4, 0)$：</p>
+            <div class="math-block">
+                $$P\vec{v} = \begin{bmatrix}0.5 & 0.5\\0.5 & 0.5\end{bmatrix}\begin{bmatrix}4\\0\end{bmatrix} =
+                \begin{bmatrix}2\\2\end{bmatrix}$$
+            </div>
+            <p style="color: var(--accent-green);">结果 $(2, 2)$ 正好在 45° 线上！</p>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 1.5rem;">
+            <div class="theorem-title">投影矩阵的特殊性质</div>
+            <ul style="margin: 0.5rem 0 0 1rem;">
+                <li><strong>幂等性</strong>：$P^2 = P$（投影两次等于投影一次，已经"扁"了）</li>
+                <li><strong>对称性</strong>：$P^T = P$</li>
+                <li><strong>特征值</strong>：只有 0 和 1（投影方向不变，垂直方向被"压没"）</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🔄 17.4 正交矩阵：完美的旋转/反射</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">正交矩阵 (Orthogonal Matrix)</div>
+            <p>一个方阵 $Q$ 是正交矩阵，当且仅当：</p>
+            <div class="math-block">
+                $$Q^T Q = Q Q^T = I$$
+            </div>
+            <p style="margin-top: 0.5rem;">即 $Q^{-1} = Q^T$（转置就是逆！）</p>
+        </div>
+
+        <div class="aha-box" style="margin-top: 1.5rem;">
+            <div class="aha-title">💡 为什么叫"正交"？</div>
+            <p>
+                因为正交矩阵的<strong>列向量两两正交</strong>，且都是单位向量！<br>
+                这样的向量组叫做<span class="term" data-en="Orthonormal Basis">标准正交基</span>。
+            </p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 1.5rem;">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">旋转矩阵是正交矩阵</div>
+                    <div class="math-block">
+                        $R = \begin{bmatrix}\cos\theta & -\sin\theta\\\sin\theta & \cos\theta\end{bmatrix}$
+                    </div>
+                    <p>验证：$R^T R = \begin{bmatrix}\cos\theta & \sin\theta\\-\sin\theta &
+                        \cos\theta\end{bmatrix}\begin{bmatrix}\cos\theta & -\sin\theta\\\sin\theta &
+                        \cos\theta\end{bmatrix} = I$ ✓</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 1.5rem;">
+            <div class="theorem-title">正交矩阵的特性</div>
+            <ul style="margin: 0.5rem 0 0 1rem;">
+                <li><strong>保长度</strong>：$|Q\vec{v}| = |\vec{v}|$（不伸缩）</li>
+                <li><strong>保角度</strong>：向量之间的夹角不变</li>
+                <li><strong>行列式</strong>：$\det(Q) = \pm 1$</li>
+                <li><strong>几何意义</strong>：只做旋转（det=1）或反射+旋转（det=-1）</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 5 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📈 17.5 最小二乘法：无解时的"最佳近似"</h2>
+
+    <div class="content-block">
+        <div class="definition-card" style="border-left-color: var(--accent-purple);">
+            <div class="definition-title" style="color: var(--accent-purple);">问题：方程组无解怎么办？</div>
+            <p>
+                当方程数多于未知数（超定系统），通常<strong>没有精确解</strong>。<br>
+                但我们可以找一个"最接近"的解！
+            </p>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 1.5rem;">
+            <div class="deep-title">🎯 直觉：投影到列空间</div>
+            <p>
+                $A\vec{x} = \vec{b}$ 无解，意味着 $\vec{b}$ 不在 A 的列空间中。<br>
+                <strong>最小二乘解</strong> = 找 $\vec{x}$ 使得 $A\vec{x}$ 尽可能接近 $\vec{b}$。
+            </p>
+            <p style="margin-top: 0.5rem;">
+                几何上：把 $\vec{b}$ <strong>投影</strong>到 A 的列空间，然后解那个问题！
+            </p>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 1.5rem;">
+            <div class="theorem-title">最小二乘解公式</div>
+            <p>最小化 $|A\vec{x} - \vec{b}|^2$ 的解是：</p>
+            <div class="math-block">
+                $$\vec{x} = (A^T A)^{-1} A^T \vec{b}$$
+            </div>
+            <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                这叫<span class="term" data-en="Normal Equation">正规方程</span>。
+            </p>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 1.5rem; border-left: 4px solid var(--accent-blue);">
+            <div class="deep-title">✍️ 例子：线性拟合</div>
+            <p>数据点：$(1, 2)$，$(2, 3)$，$(3, 5)$。想找最佳直线 $y = ax + b$。</p>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">写成矩阵形式</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}1 & 1\\2 & 1\\3 & 1\end{bmatrix}\begin{bmatrix}a\\b\end{bmatrix} =
+                            \begin{bmatrix}2\\3\\5\end{bmatrix}$
+                        </div>
+                        <p>3个方程，2个未知数 → 超定，通常无精确解</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算 $A^T A$ 和 $A^T \vec{b}$</div>
+                        <p>$A^T A = \begin{bmatrix}14 & 6\\6 & 3\end{bmatrix}$</p>
+                        <p>$A^T \vec{b} = \begin{bmatrix}23\\10\end{bmatrix}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">解正规方程</div>
+                        <p>$(A^T A)^{-1} A^T \vec{b} = \begin{bmatrix}1.5\\0.33\end{bmatrix}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>最佳拟合直线：$y = 1.5x + 0.33$</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用正交和投影解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            正交性和投影是信号处理、数据分析、机器学习的核心工具。
+        </p>
+
+        <!-- 问题 1 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎵 问题 1：去除噪音（信号投影）</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：录音信号 $\vec{s} = (3, 5, 4, 6)$ 混入了周期噪音 $\vec{n} = (1, -1, 1, -1)$。</p>
+                <p><strong>问题</strong>：如何去除噪音？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">思路</div>
+                    <div class="step-content">
+                        <p>计算信号在噪音方向上的投影，然后<strong>减掉</strong>它！</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">计算</div>
+                    <div class="step-content">
+                        <p>$\text{proj}_{\vec{n}}(\vec{s}) = \frac{3-5+4-6}{1+1+1+1}(1,-1,1,-1) =
+                            \frac{-4}{4}(1,-1,1,-1) = (-1, 1, -1, 1)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>去噪后：$\vec{s} - \text{proj} = (4, 4, 5, 5)$</p>
+                        <p>噪音的交替模式被去除了！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 2 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">📊 问题 2：预测房价（线性回归）</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：用面积预测房价。数据：</p>
+                <ul>
+                    <li>50㎡ → 200 万</li>
+                    <li>80㎡ → 300 万</li>
+                    <li>100㎡ → 400 万</li>
+                    <li>120㎡ → 450 万</li>
+                </ul>
+                <p><strong>问题</strong>：找最佳线性模型 $\text{价格} = a \times \text{面积} + b$</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">方法</div>
+                    <div class="step-content">
+                        <p>使用最小二乘法！这是机器学习中线性回归的数学基础。</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案（略去计算）</div>
+                        <p>最佳模型约为：$\text{价格} ≈ 3.6 \times \text{面积} + 27$</p>
+                        <p>预测 90㎡ 房价：$3.6 \times 90 + 27 = 351$ 万</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🎮 问题 3：相机视图不变性</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：3D 游戏中，相机绕原点旋转。为什么物体的"形状"看起来不变？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>因为旋转是<strong>正交变换</strong>！</p>
+                        <p>正交矩阵保持长度和角度不变，所以物体形状不会扭曲。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 练习 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">✍️ 练习与思考</h2>
+
+    <div class="content-block">
+        <div class="challenge-box">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>把 $\vec{v} = (5, 3)$ 投影到 $\vec{u} = (1, 1)$ 方向上</strong></p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>$\text{proj} = \frac{5+3}{1+1}(1, 1) = \frac{8}{2}(1, 1) = (4, 4)$</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="challenge-box" style="margin-top: 1.5rem;">
+            <div class="challenge-title">🤔 想一想</div>
+            <p><strong>反射矩阵（关于某条线翻转）是正交矩阵吗？</strong></p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p><strong>是的！</strong></p>
+                    <p>反射保持长度，保持角度（只是方向反了），$\det = -1$。</p>
+                    <p>例如关于 x 轴反射：$\begin{bmatrix}1 & 0\\0 & -1\end{bmatrix}$</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>
+
+<!-- 总结 -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="vocab-summary">
+            <div class="vocab-title">词汇复习</div>
+            <div class="vocab-list">
+                <div class="vocab-item"><span class="vocab-zh">正交</span><span class="vocab-en">点积为0，垂直</span></div>
+                <div class="vocab-item"><span class="vocab-zh">投影</span><span class="vocab-en">压到某个方向</span></div>
+                <div class="vocab-item"><span class="vocab-zh">正交矩阵</span><span class="vocab-en">保长度的变换</span></div>
+                <div class="vocab-item"><span class="vocab-zh">最小二乘</span><span class="vocab-en">无解时的最佳近似</span></div>
+            </div>
+        </div>
+
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Orthogonal">正交</span>向量点积为0，彼此"独立"</li>
+                <li><strong>投影</strong>把向量分解为平行和垂直两部分</li>
+                <li><span class="term" data-en="Orthogonal Matrix">正交矩阵</span>保持长度和角度（旋转/反射）</li>
+                <li><span class="term" data-en="Least Squares">最小二乘法</span>是"无解时找最近解"的方法</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 1.5rem;">
+            <div class="connection-title">概念联系</div>
+            <p>
+                Ch9 点积 → <strong>正交</strong> → 投影公式<br>
+                Ch7 逆矩阵 → <strong>正交矩阵</strong>（转置=逆）<br>
+                正规方程 → Ch14 特征值（$A^T A$ 的性质）
+            </p>
+        </div>
+    </div>
+</div>

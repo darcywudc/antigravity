@@ -1,0 +1,459 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 16 章</span>
+    <h1 class="chapter-title">线性方程组的求解 <br><small style="font-size: 0.6em; color: var(--text-muted);">Solving Linear
+            Systems</small></h1>
+    <p class="chapter-intro">
+        解方程是线性代数最核心的应用之一。这一章将介绍<strong>高斯消元法</strong>——<br>
+        计算机实际使用的解方程方法，比逆矩阵高效得多！
+    </p>
+
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">高斯消元</span><span class="vocab-en">Gaussian Elimination</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">增广矩阵</span><span class="vocab-en">Augmented Matrix</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">行阶梯形</span><span class="vocab-en">Row Echelon Form</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">回代</span><span class="vocab-en">Back Substitution</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">主元</span><span class="vocab-en">Pivot</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🤔 16.1 为什么不用逆矩阵？</h2>
+
+    <div class="content-block">
+        <p>在第7章，我们学过用逆矩阵解方程：$\vec{x} = A^{-1}\vec{b}$。但这有问题...</p>
+
+        <div class="definition-card" style="border-left-color: var(--accent-orange);">
+            <div class="definition-title" style="color: var(--accent-orange);">⚠️ 逆矩阵的缺点</div>
+            <ul>
+                <li><strong>计算量巨大</strong>：n×n 矩阵求逆需要约 $n^3$ 次运算</li>
+                <li><strong>数值不稳定</strong>：浮点误差可能累积</li>
+                <li><strong>很多问题不需要完整的逆</strong>：只需要解一个具体的 $\vec{b}$</li>
+            </ul>
+        </div>
+
+        <div class="aha-box" style="margin-top: 1.5rem;">
+            <div class="aha-title">💡 类比：开锁 vs 造万能钥匙</div>
+            <p>
+                求逆矩阵就像造一把万能钥匙（能开所有门），但如果你只需要开一扇门，<br>
+                <strong>高斯消元</strong>直接开那扇门就够了！
+            </p>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 1.5rem;">
+            <div class="deep-title">📊 效率对比</div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                <thead>
+                    <tr style="background: rgba(74, 158, 255, 0.1); text-align: left;">
+                        <th style="padding: 0.8rem;">矩阵大小</th>
+                        <th style="padding: 0.8rem;">求逆矩阵</th>
+                        <th style="padding: 0.8rem;">高斯消元</th>
+                        <th style="padding: 0.8rem;">节省</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">3×3</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">~27 次</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">~9 次</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333; color: var(--accent-green);">3倍</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">100×100</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">~3,000,000 次</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">~333,000 次</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333; color: var(--accent-green);">9倍</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem;">1000×1000</td>
+                        <td style="padding: 0.6rem;">~30亿 次</td>
+                        <td style="padding: 0.6rem;">~3.3亿 次</td>
+                        <td style="padding: 0.6rem; color: var(--accent-green);">9倍</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📐 16.2 增广矩阵：把方程"打包"</h2>
+
+    <div class="content-block">
+        <p>先来看一个方程组：</p>
+        <div class="math-block">
+            $$\begin{cases} 2x + y - z = 8 \\ -3x - y + 2z = -11 \\ -2x + y + 2z = -3 \end{cases}$$
+        </div>
+
+        <p style="margin-top: 1.5rem;">写成矩阵形式 $A\vec{x} = \vec{b}$：</p>
+        <div class="math-block">
+            $$\begin{bmatrix}2 & 1 & -1\\-3 & -1 & 2\\-2 & 1 & 2\end{bmatrix} \begin{bmatrix}x\\y\\z\end{bmatrix} =
+            \begin{bmatrix}8\\-11\\-3\end{bmatrix}$$
+        </div>
+
+        <div class="definition-card" style="margin-top: 1.5rem;">
+            <div class="definition-title">增广矩阵 (Augmented Matrix)</div>
+            <p>把系数矩阵 A 和常数向量 b "拼"在一起：</p>
+            <div class="math-block">
+                $$[A | \vec{b}] = \left[\begin{array}{ccc|c}2 & 1 & -1 & 8\\-3 & -1 & 2 & -11\\-2 & 1 & 2 &
+                -3\end{array}\right]$$
+            </div>
+            <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                竖线只是标记，提醒我们"这里是等号"。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🔧 16.3 行变换：消元的三板斧</h2>
+
+    <div class="content-block">
+        <p>高斯消元的核心：对矩阵做<strong>行变换</strong>，把它变成更简单的形式。</p>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">交换两行</div>
+                    <p>$R_i \leftrightarrow R_j$</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">例：交换第1行和第2行</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">某行乘以非零常数</div>
+                    <p>$R_i \rightarrow c \cdot R_i$（$c \neq 0$）</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">例：第1行乘以 2</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">某行加上另一行的倍数</div>
+                    <p>$R_i \rightarrow R_i + c \cdot R_j$</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">例：第2行 + 第1行的 1.5 倍</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 1.5rem;">
+            <div class="theorem-title">为什么行变换不改变解？</div>
+            <p>
+                每一步行变换都是<strong>可逆的</strong>！<br>
+                交换可以再交换回来，乘法可以乘以倒数，加法可以减回去。<br>
+                所以变换后的方程组和原来的方程组有<strong>完全相同的解</strong>。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📊 16.4 行阶梯形：消元的目标</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">行阶梯形 (Row Echelon Form)</div>
+            <p>一个矩阵是行阶梯形，当：</p>
+            <ol>
+                <li>全零行（如果有）都在底部</li>
+                <li>每行的<strong>主元</strong>（第一个非零元素）在上一行主元的右边</li>
+            </ol>
+            <div class="math-block" style="margin-top: 1rem;">
+                $$\left[\begin{array}{ccc|c}\boxed{2} & 1 & -1 & 8\\0 & \boxed{0.5} & 0.5 & -5\\0 & 0 & \boxed{1} &
+                1\end{array}\right]$$
+            </div>
+            <p style="font-size: 0.9em; color: var(--text-muted);">
+                看起来像一个"阶梯"！框起来的是主元 (Pivot)。
+            </p>
+        </div>
+
+        <div class="aha-box" style="margin-top: 1.5rem;">
+            <div class="aha-title">💡 为什么阶梯形这么好？</div>
+            <p>
+                最后一个方程只有一个未知数（直接得到 z）！<br>
+                然后往上代入，每次多知道一个变量——这就是<strong>回代</strong>。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 5 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">✍️ 16.5 完整例题：一步步消元</h2>
+
+    <div class="content-block">
+        <p>让我们用高斯消元解这个方程组：</p>
+        <div class="math-block">
+            $$\begin{cases} 2x + y - z = 8 \\ -3x - y + 2z = -11 \\ -2x + y + 2z = -3 \end{cases}$$
+        </div>
+
+        <div class="example-ladder" style="margin-top: 1.5rem;">
+            <div class="example-step">
+                <div class="step-number">0</div>
+                <div class="step-content">
+                    <div class="step-label">写出增广矩阵</div>
+                    <div class="math-block">
+                        $\left[\begin{array}{ccc|c}2 & 1 & -1 & 8\\-3 & -1 & 2 & -11\\-2 & 1 & 2 & -3\end{array}\right]$
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">消去第1列（除了第1行）</div>
+                    <p>$R_2 \rightarrow R_2 + \frac{3}{2}R_1$，$R_3 \rightarrow R_3 + R_1$</p>
+                    <div class="math-block">
+                        $\left[\begin{array}{ccc|c}2 & 1 & -1 & 8\\0 & 0.5 & 0.5 & 1\\0 & 2 & 1 & 5\end{array}\right]$
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">消去第2列（第3行中的）</div>
+                    <p>$R_3 \rightarrow R_3 - 4R_2$</p>
+                    <div class="math-block">
+                        $\left[\begin{array}{ccc|c}2 & 1 & -1 & 8\\0 & 0.5 & 0.5 & 1\\0 & 0 & -1 & 1\end{array}\right]$
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content" style="background: rgba(139, 92, 246, 0.1);">
+                    <div class="step-label" style="color: var(--accent-purple);">✅ 行阶梯形达成！开始回代</div>
+                    <p>从最后一行：$-z = 1 \Rightarrow \boxed{z = -1}$</p>
+                    <p>代入第2行：$0.5y + 0.5(-1) = 1 \Rightarrow y = 3 \Rightarrow \boxed{y = 3}$</p>
+                    <p>代入第1行：$2x + 3 - (-1) = 8 \Rightarrow 2x = 4 \Rightarrow \boxed{x = 2}$</p>
+                </div>
+            </div>
+
+            <div class="example-step">
+                <div class="step-number">✓</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="step-label" style="color: var(--accent-green);">答案</div>
+                    <p>$x = 2$，$y = 3$，$z = -1$</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 验证 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">✅ 验证答案</div>
+            <p>代入原方程检验：</p>
+            <ul>
+                <li>$2(2) + 3 - (-1) = 4 + 3 + 1 = 8$ ✓</li>
+                <li>$-3(2) - 3 + 2(-1) = -6 - 3 - 2 = -11$ ✓</li>
+                <li>$-2(2) + 3 + 2(-1) = -4 + 3 - 2 = -3$ ✓</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 6 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">⚠️ 16.6 特殊情况：无解与无穷解</h2>
+
+    <div class="content-block">
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-red); margin-bottom: 2rem;">
+            <div class="deep-title">🚫 情况1：无解（矛盾方程）</div>
+            <p>消元后出现类似 $0 = 5$ 的矛盾：</p>
+            <div class="math-block">
+                $\left[\begin{array}{cc|c}1 & 2 & 3\\0 & 0 & 5\end{array}\right]$
+            </div>
+            <p style="margin-top: 0.5rem;">
+                最后一行表示 $0x + 0y = 5$，即 $0 = 5$，<strong>矛盾！</strong><br>
+                几何上：两条平行线没有交点。
+            </p>
+        </div>
+
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue);">
+            <div class="deep-title">∞ 情况2：无穷多解（自由变量）</div>
+            <p>消元后出现全零行，但等号右边也是0：</p>
+            <div class="math-block">
+                $\left[\begin{array}{cc|c}1 & 2 & 3\\0 & 0 & 0\end{array}\right]$
+            </div>
+            <p style="margin-top: 0.5rem;">
+                最后一行是 $0 = 0$，恒成立。<br>
+                只有一个有效方程 $x + 2y = 3$，y 可以取任意值（<strong>自由变量</strong>）。<br>
+                几何上：两条直线重合，有无穷多交点。
+            </p>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 1.5rem;">
+            <div class="theorem-title">判断解的情况</div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
+                <tr style="border-bottom: 2px solid var(--accent-blue);">
+                    <td style="padding: 0.5rem;"><strong>主元数量 vs 变量数</strong></td>
+                    <td style="padding: 0.5rem;"><strong>结果</strong></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #333;">
+                    <td style="padding: 0.5rem;">主元数 = 变量数，无矛盾</td>
+                    <td style="padding: 0.5rem; color: var(--accent-green);">唯一解 ✓</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #333;">
+                    <td style="padding: 0.5rem;">出现 $0 = \text{非零}$</td>
+                    <td style="padding: 0.5rem; color: var(--accent-red);">无解 ✗</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem;">主元数 < 变量数，无矛盾</td>
+                    <td style="padding: 0.5rem; color: var(--accent-blue);">无穷解 ∞</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用高斯消元解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            高斯消元是计算机实际使用的解方程方法。MATLAB、NumPy 底层都在用它！
+        </p>
+
+        <!-- 问题 1 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">⚡ 问题 1：电路分析</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一个电路满足基尔霍夫定律：</p>
+                <div class="math-block">
+                    $\begin{cases} I_1 + I_2 = 10 \\ 2I_1 - I_2 + I_3 = 5 \\ I_2 + 3I_3 = 15 \end{cases}$
+                </div>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">写增广矩阵并消元</div>
+                        <div class="math-block">
+                            $\left[\begin{array}{ccc|c}1 & 1 & 0 & 10\\2 & -1 & 1 & 5\\0 & 1 & 3 & 15\end{array}\right]
+                            \xrightarrow{R_2-2R_1}
+                            \left[\begin{array}{ccc|c}1 & 1 & 0 & 10\\0 & -3 & 1 & -15\\0 & 1 & 3 &
+                            15\end{array}\right]$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>继续消元和回代得：$I_1 = 5$ A，$I_2 = 5$ A，$I_3 = \frac{10}{3}$ A</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 2 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
+            <div class="deep-title">🧪 问题 2：化学配平</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：配平化学方程式 $a\text{H}_2 + b\text{O}_2 \rightarrow c\text{H}_2\text{O}$</p>
+                <p>原子守恒：H: $2a = 2c$，O: $2b = c$</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">分析</div>
+                    <div class="step-content">
+                        <p>这是一个有无穷解的齐次方程组（只有比例关系）</p>
+                        <p>取 $c = 2$，则 $a = 2$，$b = 1$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>$2\text{H}_2 + \text{O}_2 \rightarrow 2\text{H}_2\text{O}$</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 练习 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">✍️ 练习与思考</h2>
+
+    <div class="content-block">
+        <div class="challenge-box">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>用高斯消元解下列方程组：</strong></p>
+            <div class="math-block">
+                $\begin{cases} x + 2y = 5 \\ 3x + 4y = 11 \end{cases}$
+            </div>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>增广矩阵：$\left[\begin{array}{cc|c}1 & 2 & 5\\3 & 4 & 11\end{array}\right]$</p>
+                    <p>$R_2 - 3R_1$：$\left[\begin{array}{cc|c}1 & 2 & 5\\0 & -2 & -4\end{array}\right]$</p>
+                    <p>回代：$y = 2$，$x = 5 - 4 = 1$</p>
+                    <p>答案：$x = 1$，$y = 2$</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="challenge-box" style="margin-top: 1.5rem;">
+            <div class="challenge-title">🤔 想一想</div>
+            <p><strong>以下方程组有解吗？</strong></p>
+            <div class="math-block">
+                $\begin{cases} x + y = 1 \\ 2x + 2y = 3 \end{cases}$
+            </div>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>消元后得到 $0 = 1$，矛盾！</p>
+                    <p><strong>无解</strong>。两条平行线没有交点。</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>
+
+<!-- 总结 -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="vocab-summary">
+            <div class="vocab-title">词汇复习</div>
+            <div class="vocab-list">
+                <div class="vocab-item"><span class="vocab-zh">高斯消元</span><span class="vocab-en">化简求解的算法</span></div>
+                <div class="vocab-item"><span class="vocab-zh">增广矩阵</span><span class="vocab-en">[A|b] 形式</span></div>
+                <div class="vocab-item"><span class="vocab-zh">行阶梯形</span><span class="vocab-en">阶梯状的目标形式</span></div>
+                <div class="vocab-item"><span class="vocab-zh">回代</span><span class="vocab-en">从下往上求解</span></div>
+            </div>
+        </div>
+
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Gaussian Elimination">高斯消元</span>比求逆矩阵更高效</li>
+                <li>行变换不改变方程组的解</li>
+                <li>目标是化为<strong>行阶梯形</strong>，然后回代</li>
+                <li>通过阶梯形可判断：唯一解、无解、无穷解</li>
+            </ol>
+        </div>
+    </div>
+</div>
