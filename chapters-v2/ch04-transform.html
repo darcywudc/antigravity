@@ -181,21 +181,92 @@
     <h2 class="section-title">🎯 实战应用</h2>
 
     <div class="content-block">
+        <!-- 问题1：精灵翻转 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
-            <div class="deep-title">🎮 问题：游戏精灵翻转</div>
+            <div class="deep-title">🎮 问题：游戏精灵水平翻转</div>
             <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>游戏角色面向右边，现在要让它面向左边（水平翻转）。</p>
+                <p><strong>场景</strong>：游戏角色精灵图朝右边，三角形顶点为 $A(2, 0)$, $B(4, 3)$, $C(2, 3)$。</p>
+                <p><strong>问题</strong>：如何通过变换让角色朝左边看？新坐标是什么？</p>
             </div>
-            <p>变换：$\hat{i} \rightarrow (-1, 0)$，$\hat{j} \rightarrow (0, 1)$</p>
-            <p>效果：所有 x 坐标取反，y 坐标不变。</p>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">确定变换类型</div>
+                        <p>水平翻转 = 关于 y 轴反射</p>
+                        <p>基向量变换：$\hat{i} \rightarrow (-1, 0)$，$\hat{j} \rightarrow (0, 1)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">写出变换矩阵</div>
+                        <div class="math-block">
+                            $M = \begin{bmatrix}-1 & 0\\0 & 1\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">变换每个顶点</div>
+                        <p>$A' = M \cdot A = \begin{bmatrix}-1 & 0\\0 & 1\end{bmatrix}\begin{bmatrix}2\\0\end{bmatrix} =
+                            \begin{bmatrix}-2\\0\end{bmatrix}$</p>
+                        <p>$B' = M \cdot B = \begin{bmatrix}-4\\3\end{bmatrix}$</p>
+                        <p>$C' = M \cdot C = \begin{bmatrix}-2\\3\end{bmatrix}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>新顶点：$A'(-2, 0)$, $B'(-4, 3)$, $C'(-2, 3)$</p>
+                        <p>规律：所有 x 坐标取反，y 坐标不变 ✓</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- 问题2：工程图纸旋转 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
-            <div class="deep-title">🏗️ 问题：坐标变换</div>
+            <div class="deep-title">🏗️ 问题：工程图纸坐标旋转</div>
             <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>工程图纸需要旋转 45° 来适应新的坐标系。</p>
+                <p><strong>场景</strong>：设计图中一个点位于 $(10, 0)$，需要将整个图纸逆时针旋转 30°。</p>
+                <p><strong>问题</strong>：该点的新坐标是什么？</p>
             </div>
-            <p>使用旋转变换公式，$\theta = 45°$，$\cos 45° = \sin 45° = \frac{\sqrt{2}}{2}$</p>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">写出旋转矩阵</div>
+                        <p>$\theta = 30°$，$\cos 30° = \frac{\sqrt{3}}{2} \approx 0.866$，$\sin 30° = 0.5$</p>
+                        <div class="math-block">
+                            $R_{30} = \begin{bmatrix}0.866 & -0.5\\0.5 & 0.866\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">应用变换</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}0.866 & -0.5\\0.5 & 0.866\end{bmatrix}\begin{bmatrix}10\\0\end{bmatrix} =
+                            \begin{bmatrix}10 \times 0.866\\10 \times 0.5\end{bmatrix} =
+                            \begin{bmatrix}8.66\\5\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>新坐标是 $(8.66, 5)$</p>
+                        <p>验证：$\sqrt{8.66^2 + 5^2} \approx 10$ ✓（旋转保持距离）</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

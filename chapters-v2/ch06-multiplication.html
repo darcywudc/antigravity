@@ -104,20 +104,90 @@
     <h2 class="section-title">🎯 实战应用</h2>
 
     <div class="content-block">
+        <!-- 问题1：动画变换链 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
             <div class="deep-title">🎮 问题：游戏动画变换链</div>
             <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>游戏角色需要：1) 缩小到 0.5 倍，2) 旋转 30°，3) 剪切变形</p>
-                <p>如何得到最终的变换矩阵？</p>
+                <p><strong>场景</strong>：游戏角色要做一个特效动画：</p>
+                <ol>
+                    <li>先缩小到 0.5 倍</li>
+                    <li>再旋转 90°</li>
+                </ol>
+                <p><strong>问题</strong>：点 $(4, 2)$ 经过这两个变换后在哪里？</p>
             </div>
-            <p>答案：$M = M_{剪切} \cdot M_{旋转} \cdot M_{缩放}$（从右往左读）</p>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">写出各个变换矩阵</div>
+                        <p>缩放：$S = \begin{bmatrix}0.5 & 0\\0 & 0.5\end{bmatrix}$</p>
+                        <p>旋转90°：$R = \begin{bmatrix}0 & -1\\1 & 0\end{bmatrix}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算组合矩阵（后做的在左边）</div>
+                        <div class="math-block">
+                            $M = R \cdot S = \begin{bmatrix}0 & -1\\1 & 0\end{bmatrix}\begin{bmatrix}0.5 & 0\\0 &
+                            0.5\end{bmatrix} = \begin{bmatrix}0 & -0.5\\0.5 & 0\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">应用到点 $(4, 2)$</div>
+                        <div class="math-block">
+                            $M \cdot \begin{bmatrix}4\\2\end{bmatrix} = \begin{bmatrix}0 & -0.5\\0.5 &
+                            0\end{bmatrix}\begin{bmatrix}4\\2\end{bmatrix} = \begin{bmatrix}-1\\2\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案与验证</div>
+                        <p>最终位置：$(-1, 2)$</p>
+                        <p>验证：原距离 $\sqrt{20} \approx 4.47$，新距离 $\sqrt{5} \approx 2.24 = 4.47 \times 0.5$ ✓</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- 问题2：机器人手臂 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
-            <div class="deep-title">🤖 问题：机器人正向运动学</div>
+            <div class="deep-title">🤖 问题：二关节机器人手臂</div>
             <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>机器人有多个关节，每个关节有自己的旋转角度。</p>
-                <p>最终末端位置 = 所有关节变换矩阵的连乘积</p>
+                <p><strong>场景</strong>：机器人手臂从原点开始，第一节长度 3，旋转 30°；第二节长度 2，再旋转 45°。</p>
+                <p><strong>问题</strong>：末端执行器的位置在哪里？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">第一节末端（从原点旋转30°走3单位）</div>
+                        <p>$P_1 = (3\cos 30°, 3\sin 30°) = (2.6, 1.5)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">第二节方向（累计旋转30°+45°=75°）</div>
+                        <p>$P_2 = P_1 + (2\cos 75°, 2\sin 75°)$</p>
+                        <p>$= (2.6 + 0.52, 1.5 + 1.93) = (3.12, 3.43)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>末端位置：$(3.12, 3.43)$</p>
+                        <p>矩阵方法：$T_{总} = R_{30°} \cdot T_{3单位} \cdot R_{45°} \cdot T_{2单位}$</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
