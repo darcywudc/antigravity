@@ -169,6 +169,68 @@
         <div class="challenge-title">挑战</div>
         <p>试试把左上角的数字改成 -1，看看会发生什么？这代表什么变换？</p>
     </div>
+
+    <!-- 新增：练习题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">✍️ 动手练习</div>
+        <p><strong>为下列变换写出对应的矩阵：</strong></p>
+        <ol>
+            <li>把所有东西放大 3 倍</li>
+            <li>水平方向翻转（左右镜像）</li>
+            <li>顺时针旋转 90°</li>
+        </ol>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <ol>
+                    <li>$\begin{bmatrix} 3 & 0 \\ 0 & 3 \end{bmatrix}$ — î 变成 (3,0)，ĵ 变成 (0,3)</li>
+                    <li>$\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$ — î 变成 (-1,0)，ĵ 不变</li>
+                    <li>$\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}$ — î 变成 (0,-1)，ĵ 变成 (1,0)</li>
+                </ol>
+                <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                    💡 方法：画出变换后的 î 和 ĵ，把它们作为矩阵的两列！
+                </p>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：思考题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">🤔 想一想</div>
+        <p><strong>单位矩阵 $\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$ 代表什么变换？</strong></p>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <p><strong>答案</strong>："什么都不做"——恒等变换！</p>
+                <p>î → (1,0) = î，ĵ → (0,1) = ĵ，基向量都不动，所以整个空间不变。</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                    🎯 这就像数字中的 1（任何数乘以 1 都不变），单位矩阵是矩阵乘法的"1"。
+                </p>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：常见误区 -->
+    <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+        <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+        <p><strong>误区</strong>："矩阵只是一堆按行列排列的数字"</p>
+        <p><strong>纠正</strong>：矩阵是<strong>变换的描述</strong>！每一列告诉你一个基向量变去了哪里。</p>
+        <p style="margin-top: 0.5rem;">
+            把矩阵想象成"变形配方"或"游戏手柄"——它控制着空间如何被扭曲和变形。
+        </p>
+    </div>
+
+    <!-- 新增：趣味知识 -->
+    <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+        <div class="deep-title">🎬 趣味知识：电影特效中的矩阵</div>
+        <p>
+            好莱坞电影中的 3D 角色动画，全部由矩阵来控制！
+        </p>
+        <p style="margin-top: 0.5rem;">
+            当皮克斯动画的角色抬起手臂时，计算机在幕后用一系列矩阵来计算每一根骨骼、每一块皮肤应该移动到哪里。
+            一部动画电影可能有<strong>数百亿次矩阵运算</strong>！
+        </p>
+    </div>
 </div>
 
 <!-- 应用 -->
