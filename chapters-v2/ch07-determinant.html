@@ -1,0 +1,177 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 7 章</span>
+    <h1 class="chapter-title">行列式——面积/体积的缩放 <br><small style="font-size: 0.6em; color: var(--text-muted);">Determinant:
+            The Scaling Factor</small></h1>
+
+    <div class="problem-hook"
+        style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.15), rgba(139, 92, 246, 0.15)); padding: 2rem; border-radius: 16px; margin-top: 1.5rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📐</div>
+        <p style="font-size: 1.2rem; margin: 0; font-weight: bold;">
+            "变换后，一个单位正方形的面积变成了多少？"
+        </p>
+        <p style="margin: 1rem 0 0 0; color: var(--text-muted);">
+            行列式就是答案——它告诉你空间被<strong>缩放</strong>了多少倍。
+        </p>
+    </div>
+
+    <div class="vocab-summary" style="margin-top: 2rem;">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">行列式</span><span class="vocab-en">Determinant</span></div>
+            <div class="vocab-item"><span class="vocab-zh">面积缩放</span><span class="vocab-en">Area Scaling</span></div>
+            <div class="vocab-item"><span class="vocab-zh">奇异矩阵</span><span class="vocab-en">Singular Matrix</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📏 7.1 行列式的几何意义</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">行列式 (Determinant)</div>
+            <p>矩阵 $A$ 的<span class="term" data-en="Determinant">行列式</span>，记作 $\det(A)$ 或 $|A|$：</p>
+            <div class="math-block">
+                $\det\begin{bmatrix}a & b\\c & d\end{bmatrix} = ad - bc$
+            </div>
+            <p style="margin-top: 0.5rem;"><strong>几何意义</strong>：变换后，面积被缩放的倍数。</p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 2rem;">
+            <div class="example-step">
+                <div class="step-number">例1</div>
+                <div class="step-content">
+                    <div class="step-label">放大 2 倍的矩阵</div>
+                    <p>$\det\begin{bmatrix}2 & 0\\0 & 2\end{bmatrix} = 2 \times 2 - 0 = 4$</p>
+                    <p>面积变为原来的 4 倍 ✓</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">例2</div>
+                <div class="step-content">
+                    <div class="step-label">旋转矩阵</div>
+                    <p>$\det\begin{bmatrix}0 & -1\\1 & 0\end{bmatrix} = 0 \times 0 - (-1) \times 1 = 1$</p>
+                    <p>面积不变（旋转不改变面积）✓</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">➖ 7.2 负行列式的意义</h2>
+
+    <div class="content-block">
+        <div class="aha-box">
+            <div class="aha-title">💡 负号 = 翻转</div>
+            <p>
+                $\det < 0$ 表示空间被<strong>翻转</strong>了（像照镜子）。<br>
+                    绝对值 $|\det|$ 仍然是面积缩放倍数。
+            </p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 2rem;">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">关于 x 轴反射</div>
+                    <p>$\det\begin{bmatrix}1 & 0\\0 & -1\end{bmatrix} = 1 \times (-1) - 0 = -1$</p>
+                    <p>面积不变，但空间被翻转了</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">⚠️ 7.3 行列式为零意味着什么？</h2>
+
+    <div class="content-block">
+        <div class="definition-card" style="border-left-color: var(--accent-red);">
+            <div class="definition-title" style="color: var(--accent-red);">$\det(A) = 0$ → 降维！</div>
+            <p>
+                如果 $\det = 0$，说明变换把空间"压扁"了——<br>
+                2D 被压成 1D（线）或 0D（点）。
+            </p>
+            <p style="margin-top: 0.5rem;">这样的矩阵叫做<span class="term"
+                    data-en="Singular Matrix">奇异矩阵</span>，<strong>不可逆</strong>。</p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 2rem;">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">压扁到一条线</div>
+                    <p>$\det\begin{bmatrix}1 & 2\\2 & 4\end{bmatrix} = 1 \times 4 - 2 \times 2 = 0$</p>
+                    <p>第二列 = 第一列的 2 倍，两个基向量共线！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📊 7.4 3D 行列式</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">3×3 行列式 = 体积缩放</div>
+            <p>在 3D 中，行列式表示<strong>体积</strong>的缩放倍数：</p>
+            <div class="math-block">
+                $\det\begin{bmatrix}a & b & c\\d & e & f\\g & h & i\end{bmatrix} = a(ei-fh) - b(di-fg) + c(dh-eg)$
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用</h2>
+
+    <div class="content-block">
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎮 问题：背面剔除</div>
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>在 3D 游戏中，如何判断一个三角形是面向相机还是背对相机？</p>
+            </div>
+            <p>答案：计算三角形顶点构成的行列式。正 = 正面，负 = 背面。</p>
+        </div>
+
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
+            <div class="deep-title">🏗️ 问题：方程组是否有唯一解</div>
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>线性方程组 $A\vec{x} = \vec{b}$ 有唯一解 ⟺ $\det(A) \neq 0$</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 总结 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Determinant">行列式</span> = 面积/体积缩放因子</li>
+                <li>$\det < 0$ → 空间被翻转</li>
+                <li>$\det = 0$ → 降维，矩阵不可逆</li>
+                <li>2D公式：$ad - bc$</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 2rem;">
+            <div class="connection-title">📍 下一章预告</div>
+            <p>
+                如果 $\det \neq 0$，变换就可以"撤销"。<br>
+                下一章讲<strong>逆矩阵</strong>——变换的撤销键！
+            </p>
+        </div>
+    </div>
+</div>

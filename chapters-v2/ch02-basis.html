@@ -1,0 +1,221 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 2 章</span>
+    <h1 class="chapter-title">坐标系统与基向量 <br><small style="font-size: 0.6em; color: var(--text-muted);">Coordinate Systems
+            and Basis Vectors</small></h1>
+
+    <div class="problem-hook"
+        style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.15), rgba(139, 92, 246, 0.15)); padding: 2rem; border-radius: 16px; margin-top: 1.5rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗺️</div>
+        <p style="font-size: 1.2rem; margin: 0; font-weight: bold;">
+            "GPS 如何用两个数字精确描述地球上的任何位置？"
+        </p>
+        <p style="margin: 1rem 0 0 0; color: var(--text-muted);">
+            答案是：建立一个<strong>坐标系</strong>，然后用<strong>基向量</strong>的组合来表示。
+        </p>
+    </div>
+
+    <div class="vocab-summary" style="margin-top: 2rem;">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">坐标系</span><span class="vocab-en">Coordinate System</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">基向量</span><span class="vocab-en">Basis Vectors</span></div>
+            <div class="vocab-item"><span class="vocab-zh">分量</span><span class="vocab-en">Components</span></div>
+            <div class="vocab-item"><span class="vocab-zh">原点</span><span class="vocab-en">Origin</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📍 2.1 坐标系：约定的「语言」</h2>
+
+    <div class="content-block">
+        <p>当我们说一个点的坐标是 $(3, 4)$，其实隐含了很多<strong>约定</strong>：</p>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">原点在哪？</div>
+                    <p>我们需要一个"起点"——<span class="term" data-en="Origin">原点</span> $(0, 0)$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">什么方向是"正"？</div>
+                    <p>通常：右边是 $+x$，上边是 $+y$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">一个单位有多长？</div>
+                    <p>需要定义"1"代表多少（1米？1像素？）</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box" style="margin-top: 2rem;">
+            <div class="aha-title">💡 关键洞察</div>
+            <p>
+                坐标 $(3, 4)$ 不是向量本身——它只是向量在<strong>某个坐标系下的表示</strong>。<br>
+                同一个向量，在不同坐标系下有不同的坐标！
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📐 2.2 基向量：坐标系的「尺子」</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">基向量 (Basis Vectors)</div>
+            <p>在标准 2D 坐标系中，有两个特殊的向量：</p>
+            <div class="math-block">
+                $\hat{i} = \begin{bmatrix}1\\0\end{bmatrix}$ （指向右边，长度为1）
+            </div>
+            <div class="math-block">
+                $\hat{j} = \begin{bmatrix}0\\1\end{bmatrix}$ （指向上面，长度为1）
+            </div>
+            <p style="margin-top: 0.5rem;">这两个向量叫做<span class="term" data-en="Basis Vectors">基向量</span>或标准基。</p>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 2rem;">
+            <div class="theorem-title">核心思想</div>
+            <p>任何向量都可以写成基向量的<strong>组合</strong>：</p>
+            <div class="math-block">
+                $\vec{v} = \begin{bmatrix}3\\4\end{bmatrix} = 3\hat{i} + 4\hat{j}$
+            </div>
+            <p style="margin-top: 0.5rem;">
+                含义："沿着 $\hat{i}$ 方向走 3 步，沿着 $\hat{j}$ 方向走 4 步"
+            </p>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 2rem;">
+            <div class="deep-title">🎮 游戏中的例子</div>
+            <p>在游戏中：</p>
+            <ul>
+                <li><strong>世界坐标系</strong>：以地图左下角为原点</li>
+                <li><strong>本地坐标系</strong>：以角色为原点，角色面朝方向为 $\hat{i}$</li>
+            </ul>
+            <p>同一个位置，在两个坐标系下坐标不同！</p>
+        </div>
+    </div>
+
+    <!-- 交互演示 -->
+    <div class="viz-container" style="margin-top: 2rem;">
+        <div class="viz-header">
+            <div class="viz-title">🕹️ 拖动基向量，观察坐标变化</div>
+            <div class="viz-controls">
+                <button class="control-btn" id="basis-reset-btn">重置</button>
+            </div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="basis-canvas"></canvas>
+        </div>
+        <div class="viz-instructions">
+            拖动<span style="color:#4a9eff">蓝色</span>($\hat{i}$)和<span
+                style="color:#f97316">橙色</span>($\hat{j}$)基向量，观察整个坐标网格如何变化。
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🔢 2.3 坐标的本质：基向量的系数</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">问</div>
+                <div class="step-content">
+                    <div class="step-label">坐标 $(3, 4)$ 到底是什么意思？</div>
+                    <p>它是说"向量 = 3 倍的 $\hat{i}$ 加上 4 倍的 $\hat{j}$"</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">答</div>
+                <div class="step-content">
+                    <div class="step-label">坐标 = 基向量的"配方系数"</div>
+                    <div class="math-block">
+                        $(a, b) \Leftrightarrow a \cdot \hat{i} + b \cdot \hat{j}$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box" style="margin-top: 2rem;">
+            <div class="aha-title">💡 为什么这很重要？</div>
+            <p>
+                如果我们<strong>改变基向量</strong>（比如让 $\hat{i}$ 指向东北），<br>
+                同一个向量的坐标就会变化——但向量本身没变！<br><br>
+                这就是后面「基变换」章节的核心内容。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用</h2>
+
+    <div class="content-block">
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎮 问题：游戏中的坐标转换</div>
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：敌人在世界坐标 $(100, 50)$，玩家在 $(60, 30)$。</p>
+                <p><strong>问题</strong>：敌人相对于玩家的位置是什么？</p>
+            </div>
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>相对位置 = 敌人坐标 - 玩家坐标 = $(100-60, 50-30) = (40, 20)$</p>
+                        <p>敌人在玩家的右上方 40 单位水平、20 单位垂直的位置。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
+            <div class="deep-title">🎨 问题：RGB 颜色空间</div>
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：颜色可以用 $(R, G, B)$ 三个分量表示。</p>
+                <p><strong>洞察</strong>：这其实是一个 3D 向量空间！</p>
+            </div>
+            <p>基向量：纯红 $(255, 0, 0)$、纯绿 $(0, 255, 0)$、纯蓝 $(0, 0, 255)$</p>
+            <p>任何颜色 = 这三个基色的"线性组合"！</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 总结 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Coordinate System">坐标系</span> = 原点 + 基向量 + 单位长度</li>
+                <li><span class="term" data-en="Basis Vectors">基向量</span> $\hat{i}, \hat{j}$ 是坐标系的"尺子"</li>
+                <li>坐标 $(a, b)$ = 基向量的<strong>系数</strong>：$a\hat{i} + b\hat{j}$</li>
+                <li>同一个向量，不同坐标系下坐标可能不同</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 2rem;">
+            <div class="connection-title">📍 下一章预告</div>
+            <p>
+                知道了基向量后，下一个问题是：<br>
+                给定两个向量，它们能"组合"出多少不同的向量？<br>
+                这就是<strong>线性组合</strong>和<strong>张成空间</strong>的概念。
+            </p>
+        </div>
+    </div>
+</div>

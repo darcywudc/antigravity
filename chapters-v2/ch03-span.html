@@ -1,0 +1,231 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 3 章</span>
+    <h1 class="chapter-title">线性组合与张成空间 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
+            Combinations and Span</small></h1>
+
+    <div class="problem-hook"
+        style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.15), rgba(139, 92, 246, 0.15)); padding: 2rem; border-radius: 16px; margin-top: 1.5rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚀</div>
+        <p style="font-size: 1.2rem; margin: 0; font-weight: bold;">
+            "两台固定方向的引擎，能把飞船推向任何方向吗？"
+        </p>
+        <p style="margin: 1rem 0 0 0; color: var(--text-muted);">
+            这取决于两台引擎的推力方向是否<strong>线性无关</strong>。
+        </p>
+    </div>
+
+    <div class="vocab-summary" style="margin-top: 2rem;">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">线性组合</span><span class="vocab-en">Linear Combination</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">张成空间</span><span class="vocab-en">Span</span></div>
+            <div class="vocab-item"><span class="vocab-zh">线性相关</span><span class="vocab-en">Linearly Dependent</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">线性无关</span><span class="vocab-en">Linearly Independent</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🧪 3.1 线性组合：向量的「配方」</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">线性组合 (Linear Combination)</div>
+            <p>给定向量 $\vec{v}$ 和 $\vec{w}$，它们的<span class="term" data-en="Linear Combination">线性组合</span>是：</p>
+            <div class="math-block">
+                $a\vec{v} + b\vec{w}$
+            </div>
+            <p style="margin-top: 0.5rem;">其中 $a, b$ 可以是任意实数（包括负数和零）。</p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 1.5rem;">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">$\vec{v} = (1, 0)$，$\vec{w} = (0, 1)$ 的一些线性组合</div>
+                    <ul>
+                        <li>$2\vec{v} + 3\vec{w} = (2, 3)$</li>
+                        <li>$-1\vec{v} + 2\vec{w} = (-1, 2)$</li>
+                        <li>$0\vec{v} + 0\vec{w} = (0, 0)$</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box" style="margin-top: 2rem;">
+            <div class="aha-title">💡 类比：食谱配方</div>
+            <p>
+                线性组合就像<strong>调配饮料</strong>：<br>
+                $\vec{v}$ = 橙汁，$\vec{w}$ = 苏打水<br>
+                $2\vec{v} + 1\vec{w}$ = 2份橙汁 + 1份苏打水 = 橙汁苏打
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🌐 3.2 张成空间：所有可能的配方</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">张成空间 (Span)</div>
+            <p>向量 $\vec{v}$ 和 $\vec{w}$ 的<span class="term" data-en="Span">张成空间</span>是它们所有线性组合的集合：</p>
+            <div class="math-block">
+                $\text{span}(\vec{v}, \vec{w}) = \{a\vec{v} + b\vec{w} \mid a, b \in \mathbb{R}\}$
+            </div>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 1.5rem;">
+            <div class="example-step">
+                <div class="step-number">情况1</div>
+                <div class="step-content">
+                    <div class="step-label">两个不共线的向量 → 张成整个平面</div>
+                    <p>$\vec{v} = (1, 0)$，$\vec{w} = (0, 1)$ → 可以到达平面上任何点！</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">情况2</div>
+                <div class="step-content">
+                    <div class="step-label">两个共线的向量 → 只能张成一条线</div>
+                    <p>$\vec{v} = (1, 2)$，$\vec{w} = (2, 4) = 2\vec{v}$ → 只能在这条线上移动</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 交互演示 -->
+    <div class="viz-container" style="margin-top: 2rem;">
+        <div class="viz-header">
+            <div class="viz-title">🕹️ 探索张成空间</div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="span-canvas"></canvas>
+        </div>
+        <div class="viz-instructions">
+            调整系数 $a$ 和 $b$，观察 $a\vec{v} + b\vec{w}$ 能覆盖哪些区域。
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🔗 3.3 线性相关 vs 线性无关</h2>
+
+    <div class="content-block">
+        <div class="definition-card" style="border-left-color: var(--accent-orange);">
+            <div class="definition-title" style="color: var(--accent-orange);">线性相关 (Linearly Dependent)</div>
+            <p>如果一个向量可以写成其他向量的线性组合，则这组向量<strong>线性相关</strong>。</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9em;">直觉：有"冗余"，有向量是多余的。</p>
+        </div>
+
+        <div class="definition-card" style="margin-top: 1rem; border-left-color: var(--accent-green);">
+            <div class="definition-title" style="color: var(--accent-green);">线性无关 (Linearly Independent)</div>
+            <p>如果没有任何向量是其他向量的线性组合，则<strong>线性无关</strong>。</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9em;">直觉：每个向量都提供了"新方向"。</p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 2rem;">
+            <div class="example-step">
+                <div class="step-number">❌</div>
+                <div class="step-content">
+                    <div class="step-label">线性相关的例子</div>
+                    <p>$(1, 2)$ 和 $(2, 4)$ — 第二个是第一个的 2 倍</p>
+                    <p>$(1, 0, 0)$、$(0, 1, 0)$、$(1, 1, 0)$ — 第三个 = 第一个 + 第二个</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">✓</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="step-label" style="color: var(--accent-green);">线性无关的例子</div>
+                    <p>$(1, 0)$ 和 $(0, 1)$ — 互相不能通过缩放得到</p>
+                    <p>$(1, 2)$ 和 $(3, 5)$ — 不在同一条线上</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 2rem;">
+            <div class="theorem-title">2D 空间的规则</div>
+            <ul style="margin: 0.5rem 0 0 1rem;">
+                <li>2 个线性无关的向量 → 张成整个 2D 平面</li>
+                <li>2 个线性相关的向量 → 只能张成一条线</li>
+                <li>3 个或更多 2D 向量 → 必定线性相关</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用</h2>
+
+    <div class="content-block">
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🚀 问题：飞船能到达目的地吗？</div>
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：飞船有两台引擎，推力方向分别是 $(1, 2)$ 和 $(3, 1)$。</p>
+                <p><strong>问题</strong>：能到达目标点 $(7, 8)$ 吗？</p>
+            </div>
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <p>检查是否线性无关：$(3, 1) \neq k \cdot (1, 2)$ ✓</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <p>解方程：$a(1, 2) + b(3, 1) = (7, 8)$</p>
+                        <p>$a + 3b = 7$，$2a + b = 8$ → $a = 3, b = \frac{4}{3}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>可以！用引擎1推力的3倍 + 引擎2推力的4/3倍。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
+            <div class="deep-title">🏗️ 问题：结构的自由度</div>
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>在结构工程中，<strong>自由度</strong> = 结构能独立移动的方向数。</p>
+                <p>这正是张成空间的<strong>维度</strong>！</p>
+            </div>
+            <p>如果约束方向是线性相关的，说明有冗余约束。</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 总结 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Linear Combination">线性组合</span> = 向量的加权求和</li>
+                <li><span class="term" data-en="Span">张成空间</span> = 所有可能的线性组合</li>
+                <li><span class="term" data-en="Linearly Independent">线性无关</span> = 没有向量是多余的</li>
+                <li>n 个线性无关的向量可以张成 n 维空间</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 2rem;">
+            <div class="connection-title">📍 下一章预告</div>
+            <p>
+                现在我们知道向量可以组合，但如果整个空间都被<strong>变形</strong>了呢？<br>
+                下一章讲<strong>线性变换</strong>——空间的"变形术"！
+            </p>
+        </div>
+    </div>
+</div>

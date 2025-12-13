@@ -1,0 +1,223 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 4 章</span>
+    <h1 class="chapter-title">线性变换——空间的变形 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
+            Transformation: Deforming Space</small></h1>
+
+    <div class="problem-hook"
+        style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.15), rgba(139, 92, 246, 0.15)); padding: 2rem; border-radius: 16px; margin-top: 1.5rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🖼️</div>
+        <p style="font-size: 1.2rem; margin: 0; font-weight: bold;">
+            "图像滤镜是如何实现旋转、倾斜、翻转的？"
+        </p>
+        <p style="margin: 1rem 0 0 0; color: var(--text-muted);">
+            答案是<strong>线性变换</strong>——一种保持"直线"和"原点"的空间变形。
+        </p>
+    </div>
+
+    <div class="vocab-summary" style="margin-top: 2rem;">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">线性变换</span><span class="vocab-en">Linear
+                    Transformation</span></div>
+            <div class="vocab-item"><span class="vocab-zh">旋转</span><span class="vocab-en">Rotation</span></div>
+            <div class="vocab-item"><span class="vocab-zh">缩放</span><span class="vocab-en">Scaling</span></div>
+            <div class="vocab-item"><span class="vocab-zh">剪切</span><span class="vocab-en">Shear</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🔄 4.1 什么是变换？</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">变换 (Transformation)</div>
+            <p><span class="term" data-en="Transformation">变换</span>是一个函数，输入一个向量，输出另一个向量：</p>
+            <div class="math-block">
+                $T: \vec{v} \rightarrow T(\vec{v})$
+            </div>
+            <p style="margin-top: 0.5rem;">可以想象成：每个点都"移动"到了新位置。</p>
+        </div>
+
+        <div class="aha-box" style="margin-top: 2rem;">
+            <div class="aha-title">💡 形象理解</div>
+            <p>
+                想象整个空间是一张<strong>橡皮布</strong>，上面画满了点。<br>
+                变换就是<strong>拉伸、压缩、旋转</strong>这张布——所有点都跟着动！
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📏 4.2 "线性"的含义</h2>
+
+    <div class="content-block">
+        <p>并非所有变换都是"线性"的。线性变换必须满足两个条件：</p>
+
+        <div class="theorem-card" style="margin-top: 1rem;">
+            <div class="theorem-title">线性变换的两个条件</div>
+            <ol style="margin: 0.5rem 0 0 1rem; line-height: 2;">
+                <li><strong>原点不动</strong>：$T(\vec{0}) = \vec{0}$</li>
+                <li><strong>直线保持直</strong>：变换后直线仍是直线（不会弯曲）</li>
+            </ol>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 2rem;">
+            <div class="example-step">
+                <div class="step-number">✓</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="step-label" style="color: var(--accent-green);">线性变换的例子</div>
+                    <ul>
+                        <li>旋转</li>
+                        <li>缩放</li>
+                        <li>剪切（倾斜）</li>
+                        <li>反射（镜像翻转）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">✗</div>
+                <div class="step-content" style="background: rgba(239, 68, 68, 0.1);">
+                    <div class="step-label" style="color: var(--accent-red);">非线性变换的例子</div>
+                    <ul>
+                        <li>平移（原点移动了！）</li>
+                        <li>弯曲、扭曲</li>
+                        <li>鱼眼效果</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 4.3 核心技巧：追踪基向量</h2>
+
+    <div class="content-block">
+        <div class="aha-box">
+            <div class="aha-title">💡 关键洞察</div>
+            <p>
+                要描述一个线性变换，<strong>只需要知道基向量变到哪里</strong>！<br>
+                因为任何向量 $= a\hat{i} + b\hat{j}$，变换后 $= a \cdot T(\hat{i}) + b \cdot T(\hat{j})$
+            </p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 2rem;">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">逆时针旋转 90°</div>
+                    <p>$\hat{i} = (1, 0) \rightarrow (0, 1)$</p>
+                    <p>$\hat{j} = (0, 1) \rightarrow (-1, 0)$</p>
+                    <p style="margin-top: 0.5rem;">那么向量 $(3, 2)$ 变换后：</p>
+                    <p>$3 \cdot (0, 1) + 2 \cdot (-1, 0) = (0, 3) + (-2, 0) = (-2, 3)$</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 交互演示 -->
+    <div class="viz-container" style="margin-top: 2rem;">
+        <div class="viz-header">
+            <div class="viz-title">🕹️ 拖动基向量，观察空间变形</div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="transform-canvas"></canvas>
+        </div>
+        <div class="viz-instructions">
+            拖动 $\hat{i}$ 和 $\hat{j}$，观察整个网格和其他向量如何跟着变化。
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎨 4.4 常见的线性变换</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">缩放 (Scaling)</div>
+                    <p>$\hat{i} \rightarrow (2, 0)$，$\hat{j} \rightarrow (0, 2)$ — 放大 2 倍</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">旋转 (Rotation)</div>
+                    <p>$\hat{i} \rightarrow (\cos\theta, \sin\theta)$，$\hat{j} \rightarrow (-\sin\theta, \cos\theta)$
+                    </p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">剪切 (Shear)</div>
+                    <p>$\hat{i} \rightarrow (1, 0)$，$\hat{j} \rightarrow (1, 1)$ — 倾斜效果</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-label">反射 (Reflection)</div>
+                    <p>$\hat{i} \rightarrow (1, 0)$，$\hat{j} \rightarrow (0, -1)$ — 关于 x 轴翻转</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用</h2>
+
+    <div class="content-block">
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎮 问题：游戏精灵翻转</div>
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>游戏角色面向右边，现在要让它面向左边（水平翻转）。</p>
+            </div>
+            <p>变换：$\hat{i} \rightarrow (-1, 0)$，$\hat{j} \rightarrow (0, 1)$</p>
+            <p>效果：所有 x 坐标取反，y 坐标不变。</p>
+        </div>
+
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
+            <div class="deep-title">🏗️ 问题：坐标变换</div>
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>工程图纸需要旋转 45° 来适应新的坐标系。</p>
+            </div>
+            <p>使用旋转变换公式，$\theta = 45°$，$\cos 45° = \sin 45° = \frac{\sqrt{2}}{2}$</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 总结 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Linear Transformation">线性变换</span>：保持直线和原点的变换</li>
+                <li><strong>核心技巧</strong>：追踪基向量 $\hat{i}, \hat{j}$ 的去向</li>
+                <li>常见变换：旋转、缩放、剪切、反射</li>
+                <li>变换后向量 = 系数不变，基向量变化</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 2rem;">
+            <div class="connection-title">📍 下一章预告</div>
+            <p>
+                追踪基向量的方法很棒，但怎么<strong>存储</strong>一个变换？<br>
+                答案是<strong>矩阵</strong>——变换的"配方卡"！
+            </p>
+        </div>
+    </div>
+</div>

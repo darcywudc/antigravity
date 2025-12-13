@@ -1,0 +1,160 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 14 章</span>
+    <h1 class="chapter-title">高斯消元法 <br><small style="font-size: 0.6em; color: var(--text-muted);">Gaussian Elimination:
+            The Algorithm</small></h1>
+
+    <div class="problem-hook"
+        style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.15), rgba(139, 92, 246, 0.15)); padding: 2rem; border-radius: 16px; margin-top: 1.5rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">💻</div>
+        <p style="font-size: 1.2rem; margin: 0; font-weight: bold;">
+            "计算机如何解几百个未知数的方程组？"
+        </p>
+        <p style="margin: 1rem 0 0 0; color: var(--text-muted);">
+            <strong>高斯消元法</strong>——把方程组化简成"阶梯形"，然后回代求解。
+        </p>
+    </div>
+
+    <div class="vocab-summary" style="margin-top: 2rem;">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">增广矩阵</span><span class="vocab-en">Augmented Matrix</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">行变换</span><span class="vocab-en">Row Operations</span></div>
+            <div class="vocab-item"><span class="vocab-zh">阶梯形</span><span class="vocab-en">Echelon Form</span></div>
+            <div class="vocab-item"><span class="vocab-zh">回代</span><span class="vocab-en">Back Substitution</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📋 14.1 增广矩阵</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">增广矩阵</div>
+            <p>把方程组 $A\vec{x} = \vec{b}$ "打包"成一个矩阵：</p>
+            <div class="math-block">
+                $[A | \vec{b}] = \left[\begin{array}{cc|c}2 & 3 & 8\\1 & -1 & 1\end{array}\right]$
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🔧 14.2 三种行变换</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">交换两行</div>
+                    <p>$R_i \leftrightarrow R_j$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">某行乘以非零常数</div>
+                    <p>$R_i \rightarrow c \cdot R_i$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">某行加另一行的倍数</div>
+                    <p>$R_i \rightarrow R_i + c \cdot R_j$</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 2rem;">
+            <div class="theorem-title">为什么行变换不改变解？</div>
+            <p>每种行变换都是<strong>可逆的</strong>，所以变换后的方程组与原来等价。</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📊 14.3 化为阶梯形</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">解方程组</div>
+                    <div class="math-block">
+                        $\left[\begin{array}{cc|c}2 & 3 & 8\\1 & -1 & 1\end{array}\right]$
+                    </div>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">步骤1</div>
+                <div class="step-content">
+                    <p>$R_2 \rightarrow R_2 - \frac{1}{2}R_1$</p>
+                    <div class="math-block">
+                        $\left[\begin{array}{cc|c}2 & 3 & 8\\0 & -2.5 & -3\end{array}\right]$
+                    </div>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">回代</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <p>第二行：$-2.5y = -3$ → $y = 1.2$</p>
+                    <p>第一行：$2x + 3(1.2) = 8$ → $x = 2.2$</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用</h2>
+
+    <div class="content-block">
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🏗️ 有限元方程求解</div>
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>有限元分析中的刚度矩阵方程 $K \cdot u = F$ 通常用高斯消元求解。</p>
+            </div>
+        </div>
+
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
+            <div class="deep-title">📊 大规模数据处理</div>
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>MATLAB、NumPy 底层都使用优化版的高斯消元（LU分解）。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 总结 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Augmented Matrix">增广矩阵</span>：$[A | \vec{b}]$</li>
+                <li>三种<span class="term" data-en="Row Operations">行变换</span>不改变解</li>
+                <li>目标：化为<span class="term" data-en="Echelon Form">阶梯形</span></li>
+                <li><span class="term" data-en="Back Substitution">回代</span>：从下往上求解</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 2rem;">
+            <div class="connection-title">📍 下一章预告</div>
+            <p>
+                方程组无解时怎么办？<br>
+                <strong>最小二乘法</strong>给出"最接近"的解！
+            </p>
+        </div>
+    </div>
+</div>

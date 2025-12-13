@@ -1,0 +1,162 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 13 章</span>
+    <h1 class="chapter-title">线性方程组的本质 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear Systems:
+            The Geometric View</small></h1>
+
+    <div class="problem-hook"
+        style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.15), rgba(139, 92, 246, 0.15)); padding: 2rem; border-radius: 16px; margin-top: 1.5rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+        <p style="font-size: 1.2rem; margin: 0; font-weight: bold;">
+            "电路中多个回路的电流如何求解？"
+        </p>
+        <p style="margin: 1rem 0 0 0; color: var(--text-muted);">
+            这类问题可以写成<strong>线性方程组</strong>，用矩阵来系统地求解。
+        </p>
+    </div>
+
+    <div class="vocab-summary" style="margin-top: 2rem;">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">线性方程组</span><span class="vocab-en">System of Linear
+                    Equations</span></div>
+            <div class="vocab-item"><span class="vocab-zh">唯一解</span><span class="vocab-en">Unique Solution</span></div>
+            <div class="vocab-item"><span class="vocab-zh">无解</span><span class="vocab-en">No Solution</span></div>
+            <div class="vocab-item"><span class="vocab-zh">无穷解</span><span class="vocab-en">Infinite Solutions</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📐 13.1 从方程组到矩阵</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">方程组</div>
+                    <p>$\begin{cases}2x + 3y = 8\\x - y = 1\end{cases}$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">→</div>
+                <div class="step-content">
+                    <div class="step-label">矩阵形式</div>
+                    <div class="math-block">
+                        $\begin{bmatrix}2 & 3\\1 & -1\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix} =
+                        \begin{bmatrix}8\\1\end{bmatrix}$
+                    </div>
+                    <p>即 $A\vec{x} = \vec{b}$</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box" style="margin-top: 2rem;">
+            <div class="aha-title">💡 几何理解</div>
+            <p>
+                问题变成：什么向量 $\vec{x}$ 经过变换 $A$ 后变成 $\vec{b}$？<br>
+                如果 $A$ 可逆，答案是 $\vec{x} = A^{-1}\vec{b}$
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📊 13.2 解的三种情况</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="step-label" style="color: var(--accent-green);">唯一解</div>
+                    <p>$\det(A) \neq 0$，两条线相交于一点</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content" style="background: rgba(239, 68, 68, 0.1);">
+                    <div class="step-label" style="color: var(--accent-red);">无解</div>
+                    <p>$\vec{b}$ 不在列空间中，两条平行线不相交</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content" style="background: rgba(74, 158, 255, 0.1);">
+                    <div class="step-label" style="color: var(--accent-blue);">无穷解</div>
+                    <p>两条线重合，所有点都是解</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 2rem;">
+            <div class="theorem-title">判断解的情况</div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
+                <tr>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;"><strong>条件</strong></td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;"><strong>解的情况</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">$\det \neq 0$</td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">唯一解</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">$\det = 0$，$\vec{b}$ 不在列空间</td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">无解</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem;">$\det = 0$，$\vec{b}$ 在列空间</td>
+                    <td style="padding: 0.5rem;">无穷解</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用</h2>
+
+    <div class="content-block">
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎮 问题：光线与平面求交</div>
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>光线追踪中，判断光线是否击中某个平面 = 解线性方程组</p>
+            </div>
+        </div>
+
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
+            <div class="deep-title">🏗️ 问题：静力平衡</div>
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p>结构的力平衡方程就是线性方程组</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 总结 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li>线性方程组可以写成 $A\vec{x} = \vec{b}$</li>
+                <li>解的情况取决于 $\det(A)$ 和 $\vec{b}$ 是否在列空间</li>
+                <li>几何上：直线/平面的交点</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 2rem;">
+            <div class="connection-title">📍 下一章预告</div>
+            <p>
+                如何<strong>系统地</strong>解大型方程组？<br>
+                下一章讲 <strong>高斯消元法</strong>——计算机使用的标准算法！
+            </p>
+        </div>
+    </div>
+</div>

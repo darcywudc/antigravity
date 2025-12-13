@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>线性代数直觉掌握 v2.0 | Linear Algebra: Intuition Mastery</title>
+    <meta name="description" content="问题驱动的线性代数课程，适合零基础学习者，覆盖游戏开发、土木工程、数据科学应用。">
+    <link rel="stylesheet" href="css/mastery.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <style>
+        .course-structure {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .part-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .part-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .part-number {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .part-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chapter-grid {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .chapter-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .chapter-link:hover {
+            background: rgba(74, 158, 255, 0.1);
+            border-color: var(--accent-blue);
+            transform: translateX(8px);
+        }
+
+        .chapter-number {
+            min-width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .chapter-info {
+            flex: 1;
+        }
+
+        .chapter-title-zh {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .chapter-title-en {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .chapter-hook {
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            margin-top: 0.25rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(74, 158, 255, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 24px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .feature-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--accent-green);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <span class="version-badge">v2.0 问题驱动版</span>
+            <h1 class="hero-title">线性代数直觉掌握</h1>
+            <p class="hero-subtitle">
+                从零基础到实战应用，17 章完整课程<br>
+                每章从有趣的问题开始，用直觉理解数学
+            </p>
+            <div class="feature-tags">
+                <span class="feature-tag">🎮 游戏开发</span>
+                <span class="feature-tag">🏗️ 土木工程</span>
+                <span class="feature-tag">📊 数据科学</span>
+                <span class="feature-tag">🎯 问题驱动</span>
+                <span class="feature-tag">💡 直觉优先</span>
+            </div>
+        </section>
+
+        <!-- Course Structure -->
+        <div class="course-structure">
+            <!-- Part 1: Foundation -->
+            <section class="part-section">
+                <div class="part-header">
+                    <span class="part-number">第一部分</span>
+                    <h2 class="part-title">向量基础 Foundation</h2>
+                </div>
+                <div class="chapter-grid">
+                    <a href="chapters-v2/ch01-vectors.html" class="chapter-link">
+                        <div class="chapter-number">1</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">向量：有方向的量</div>
+                            <div class="chapter-title-en">Vectors: Quantities with Direction</div>
+                            <div class="chapter-hook">🎮 "游戏角色从 A 走到 B 需要什么信息？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch02-basis.html" class="chapter-link">
+                        <div class="chapter-number">2</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">坐标系统与基向量</div>
+                            <div class="chapter-title-en">Coordinate Systems and Basis</div>
+                            <div class="chapter-hook">🗺️ "GPS 如何描述位置？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch03-span.html" class="chapter-link">
+                        <div class="chapter-number">3</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">线性组合与张成空间</div>
+                            <div class="chapter-title-en">Linear Combinations and Span</div>
+                            <div class="chapter-hook">🚀 "两台引擎能推飞船去哪？"</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Part 2: Transformation -->
+            <section class="part-section">
+                <div class="part-header">
+                    <span class="part-number">第二部分</span>
+                    <h2 class="part-title">矩阵与变换 Transformation</h2>
+                </div>
+                <div class="chapter-grid">
+                    <a href="chapters-v2/ch04-transform.html" class="chapter-link">
+                        <div class="chapter-number">4</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">线性变换——空间的变形</div>
+                            <div class="chapter-title-en">Linear Transformation</div>
+                            <div class="chapter-hook">🖼️ "图像滤镜如何工作？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch05-matrix.html" class="chapter-link">
+                        <div class="chapter-number">5</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">矩阵——变换的配方卡</div>
+                            <div class="chapter-title-en">Matrix: Recipe Card</div>
+                            <div class="chapter-hook">💾 "如何存储一个变换？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch06-multiplication.html" class="chapter-link">
+                        <div class="chapter-number">6</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">矩阵乘法——变换的组合</div>
+                            <div class="chapter-title-en">Matrix Multiplication</div>
+                            <div class="chapter-hook">🤖 "先转肩膀再转肘部怎么算？"</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Part 3: Analysis -->
+            <section class="part-section">
+                <div class="part-header">
+                    <span class="part-number">第三部分</span>
+                    <h2 class="part-title">矩阵分析 Matrix Analysis</h2>
+                </div>
+                <div class="chapter-grid">
+                    <a href="chapters-v2/ch07-determinant.html" class="chapter-link">
+                        <div class="chapter-number">7</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">行列式——面积缩放因子</div>
+                            <div class="chapter-title-en">Determinant</div>
+                            <div class="chapter-hook">📐 "变换后面积变了多少？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch08-inverse.html" class="chapter-link">
+                        <div class="chapter-number">8</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">逆矩阵——撤销变换</div>
+                            <div class="chapter-title-en">Inverse Matrix</div>
+                            <div class="chapter-hook">⏪ "如何恢复原图？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch09-rank.html" class="chapter-link">
+                        <div class="chapter-number">9</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">列空间与秩</div>
+                            <div class="chapter-title-en">Column Space and Rank</div>
+                            <div class="chapter-hook">❓ "为什么有些方程组无解？"</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Part 4: Vector Operations -->
+            <section class="part-section">
+                <div class="part-header">
+                    <span class="part-number">第四部分</span>
+                    <h2 class="part-title">向量运算 Vector Operations</h2>
+                </div>
+                <div class="chapter-grid">
+                    <a href="chapters-v2/ch10-dot-product.html" class="chapter-link">
+                        <div class="chapter-number">10</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">点积——相似度与投影</div>
+                            <div class="chapter-title-en">Dot Product</div>
+                            <div class="chapter-hook">👁️ "敌人在我视野内吗？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch11-cross-product.html" class="chapter-link">
+                        <div class="chapter-number">11</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">叉积——垂直方向与面积</div>
+                            <div class="chapter-title-en">Cross Product</div>
+                            <div class="chapter-hook">🔧 "力矩方向是什么？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch12-3d.html" class="chapter-link">
+                        <div class="chapter-number">12</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">三维空间拓展</div>
+                            <div class="chapter-title-en">3D Space Extension</div>
+                            <div class="chapter-hook">🎮 "VR如何追踪头部旋转？"</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Part 5: Linear Systems -->
+            <section class="part-section">
+                <div class="part-header">
+                    <span class="part-number">第五部分</span>
+                    <h2 class="part-title">线性方程组 Linear Systems</h2>
+                </div>
+                <div class="chapter-grid">
+                    <a href="chapters-v2/ch13-systems.html" class="chapter-link">
+                        <div class="chapter-number">13</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">线性方程组的本质</div>
+                            <div class="chapter-title-en">Linear Systems</div>
+                            <div class="chapter-hook">⚡ "电路中的电流怎么求解？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch14-gaussian.html" class="chapter-link">
+                        <div class="chapter-number">14</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">高斯消元法</div>
+                            <div class="chapter-title-en">Gaussian Elimination</div>
+                            <div class="chapter-hook">💻 "计算机如何解方程？"</div>
+                        </div>
+                    </a>
+                    <a href="chapters-v2/ch15-least-squares.html" class="chapter-link">
+                        <div class="chapter-number">15</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">最小二乘法</div>
+                            <div class="chapter-title-en">Least Squares</div>
+                            <div class="chapter-hook">📈 "数据点不在一条线上怎么拟合？"</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Part 6: Eigenanalysis -->
+            <section class="part-section">
+                <div class="part-header">
+                    <span class="part-number">第六部分</span>
+                    <h2 class="part-title">特征分析 Eigenanalysis</h2>
+                </div>
+                <div class="chapter-grid">
+                    <a href="chapters-v2/ch16-eigen.html" class="chapter-link">
+                        <div class="chapter-number">16</div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">特征值与特征向量</div>
+                            <div class="chapter-title-en">Eigenvalues and Eigenvectors</div>
+                            <div class="chapter-hook">🌪️ "哪些方向的旗杆不会歪斜？"</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Part 7: Capstone -->
+            <section class="part-section"
+                style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(74, 158, 255, 0.1));">
+                <div class="part-header">
+                    <span class="part-number"
+                        style="background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));">终章</span>
+                    <h2 class="part-title">综合实战 Capstone</h2>
+                </div>
+                <div class="chapter-grid">
+                    <a href="chapters-v2/ch17-capstone.html" class="chapter-link"
+                        style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="chapter-number"
+                            style="background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));">17
+                        </div>
+                        <div class="chapter-info">
+                            <div class="chapter-title-zh">综合实战——完整项目</div>
+                            <div class="chapter-title-en">Complete Projects</div>
+                            <div class="chapter-hook">🎓 桁架分析 | 图像处理 | 推荐系统 | 物理引擎</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer style="text-align: center; padding: 3rem 0; color: var(--text-muted);">
+            <p>Linear Algebra: Intuition Mastery v2.0</p>
+            <p style="font-size: 0.9rem;">问题驱动 · 直觉优先 · 三领域应用</p>
+        </footer>
+    </div>
+</body>
+
+</html>
