@@ -1,0 +1,568 @@
+<div class="chapter-header fade-in">
+    <span class="chapter-badge">第 1 章</span>
+    <h1 class="chapter-title">向量：有方向的量 <br><small style="font-size: 0.6em; color: var(--text-muted);">Vectors:
+            Quantities with Direction</small></h1>
+
+    <!-- 引入问题 -->
+    <div class="problem-hook"
+        style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.15), rgba(139, 92, 246, 0.15)); padding: 2rem; border-radius: 16px; margin-top: 1.5rem;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎮</div>
+        <p style="font-size: 1.2rem; margin: 0; font-weight: bold;">
+            "游戏角色要从 A 点走到 B 点，需要什么信息？"
+        </p>
+        <p style="margin: 1rem 0 0 0; color: var(--text-muted);">
+            只知道"走 5 米"够吗？还需要知道<strong>往哪个方向</strong>走！<br>
+            这就是向量的核心——同时包含<strong>大小</strong>和<strong>方向</strong>。
+        </p>
+    </div>
+
+    <div class="vocab-summary" style="margin-top: 2rem;">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">向量</span><span class="vocab-en">Vector</span></div>
+            <div class="vocab-item"><span class="vocab-zh">标量</span><span class="vocab-en">Scalar</span></div>
+            <div class="vocab-item"><span class="vocab-zh">向量加法</span><span class="vocab-en">Vector Addition</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">数乘</span><span class="vocab-en">Scalar Multiplication</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">模/长度</span><span class="vocab-en">Magnitude</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 1: 什么是向量 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 1.1 从生活说起：标量 vs 向量</h2>
+
+    <div class="content-block">
+        <p>在日常生活中，有些量只需要<strong>一个数字</strong>就能完全描述：</p>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">只需要一个数字的量（标量）</div>
+                    <ul>
+                        <li>温度：25°C</li>
+                        <li>价格：100 元</li>
+                        <li>时间：3 小时</li>
+                        <li>重量：50 公斤</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p style="margin-top: 1.5rem;">
+            但还有些量，<strong>只说一个数字是不够的</strong>：
+        </p>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">需要方向的量（向量）</div>
+                    <ul>
+                        <li>速度："向北 60 km/h"</li>
+                        <li>力："向右推 10 牛顿"</li>
+                        <li>位移："向东走 500 米"</li>
+                        <li>风："西北风 5 级"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="definition-card" style="margin-top: 2rem;">
+            <div class="definition-title">定义：向量</div>
+            <p style="font-size: 1.1rem;">
+                <span class="term" data-en="Vector">向量</span> =
+                同时拥有<strong>大小</strong>（magnitude）和<strong>方向</strong>（direction）的量
+            </p>
+            <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                用箭头表示：箭头的<strong>长度</strong>表示大小，<strong>指向</strong>表示方向。
+            </p>
+        </div>
+
+        <!-- 对比表格 -->
+        <div class="deep-dive" style="margin-top: 2rem;">
+            <div class="deep-title">📋 标量 vs 向量 对比表</div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                <thead>
+                    <tr style="background: rgba(74, 158, 255, 0.1); text-align: left;">
+                        <th style="padding: 0.8rem; border-bottom: 2px solid var(--accent-blue);">场景</th>
+                        <th style="padding: 0.8rem; border-bottom: 2px solid var(--accent-blue);">标量 (Scalar)</th>
+                        <th style="padding: 0.8rem; border-bottom: 2px solid var(--accent-blue);">向量 (Vector)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">🏃 跑步</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">速度 5 m/s</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">向东 5 m/s</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">💨 刮风</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">风速 10 m/s</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">西北风 10 m/s</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">🏗️ 推力</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">100 牛顿</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid #333;">向上 100 牛顿</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem;">🎮 游戏</td>
+                        <td style="padding: 0.6rem;">生命值 100</td>
+                        <td style="padding: 0.6rem;">位置 (50, 120)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 常见误区 -->
+    <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+        <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区：距离 vs 位移</div>
+        <p>
+            <strong>距离</strong>是标量（只有大小），<strong>位移</strong>是向量（有方向）。
+        </p>
+        <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+            例如：绕操场跑一圈，距离是 400 米，但位移是 0（因为回到了起点）！
+        </p>
+    </div>
+
+    <!-- 思考题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">🤔 想一想</div>
+        <p><strong>下列哪些是向量？哪些是标量？</strong></p>
+        <ol>
+            <li>飞机的航向</li>
+            <li>水的温度</li>
+            <li>"往东北方向走 1.8 公里"</li>
+        </ol>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <ol>
+                    <li><strong>向量</strong> — 航向有方向（如"向北 30°"）</li>
+                    <li><strong>标量</strong> — 温度只有数值，没有方向</li>
+                    <li><strong>向量</strong> — 有完整的方向信息 + 大小（1.8km）</li>
+                </ol>
+            </div>
+        </details>
+    </div>
+</div>
+
+<!-- ==================== SECTION 2: 三种视角 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">👁️ 1.2 三种眼光看向量</h2>
+
+    <div class="content-block">
+        <p>不同领域的人，用不同的方式理解向量。这三种视角都对，而且相互补充：</p>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">🎮</div>
+                <div class="step-content">
+                    <div class="step-label">游戏程序员的视角：坐标</div>
+                    <p>向量 = <strong>一组有序的数字</strong>，如 $(3, 4)$ 或 $(x, y, z)$</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        "角色在位置 (100, 200)，需要移动 (50, -30)"
+                    </p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">📐</div>
+                <div class="step-content">
+                    <div class="step-label">几何学家的视角：箭头</div>
+                    <p>向量 = <strong>一根有方向的箭头</strong></p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        "从原点指向某个位置的箭头"
+                    </p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">🏗️</div>
+                <div class="step-content">
+                    <div class="step-label">工程师的视角：物理量</div>
+                    <p>向量 = <strong>有方向的物理量</strong>（力、速度、位移...）</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        "结构受到 (10, -5) 千牛的外力"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box" style="margin-top: 2rem;">
+            <div class="aha-title">💡 关键洞察</div>
+            <p>
+                这三种视角描述的是<strong>同一个东西</strong>！<br>
+                线性代数的威力在于：同一套数学工具可以处理游戏坐标、物理力、数据点...
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3: 向量的表示 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">✍️ 1.3 向量怎么写？</h2>
+
+    <div class="content-block">
+        <p>向量有几种常见的书写方式：</p>
+
+        <div class="deep-dive" style="margin-top: 1rem;">
+            <div class="deep-title">📝 常见表示法</div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                <tr>
+                    <td style="padding: 0.8rem; border-bottom: 1px solid #333; width: 40%;">
+                        <strong>箭头符号</strong>
+                    </td>
+                    <td style="padding: 0.8rem; border-bottom: 1px solid #333;">
+                        $\vec{v}$ 或 $\overrightarrow{AB}$
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.8rem; border-bottom: 1px solid #333;">
+                        <strong>粗体字母</strong>
+                    </td>
+                    <td style="padding: 0.8rem; border-bottom: 1px solid #333;">
+                        $\mathbf{v}$（教材中常见）
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.8rem; border-bottom: 1px solid #333;">
+                        <strong>列向量（竖着写）</strong>
+                    </td>
+                    <td style="padding: 0.8rem; border-bottom: 1px solid #333;">
+                        $\begin{bmatrix}3\\4\end{bmatrix}$
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.8rem;">
+                        <strong>行向量（横着写）</strong>
+                    </td>
+                    <td style="padding: 0.8rem;">
+                        $(3, 4)$ 或 $[3, 4]$
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 2rem;">
+            <div class="theorem-title">约定</div>
+            <p>
+                本课程中，<strong>默认使用列向量</strong>：$\vec{v} = \begin{bmatrix}x\\y\end{bmatrix}$
+            </p>
+            <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                向量的<strong>分量</strong> (components)：$x$ 叫做 x 分量，$y$ 叫做 y 分量。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4: 向量加法 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">➕ 1.4 向量加法：首尾相接</h2>
+
+    <div class="content-block">
+        <!-- 问题引入 -->
+        <div style="background: rgba(74, 158, 255, 0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+            <p style="margin: 0;"><strong>🎮 问题</strong>：游戏角色先向右走 3 步，再向上走 4 步，最终在哪里？</p>
+        </div>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">用向量表示两次移动</div>
+                    <p>向右 3 步：$\vec{v} = \begin{bmatrix}3\\0\end{bmatrix}$</p>
+                    <p>向上 4 步：$\vec{w} = \begin{bmatrix}0\\4\end{bmatrix}$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">向量加法：对应分量相加</div>
+                    <div class="math-block">
+                        $\vec{v} + \vec{w} = \begin{bmatrix}3\\0\end{bmatrix} + \begin{bmatrix}0\\4\end{bmatrix} =
+                        \begin{bmatrix}3+0\\0+4\end{bmatrix} = \begin{bmatrix}3\\4\end{bmatrix}$
+                    </div>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">✓</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="step-label" style="color: var(--accent-green);">答案</div>
+                    <p>最终位置是 $(3, 4)$</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="definition-card" style="margin-top: 2rem;">
+            <div class="definition-title">向量加法公式</div>
+            <div class="math-block">
+                $\begin{bmatrix}a_1\\a_2\end{bmatrix} + \begin{bmatrix}b_1\\b_2\end{bmatrix} = \begin{bmatrix}a_1 +
+                b_1\\a_2 + b_2\end{bmatrix}$
+            </div>
+            <p style="margin-top: 1rem;"><strong>几何意义</strong>：将两个箭头<strong>首尾相接</strong>，从第一个箭头的起点到第二个箭头的终点。</p>
+        </div>
+
+        <div class="aha-box" style="margin-top: 2rem;">
+            <div class="aha-title">💡 直觉理解</div>
+            <p>
+                向量加法就像<strong>两段旅程的组合</strong>：<br>
+                先走 $\vec{v}$，再走 $\vec{w}$，等于直接走 $\vec{v} + \vec{w}$。
+            </p>
+        </div>
+    </div>
+
+    <!-- 交互演示 -->
+    <div class="viz-container" style="margin-top: 2rem;">
+        <div class="viz-header">
+            <div class="viz-title">🕹️ 拖动体验向量加法</div>
+            <div class="viz-controls">
+                <button class="control-btn" id="add-reset-btn">重置</button>
+            </div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="add-canvas"></canvas>
+        </div>
+        <div class="viz-instructions">
+            拖动<span style="color:#4a9eff">蓝色</span>和<span style="color:#f97316">橙色</span>箭头，观察<span
+                style="color:#10b981">绿色</span>的和向量如何变化。
+        </div>
+        <div id="add-calc-display"
+            style="text-align: center; font-family: monospace; margin-top: 0.5rem; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 5: 数乘 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">✖️ 1.5 数乘：缩放向量</h2>
+
+    <div class="content-block">
+        <!-- 问题引入 -->
+        <div style="background: rgba(249, 115, 22, 0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+            <p style="margin: 0;"><strong>🏗️ 问题</strong>：一个力的大小是另一个力的 2 倍，方向相同，怎么表示？</p>
+        </div>
+
+        <div class="definition-card">
+            <div class="definition-title">数乘（标量乘法）</div>
+            <p>用一个数字（标量）乘以向量的<strong>每个分量</strong>：</p>
+            <div class="math-block">
+                $c \cdot \begin{bmatrix}a_1\\a_2\end{bmatrix} = \begin{bmatrix}c \cdot a_1\\c \cdot a_2\end{bmatrix}$
+            </div>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 1.5rem;">
+            <div class="example-step">
+                <div class="step-number">例1</div>
+                <div class="step-content">
+                    <div class="step-label">放大 2 倍</div>
+                    <p>$2 \cdot \begin{bmatrix}3\\4\end{bmatrix} = \begin{bmatrix}6\\8\end{bmatrix}$</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">方向不变，长度变为 2 倍</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">例2</div>
+                <div class="step-content">
+                    <div class="step-label">缩小到一半</div>
+                    <p>$0.5 \cdot \begin{bmatrix}3\\4\end{bmatrix} = \begin{bmatrix}1.5\\2\end{bmatrix}$</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">方向不变，长度减半</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">例3</div>
+                <div class="step-content">
+                    <div class="step-label">反向</div>
+                    <p>$-1 \cdot \begin{bmatrix}3\\4\end{bmatrix} = \begin{bmatrix}-3\\-4\end{bmatrix}$</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);"><strong>方向相反</strong>，长度不变</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 2rem;">
+            <div class="theorem-title">数乘的几何效果</div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
+                <tr>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">$c > 1$</td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">→ 拉长</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">$0 < c < 1$</td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">→ 缩短</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">$c = 0$</td>
+                    <td style="padding: 0.5rem; border-bottom: 1px solid #333;">→ 变成零向量</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem;">$c < 0$</td>
+                    <td style="padding: 0.5rem;">→ <strong>反向</strong> + 缩放</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 6: 向量的模 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📏 1.6 向量的长度（模）</h2>
+
+    <div class="content-block">
+        <div class="definition-card">
+            <div class="definition-title">向量的模 (Magnitude)</div>
+            <p>向量 $\vec{v} = \begin{bmatrix}x\\y\end{bmatrix}$ 的长度（模）记作 $|\vec{v}|$ 或 $\|\vec{v}\|$：</p>
+            <div class="math-block">
+                $|\vec{v}| = \sqrt{x^2 + y^2}$
+            </div>
+            <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                这就是<strong>勾股定理</strong>！向量的长度 = 斜边长度。
+            </p>
+        </div>
+
+        <div class="example-ladder" style="margin-top: 1.5rem;">
+            <div class="example-step">
+                <div class="step-number">例</div>
+                <div class="step-content">
+                    <div class="step-label">计算 $\vec{v} = (3, 4)$ 的长度</div>
+                    <p>$|\vec{v}| = \sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = 5$</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="deep-dive" style="margin-top: 2rem;">
+            <div class="deep-title">📐 3D 向量的模</div>
+            <p>在三维空间中：</p>
+            <div class="math-block">
+                $|\vec{v}| = \sqrt{x^2 + y^2 + z^2}$
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用向量解决真实问题</h2>
+
+    <div class="content-block">
+        <!-- 问题 1：游戏角色移动 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎮 问题 1：游戏角色路径计算</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：游戏角色从 A$(2, 3)$ 走到 B$(8, 11)$，移动速度是 2 单位/秒。</p>
+                <p><strong>问题</strong>：需要多长时间？方向向量是什么？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">求位移向量</div>
+                        <p>$\vec{AB} = B - A = (8-2, 11-3) = (6, 8)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">求距离（向量的模）</div>
+                        <p>$|\vec{AB}| = \sqrt{6^2 + 8^2} = \sqrt{36+64} = \sqrt{100} = 10$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>时间 = 距离 ÷ 速度 = 10 ÷ 2 = <strong>5 秒</strong></p>
+                        <p>单位方向向量 = $\frac{1}{10}(6, 8) = (0.6, 0.8)$</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 2：力的合成 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">🏗️ 问题 2：结构受力分析</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一个节点受到两个力：$\vec{F_1} = (30, 40)$ 牛顿，$\vec{F_2} = (-10, 20)$ 牛顿。</p>
+                <p><strong>问题</strong>：合力大小是多少？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">求合力（向量加法）</div>
+                        <p>$\vec{F} = \vec{F_1} + \vec{F_2} = (30-10, 40+20) = (20, 60)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>$|\vec{F}| = \sqrt{20^2 + 60^2} = \sqrt{400+3600} = \sqrt{4000} \approx 63.2$ 牛顿</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：数据科学 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">📊 问题 3：数据点的表示</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一名学生的成绩可以表示为向量 $(数学, 英语, 物理) = (85, 90, 78)$。</p>
+                <p><strong>思考</strong>：这个"向量"的"长度"有意义吗？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">洞察</div>
+                        <p>在数据科学中，向量不一定是"物理箭头"，但数学运算完全一样！</p>
+                        <p>两个学生成绩向量的"距离"可以表示他们的<strong>相似程度</strong>。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 总结 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="vocab-summary">
+            <div class="vocab-title">词汇复习</div>
+            <div class="vocab-list">
+                <div class="vocab-item"><span class="vocab-zh">向量</span><span class="vocab-en">大小+方向</span></div>
+                <div class="vocab-item"><span class="vocab-zh">标量</span><span class="vocab-en">只有大小</span></div>
+                <div class="vocab-item"><span class="vocab-zh">向量加法</span><span class="vocab-en">分量相加</span></div>
+                <div class="vocab-item"><span class="vocab-zh">数乘</span><span class="vocab-en">缩放向量</span></div>
+                <div class="vocab-item"><span class="vocab-zh">模</span><span class="vocab-en">向量长度</span></div>
+            </div>
+        </div>
+
+        <div class="theorem-card" style="margin-top: 2rem;">
+            <div class="theorem-title">核心要点</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><span class="term" data-en="Vector">向量</span> = 既有大小又有方向的量</li>
+                <li><strong>向量加法</strong>：对应分量相加，几何上是首尾相接</li>
+                <li><strong>数乘</strong>：缩放向量，负数会反向</li>
+                <li><strong>模</strong>（长度）：$|\vec{v}| = \sqrt{x^2 + y^2}$</li>
+            </ol>
+        </div>
+
+        <div class="connection-box" style="margin-top: 2rem;">
+            <div class="connection-title">📍 下一章预告</div>
+            <p>
+                我们用 $(3, 4)$ 这样的坐标表示向量，但这个坐标依赖于<strong>坐标系</strong>的选择。<br>
+                同一个向量，在不同坐标系下有不同的"数字表示"——这就是<strong>基向量</strong>的概念。
+            </p>
+        </div>
+    </div>
+</div>
