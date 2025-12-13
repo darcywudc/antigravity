@@ -279,6 +279,149 @@
         </div>
     </div>
 
+    <!-- ==================== 实战应用 ==================== -->
+    <div class="section fade-in">
+        <h2 class="section-title">🎯 实战应用：用点积解决真实问题</h2>
+
+        <div class="content-block">
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                点积是检测"相似性"和"投影"的核心工具，广泛应用于AI推荐、游戏物理和计算机视觉。
+            </p>
+
+            <!-- 问题 1：判断敌人在前方还是后方 -->
+            <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+                <div class="deep-title">🎮 问题 1：敌人在我前方还是后方？</div>
+
+                <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p><strong>场景</strong>：你正在开发一款射击游戏。玩家面朝方向是 $\vec{f} = (1, 0)$（向右）。</p>
+                    <p>敌人相对于玩家的位置向量是 $\vec{e} = (3, 2)$。</p>
+                    <p><strong>问题</strong>：敌人在玩家的前方还是后方？</p>
+                </div>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">计算点积</div>
+                            <div class="math-block">
+                                $\vec{f} \cdot \vec{e} = 1 \times 3 + 0 \times 2 = 3$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案</div>
+                            <p>点积 $> 0$ → 敌人在<strong>前方</strong>！</p>
+                            <p style="font-size: 0.9em; color: var(--text-muted);">如果点积 < 0，敌人在后方；如果=0，敌人在正侧面。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 问题 2：投影（阴影长度） -->
+            <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+                <div class="deep-title">☀️ 问题 2：阴影有多长？</div>
+
+                <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p><strong>场景</strong>：一根杆子用向量 $\vec{v} = (3, 4)$ 表示（斜插在地上）。</p>
+                    <p>阳光沿水平方向照射，地面是 x 轴。</p>
+                    <p><strong>问题</strong>：杆子在地上的阴影有多长？</p>
+                </div>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">阴影 = 杆子在 x 轴上的投影</div>
+                            <p>x 轴的单位向量是 $\hat{u} = (1, 0)$</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-label">投影长度 = 点积</div>
+                            <div class="math-block">
+                                $\vec{v} \cdot \hat{u} = 3 \times 1 + 4 \times 0 = 3$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案</div>
+                            <p>阴影长度是 <strong>3 个单位</strong>。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 问题 3：相似度 -->
+            <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+                <div class="deep-title">🎵 问题 3：两首歌有多相似？</div>
+
+                <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p><strong>场景</strong>：音乐推荐系统把每首歌表示为一个"特征向量"。</p>
+                    <ul>
+                        <li>歌曲 A：$\vec{a} = (0.8, 0.6, 0)$（流行、欢快、无说唱）</li>
+                        <li>歌曲 B：$\vec{b} = (0.6, 0.8, 0)$（流行、欢快、无说唱）</li>
+                        <li>歌曲 C：$\vec{c} = (0, 0, 1)$（纯说唱）</li>
+                    </ul>
+                    <p><strong>问题</strong>：A 和 B 相似，还是 A 和 C 相似？</p>
+                </div>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">计算 $\vec{a} \cdot \vec{b}$</div>
+                            <div class="math-block">
+                                $0.8 \times 0.6 + 0.6 \times 0.8 + 0 \times 0 = 0.48 + 0.48 = 0.96$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-label">计算 $\vec{a} \cdot \vec{c}$</div>
+                            <div class="math-block">
+                                $0.8 \times 0 + 0.6 \times 0 + 0 \times 1 = 0$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案</div>
+                            <p>A·B = 0.96（很相似），A·C = 0（完全不同）</p>
+                            <p>推荐系统会把 B 推荐给喜欢 A 的用户！</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aha-box" style="margin-top: 1rem;">
+                    <div class="aha-title">💡 这就是"余弦相似度"</div>
+                    <p>当向量都是单位长度时，点积就等于余弦相似度。ChatGPT 的搜索功能也用这个原理来找相关内容！</p>
+                </div>
+            </div>
+
+            <!-- 挑战题 -->
+            <div class="challenge-box" style="margin-top: 2rem;">
+                <div class="challenge-title">🚀 挑战：垂直检测</div>
+                <p><strong>问题</strong>：向量 $\vec{a} = (2, 3)$ 和 $\vec{b} = (3, -2)$ 垂直吗？</p>
+                <details style="margin-top: 1rem;">
+                    <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                    <div
+                        style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                        <p>$\vec{a} \cdot \vec{b} = 2 \times 3 + 3 \times (-2) = 6 - 6 = 0$</p>
+                        <p>点积为 0 → <strong>是的，它们完全垂直！</strong></p>
+                    </div>
+                </details>
+            </div>
+
+        </div>
+    </div>
+
     <!-- 总结 -->
     <div class="section fade-in">
         <h2 class="section-title">🎯 本章收获</h2>

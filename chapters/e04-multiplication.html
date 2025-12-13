@@ -339,6 +339,164 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用矩阵乘法解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            矩阵乘法的核心价值：把多个变换"打包"成一个，大幅提升计算效率。
+        </p>
+
+        <!-- 问题 1：游戏角色动画 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎮 问题 1：角色"转身攻击"动画</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：游戏角色需要做一个"转身攻击"：先<strong>逆时针旋转 90°</strong>，再向前<strong>冲刺（缩放 2 倍）</strong>。</p>
+                <p>角色手中的剑尖初始位置是 $(1, 0)$。</p>
+                <p><strong>问题</strong>：动画结束时，剑尖在哪里？用矩阵乘法一步算出！</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">定义两个变换矩阵</div>
+                        <div class="math-block">
+                            $R = \begin{bmatrix}0 & -1\\1 & 0\end{bmatrix} \text{（旋转90°）}, \quad S = \begin{bmatrix}2 &
+                            0\\0 & 2\end{bmatrix} \text{（缩放2倍）}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算复合变换 $M = S \cdot R$（先R后S）</div>
+                        <div class="math-block">
+                            $M = \begin{bmatrix}2 & 0\\0 & 2\end{bmatrix} \begin{bmatrix}0 & -1\\1 & 0\end{bmatrix} =
+                            \begin{bmatrix}0 & -2\\2 & 0\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">一步到位：$M \cdot P$</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}0 & -2\\2 & 0\end{bmatrix} \begin{bmatrix}1\\0\end{bmatrix} =
+                            \begin{bmatrix}0\\2\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>剑尖最终在 <strong>(0, 2)</strong>。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 为什么这很重要</div>
+                <p>一个角色可能有成千上万个顶点。预先计算复合矩阵 $M$，只需要对每个顶点做<strong>一次</strong>矩阵乘法，而不是两次。这节省了一半的计算！</p>
+            </div>
+        </div>
+
+        <!-- 问题 2：顺序的重要性 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">⚠️ 问题 2：顺序错了会怎样？</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：同样是旋转和缩放，如果顺序颠倒（先缩放再旋转），结果会一样吗？</p>
+                <p>继续用上面的例子，计算 $R \cdot S$（先S后R）对点 $(1, 0)$ 的作用。</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">计算 $R \cdot S$</div>
+                        <div class="math-block">
+                            $R \cdot S = \begin{bmatrix}0 & -1\\1 & 0\end{bmatrix} \begin{bmatrix}2 & 0\\0 &
+                            2\end{bmatrix} = \begin{bmatrix}0 & -2\\2 & 0\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">惊喜发现！</div>
+                        <p>这个例子里 $SR = RS$！因为<strong>均匀缩放</strong>（各方向相同）和旋转可以交换。但对于剪切等非均匀变换，顺序很重要。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：机器人手臂 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🤖 问题 3：机器人手臂（多关节）</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一个简单的机器人有两个关节：</p>
+                <ul>
+                    <li>肩膀：旋转 45°</li>
+                    <li>肘部：再旋转 30°</li>
+                </ul>
+                <p><strong>问题</strong>：手指尖相对于肩膀的总旋转是多少？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">理解：每个关节是一个旋转矩阵</div>
+                        <p>肩膀：$R_{45}$，肘部：$R_{30}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">总变换 = 矩阵连乘</div>
+                        <p>总变换 $= R_{30} \cdot R_{45}$（从内到外，从肩到手）</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>多个旋转矩阵相乘 = 角度相加！$R_{30} \cdot R_{45} = R_{75}$</p>
+                        <p>手指尖相对于肩膀总共旋转了 <strong>75°</strong>。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是"正向运动学"</div>
+                <p>在机器人学和 3D 动画中，计算多关节末端位置（比如手指尖）的技术叫做<strong>正向运动学 (Forward Kinematics)</strong>，核心就是矩阵连乘！</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：三重变换</div>
+            <p><strong>问题</strong>：先旋转 90°，再水平翻转，再缩放 0.5 倍。点 $(2, 0)$ 最终在哪？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>旋转 90°：$(2, 0) \rightarrow (0, 2)$</p>
+                    <p>水平翻转：$(0, 2) \rightarrow (0, 2)$（y 轴上的点不变）</p>
+                    <p>缩放 0.5：$(0, 2) \rightarrow (0, 1)$</p>
+                    <p>答案：<strong>(0, 1)</strong></p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>

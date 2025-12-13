@@ -341,6 +341,140 @@
         </div>
     </div>
 
+    <!-- ==================== 实战应用 ==================== -->
+    <div class="section fade-in">
+        <h2 class="section-title">🎯 实战应用：用行列式解决真实问题</h2>
+
+        <div class="content-block">
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                行列式不只是一个数学概念——它是计算机图形、物理模拟和工程设计的基础工具。
+            </p>
+
+            <!-- 问题 1：计算面积 -->
+            <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+                <div class="deep-title">📐 问题 1：三角形面积</div>
+
+                <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p><strong>场景</strong>：在一个2D游戏地图上，你需要知道三个点围成的三角形面积。</p>
+                    <p>三角形顶点：A$(0, 0)$、B$(4, 0)$、C$(2, 3)$</p>
+                    <p><strong>问题</strong>：这个三角形的面积是多少？</p>
+                </div>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">以 A 为原点，构建两个边向量</div>
+                            <p>$\vec{AB} = B - A = (4, 0)$，$\vec{AC} = C - A = (2, 3)$</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-label">计算行列式（平行四边形面积）</div>
+                            <div class="math-block">
+                                $\det \begin{bmatrix}4 & 2\\0 & 3\end{bmatrix} = 4 \times 3 - 2 \times 0 = 12$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案</div>
+                            <p>三角形面积 = 平行四边形面积 ÷ 2 = $12 ÷ 2 = \mathbf{6}$ 平方单位</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aha-box" style="margin-top: 1rem;">
+                    <div class="aha-title">💡 这就是"叉积求面积"</div>
+                    <p>在 3D 图形中，这个方法被广泛用于计算三角形网格的表面积。一个 3D 模型可能有几百万个三角形！</p>
+                </div>
+            </div>
+
+            <!-- 问题 2：判断矩阵可逆性 -->
+            <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+                <div class="deep-title">🔍 问题 2：这个变换能撤销吗？</div>
+
+                <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p><strong>场景</strong>：你有一个图像滤镜矩阵 $A = \begin{bmatrix}2 & 4\\1 & 2\end{bmatrix}$。</p>
+                    <p><strong>问题</strong>：应用这个滤镜后，能否"逆向操作"恢复原图？</p>
+                </div>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">计算行列式</div>
+                            <div class="math-block">
+                                $\det(A) = 2 \times 2 - 4 \times 1 = 4 - 4 = 0$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(239, 68, 68, 0.1);">
+                            <div class="step-label" style="color: #ef4444;">答案：不能！</div>
+                            <p>det = 0 意味着这个矩阵把 2D 空间压扁成了 1D。信息丢失了，无法恢复！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 问题 3：判断点的顺时针/逆时针 -->
+            <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+                <div class="deep-title">🔄 问题 3：点的顺序（顺时针还是逆时针？）</div>
+
+                <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p><strong>场景</strong>：在 3D 图形渲染中，需要知道一个三角形的顶点是顺时针还是逆时针排列（用于"背面剔除"）。</p>
+                    <p>三角形顶点按顺序：A$(0, 0)$、B$(1, 0)$、C$(0, 1)$</p>
+                </div>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">计算边向量行列式</div>
+                            <div class="math-block">
+                                $\det \begin{bmatrix}1 & 0\\0 & 1\end{bmatrix} = 1 > 0$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案</div>
+                            <p>det > 0 → <strong>逆时针</strong>（面朝观察者）</p>
+                            <p style="font-size: 0.9em; color: var(--text-muted);">如果 det < 0，则为顺时针（背对观察者，可以剔除不渲染）。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aha-box" style="margin-top: 1rem;">
+                    <div class="aha-title">💡 这就是"背面剔除"</div>
+                    <p>GPU 用行列式的符号来判断三角形是否朝向相机。如果背对相机，就不绘制，节省一半的渲染时间！</p>
+                </div>
+            </div>
+
+            <!-- 挑战题 -->
+            <div class="challenge-box" style="margin-top: 2rem;">
+                <div class="challenge-title">🚀 挑战：四边形面积</div>
+                <p><strong>问题</strong>：四边形 A$(0,0)$, B$(3,0)$, C$(4,2)$, D$(1,2)$ 的面积是多少？（提示：分成两个三角形）</p>
+                <details style="margin-top: 1rem;">
+                    <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                    <div
+                        style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                        <p>三角形 ABD：$\frac{1}{2}|det| = \frac{1}{2}|3 \times 2 - 0 \times 1| = 3$</p>
+                        <p>三角形 BCD：$\frac{1}{2}|det| = \frac{1}{2}|(4-3)(2-0) - (2-0)(1-0)| = \frac{1}{2}|2 - 2| = 0$?
+                        </p>
+                        <p>（实际上应该用 $\vec{BC} \times \vec{BD}$）答案：总面积 = <strong>6</strong> 平方单位</p>
+                    </div>
+                </details>
+            </div>
+
+        </div>
+    </div>
+
     <!-- 总结 -->
     <div class="section fade-in">
         <h2 class="section-title">🎯 本章收获</h2>
