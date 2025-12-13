@@ -315,23 +315,20 @@
         </div>
     </div>
 
-    <!-- 交互演示 -->
-    <div class="viz-container" style="margin-top: 2rem;">
-        <div class="viz-header">
-            <div class="viz-title">🕹️ 拖动体验向量加法</div>
-            <div class="viz-controls">
-                <button class="control-btn" id="add-reset-btn">重置</button>
-            </div>
-        </div>
-        <div class="canvas-wrapper">
-            <canvas id="add-canvas"></canvas>
-        </div>
-        <div class="viz-instructions">
-            拖动<span style="color:#4a9eff">蓝色</span>和<span style="color:#f97316">橙色</span>箭头，观察<span
-                style="color:#10b981">绿色</span>的和向量如何变化。
-        </div>
-        <div id="add-calc-display"
-            style="text-align: center; font-family: monospace; margin-top: 0.5rem; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+    <!-- 图示说明 -->
+    <div class="aha-box" style="margin-top: 2rem;">
+        <div class="aha-title">� 向量加法图示</div>
+        <div
+            style="text-align: center; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 1rem;">
+            <p style="font-size: 1.5rem; margin: 0 0 1rem 0;">
+                <span style="color:#4a9eff">→ $\vec{v}$</span> +
+                <span style="color:#f97316">→ $\vec{w}$</span> =
+                <span style="color:#10b981">→ $\vec{v}+\vec{w}$</span>
+            </p>
+            <p style="margin: 0; color: var(--text-muted);">
+                首尾相接：把 $\vec{w}$ 的起点放在 $\vec{v}$ 的终点，<br>
+                从 $\vec{v}$ 的起点到 $\vec{w}$ 的终点就是和向量。
+            </p>
         </div>
     </div>
 </div>

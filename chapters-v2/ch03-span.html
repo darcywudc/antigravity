@@ -98,16 +98,18 @@
         </div>
     </div>
 
-    <!-- 交互演示 -->
-    <div class="viz-container" style="margin-top: 2rem;">
-        <div class="viz-header">
-            <div class="viz-title">🕹️ 探索张成空间</div>
-        </div>
-        <div class="canvas-wrapper">
-            <canvas id="span-canvas"></canvas>
-        </div>
-        <div class="viz-instructions">
-            调整系数 $a$ 和 $b$，观察 $a\vec{v} + b\vec{w}$ 能覆盖哪些区域。
+    <!-- 图示说明 -->
+    <div class="aha-box" style="margin-top: 2rem;">
+        <div class="aha-title">📐 张成空间图示</div>
+        <div
+            style="text-align: center; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 1rem;">
+            <p style="margin: 0 0 1rem 0;">
+                $\text{span}(\vec{v}, \vec{w}) = a\vec{v} + b\vec{w}$，$a, b$ 取遍所有实数
+            </p>
+            <p style="margin: 0; color: var(--text-muted);">
+                • 两个<strong>不共线</strong>的向量 → 张成整个平面<br>
+                • 两个<strong>共线</strong>的向量 → 只能张成一条线
+            </p>
         </div>
     </div>
 </div>

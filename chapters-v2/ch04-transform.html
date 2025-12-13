@@ -120,16 +120,19 @@
         </div>
     </div>
 
-    <!-- 交互演示 -->
-    <div class="viz-container" style="margin-top: 2rem;">
-        <div class="viz-header">
-            <div class="viz-title">🕹️ 拖动基向量，观察空间变形</div>
-        </div>
-        <div class="canvas-wrapper">
-            <canvas id="transform-canvas"></canvas>
-        </div>
-        <div class="viz-instructions">
-            拖动 $\hat{i}$ 和 $\hat{j}$，观察整个网格和其他向量如何跟着变化。
+    <!-- 图示说明 -->
+    <div class="aha-box" style="margin-top: 2rem;">
+        <div class="aha-title">📐 线性变换图示</div>
+        <div
+            style="text-align: center; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 1rem;">
+            <p style="margin: 0 0 1rem 0;">
+                原始：$\hat{i} = (1, 0)$，$\hat{j} = (0, 1)$<br>
+                变换后：$\hat{i}' = T(\hat{i})$，$\hat{j}' = T(\hat{j})$
+            </p>
+            <p style="margin: 0; color: var(--text-muted);">
+                知道基向量变到哪里，就知道整个空间如何变形！<br>
+                向量 $(a, b)$ 变换后 = $a \cdot \hat{i}' + b \cdot \hat{j}'$
+            </p>
         </div>
     </div>
 </div>
