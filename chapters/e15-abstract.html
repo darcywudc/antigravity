@@ -230,6 +230,145 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用抽象向量空间解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            一旦认识到某个集合是向量空间，所有线性代数工具都可以使用——这就是抽象的力量！
+        </p>
+
+        <!-- 问题 1：多项式拟合 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">📈 问题 1：多项式是向量！</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：所有次数 ≤ 2 的多项式（如 $3x^2 + 2x + 1$）构成一个向量空间 $P_2$。</p>
+                <p><strong>问题</strong>：$P_2$ 的维度是多少？一组基是什么？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">找一组基</div>
+                        <p>自然选择：$\{1, x, x^2\}$。任何 ≤2 次多项式都可以写成 $a \cdot 1 + b \cdot x + c \cdot x^2$。</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>维度 = 3，基 = $\{1, x, x^2\}$</p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">多项式 $3x^2 + 2x + 1$ 的"坐标"是 $(1, 2, 3)$！
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是多项式拟合的数学基础</div>
+                <p>机器学习中的多项式回归，本质上是在多项式向量空间中找一个最接近数据的"向量"！</p>
+            </div>
+        </div>
+
+        <!-- 问题 2：函数空间 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">🎵 问题 2：声音也是向量</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：函数 $f(t) = \sin(t)$ 和 $g(t) = \cos(t)$ 都是"向量"。</p>
+                <p><strong>问题</strong>：$2\sin(t) + 3\cos(t)$ 是这个向量空间中的向量吗？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">检验：是否满足加法和数乘封闭</div>
+                        <p>$2\sin(t)$ 是 $\sin(t)$ 的数乘（2倍）。</p>
+                        <p>$2\sin(t) + 3\cos(t)$ 是两个函数的加法。</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p><strong>是的！</strong>在基 $\{\sin(t), \cos(t)\}$ 下，它的坐标是 $(2, 3)$。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是傅里叶分析的基础</div>
+                <p>任何周期信号都可以分解成正弦和余弦的线性组合。MP3 压缩、降噪耳机都在用这个原理！</p>
+            </div>
+        </div>
+
+        <!-- 问题 3：线性变换在函数上 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">∂ 问题 3：微分是线性变换！</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：微分算子 $D(f) = f'$ 把函数映射到它的导数。</p>
+                <p><strong>问题</strong>：$D$ 是线性变换吗？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">检验两条规则</div>
+                        <p>加法：$(f + g)' = f' + g'$ ✓</p>
+                        <p>数乘：$(cf)' = c \cdot f'$ ✓</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p><strong>是的，微分是线性变换！</strong></p>
+                        <p>这意味着我们可以用矩阵来表示微分算子，用特征值来解微分方程！</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 $e^x$ 是微分的特征向量！</div>
+                <p>$D(e^x) = e^x = 1 \cdot e^x$。所以 $e^x$ 是特征值为 1 的特征向量。$e^{2x}$ 的特征值是 2。这就是为什么微分方程的解总是 $e^{ax}$ 的形式！</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：颜色也是向量</div>
+            <p><strong>问题</strong>：RGB 颜色 $(255, 128, 0)$ 和 $(0, 128, 255)$ 的"平均"是什么颜色？这算是向量加法吗？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>平均 = $\frac{1}{2}(255, 128, 0) + \frac{1}{2}(0, 128, 255) = (127.5, 128, 127.5)$</p>
+                    <p>约为 $(128, 128, 128)$ = <strong>中性灰色</strong>！</p>
+                    <p>✅ 这正是数乘 + 加法，颜色空间就是一个向量空间。</p>
+                    <div
+                        style="display: inline-block; width: 30px; height: 20px; background: rgb(255, 128, 0); border-radius: 4px;">
+                    </div>
+                    <span>+</span>
+                    <div
+                        style="display: inline-block; width: 30px; height: 20px; background: rgb(0, 128, 255); border-radius: 4px;">
+                    </div>
+                    <span>=</span>
+                    <div
+                        style="display: inline-block; width: 30px; height: 20px; background: rgb(128, 128, 128); border-radius: 4px;">
+                    </div>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 & 毕业 -->
 <div class="section fade-in">
     <h2 class="section-title">🎓 恭喜毕业！</h2>

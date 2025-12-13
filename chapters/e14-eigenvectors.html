@@ -215,6 +215,140 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用特征值解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            特征向量和特征值揭示了系统的"本质模式"——从网页排名到地震分析，它们无处不在。
+        </p>
+
+        <!-- 问题 1：简化矩阵幂 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🔢 问题 1：快速计算矩阵高次幂</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：矩阵 $A = \begin{bmatrix}2 & 0\\0 & 3\end{bmatrix}$。</p>
+                <p><strong>问题</strong>：求 $A^{10}$。</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">这是对角矩阵，特征值直接在对角线上</div>
+                        <p>$\lambda_1 = 2$，$\lambda_2 = 3$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">对角矩阵的幂 = 对角元素的幂</div>
+                        <div class="math-block">
+                            $A^{10} = \begin{bmatrix}2^{10} & 0\\0 & 3^{10}\end{bmatrix} = \begin{bmatrix}1024 & 0\\0 &
+                            59049\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>$A^{10} = \begin{bmatrix}1024 & 0\\0 & 59049\end{bmatrix}$</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 为什么这很强大</div>
+                <p>非对角矩阵可以用 $A = PDP^{-1}$ 对角化，然后 $A^n = PD^nP^{-1}$。计算 $D^n$ 只需要把对角元素取幂！</p>
+            </div>
+        </div>
+
+        <!-- 问题 2：判断稳定性 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">📈 问题 2：人口增长会发散吗？</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一个简化的人口模型矩阵是 $A = \begin{bmatrix}0.9 & 0.1\\0.1 & 0.9\end{bmatrix}$。</p>
+                <p><strong>问题</strong>：长期来看，人口会爆炸增长、稳定还是消亡？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">求特征值</div>
+                        <p>特征多项式：$(0.9-\lambda)^2 - 0.01 = 0$</p>
+                        <p>$\lambda_1 = 1$，$\lambda_2 = 0.8$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>最大特征值 $= 1$，所以人口会<strong>趋于稳定</strong>。</p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">如果最大特征值 > 1，会爆炸；< 1，会消亡。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：PageRank 简化 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🌐 问题 3：最简单的 PageRank</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：三个网页互相链接，转移矩阵（简化版）是：</p>
+                <div class="math-block">
+                    $M = \begin{bmatrix}0 & 0.5 & 1\\0.5 & 0 & 0\\0.5 & 0.5 & 0\end{bmatrix}$
+                </div>
+                <p><strong>问题</strong>：哪个网页最重要？（提示：求 $\lambda = 1$ 的特征向量）</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">求解 $(M - I)\vec{v} = 0$</div>
+                        <p>（这需要解一个线性方程组）</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>归一化后的特征向量大约是 $(0.4, 0.2, 0.4)$</p>
+                        <p>网页 1 和 3 同样重要（各 40%），网页 2 最不重要（20%）。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是 Google 的秘密</div>
+                <p>PageRank 把整个互联网看作一个巨大的马尔可夫链。$\lambda = 1$ 的特征向量就是每个网页的"稳态概率"，也就是重要性排名！</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：特征值的几何意义</div>
+            <p><strong>问题</strong>：如果一个 2×2 矩阵的特征值是 $\lambda_1 = 1$ 和 $\lambda_2 = -1$，这个变换在做什么？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>$\lambda = 1$：一个方向保持不变（不缩放）</p>
+                    <p>$\lambda = -1$：另一个方向被翻转（反向）</p>
+                    <p>这是一个<strong>反射变换</strong>！沿 $\lambda = 1$ 的特征向量方向镜像翻转。</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>

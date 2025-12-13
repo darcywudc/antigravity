@@ -193,6 +193,112 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用基变换解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            基变换是在不同"语言"之间翻译坐标。选择正确的基可以把复杂问题变简单！
+        </p>
+
+        <!-- 问题 1：坐标转换 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🗺️ 问题 1：地图坐标转换</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一个游戏地图使用倾斜坐标系。新基向量是：</p>
+                <p>$\vec{e_1} = (2, 1)$，$\vec{e_2} = (0, 1)$（标准坐标下）</p>
+                <p>一个宝藏在新坐标系中的位置是 $(3, 2)$。</p>
+                <p><strong>问题</strong>：宝藏在标准坐标系中的位置是什么？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">构造基变换矩阵 P</div>
+                        <div class="math-block">
+                            $P = \begin{bmatrix}2 & 0\\1 & 1\end{bmatrix}$
+                        </div>
+                        <p>（列是新基向量在标准基下的坐标）</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">转换到标准坐标：$\vec{v}_{标准} = P \cdot \vec{v}_{新}$</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}2 & 0\\1 & 1\end{bmatrix} \begin{bmatrix}3\\2\end{bmatrix} =
+                            \begin{bmatrix}6\\5\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>宝藏在标准坐标系中的位置是 <strong>$(6, 5)$</strong>。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 2：简化变换 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">🎯 问题 2：在特征基下看变换</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：变换矩阵 $A = \begin{bmatrix}2 & 1\\0 & 3\end{bmatrix}$ 有特征向量 $(1, 0)$ 和 $(1, 1)$。
+                </p>
+                <p><strong>问题</strong>：如果用这两个特征向量作为基，变换会变成什么样？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">在特征基下，变换变成对角形式</div>
+                        <div class="math-block">
+                            $D = P^{-1}AP = \begin{bmatrix}2 & 0\\0 & 3\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>在特征基下，变换变成了简单的<strong>缩放</strong>：第一个方向缩放 2 倍，第二个方向缩放 3 倍。没有任何"混合"！</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是"对角化"的威力</div>
+                <p>选择正确的基（特征向量），复杂的变换就变成了简单的沿轴缩放。计算 $A^{100}$ 变得轻而易举：$D^{100} = \begin{bmatrix}2^{100} & 0\\0 &
+                    3^{100}\end{bmatrix}$！</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：反向转换</div>
+            <p><strong>问题</strong>：标准坐标 $(4, 3)$ 在新基 $\vec{e_1}=(1, 1)$, $\vec{e_2}=(-1, 1)$ 下的坐标是什么？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>$P = \begin{bmatrix}1 & -1\\1 & 1\end{bmatrix}$，需要 $P^{-1}$</p>
+                    <p>$\det(P) = 2$，$P^{-1} = \frac{1}{2}\begin{bmatrix}1 & 1\\-1 & 1\end{bmatrix}$</p>
+                    <p>$P^{-1} \begin{bmatrix}4\\3\end{bmatrix} = \frac{1}{2}\begin{bmatrix}7\\-1\end{bmatrix} = (3.5,
+                        -0.5)$</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>

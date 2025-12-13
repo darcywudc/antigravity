@@ -270,6 +270,149 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用叉积解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            叉积是3D图形和物理模拟的核心工具——计算法线、判断方向、模拟力矩，都离不开它。
+        </p>
+
+        <!-- 问题 1：计算平面法线 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">💡 问题 1：计算三角形的法线向量</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：在3D建模中，需要计算一个三角形面的"法线"（垂直于表面的向量），用于光照计算。</p>
+                <p>三角形顶点：A$(0,0,0)$、B$(1,0,0)$、C$(0,1,0)$</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">构建边向量</div>
+                        <p>$\vec{AB} = (1, 0, 0)$，$\vec{AC} = (0, 1, 0)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">叉积得到法线</div>
+                        <div class="math-block">
+                            $\vec{n} = \vec{AB} \times \vec{AC} = \begin{vmatrix}\hat{i} & \hat{j} & \hat{k}\\1 & 0 &
+                            0\\0 & 1 & 0\end{vmatrix} = (0, 0, 1)$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>法线向量是 <strong>$(0, 0, 1)$</strong>，指向 Z 轴正方向（朝上）。</p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">这个三角形在 XY 平面上，法线当然垂直于这个平面！</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是"表面法线"</div>
+                <p>游戏里的光照效果（光滑表面、磨砂表面）都靠法线向量计算。Blender 里的"重新计算法线"功能就是批量做这个！</p>
+            </div>
+        </div>
+
+        <!-- 问题 2：判断转向方向 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">🚗 问题 2：汽车应该左转还是右转？</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：自动驾驶需要判断从当前方向 $\vec{v} = (1, 0, 0)$ 到目标方向 $\vec{t} = (1, 1, 0)$，应该左转还是右转？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">计算叉积</div>
+                        <div class="math-block">
+                            $\vec{v} \times \vec{t} = (1, 0, 0) \times (1, 1, 0) = (0, 0, 1)$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>结果 Z 分量 > 0 → <strong>左转！</strong></p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">如果 Z < 0，则右转；如果 Z=0，方向相同或相反。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：物理力矩 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🔧 问题 3：扳手的力矩有多大？</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：你用扳手拧螺丝。扳手长度 $\vec{r} = (0.3, 0, 0)$ 米，你施加的力 $\vec{F} = (0, 50, 0)$ 牛顿（垂直向下）。</p>
+                <p><strong>问题</strong>：产生的力矩是多少？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">力矩 = 位置 × 力（叉积）</div>
+                        <div class="math-block">
+                            $\vec{\tau} = \vec{r} \times \vec{F} = (0.3, 0, 0) \times (0, 50, 0)$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算叉积</div>
+                        <div class="math-block">
+                            $\vec{\tau} = (0 \cdot 0 - 0 \cdot 50, 0 \cdot 0 - 0.3 \cdot 0, 0.3 \cdot 50 - 0 \cdot 0) =
+                            (0, 0, 15)$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>力矩是 <strong>15 牛顿·米</strong>，方向沿 Z 轴（使螺丝逆时针旋转）。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 为什么扳手越长越省力？</div>
+                <p>力矩 = $|\vec{r}| \times |\vec{F}| \times \sin\theta$。扳手越长，$|\vec{r}|$ 越大，产生的力矩就越大！</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：平行四边形面积</div>
+            <p><strong>问题</strong>：向量 $\vec{a} = (3, 0, 0)$ 和 $\vec{b} = (0, 4, 0)$ 围成的平行四边形面积是多少？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>$\vec{a} \times \vec{b} = (0, 0, 12)$</p>
+                    <p>面积 = $|\vec{a} \times \vec{b}| = 12$ 平方单位</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">这就是一个 3×4 的矩形！</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>

@@ -199,6 +199,139 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用非方阵解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            非方阵是连接不同"世界"的桥梁——从低维嵌入到高维，或从高维投影到低维。这是机器学习和3D图形的基础。
+        </p>
+
+        <!-- 问题 1：词嵌入查询 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🔤 问题 1：词向量嵌入</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一个简单的词嵌入系统用 One-Hot 编码表示单词（3个词的词汇表）。嵌入矩阵 $E$ 把 3D 空间映射到 2D：</p>
+                <div class="math-block">
+                    $E = \begin{bmatrix}1 & 0 & 0.5\\0 & 1 & 0.5\end{bmatrix}$
+                </div>
+                <p>"猫" = $(1, 0, 0)$，"狗" = $(0, 1, 0)$，"宠物" = $(0, 0, 1)$</p>
+                <p><strong>问题</strong>：这三个词在 2D 嵌入空间中的位置是什么？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">计算嵌入：$E \times \text{词向量}$</div>
+                        <p>猫：$E \cdot (1,0,0)^T = (1, 0)$</p>
+                        <p>狗：$E \cdot (0,1,0)^T = (0, 1)$</p>
+                        <p>宠物：$E \cdot (0,0,1)^T = (0.5, 0.5)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>"宠物"在 2D 空间中位于"猫"和"狗"的<strong>中间</strong>！这正是我们期望的语义关系。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是 Word2Vec 的基础</div>
+                <p>ChatGPT 和所有语言模型都用类似的嵌入矩阵把离散的单词转换成连续的向量空间，从而捕获语义关系！</p>
+            </div>
+        </div>
+
+        <!-- 问题 2：3D 投影到屏幕 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">📺 问题 2：3D 点投影到屏幕</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：简化的正交投影（忽略透视）。一个 3D 游戏中的点 $(3, 2, 5)$ 需要投影到 2D 屏幕上（丢弃 Z 坐标）。</p>
+                <p>投影矩阵：$P = \begin{bmatrix}1 & 0 & 0\\0 & 1 & 0\end{bmatrix}$</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">应用投影矩阵</div>
+                        <div class="math-block">
+                            $P \cdot \begin{bmatrix}3\\2\\5\end{bmatrix} = \begin{bmatrix}1 \cdot 3 + 0 \cdot 2 + 0
+                            \cdot 5\\0 \cdot 3 + 1 \cdot 2 + 0 \cdot 5\end{bmatrix} = \begin{bmatrix}3\\2\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>屏幕上的位置是 <strong>$(3, 2)$</strong>。Z 坐标（深度）被丢弃了！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：降维用于可视化 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">📊 问题 3：高维数据可视化</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：你有一组 4D 数据点，想在 2D 图上显示。使用降维矩阵：</p>
+                <div class="math-block">
+                    $D = \begin{bmatrix}1 & 0 & 0.5 & 0\\0 & 1 & 0 & 0.5\end{bmatrix}$
+                </div>
+                <p>数据点：$(2, 3, 1, 2)$</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">投影到 2D</div>
+                        <div class="math-block">
+                            $D \cdot \begin{bmatrix}2\\3\\1\\2\end{bmatrix} = \begin{bmatrix}2 + 0.5\\3 + 1\end{bmatrix}
+                            = \begin{bmatrix}2.5\\4\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>在 2D 可视化图上，这个点显示在 <strong>$(2.5, 4)$</strong>。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是 PCA 的工作原理</div>
+                <p>主成分分析 (PCA) 找到最重要的方向，然后用一个瘦矩阵把高维数据投影到低维，用于可视化或去噪！</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：升维操作</div>
+            <p><strong>问题</strong>：矩阵 $\begin{bmatrix}1 & 0\\0 & 1\\1 & 1\end{bmatrix}$ 把 2D 点 $(2, 3)$ 映射到哪里？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>$\begin{bmatrix}1 & 0\\0 & 1\\1 & 1\end{bmatrix} \begin{bmatrix}2\\3\end{bmatrix} =
+                        \begin{bmatrix}2\\3\\5\end{bmatrix}$</p>
+                    <p>2D 点被嵌入到 3D 空间，位置是 $(2, 3, 5)$。第三个坐标 = x + y。</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
