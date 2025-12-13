@@ -345,6 +345,167 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用逆矩阵解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            逆矩阵是"时光倒流"的数学工具——撤销变换、解密信息、求解方程，都离不开它。
+        </p>
+
+        <!-- 问题 1：解线性方程组 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🧮 问题 1：用逆矩阵解方程组</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：求解以下方程组：</p>
+                <div class="math-block">
+                    $\begin{cases} 2x + y = 5 \\ x + y = 3 \end{cases}$
+                </div>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">写成矩阵形式 $A\vec{x} = \vec{b}$</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}2 & 1\\1 & 1\end{bmatrix} \begin{bmatrix}x\\y\end{bmatrix} =
+                            \begin{bmatrix}5\\3\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">求 $A^{-1}$（det = 2×1 - 1×1 = 1）</div>
+                        <div class="math-block">
+                            $A^{-1} = \frac{1}{1}\begin{bmatrix}1 & -1\\-1 & 2\end{bmatrix} = \begin{bmatrix}1 & -1\\-1
+                            & 2\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">求解：$\vec{x} = A^{-1}\vec{b}$</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}x\\y\end{bmatrix} = \begin{bmatrix}1 & -1\\-1 & 2\end{bmatrix}
+                            \begin{bmatrix}5\\3\end{bmatrix} = \begin{bmatrix}5-3\\-5+6\end{bmatrix} =
+                            \begin{bmatrix}2\\1\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>$x = 2$，$y = 1$</p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">验证：$2(2) + 1 = 5$ ✓，$2 + 1 = 3$ ✓</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 2：撤销图片变换 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">📷 问题 2：撤销图片变换</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：你不小心对一张图片应用了旋转变换 $R = \begin{bmatrix}0 & -1\\1 & 0\end{bmatrix}$（逆时针90°）。</p>
+                <p><strong>问题</strong>：如何把图片变回来？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">求 $R^{-1}$</div>
+                        <p>det = $0 \times 0 - (-1) \times 1 = 1$</p>
+                        <div class="math-block">
+                            $R^{-1} = \begin{bmatrix}0 & 1\\-1 & 0\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>应用 $R^{-1}$（顺时针旋转90°）就能恢复原图！</p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">旋转矩阵的逆 = 反方向旋转。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：希尔密码 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🔐 问题 3：密码学——希尔密码解密</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：希尔密码用矩阵加密字母（A=0, B=1, ...）。加密矩阵是：</p>
+                <div class="math-block">
+                    $K = \begin{bmatrix}3 & 2\\5 & 3\end{bmatrix}$
+                </div>
+                <p>你收到的加密信息是向量 $(11, 13)$。原文是什么？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">求 $K^{-1}$（det = 9 - 10 = -1）</div>
+                        <div class="math-block">
+                            $K^{-1} = \frac{1}{-1}\begin{bmatrix}3 & -2\\-5 & 3\end{bmatrix} = \begin{bmatrix}-3 & 2\\5
+                            & -3\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">解密：$\vec{m} = K^{-1} \cdot \vec{c}$</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}-3 & 2\\5 & -3\end{bmatrix} \begin{bmatrix}11\\13\end{bmatrix} =
+                            \begin{bmatrix}-33+26\\55-39\end{bmatrix} = \begin{bmatrix}-7\\16\end{bmatrix}$
+                        </div>
+                        <p style="font-size: 0.9em;">（取模 26：$-7 \mod 26 = 19$）</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>原文向量 = $(19, 16)$ → 字母 <strong>"TQ"</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 为什么可逆性很重要</div>
+                <p>如果加密矩阵的行列式为 0，就无法解密——信息会永久丢失！这就是为什么密钥矩阵必须可逆。</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：判断可解性</div>
+            <p><strong>问题</strong>：方程组 $\begin{cases} x + 2y = 3 \\ 2x + 4y = 6 \end{cases}$ 有唯一解吗？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>矩阵 $A = \begin{bmatrix}1 & 2\\2 & 4\end{bmatrix}$，det = $1 \times 4 - 2 \times 2 = 0$</p>
+                    <p><strong>没有唯一解！</strong>（第二行是第一行的2倍，两个方程本质上一样）</p>
+                    <p>这个系统有<strong>无穷多解</strong>（任何满足 $x + 2y = 3$ 的点都是解）。</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
