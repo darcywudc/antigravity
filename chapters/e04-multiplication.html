@@ -229,6 +229,45 @@
         <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.5rem;">
             提示：记住 BA 的意思是"先 A 后 B"
         </p>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <p><strong>答案</strong>：旋转矩阵 × 剪切矩阵</p>
+                <p>因为 BA 意思是"先 A 后 B"，所以"先剪切(A)后旋转(B)"写作 B × A = 旋转 × 剪切</p>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：练习题 -->
+    <div class="challenge-box" style="margin-top: 2rem;">
+        <div class="challenge-title">✍️ 动手练习</div>
+        <p><strong>计算下列矩阵乘法的结果矩阵：</strong></p>
+        <p>$\begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix} \times \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix} = ?$</p>
+        <p style="font-size: 0.9em; color: var(--text-muted);">（放大 2 倍 × 旋转 90°）</p>
+        <details style="margin-top: 1rem;">
+            <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+            <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                <p><strong>分析</strong>：</p>
+                <ul>
+                    <li>旋转后 î → (0, 1)，放大后 → (0, 2) — 第一列</li>
+                    <li>旋转后 ĵ → (-1, 0)，放大后 → (-2, 0) — 第二列</li>
+                </ul>
+                <p><strong>答案</strong>：$\begin{bmatrix} 0 & -2 \\ 2 & 0 \end{bmatrix}$</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--text-muted);">
+                    这代表"旋转 90° 并放大 2 倍"的组合变换！
+                </p>
+            </div>
+        </details>
+    </div>
+
+    <!-- 新增：常见误区 -->
+    <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+        <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+        <p><strong>误区</strong>："矩阵乘法 AB，先做 A 再做 B"</p>
+        <p><strong>纠正</strong>：恰恰相反！$AB$ 表示的是<strong>先做 B，再做 A</strong>。</p>
+        <p style="margin-top: 0.5rem;">
+            记忆技巧：想象向量 $\vec{v}$ 从右边"进去"——$AB\vec{v}$，它先遇到 B，再遇到 A。
+        </p>
     </div>
 </div>
 
