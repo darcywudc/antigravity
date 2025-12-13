@@ -1,217 +1,125 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 14</span>
-    <h1 class="chapter-title">特征向量与特征值 <br><small style="font-size: 0.6em; color: var(--text-muted);">Eigenvectors and
+    <span class="chapter-badge">第 14 章</span>
+    <h1 class="chapter-title">顽固的方向 <br><small style="font-size: 0.6em; color: var(--text-muted);">Eigenvectors &
             Eigenvalues</small></h1>
     <p class="chapter-description">
-        在所有线性代数的概念中，<strong>特征值和特征向量</strong>可能是应用最广泛的。
-        从 Google 的 PageRank 算法到量子力学，从人脸识别到振动分析，它们无处不在。
-        这一章将揭示：特征向量是变换中那些"顽固"保持方向的向量。
+        大多数向量在变换后会改变方向。但有些"顽固"的向量，无论怎么变换，都坚持指向原来的方向！
+        这些特殊的向量叫做<strong>特征向量</strong>，它们是线性代数中最有用的概念之一。
     </p>
 </div>
 
-<!-- ==================== SECTION 1: MOTIVATION ==================== -->
+<!-- ==================== SECTION 1 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">14.1 问题的起源</h2>
+    <h2 class="section-title">🎯 14.1 不改变方向的向量</h2>
 
     <div class="content-block">
+        <h3>🚀 火箭发射类比</h3>
         <p>
-            当一个线性变换作用于向量时，大多数向量会既改变长度又改变方向。
+            想象一个变换像一阵风，吹着所有东西。
         </p>
+        <ul>
+            <li>大多数物体会被吹得<strong>东倒西歪</strong>（方向改变）</li>
+            <li>但有些物体正好顺着风向，只会被吹得<strong>更远或更近</strong>，方向不变！</li>
+        </ul>
         <p>
-            但有些特殊的向量，它们在变换后<strong>只被拉伸或压缩</strong>，方向保持不变（或恰好反向）。
-            这些向量就是<strong>特征向量</strong>。
+            这些顺着风向的物体，就是<strong>特征向量</strong>。
         </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">核心定义</div>
+            <div class="theorem-title">💡 特征向量的定义</div>
+            <div class="math-block">
+                $$ A \vec{v} = \lambda \vec{v} $$
+            </div>
             <p>
-                如果 $A\vec{v} = \lambda\vec{v}$（其中 $\vec{v} \neq \vec{0}$），
-                那么 $\vec{v}$ 是 $A$ 的<strong>特征向量</strong>，$\lambda$ 是对应的<strong>特征值</strong>。
+                变换后，$\vec{v}$ 只被<strong>拉伸/压缩</strong>了 $\lambda$ 倍，方向不变！
+            </p>
+            <p style="font-size: 0.9em; color: var(--text-secondary);">
+                $\lambda$（lambda）叫做<strong>特征值</strong>，是拉伸的倍数。
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: VISUAL ==================== -->
+<!-- ==================== SECTION 2 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">14.2 几何直觉</h2>
+    <h2 class="section-title">🔍 14.2 一个例子</h2>
 
     <div class="content-block">
-        <p>
-            想象一个剪切变换。大多数向量都会被"歪斜"：
-        </p>
-
-        <div
-            style="display: flex; gap: 3rem; justify-content: center; align-items: center; margin: 2rem 0; flex-wrap: wrap;">
-            <!-- Before -->
-            <div style="text-align: center;">
-                <svg width="140" height="140" viewBox="0 0 140 140">
-                    <rect x="20" y="40" width="80" height="80" fill="none" stroke="#666" stroke-width="1" />
-                    <line x1="20" y1="120" x2="60" y2="80" stroke="#4a9eff" stroke-width="2" />
-                    <line x1="20" y1="120" x2="100" y2="120" stroke="#f97316" stroke-width="2" />
-                    <circle cx="20" cy="120" r="3" fill="#fff" />
-                </svg>
-                <p style="font-size: 0.9em;">变换前</p>
-            </div>
-
-            <div style="font-size: 2rem;">→</div>
-
-            <!-- After -->
-            <div style="text-align: center;">
-                <svg width="160" height="140" viewBox="0 0 160 140">
-                    <!-- Sheared square -->
-                    <polygon points="20,120 100,120 130,40 50,40" fill="none" stroke="#ec4899" stroke-width="1" />
-                    <!-- Blue vector gets rotated -->
-                    <line x1="20" y1="120" x2="80" y2="60" stroke="#4a9eff" stroke-width="2" opacity="0.5" />
-                    <text x="85" y="55" fill="#4a9eff" font-size="10">被旋转了</text>
-                    <!-- Orange vector stays on x-axis (eigenvector!) -->
-                    <line x1="20" y1="120" x2="100" y2="120" stroke="#f97316" stroke-width="3" />
-                    <text x="60" y="135" fill="#f97316" font-size="10">方向不变!</text>
-                    <circle cx="20" cy="120" r="3" fill="#fff" />
-                </svg>
-                <p style="font-size: 0.9em;">剪切后：<span style="color:#f97316">水平向量</span>是特征向量</p>
-            </div>
-        </div>
-
-        <p>
-            在这个例子中，x 轴方向的向量在剪切后仍然指向 x 轴方向——它是特征向量，特征值为 1（长度不变）。
-        </p>
-    </div>
-</div>
-
-<!-- ==================== SECTION 3: FINDING EIGENVALUES ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">14.3 如何找特征值</h2>
-
-    <div class="content-block">
-        <p>
-            从 $A\vec{v} = \lambda\vec{v}$ 出发，改写成：
-        </p>
-        <div class="math-block">
-            $$ (A - \lambda I)\vec{v} = \vec{0} $$
-        </div>
-        <p>
-            我们需要非零解 $\vec{v}$。根据第 7 章，这要求 $A - \lambda I$ 是奇异的：
-        </p>
-        <div class="math-block">
-            $$ \det(A - \lambda I) = 0 $$
-        </div>
-        <p>
-            这个方程叫做<strong>特征方程</strong>，解出 $\lambda$ 就是特征值。
-        </p>
-    </div>
-
-    <div class="content-block">
-        <h3>14.3.1 例子</h3>
-
         <div class="example-card">
-            <p><strong>问题：</strong> 求 $A = \begin{bmatrix} 3 & 1 \\ 0 & 2 \end{bmatrix}$ 的特征值</p>
-
-            <p><strong>解：</strong></p>
-            <div class="math-block">
-                $$ \det(A - \lambda I) = \det \begin{bmatrix} 3-\lambda & 1 \\ 0 & 2-\lambda \end{bmatrix} =
-                (3-\lambda)(2-\lambda) = 0 $$
-            </div>
+            <p><strong>剪切变换</strong></p>
             <p>
-                解得 $\lambda_1 = 3$, $\lambda_2 = 2$。
+                矩阵 $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ 会把正方形变成平行四边形。
             </p>
-
-            <p style="margin-top: 1rem;"><strong>找特征向量：</strong></p>
-            <p>对 $\lambda = 3$：解 $(A - 3I)\vec{v} = \vec{0}$</p>
-            <div class="math-block">
-                $$ \begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \vec{0} \implies
-                y = 0 $$
-            </div>
-            <p>特征向量：$\begin{bmatrix} 1 \\ 0 \end{bmatrix}$（x 轴方向）</p>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 4: DIAGONALIZATION ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">14.4 对角化</h2>
-
-    <div class="content-block">
-        <p>
-            如果一个 n×n 矩阵有 n 个线性无关的特征向量，那么可以"对角化"：
-        </p>
-        <div class="math-block">
-            $$ A = PDP^{-1} $$
-        </div>
-        <p>
-            其中 $P$ 的列是特征向量，$D$ 是对角矩阵（对角线是特征值）。
-        </p>
-
-        <div class="theorem-card">
-            <div class="theorem-title">对角化的威力</div>
+            <p style="margin-top: 1rem;">
+                大多数向量都被"歪斜"了。但 <strong>水平向量</strong>（沿 x 轴的向量）没有改变方向！
+            </p>
             <p>
-                计算 $A^{100}$ 通常很困难，但对角矩阵的幂次很简单：
-                $$ A^{100} = PD^{100}P^{-1} $$
-                而 $D^{100}$ 只需把对角线元素各自 100 次幂。
+                所以 $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ 是一个<strong>特征向量</strong>，特征值 $\lambda = 1$。
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 5: APPLICATIONS ==================== -->
+<!-- ==================== SECTION 3 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">14.5 应用</h2>
+    <h2 class="section-title">🌍 14.3 为什么重要？</h2>
 
     <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-            <div class="definition-card">
-                <div class="definition-title">🔍 Google PageRank</div>
-                <p>
-                    网页的重要性由特征向量决定。
-                    Google 的核心算法就是计算一个巨大矩阵的主特征向量。
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
+            <div class="definition-card" style="border-left-color: var(--accent-blue);">
+                <div class="definition-title">🔍 Google 搜索</div>
+                <p style="font-size: 0.9em;">
+                    PageRank 算法用特征向量来给网页排名！
                 </p>
             </div>
 
-            <div class="definition-card">
-                <div class="definition-title">📊 主成分分析 (PCA)</div>
-                <p>
-                    数据的主要变化方向是协方差矩阵的特征向量。
-                    特征值越大，该方向越重要。
+            <div class="definition-card" style="border-left-color: var(--accent-green);">
+                <div class="definition-title">📊 数据分析</div>
+                <p style="font-size: 0.9em;">
+                    PCA 找到数据变化最大的方向 = 找特征向量
                 </p>
             </div>
 
-            <div class="definition-card">
-                <div class="definition-title">🌉 振动分析</div>
-                <p>
-                    桥梁、建筑的固有振动模式是刚度矩阵的特征向量。
-                    特征值决定共振频率。
+            <div class="definition-card" style="border-left-color: var(--accent-purple);">
+                <div class="definition-title">🌉 工程振动</div>
+                <p style="font-size: 0.9em;">
+                    桥梁的自然振动模式是特征向量
                 </p>
             </div>
 
-            <div class="definition-card">
-                <div class="definition-title">⚛️ 量子力学</div>
-                <p>
-                    可观测量的可能测量值是算符的特征值。
-                    波函数的稳态是特征态。
+            <div class="definition-card" style="border-left-color: var(--accent-orange);">
+                <div class="definition-title">⚛️ 量子物理</div>
+                <p style="font-size: 0.9em;">
+                    测量结果就是特征值！
                 </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 6: SUMMARY ==================== -->
+<!-- ==================== SECTION 4 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">本章总结</h2>
+    <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">核心要点</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                <li>$A\vec{v} = \lambda\vec{v}$：特征向量在变换下只被缩放 $\lambda$ 倍。</li>
-                <li><strong>特征方程</strong>：$\det(A - \lambda I) = 0$。</li>
-                <li>有 n 个线性无关特征向量 → 可对角化 $A = PDP^{-1}$。</li>
-                <li>对角化使计算幂次变得简单。</li>
-                <li>应用：PageRank、PCA、振动分析、量子力学。</li>
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><strong>特征向量</strong>：变换后方向不变的向量</li>
+                <li><strong>特征值</strong>：变换后拉伸/压缩的倍数</li>
+                <li>公式：$A\vec{v} = \lambda\vec{v}$</li>
+                <li>应用：Google、数据分析、物理、工程...</li>
             </ol>
         </div>
 
-        <p style="margin-top: 2rem;">
-            下一章（最后一章），我们将讨论<strong>抽象向量空间</strong>——向量不仅仅是箭头，函数、多项式也可以是向量！
-        </p>
+        <div
+            style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1)); border-radius: 12px;">
+            <p style="font-size: 1.2rem; margin: 0;">
+                🎓 <strong>你快要毕业了！</strong>
+            </p>
+            <p style="margin-top: 0.5rem;">
+                特征向量是线性代数中最强大的工具之一。下一章是最后一章！
+            </p>
+        </div>
     </div>
 </div>

@@ -1,444 +1,230 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 3</span>
-    <h1 class="chapter-title">线性变换与矩阵 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
-            Transformations and Matrices</small></h1>
+    <span class="chapter-badge">第 3 章</span>
+    <h1 class="chapter-title">变形金刚的数学 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
+            Transformations</small></h1>
     <p class="chapter-description">
-        "矩阵"不仅仅是一个装满数字的方块。它是对<strong>空间变换</strong>的数字化描述。
-        一旦你接受了"矩阵 = 变换"的观点，线性代数的大门就真正为你敞开了。
-        这一章将彻底改变你对矩阵的认识。
+        如果你能把整个空间像橡皮泥一样拉伸、旋转、翻转，世界会变成什么样？
+        矩阵就是这种"变形"的遥控器！
     </p>
 </div>
 
-<!-- ==================== SECTION 1: WHAT IS A TRANSFORMATION ==================== -->
+<!-- ==================== SECTION 1: 变换是什么 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">3.1 什么是变换？(Transformations)</h2>
+    <h2 class="section-title">🔄 3.1 空间可以被"变形"</h2>
 
     <div class="content-block">
-        <h3>3.1.1 从函数说起</h3>
+        <h3>📷 滤镜类比</h3>
         <p>
-            "变换"(Transformation) 本质上就是一个<strong>函数</strong>，只不过它的输入和输出都是向量。
+            你用手机拍照后，可以加滤镜：
         </p>
-        <div class="math-block">
-            $$ T: \mathbb{R}^n \to \mathbb{R}^m $$
-            $$ \vec{v}_{输入} \xrightarrow{T} \vec{v}_{输出} $$
-        </div>
+        <ul>
+            <li>放大照片 → <strong>缩放</strong></li>
+            <li>旋转照片 → <strong>旋转</strong></li>
+            <li>镜像翻转 → <strong>反射</strong></li>
+            <li>倾斜照片 → <strong>剪切</strong></li>
+        </ul>
         <p>
-            你可以把它想象成一台"向量加工机器"：
-            扔进去一个向量，吐出来另一个向量。
-        </p>
-
-        <div class="definition-card">
-            <div class="definition-title">为什么叫"变换"而不是"函数"？</div>
-            <p>
-                在线性代数的语境下，我们更喜欢用"变换"这个词，因为它强调了<strong>运动</strong>的感觉——
-                想象输入向量在空间中"移动"到了输出向量的位置。
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 2: LINEAR TRANSFORMATIONS ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">3.2 线性变换 (Linear Transformations)</h2>
-
-    <div class="content-block">
-        <h3>3.2.1 "线性"的几何含义</h3>
-        <p>
-            不是所有的变换都是"线性"的。要成为线性变换，它必须满足两个直观的几何规则：
-        </p>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-            <div class="theorem-card" style="border-left-color: var(--accent-blue);">
-                <div class="theorem-title" style="color: var(--accent-blue);">规则 1：原点不动</div>
-                <p>原点 $\vec{0}$ 在变换后还是 $\vec{0}$。</p>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">
-                    如果原点被挪走了，那就是"仿射变换"(Affine)，不是严格的线性变换。
-                </p>
-            </div>
-            <div class="theorem-card" style="border-left-color: var(--accent-green);">
-                <div class="theorem-title" style="color: var(--accent-green);">规则 2：直线保持为直线</div>
-                <p>变换前是直线的，变换后还是直线（不能弯曲）。而且网格线保持平行、等距。</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="content-block">
-        <h3>3.2.2 图解：线性 vs 非线性</h3>
-
-        <div style="display: flex; gap: 3rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
-            <!-- Linear Example -->
-            <div style="text-align: center;">
-                <svg width="180" height="150" viewBox="0 0 180 150">
-                    <!-- Before grid -->
-                    <g stroke="#333" stroke-width="0.5">
-                        <line x1="10" y1="10" x2="10" y2="140" />
-                        <line x1="50" y1="10" x2="50" y2="140" />
-                        <line x1="90" y1="10" x2="90" y2="140" />
-                        <line x1="10" y1="30" x2="170" y2="30" />
-                        <line x1="10" y1="70" x2="170" y2="70" />
-                        <line x1="10" y1="110" x2="170" y2="110" />
-                    </g>
-                    <!-- Sheared grid -->
-                    <g stroke="#4a9eff" stroke-width="1.5">
-                        <!-- Vertical lines become slanted -->
-                        <line x1="10" y1="140" x2="30" y2="10" />
-                        <line x1="50" y1="140" x2="70" y2="10" />
-                        <line x1="90" y1="140" x2="110" y2="10" />
-                        <line x1="130" y1="140" x2="150" y2="10" />
-                        <!-- Horizontal lines stay horizontal -->
-                        <line x1="10" y1="30" x2="170" y2="30" />
-                        <line x1="10" y1="70" x2="170" y2="70" />
-                        <line x1="10" y1="110" x2="170" y2="110" />
-                    </g>
-                    <circle cx="10" cy="140" r="4" fill="#10b981" />
-                </svg>
-                <p style="color: var(--accent-blue); font-weight: bold;">✅ 线性 (Shear)</p>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">网格保持平行、等距</p>
-            </div>
-
-            <!-- Non-Linear Example -->
-            <div style="text-align: center;">
-                <svg width="180" height="150" viewBox="0 0 180 150">
-                    <!-- Curved grid -->
-                    <g stroke="#ec4899" stroke-width="1.5" fill="none">
-                        <path d="M 10 140 Q 30 70, 50 10" />
-                        <path d="M 50 140 Q 70 90, 90 10" />
-                        <path d="M 90 140 Q 110 90, 130 10" />
-                        <path d="M 10 110 Q 90 100, 170 110" />
-                        <path d="M 10 70 Q 90 50, 170 70" />
-                        <path d="M 10 30 Q 90 20, 170 30" />
-                    </g>
-                    <circle cx="10" cy="140" r="4" fill="#10b981" />
-                </svg>
-                <p style="color: #ec4899; font-weight: bold;">❌ 非线性</p>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">网格弯曲了</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="content-block">
-        <h3>3.2.3 "线性"的代数含义</h3>
-        <p>
-            上面的几何规则可以用两条代数性质严格定义：
-        </p>
-        <div class="math-block">
-            $$ T(\vec{v} + \vec{w}) = T(\vec{v}) + T(\vec{w}) \quad \text{(加法保持)} $$
-            $$ T(c\vec{v}) = c \cdot T(\vec{v}) \quad \text{(缩放保持)} $$
-        </div>
-        <p>
-            这意味着：<strong>线性变换与线性组合"相容"</strong>。
-            如果你知道基向量变换后的位置，你就知道一切！
-        </p>
-    </div>
-</div>
-
-<!-- ==================== SECTION 3: MATRICES ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">3.3 矩阵：变换的数字语言</h2>
-
-    <div class="content-block">
-        <h3>3.3.1 关键洞察：追踪基向量</h3>
-        <p>
-            这是全章最重要的一段：
+            这些都是<strong>线性变换</strong>——把空间中的每个点移动到新位置的操作。
         </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">核心思想</div>
+            <div class="theorem-title">🎯 线性变换的规则</div>
             <p>
-                要完全描述一个 2D 线性变换，你只需要知道两件事：
+                只有两条规则：
             </p>
             <ol>
-                <li>$\hat{i}$ 变换后落在哪里？</li>
-                <li>$\hat{j}$ 变换后落在哪里？</li>
+                <li><strong>原点不动</strong>（中心始终是中心）</li>
+                <li><strong>直线保持为直线</strong>（不能把直线弯成曲线）</li>
             </ol>
-            <p>
-                <strong>这两个信息，恰好可以用一个 2×2 矩阵来记录。</strong>
-            </p>
         </div>
     </div>
 
-    <div class="content-block">
-        <h3>3.3.2 图解：矩阵的列 = 变换后的基向量</h3>
-
-        <div
-            style="display: flex; gap: 2rem; align-items: center; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
-            <!-- Before -->
-            <div style="text-align: center;">
-                <svg width="140" height="140" viewBox="0 0 140 140">
-                    <defs>
-                        <marker id="arr-i-m" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#f97316" />
-                        </marker>
-                        <marker id="arr-j-m" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#10b981" />
-                        </marker>
-                    </defs>
-                    <!-- Grid -->
-                    <g stroke="#333" stroke-width="0.5">
-                        <line x1="20" y1="20" x2="20" y2="120" />
-                        <line x1="60" y1="20" x2="60" y2="120" />
-                        <line x1="100" y1="20" x2="100" y2="120" />
-                        <line x1="20" y1="40" x2="120" y2="40" />
-                        <line x1="20" y1="80" x2="120" y2="80" />
-                        <line x1="20" y1="120" x2="120" y2="120" />
-                    </g>
-                    <!-- i-hat -->
-                    <line x1="20" y1="120" x2="60" y2="120" stroke="#f97316" stroke-width="3"
-                        marker-end="url(#arr-i-m)" />
-                    <!-- j-hat -->
-                    <line x1="20" y1="120" x2="20" y2="80" stroke="#10b981" stroke-width="3"
-                        marker-end="url(#arr-j-m)" />
-                    <circle cx="20" cy="120" r="3" fill="#fff" />
-                </svg>
-                <p style="font-size: 0.9em; color: var(--text-secondary);">变换前</p>
-                <p style="font-size: 0.85em;">$\hat{i} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$, $\hat{j} =
-                    \begin{bmatrix} 0 \\ 1 \end{bmatrix}$</p>
-            </div>
-
-            <!-- Arrow -->
-            <div style="font-size: 2rem; color: var(--text-muted);">→</div>
-
-            <!-- After -->
-            <div style="text-align: center;">
-                <svg width="160" height="140" viewBox="0 0 160 140">
-                    <!-- Sheared Grid -->
-                    <g stroke="rgba(74, 158, 255, 0.3)" stroke-width="1">
-                        <line x1="20" y1="120" x2="40" y2="40" />
-                        <line x1="60" y1="120" x2="80" y2="40" />
-                        <line x1="100" y1="120" x2="120" y2="40" />
-                        <line x1="20" y1="40" x2="140" y2="40" />
-                        <line x1="20" y1="80" x2="140" y2="80" />
-                        <line x1="20" y1="120" x2="140" y2="120" />
-                    </g>
-                    <!-- Transformed i-hat (goes to (1, -1)) -> draws to right-down -->
-                    <line x1="20" y1="120" x2="60" y2="80" stroke="#f97316" stroke-width="3"
-                        marker-end="url(#arr-i-m)" />
-                    <!-- Transformed j-hat (goes to (1, 2)) -> draws to right-up -->
-                    <line x1="20" y1="120" x2="60" y2="40" stroke="#10b981" stroke-width="3"
-                        marker-end="url(#arr-j-m)" />
-                    <circle cx="20" cy="120" r="3" fill="#fff" />
-                </svg>
-                <p style="font-size: 0.9em; color: var(--text-secondary);">变换后</p>
-                <p style="font-size: 0.85em;">$\hat{i}' = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$, $\hat{j}' =
-                    \begin{bmatrix} 1 \\ 2 \end{bmatrix}$</p>
-            </div>
-
-            <!-- Equals Matrix -->
-            <div style="font-size: 1.5rem; color: var(--text-muted);">=</div>
-
-            <div style="text-align: center;">
-                <div style="font-size: 1.4rem; font-family: serif;">
-                    $A = \begin{bmatrix} \color{#f97316}{1} & \color{#10b981}{1} \\ \color{#f97316}{1} &
-                    \color{#10b981}{2} \end{bmatrix}$
-                </div>
-                <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 1rem;">
-                    <span style="color:#f97316">第一列</span> = $\hat{i}'$<br>
-                    <span style="color:#10b981">第二列</span> = $\hat{j}'$
-                </p>
-            </div>
+    <!-- 对比图 -->
+    <div style="display: flex; gap: 2rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
+        <div style="text-align: center;">
+            <svg width="140" height="120" viewBox="0 0 140 120">
+                <g stroke="#4a9eff" stroke-width="1.5" fill="none">
+                    <line x1="20" y1="100" x2="120" y2="100" />
+                    <line x1="20" y1="60" x2="120" y2="60" />
+                    <line x1="20" y1="20" x2="120" y2="20" />
+                    <line x1="40" y1="10" x2="60" y2="110" />
+                    <line x1="80" y1="10" x2="100" y2="110" />
+                </g>
+                <circle cx="40" cy="100" r="3" fill="#10b981" />
+            </svg>
+            <p style="color: var(--accent-blue);">✅ 线性变换</p>
+            <p style="font-size: 0.85em; color: var(--text-muted);">网格保持平行</p>
         </div>
-    </div>
 
-    <div class="content-block">
-        <h3>3.3.3 数值例子：计算变换</h3>
-
-        <div class="example-card">
-            <p><strong>问题：</strong> 矩阵 $A = \begin{bmatrix} 3 & 1 \\ 0 & 2 \end{bmatrix}$ 将向量 $\vec{v} = \begin{bmatrix}
-                2 \\ 1 \end{bmatrix}$ 变换到哪里？</p>
-
-            <p><strong>解法：</strong></p>
-            <p style="margin-left: 1rem;">
-                向量 $\vec{v}$ 可以写成线性组合：$\vec{v} = 2\hat{i} + 1\hat{j}$
-            </p>
-            <p style="margin-left: 1rem;">
-                变换后：
-            </p>
-            <div class="math-block">
-                $$
-                A\vec{v} = 2 \cdot \underbrace{\begin{bmatrix} 3 \\ 0 \end{bmatrix}}_{\hat{i}'} + 1 \cdot
-                \underbrace{\begin{bmatrix} 1 \\ 2 \end{bmatrix}}_{\hat{j}'}
-                = \begin{bmatrix} 6 \\ 0 \end{bmatrix} + \begin{bmatrix} 1 \\ 2 \end{bmatrix}
-                = \begin{bmatrix} 7 \\ 2 \end{bmatrix}
-                $$
-            </div>
-            <p><strong>答案：</strong> $\vec{v}$ 被变换到 $\begin{bmatrix} 7 \\ 2 \end{bmatrix}$。</p>
+        <div style="text-align: center;">
+            <svg width="140" height="120" viewBox="0 0 140 120">
+                <g stroke="#ec4899" stroke-width="1.5" fill="none">
+                    <path d="M 20 100 Q 70 90, 120 100" />
+                    <path d="M 20 60 Q 70 40, 120 60" />
+                    <path d="M 20 20 Q 70 10, 120 20" />
+                    <path d="M 40 10 Q 50 60, 55 110" />
+                    <path d="M 100 10 Q 90 60, 85 110" />
+                </g>
+                <circle cx="40" cy="100" r="3" fill="#10b981" />
+            </svg>
+            <p style="color: #ec4899;">❌ 非线性变换</p>
+            <p style="font-size: 0.85em; color: var(--text-muted);">线被弯曲了</p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: COMMON TRANSFORMATIONS ==================== -->
+<!-- ==================== SECTION 2: 矩阵的秘密 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">3.4 常见线性变换</h2>
+    <h2 class="section-title">🎛️ 3.2 矩阵：变形的"配方"</h2>
 
     <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
-            <!-- Rotation -->
-            <div class="definition-card">
-                <div class="definition-title">🔄 旋转 (Rotation)</div>
-                <p>逆时针旋转 $\theta$ 角度：</p>
-                <div style="text-align: center; margin: 1rem 0;">
-                    $R_\theta = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}$
-                </div>
-                <svg width="100" height="100" viewBox="0 0 100 100" style="display: block; margin: 0 auto;">
-                    <line x1="50" y1="50" x2="80" y2="50" stroke="#f97316" stroke-width="2" />
-                    <line x1="50" y1="50" x2="50" y2="20" stroke="#10b981" stroke-width="2" />
-                    <path d="M 80 50 A 30 30 0 0 0 65 25" stroke="#4a9eff" stroke-width="2" fill="none"
-                        stroke-dasharray="3,2" />
-                    <line x1="50" y1="50" x2="65" y2="25" stroke="#4a9eff" stroke-width="2" />
-                </svg>
-            </div>
-
-            <!-- Scaling -->
-            <div class="definition-card">
-                <div class="definition-title">↔️ 缩放 (Scaling)</div>
-                <p>沿 x 轴放大 $s_x$ 倍，沿 y 轴放大 $s_y$ 倍：</p>
-                <div style="text-align: center; margin: 1rem 0;">
-                    $S = \begin{bmatrix} s_x & 0 \\ 0 & s_y \end{bmatrix}$
-                </div>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">
-                    例如 $\begin{bmatrix} 2 & 0 \\ 0 & 0.5 \end{bmatrix}$ 会把物体横向拉伸2倍，纵向压缩一半。
-                </p>
-            </div>
-
-            <!-- Shear -->
-            <div class="definition-card">
-                <div class="definition-title">📐 剪切 (Shear)</div>
-                <p>水平剪切（$\hat{j}$ 向右倾斜）：</p>
-                <div style="text-align: center; margin: 1rem 0;">
-                    $H = \begin{bmatrix} 1 & k \\ 0 & 1 \end{bmatrix}$
-                </div>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">
-                    $\hat{i}$ 不变，$\hat{j}$ 变成 $\begin{bmatrix} k \\ 1 \end{bmatrix}$。
-                </p>
-            </div>
-
-            <!-- Reflection -->
-            <div class="definition-card">
-                <div class="definition-title">🪞 反射 (Reflection)</div>
-                <p>关于 x 轴对称：</p>
-                <div style="text-align: center; margin: 1rem 0;">
-                    $F_x = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}$
-                </div>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">
-                    $\hat{i}$ 不变，$\hat{j}$ 变成 $-\hat{j}$（向下翻转）。
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 5: INTERACTIVE ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">3.5 交互实验：亲手变换空间</h2>
-
-    <div class="content-block">
+        <h3>🕹️ 游戏控制器类比</h3>
         <p>
-            现在你已经理解了理论，让我们亲手操作！在下面的画布中，你可以：
+            想象矩阵是一个游戏控制器，有 4 个按钮：
         </p>
-        <ul>
-            <li>点击预设按钮，观看剪切、旋转、缩放动画</li>
-            <li>手动修改矩阵数值，设计你自己的变换</li>
-        </ul>
+
+        <div style="display: flex; justify-content: center; margin: 2rem 0;">
+            <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 16px; text-align: center;">
+                <div
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 1.5rem; font-family: monospace;">
+                    <div style="background: #f97316; color: white; padding: 1rem; border-radius: 8px;">a</div>
+                    <div style="background: #10b981; color: white; padding: 1rem; border-radius: 8px;">b</div>
+                    <div style="background: #f97316; color: white; padding: 1rem; border-radius: 8px;">c</div>
+                    <div style="background: #10b981; color: white; padding: 1rem; border-radius: 8px;">d</div>
+                </div>
+                <p style="margin-top: 1rem; font-size: 1.2rem;">
+                    $\begin{bmatrix} a & b \\ c & d \end{bmatrix}$
+                </p>
+            </div>
+        </div>
+
+        <div class="theorem-card">
+            <div class="theorem-title">🔮 矩阵的秘密</div>
+            <p>
+                <span style="color:#f97316">第一列 (a, c)</span> = î（向右的箭头）会变到哪里<br>
+                <span style="color:#10b981">第二列 (b, d)</span> = ĵ（向上的箭头）会变到哪里
+            </p>
+            <p style="margin-top: 1rem; font-size: 0.95em;">
+                只要知道两个基向量去了哪里，整个空间的变换就确定了！
+            </p>
+        </div>
     </div>
+</div>
+
+<!-- ==================== SECTION 3: 常见变换 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎨 3.3 常见变换图鉴</h2>
+
+    <div class="content-block">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
+            <div class="definition-card">
+                <div class="definition-title">🔄 旋转 90°</div>
+                <div style="text-align: center; margin: 0.5rem 0;">
+                    $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    î 变成 ĵ，ĵ 变成 -î
+                </p>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">↔️ 水平翻转</div>
+                <div style="text-align: center; margin: 0.5rem 0;">
+                    $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    î 反向，ĵ 不变
+                </p>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">📐 剪切</div>
+                <div style="text-align: center; margin: 0.5rem 0;">
+                    $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    î 不变，ĵ 向右倾斜
+                </p>
+            </div>
+
+            <div class="definition-card">
+                <div class="definition-title">🔍 放大 2 倍</div>
+                <div style="text-align: center; margin: 0.5rem 0;">
+                    $\begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix}$
+                </div>
+                <p style="font-size: 0.85em; color: var(--text-secondary);">
+                    î 和 ĵ 都变成 2 倍长
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SECTION 4: 交互 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🕹️ 3.4 动手玩变换</h2>
 
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">线性变换可视化</span>
-            <span class="viz-badge" style="background: var(--accent-purple);">动手实验</span>
+            <span class="viz-title">变形工厂</span>
+            <span class="viz-badge" style="background: var(--accent-purple);">超级好玩</span>
         </div>
-        <div class="viz-canvas-wrapper" style="height: 500px;">
+        <div class="viz-canvas-wrapper" style="height: 450px;">
             <canvas id="viz-matrix-transform" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
             <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
-                <button class="btn btn-secondary" id="btn-shear">剪切 (Shear)</button>
-                <button class="btn btn-secondary" id="btn-rotate">旋转 45°</button>
-                <button class="btn btn-secondary" id="btn-scale">缩放 2x</button>
+                <button class="btn btn-secondary" id="btn-shear">📐 剪切</button>
+                <button class="btn btn-secondary" id="btn-rotate">🔄 旋转 45°</button>
+                <button class="btn btn-secondary" id="btn-scale">🔍 放大 2x</button>
             </div>
 
             <div style="display: flex; gap: 2rem; justify-content: center; align-items: center; flex-wrap: wrap;">
                 <div style="text-align: center;">
-                    <p style="margin: 0 0 0.5rem 0; font-size: 0.9em; color: var(--text-secondary);">
-                        矩阵 A =
-                    </p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; max-width: 150px;">
-                        <input type="number" class="matrix-cell" id="val-a" value="1" step="0.1"
-                            style="color:#f97316; font-weight:bold; text-align:center; padding: 0.5rem;">
-                        <input type="number" class="matrix-cell" id="val-b" value="0" step="0.1"
-                            style="color:#10b981; font-weight:bold; text-align:center; padding: 0.5rem;">
-                        <input type="number" class="matrix-cell" id="val-c" value="0" step="0.1"
-                            style="color:#f97316; font-weight:bold; text-align:center; padding: 0.5rem;">
-                        <input type="number" class="matrix-cell" id="val-d" value="1" step="0.1"
-                            style="color:#10b981; font-weight:bold; text-align:center; padding: 0.5rem;">
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.9em;">矩阵 =</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; max-width: 120px;">
+                        <input type="number" id="val-a" value="1" step="0.1"
+                            style="padding: 0.5rem; text-align: center; font-size: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px; color: #f97316; font-weight: bold;">
+                        <input type="number" id="val-b" value="0" step="0.1"
+                            style="padding: 0.5rem; text-align: center; font-size: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px; color: #10b981; font-weight: bold;">
+                        <input type="number" id="val-c" value="0" step="0.1"
+                            style="padding: 0.5rem; text-align: center; font-size: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px; color: #f97316; font-weight: bold;">
+                        <input type="number" id="val-d" value="1" step="0.1"
+                            style="padding: 0.5rem; text-align: center; font-size: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px; color: #10b981; font-weight: bold;">
                     </div>
                 </div>
-                <div style="max-width: 300px; font-size: 0.9em; color: var(--text-muted);">
-                    <span style="color:#f97316">左列</span> = $\hat{i}$ 的新位置<br>
-                    <span style="color:#10b981">右列</span> = $\hat{j}$ 的新位置
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 6: APPLICATIONS ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">3.6 为什么这很重要？</h2>
-
-    <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-            <div class="definition-card">
-                <div class="definition-title">🎮 游戏与动画</div>
-                <p>
-                    游戏中角色的移动、旋转、缩放，全部通过矩阵变换实现。
-                    GPU 的核心工作就是高速执行矩阵乘法。
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">🤖 机器人学</div>
-                <p>
-                    机械臂的关节运动可以用旋转矩阵描述。
-                    多个关节的组合就是矩阵的连乘（下一章内容）。
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">📊 数据科学</div>
-                <p>
-                    PCA（主成分分析）本质上是找到一个变换矩阵，
-                    把高维数据投影到更有意义的低维空间。
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">🖼️ 图像处理</div>
-                <p>
-                    图像的旋转、翻转、缩放、透视校正，
-                    都是对像素坐标施加矩阵变换。
+                <p style="font-size: 0.9em; color: var(--text-muted); max-width: 250px;">
+                    试试输入不同的数字！<br>
+                    比如把左上角改成 -1 会怎样？
                 </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 7: SUMMARY ==================== -->
+<!-- ==================== SECTION 5: 总结 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">本章总结</h2>
+    <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">核心要点</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                <li><strong>变换</strong>是向量到向量的函数。</li>
-                <li><strong>线性变换</strong>保持原点不动、直线保持为直线（网格平行等距）。</li>
-                <li><strong>矩阵的列</strong> = 基向量变换后的位置。</li>
-                <li>计算 $A\vec{v}$ 就是用 $\vec{v}$ 的分量对矩阵的列做线性组合。</li>
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><strong>线性变换</strong> = 保持直线和原点的"变形"</li>
+                <li><strong>矩阵</strong> = 变换的"配方"</li>
+                <li>矩阵的两列告诉你 î 和 ĵ 分别去了哪里</li>
+                <li>常见变换：旋转、缩放、剪切、翻转</li>
             </ol>
         </div>
 
-        <p style="margin-top: 2rem;">
-            下一章，我们将探索当连续施加两个变换时会发生什么——这就是<strong>矩阵乘法</strong>的几何本质。
-        </p>
+        <div
+            style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-radius: 12px;">
+            <p style="font-size: 1.2rem; margin: 0;">
+                🤯 <strong>思维升级</strong>
+            </p>
+            <p style="margin-top: 0.5rem;">
+                下次看到一个矩阵时，不要想"一堆数字"，而要想"这是一个变形！"
+            </p>
+        </div>
     </div>
 </div>

@@ -1,142 +1,72 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 11</span>
-    <h1 class="chapter-title">用线性变换理解叉积 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cross Products in
-            the Light of Linear Transformations</small></h1>
+    <span class="chapter-badge">第 11 章</span>
+    <h1 class="chapter-title">叉积的秘密 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cross Products &
+            Transformations</small></h1>
     <p class="chapter-description">
-        上一章我们学习了叉积的计算和几何意义。这一章将揭示一个更深层的问题：
-        叉积的公式是从哪里来的？为什么偏偏是那些特定的加减组合？
-        答案与<strong>行列式</strong>和<strong>对偶性</strong>密切相关。
+        上一章我们学了叉积怎么用。这一章揭示一个更深的秘密：
+        叉积的公式是怎么来的？为什么偏偏是那样计算？
     </p>
 </div>
 
-<!-- ==================== SECTION 1: THE MYSTERY ==================== -->
+<!-- ==================== SECTION 1 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">11.1 公式的神秘来源</h2>
+    <h2 class="section-title">🎁 11.1 叉积与体积</h2>
 
     <div class="content-block">
         <p>
-            回顾叉积的计算公式：
+            回想一下：
         </p>
-        <div class="math-block">
-            $$
-            \vec{v} \times \vec{w} = \det \begin{bmatrix} \hat{i} & \hat{j} & \hat{k} \\ v_1 & v_2 & v_3 \\ w_1 & w_2 &
-            w_3 \end{bmatrix}
-            $$
-        </div>
+        <ul>
+            <li>2D 中的<strong>行列式</strong> = 平行四边形面积</li>
+            <li>3D 中的<strong>行列式</strong> = 平行六面体体积</li>
+        </ul>
         <p>
-            这个"假设基向量是矩阵元素"的写法看起来很奇怪。为什么行列式会给出正确的答案？
-        </p>
-    </div>
-</div>
-
-<!-- ==================== SECTION 2: LINEAR TRANSFORMATION VIEW ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">11.2 从线性变换的角度</h2>
-
-    <div class="content-block">
-        <h3>11.2.1 构造一个特殊的函数</h3>
-        <p>
-            固定向量 $\vec{v}$ 和 $\vec{w}$，定义一个函数：
-        </p>
-        <div class="math-block">
-            $$ f(\vec{x}) = \det \begin{bmatrix} x_1 & v_1 & w_1 \\ x_2 & v_2 & w_2 \\ x_3 & v_3 & w_3 \end{bmatrix} $$
-        </div>
-        <p>
-            这个函数把一个 3D 向量 $\vec{x}$ 变成一个标量（行列式的值）。
+            叉积和行列式有着神秘的联系！
         </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">关键观察</div>
+            <div class="theorem-title">🔮 惊人的联系</div>
             <p>
-                这个函数是<strong>线性</strong>的！它满足 $f(\vec{x} + \vec{y}) = f(\vec{x}) + f(\vec{y})$ 和 $f(c\vec{x}) =
-                cf(\vec{x})$。
+                $\vec{x} \cdot (\vec{v} \times \vec{w})$ = 由 $\vec{x}$, $\vec{v}$, $\vec{w}$
+                围成的平行六面体的<strong>体积</strong>！
             </p>
-        </div>
-    </div>
-
-    <div class="content-block">
-        <h3>11.2.2 对偶性登场</h3>
-        <p>
-            根据第 9 章的对偶性原理：每一个从 n 维到 1 维的线性变换，都可以表示为与某个向量的点积。
-        </p>
-        <p>
-            这意味着存在一个唯一的向量 $\vec{p}$，使得：
-        </p>
-        <div class="math-block">
-            $$ f(\vec{x}) = \vec{p} \cdot \vec{x} \quad \text{对所有 } \vec{x} $$
-        </div>
-        <p>
-            这个神秘的向量 $\vec{p}$ 是什么？它就是 $\vec{v} \times \vec{w}$！
-        </p>
-    </div>
-</div>
-
-<!-- ==================== SECTION 3: GEOMETRIC INTERPRETATION ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">11.3 几何解释</h2>
-
-    <div class="content-block">
-        <p>
-            $f(\vec{x})$ 的几何意义是什么？
-        </p>
-        <p>
-            $\det \begin{bmatrix} \vec{x} & \vec{v} & \vec{w} \end{bmatrix}$ = 由 $\vec{x}$、$\vec{v}$、$\vec{w}$
-            围成的<strong>平行六面体的有符号体积</strong>。
-        </p>
-
-        <div class="theorem-card">
-            <div class="theorem-title">叉积的深层含义</div>
-            <p>
-                $\vec{v} \times \vec{w}$ 是那个唯一的向量，使得与它做点积等价于计算"与 $\vec{v}$、$\vec{w}$ 围成的体积"。
-            </p>
-            <div class="math-block">
-                $$ \vec{x} \cdot (\vec{v} \times \vec{w}) = \text{Volume}(\vec{x}, \vec{v}, \vec{w}) $$
-            </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: WHY PERPENDICULAR ==================== -->
+<!-- ==================== SECTION 2 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">11.4 为什么结果垂直于 v 和 w？</h2>
+    <h2 class="section-title">🤔 11.2 为什么垂直？</h2>
 
     <div class="content-block">
         <p>
-            当 $\vec{x}$ 平行于 $\vec{v}$ 或 $\vec{w}$ 时，三个向量共面，围成的体积为 0。
+            当 $\vec{x}$ 和 $\vec{v}$、$\vec{w}$ 在同一平面时，体积为 0（因为被压扁了）。
         </p>
         <p>
             这意味着：
         </p>
         <div class="math-block">
-            $$ \vec{v} \cdot (\vec{v} \times \vec{w}) = 0 \quad \text{和} \quad \vec{w} \cdot (\vec{v} \times \vec{w}) =
-            0 $$
+            $$ \vec{v} \cdot (\vec{v} \times \vec{w}) = 0 $$
+            $$ \vec{w} \cdot (\vec{v} \times \vec{w}) = 0 $$
         </div>
-        <p>
-            根据点积为 0 ⟺ 垂直，所以 $\vec{v} \times \vec{w}$ 必定垂直于 $\vec{v}$ 和 $\vec{w}$！
-        </p>
-        <p>
-            这就是叉积的垂直性从何而来——不是定义强加的，而是从行列式和体积的概念中自然推出的。
+        <p style="text-align: center;">
+            点积为 0 = 垂直！所以叉积<strong>必然</strong>垂直于原来两个向量。
         </p>
     </div>
 </div>
 
-<!-- ==================== SECTION 5: SUMMARY ==================== -->
+<!-- ==================== SECTION 3 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">本章总结</h2>
+    <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">核心要点</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                <li>叉积公式来自一个从 3D 到 1D 的线性函数（体积函数）。</li>
-                <li>根据<strong>对偶性</strong>，这个函数等价于与某个向量做点积。</li>
-                <li>这个向量就是 $\vec{v} \times \vec{w}$。</li>
-                <li>$\vec{v} \times \vec{w}$ 垂直于 $\vec{v}$ 和 $\vec{w}$，因为共面向量围成的体积为 0。</li>
+            <div class="theorem-title">深层理解</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li>叉积与 3D 行列式（体积）密切相关</li>
+                <li>叉积垂直于原向量是数学的<strong>必然结果</strong>，不是人为规定的</li>
+                <li>线性代数的不同概念之间存在优美的联系</li>
             </ol>
         </div>
-
-        <p style="margin-top: 2rem;">
-            下一章，我们将学习一个著名的公式——<strong>克莱默法则</strong>，用行列式直接求解线性方程组。
-        </p>
     </div>
 </div>

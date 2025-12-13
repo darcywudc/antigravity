@@ -1,153 +1,83 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 13</span>
-    <h1 class="chapter-title">基变换 <br><small style="font-size: 0.6em; color: var(--text-muted);">Change of Basis</small>
-    </h1>
+    <span class="chapter-badge">第 13 章</span>
+    <h1 class="chapter-title">翻译不同的语言 <br><small style="font-size: 0.6em; color: var(--text-muted);">Change of
+            Basis</small></h1>
     <p class="chapter-description">
-        不同的人可以用不同的坐标系来描述同一个向量。你的 $(3, 2)$ 在别人眼里可能是 $(-1, 4)$。
-        这一章将教你如何在不同坐标系之间"翻译"——这对于理解特征值和许多实际应用至关重要。
+        你用中文描述位置，朋友用英文描述——说的是同一个地方，但用了不同的"语言"。
+        基变换就是在不同的数学"语言"之间翻译！
     </p>
 </div>
 
-<!-- ==================== SECTION 1: DIFFERENT PERSPECTIVES ==================== -->
+<!-- ==================== SECTION 1 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">13.1 不同的观察者</h2>
+    <h2 class="section-title">🗣️ 13.1 不同的视角</h2>
 
     <div class="content-block">
-        <h3>13.1.1 想象场景</h3>
+        <h3>🗺️ 地图类比</h3>
         <p>
-            假设你使用标准基 $\hat{i} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$, $\hat{j} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$。
+            想象两个人描述同一个宝藏位置：
         </p>
+        <ul>
+            <li><strong>你</strong>：向东 3 步，向北 2 步</li>
+            <li><strong>朋友</strong>（面朝东北）：向前 4 步，向左 1 步</li>
+        </ul>
         <p>
-            你的朋友 Jennifer 使用不同的基：
-            $\vec{b}_1 = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$, $\vec{b}_2 = \begin{bmatrix} -1 \\ 1 \end{bmatrix}$
-        </p>
-        <p>
-            同一个空间，同一个向量，但你们会用<strong>不同的数字</strong>来描述它。
+            说的是同一个点，但因为选择的"基准方向"不同，数字完全不同！
         </p>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: CHANGE OF BASIS MATRIX ==================== -->
+<!-- ==================== SECTION 2 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">13.2 基变换矩阵</h2>
+    <h2 class="section-title">🔄 13.2 翻译矩阵</h2>
 
     <div class="content-block">
-        <h3>13.2.1 从"她的语言"到"你的语言"</h3>
         <p>
-            如果 Jennifer 说向量是 $\begin{bmatrix} 3 \\ 2 \end{bmatrix}_{\text{her}}$，
-            她的意思是 $3\vec{b}_1 + 2\vec{b}_2$。
+            如果我们知道朋友的"语言"（他的基向量在我们的坐标系下是什么），
+            就可以用矩阵来翻译！
         </p>
-        <p>
-            用你的坐标系来表示：
-        </p>
-        <div class="math-block">
-            $$ 3 \begin{bmatrix} 2 \\ 1 \end{bmatrix} + 2 \begin{bmatrix} -1 \\ 1 \end{bmatrix} = \begin{bmatrix} 4 \\ 5
-            \end{bmatrix}_{\text{you}} $$
-        </div>
-
-        <p>
-            这个转换可以写成矩阵乘法：
-        </p>
-        <div class="math-block">
-            $$ \underbrace{\begin{bmatrix} 2 & -1 \\ 1 & 1 \end{bmatrix}}_{P}
-            \begin{bmatrix} 3 \\ 2 \end{bmatrix}_{\text{her}} =
-            \begin{bmatrix} 4 \\ 5 \end{bmatrix}_{\text{you}} $$
-        </div>
 
         <div class="theorem-card">
-            <div class="theorem-title">基变换矩阵</div>
-            <p>
-                矩阵 $P$（列是新基向量在旧坐标系下的表示）把"新基坐标"转换成"旧基坐标"。
-            </p>
-            <p>
-                逆矩阵 $P^{-1}$ 做相反的事：把"旧基坐标"转换成"新基坐标"。
-            </p>
+            <div class="theorem-title">🔑 基变换</div>
+            <ul style="margin: 0;">
+                <li><strong>$P$</strong>：把"朋友的语言"翻译成"你的语言"</li>
+                <li><strong>$P^{-1}$</strong>：把"你的语言"翻译成"朋友的语言"</li>
+            </ul>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3: TRANSFORMATIONS IN DIFFERENT BASES ==================== -->
+<!-- ==================== SECTION 3 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">13.3 变换在不同基下的表示</h2>
+    <h2 class="section-title">🤔 13.3 为什么要换基？</h2>
 
     <div class="content-block">
         <p>
-            假设你有一个变换矩阵 $A$（在标准基下描述）。Jennifer 如何描述<strong>同一个</strong>变换？
+            有时候换一种"语言"，问题会变得<strong>更简单</strong>！
         </p>
 
-        <div class="math-block">
-            $$ A_{\text{Jennifer}} = P^{-1} A P $$
-        </div>
-
-        <p>
-            这叫做<strong>相似变换</strong>或<strong>共轭</strong>。
-        </p>
-
-        <div class="definition-card">
-            <div class="definition-title">直觉理解</div>
-            <ol style="margin: 0; padding-left: 1.5rem;">
-                <li>$P$：把 Jennifer 的坐标翻译成你的坐标</li>
-                <li>$A$：在你的坐标系下执行变换</li>
-                <li>$P^{-1}$：把结果翻译回 Jennifer 的坐标</li>
-            </ol>
+        <div class="example-card">
+            <p><strong>🎮 游戏类比</strong></p>
+            <p>
+                如果游戏角色总是沿着一个斜坡移动，用"沿着斜坡/垂直斜坡"作为坐标轴，
+                比用"水平/垂直"坐标轴更方便计算！
+            </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: WHY USEFUL ==================== -->
+<!-- ==================== SECTION 4 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">13.4 为什么要换基？</h2>
-
-    <div class="content-block">
-        <p>
-            换基的最大用途是<strong>简化问题</strong>。
-        </p>
-
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 1rem;">
-            <div class="definition-card">
-                <div class="definition-title">对角化</div>
-                <p>
-                    如果能找到一组基，使得变换矩阵变成对角矩阵，计算就变得极其简单。
-                    这正是下一章"特征值"的核心思想。
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">物理坐标系</div>
-                <p>
-                    在物理问题中，选择合适的坐标系（如沿着运动方向）可以大大简化方程。
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">图像处理</div>
-                <p>
-                    傅里叶变换本质上是换基——从"像素基"换到"频率基"。
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 5: SUMMARY ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">本章总结</h2>
+    <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">核心要点</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                <li>同一个向量在不同基下有不同的坐标。</li>
-                <li><strong>$P$</strong>（列是新基向量）把"新基坐标"→"旧基坐标"。</li>
-                <li><strong>$P^{-1}$</strong> 做相反的转换。</li>
-                <li>变换在新基下的矩阵：$A_{\text{new}} = P^{-1} A P$。</li>
-                <li>换基的目的是简化问题（如对角化）。</li>
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li>同一个向量在不同基下有不同的坐标</li>
+                <li><strong>基变换矩阵</strong>用于在不同坐标系之间翻译</li>
+                <li>选择合适的基可以<strong>简化问题</strong></li>
             </ol>
         </div>
-
-        <p style="margin-top: 2rem;">
-            下一章，我们将学习线性代数最重要的概念之一——<strong>特征值与特征向量</strong>：找到那些在变换下只被缩放而不改变方向的特殊向量。
-        </p>
     </div>
 </div>

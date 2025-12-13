@@ -1,211 +1,118 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 10</span>
-    <h1 class="chapter-title">叉积 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cross Products</small>
-    </h1>
+    <span class="chapter-badge">第 10 章</span>
+    <h1 class="chapter-title">叉积：找到垂直方向 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cross
+            Products</small></h1>
     <p class="chapter-description">
-        与点积不同，叉积只在 3D 空间中有定义，而且结果是一个<strong>向量</strong>，不是标量。
-        这个向量垂直于原来的两个向量——这让叉积成为 3D 几何中不可或缺的工具。
+        给你两个向量，能不能找到一个同时垂直于它们的方向？
+        这就是叉积的超能力——而且只在 3D 世界里有效！
     </p>
 </div>
 
-<!-- ==================== SECTION 1: DEFINITION ==================== -->
+<!-- ==================== SECTION 1 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">10.1 叉积的定义</h2>
+    <h2 class="section-title">✋ 10.1 右手定则</h2>
 
     <div class="content-block">
-        <h3>10.1.1 几何定义</h3>
         <p>
-            两个 3D 向量 $\vec{v}$ 和 $\vec{w}$ 的叉积 $\vec{v} \times \vec{w}$ 是一个新向量，满足：
+            叉积的结果是一个<strong>新向量</strong>，垂直于原来的两个向量。
         </p>
-        <ul>
-            <li><strong>方向</strong>：垂直于 $\vec{v}$ 和 $\vec{w}$ 所在的平面（右手定则确定朝向）</li>
-            <li><strong>长度</strong>：$|\vec{v} \times \vec{w}| = |\vec{v}| |\vec{w}| \sin\theta$ = 由 $\vec{v}$ 和
-                $\vec{w}$ 围成的<strong>平行四边形的面积</strong></li>
-        </ul>
+        <p>
+            方向怎么确定？用你的右手！
+        </p>
+
+        <div class="example-card">
+            <p><strong>✋ 右手定则</strong></p>
+            <ol>
+                <li>用右手，四指从 $\vec{v}$ 弯向 $\vec{w}$</li>
+                <li>大拇指指向的方向就是 $\vec{v} \times \vec{w}$ 的方向！</li>
+            </ol>
+        </div>
 
         <div class="theorem-card">
-            <div class="theorem-title">右手定则</div>
+            <div class="theorem-title">⚠️ 注意</div>
             <p>
-                用右手，四指从 $\vec{v}$ 弯向 $\vec{w}$，大拇指指向的方向就是 $\vec{v} \times \vec{w}$ 的方向。
+                叉积只在 <strong>3D</strong> 中有意义！（点积在任何维度都有）
             </p>
         </div>
     </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📐 10.2 叉积的长度</h2>
 
     <div class="content-block">
-        <h3>10.1.2 图解</h3>
+        <p>
+            $|\vec{v} \times \vec{w}|$ = 由两个向量围成的<strong>平行四边形的面积</strong>！
+        </p>
 
         <div style="display: flex; justify-content: center; margin: 2rem 0;">
-            <svg width="280" height="220" viewBox="0 0 280 220">
-                <defs>
-                    <marker id="arr-v-cross" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                        <path d="M0,0 L0,6 L8,3 z" fill="#4a9eff" />
-                    </marker>
-                    <marker id="arr-w-cross" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                        <path d="M0,0 L0,6 L8,3 z" fill="#f97316" />
-                    </marker>
-                    <marker id="arr-cross" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                        <path d="M0,0 L0,6 L8,3 z" fill="#10b981" />
-                    </marker>
-                </defs>
-
-                <!-- Parallelogram (shaded) -->
-                <polygon points="80,180 180,180 200,120 100,120" fill="rgba(236, 72, 153, 0.2)" stroke="#ec4899"
-                    stroke-width="1" />
-                <text x="140" y="155" fill="#ec4899" font-size="12" text-anchor="middle">面积</text>
-
-                <!-- v vector -->
-                <line x1="80" y1="180" x2="180" y2="180" stroke="#4a9eff" stroke-width="2"
-                    marker-end="url(#arr-v-cross)" />
-                <text x="130" y="200" fill="#4a9eff" font-size="14" text-anchor="middle">v</text>
-
-                <!-- w vector -->
-                <line x1="80" y1="180" x2="100" y2="120" stroke="#f97316" stroke-width="2"
-                    marker-end="url(#arr-w-cross)" />
-                <text x="75" y="145" fill="#f97316" font-size="14">w</text>
-
-                <!-- Cross product (perpendicular) -->
-                <line x1="80" y1="180" x2="80" y2="50" stroke="#10b981" stroke-width="3" marker-end="url(#arr-cross)" />
-                <text x="90" y="45" fill="#10b981" font-size="14">v × w</text>
-
-                <!-- Right angle indicator -->
-                <rect x="80" y="170" width="10" height="10" fill="none" stroke="#fff" stroke-width="1" />
-
-                <!-- Origin -->
-                <circle cx="80" cy="180" r="3" fill="#fff" />
+            <svg width="200" height="150" viewBox="0 0 200 150">
+                <polygon points="30,120 130,120 160,50 60,50" fill="rgba(236, 72, 153, 0.2)" stroke="#ec4899"
+                    stroke-width="2" />
+                <line x1="30" y1="120" x2="130" y2="120" stroke="#4a9eff" stroke-width="3" />
+                <line x1="30" y1="120" x2="60" y2="50" stroke="#f97316" stroke-width="3" />
+                <text x="80" y="115" fill="#4a9eff" font-size="12">v</text>
+                <text x="35" y="80" fill="#f97316" font-size="12">w</text>
+                <text x="95" y="90" fill="#ec4899" font-size="14">面积</text>
             </svg>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: FORMULA ==================== -->
+<!-- ==================== SECTION 3 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">10.2 计算公式</h2>
+    <h2 class="section-title">🔄 10.3 顺序很重要</h2>
 
     <div class="content-block">
-        <div class="math-block">
-            $$
-            \vec{v} \times \vec{w} =
-            \begin{bmatrix} v_1 \\ v_2 \\ v_3 \end{bmatrix} \times
-            \begin{bmatrix} w_1 \\ w_2 \\ w_3 \end{bmatrix} =
-            \begin{bmatrix} v_2 w_3 - v_3 w_2 \\ v_3 w_1 - v_1 w_3 \\ v_1 w_2 - v_2 w_1 \end{bmatrix}
-            $$
-        </div>
-
         <p>
-            可以用行列式的形式记忆：
+            叉积的顺序会改变方向！
         </p>
         <div class="math-block">
-            $$
-            \vec{v} \times \vec{w} = \det \begin{bmatrix} \hat{i} & \hat{j} & \hat{k} \\ v_1 & v_2 & v_3 \\ w_1 & w_2 &
-            w_3 \end{bmatrix}
-            $$
+            $$ \vec{w} \times \vec{v} = -(\vec{v} \times \vec{w}) $$
         </div>
-
-        <div class="example-card">
-            <p><strong>例子：</strong></p>
-            <div class="math-block">
-                $$
-                \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} \times
-                \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} =
-                \begin{bmatrix} 0 \cdot 0 - 0 \cdot 1 \\ 0 \cdot 0 - 1 \cdot 0 \\ 1 \cdot 1 - 0 \cdot 0 \end{bmatrix} =
-                \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
-                $$
-            </div>
-            <p>$\hat{i} \times \hat{j} = \hat{k}$——这正是右手定则的标准例子。</p>
-        </div>
+        <p style="text-align: center;">
+            交换顺序，结果<strong>反向</strong>！
+        </p>
     </div>
 </div>
 
-<!-- ==================== SECTION 3: PROPERTIES ==================== -->
+<!-- ==================== SECTION 4 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">10.3 重要性质</h2>
+    <h2 class="section-title">🌍 10.4 哪里用到叉积？</h2>
 
     <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
             <div class="definition-card">
-                <div class="definition-title">1. 反交换律</div>
-                <p>$\vec{v} \times \vec{w} = -(\vec{w} \times \vec{v})$</p>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">
-                    交换顺序会翻转方向。这与点积不同（点积满足交换律）。
-                </p>
+                <div class="definition-title">🎮 3D 游戏</div>
+                <p style="font-size: 0.9em;">计算表面的法向量（朝外的方向）</p>
             </div>
-
             <div class="definition-card">
-                <div class="definition-title">2. 平行判定</div>
-                <p>$\vec{v} \times \vec{w} = \vec{0}$ ⟺ $\vec{v} \parallel \vec{w}$</p>
-                <p style="font-size: 0.85em; color: var(--text-secondary);">
-                    平行向量围成的平行四边形面积为 0。
-                </p>
+                <div class="definition-title">⚙️ 物理引擎</div>
+                <p style="font-size: 0.9em;">计算力矩（旋转的力）</p>
             </div>
-
             <div class="definition-card">
-                <div class="definition-title">3. 分配律</div>
-                <p>$\vec{u} \times (\vec{v} + \vec{w}) = \vec{u} \times \vec{v} + \vec{u} \times \vec{w}$</p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">4. 自己与自己叉乘 = 0</div>
-                <p>$\vec{v} \times \vec{v} = \vec{0}$</p>
+                <div class="definition-title">🛠️ 3D 建模</div>
+                <p style="font-size: 0.9em;">确定表面的正面和背面</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: APPLICATIONS ==================== -->
+<!-- ==================== SECTION 5 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">10.4 应用</h2>
-
-    <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-            <div class="definition-card">
-                <div class="definition-title">📐 求法向量</div>
-                <p>
-                    给定平面上的两个向量，它们的叉积就是平面的法向量（垂直于平面）。
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">📦 计算体积</div>
-                <p>
-                    三个向量围成的平行六面体体积 = $|\vec{u} \cdot (\vec{v} \times \vec{w})|$（标量三重积）
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">⚙️ 力矩</div>
-                <p>
-                    物理中，力矩 = 位置向量 × 力向量。这决定了旋转而不是平移。
-                </p>
-            </div>
-
-            <div class="definition-card">
-                <div class="definition-title">🎮 碰撞检测</div>
-                <p>
-                    3D 游戏中，叉积用于计算表面法线、判断点在三角形的哪一侧。
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 5: SUMMARY ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">本章总结</h2>
+    <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">核心要点</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                <li>叉积只在 <strong>3D</strong> 中有定义，结果是<strong>向量</strong>。</li>
-                <li><strong>方向</strong>：垂直于原平面（右手定则）。</li>
-                <li><strong>长度</strong>：$|\vec{v}| |\vec{w}| \sin\theta$ = 平行四边形面积。</li>
-                <li><strong>反交换</strong>：$\vec{v} \times \vec{w} = -(\vec{w} \times \vec{v})$。</li>
-                <li>$\vec{v} \times \vec{w} = \vec{0}$ ⟺ 两向量平行。</li>
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><strong>叉积</strong>只在 3D 中有意义</li>
+                <li>结果是<strong>垂直于</strong>两个输入向量的新向量</li>
+                <li>方向：用<strong>右手定则</strong></li>
+                <li>长度 = 平行四边形<strong>面积</strong></li>
+                <li>交换顺序 → 结果<strong>反向</strong></li>
             </ol>
         </div>
-
-        <p style="margin-top: 2rem;">
-            下一章，我们将用线性变换的视角重新理解叉积——这将揭示一个更深层的数学结构。
-        </p>
     </div>
 </div>

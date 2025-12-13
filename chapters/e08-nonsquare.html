@@ -1,169 +1,100 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 8</span>
-    <h1 class="chapter-title">非方阵 <br><small style="font-size: 0.6em; color: var(--text-muted);">Nonsquare Matrices as
-            Transformations Between Dimensions</small></h1>
+    <span class="chapter-badge">第 8 章</span>
+    <h1 class="chapter-title">穿越维度的传送门 <br><small style="font-size: 0.6em; color: var(--text-muted);">Non-square
+            Matrices</small></h1>
     <p class="chapter-description">
-        到目前为止，我们处理的都是方阵（2×2 或 3×3）。但现实中，矩阵经常是 3×2、2×4 等非方形的。
-        这些矩阵代表什么？答案是：<strong>维度之间的变换</strong>。
+        目前为止我们只见过方形矩阵（2×2 或 3×3）。
+        但矩阵也可以是长方形的！它们能把你从一个维度"传送"到另一个维度。
     </p>
 </div>
 
-<!-- ==================== SECTION 1: DIMENSION CHANGE ==================== -->
+<!-- ==================== SECTION 1 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">8.1 维度的变换</h2>
+    <h2 class="section-title">🚪 8.1 维度传送门</h2>
 
     <div class="content-block">
-        <h3>8.1.1 m×n 矩阵的含义</h3>
+        <h3>🎮 游戏地图类比</h3>
         <p>
-            一个 <strong>m×n</strong> 矩阵代表从 <strong>n 维空间</strong>到 <strong>m 维空间</strong>的变换。
+            想象你在玩一个游戏，有一个传送门：
         </p>
-        <div class="math-block">
-            $$ A: \mathbb{R}^n \to \mathbb{R}^m $$
-        </div>
+        <ul>
+            <li>从 <strong>2D 地图</strong>（平面）传送到 <strong>3D 世界</strong></li>
+            <li>或者从 <strong>3D 世界</strong>压缩到 <strong>2D 小地图</strong></li>
+        </ul>
+        <p>
+            非方形矩阵就是这样的传送门！
+        </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">列数 = 输入维度，行数 = 输出维度</div>
+            <div class="theorem-title">🔑 矩阵的形状</div>
             <p>
-                矩阵有 <strong>n 列</strong>，每列是一个 m 维向量——这 n 列代表 n 个输入基向量变换后的位置（在 m 维空间中）。
+                一个 <strong>m×n</strong> 矩阵：
             </p>
+            <ul style="margin: 0.5rem 0 0 0;">
+                <li>n 列 → 输入是 n 维空间</li>
+                <li>m 行 → 输出是 m 维空间</li>
+            </ul>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: EXAMPLES ==================== -->
+<!-- ==================== SECTION 2 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">8.2 例子</h2>
+    <h2 class="section-title">📤 8.2 例子：从 2D 到 3D</h2>
 
     <div class="content-block">
-        <h3>8.2.1 从 2D 到 3D（3×2 矩阵）</h3>
-        <div class="math-block">
-            $$
-            A = \begin{bmatrix} 2 & 0 \\ 0 & 1 \\ 1 & 1 \end{bmatrix}
-            $$
+        <div class="example-card">
+            <p><strong>3×2 矩阵（2D → 3D）</strong></p>
+            <div class="math-block">
+                $$ \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} =
+                \begin{bmatrix} x \\ y \\ x+y \end{bmatrix} $$
+            </div>
+            <p>
+                一个 2D 平面上的点 $(x, y)$ 被"嵌入"到 3D 空间中，变成 $(x, y, x+y)$。
+            </p>
         </div>
-        <p>
-            这个矩阵把 2D 平面"嵌入"到 3D 空间中。
-        </p>
-        <ul>
-            <li>$\hat{i} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$ 变成 $\begin{bmatrix} 2 \\ 0 \\ 1 \end{bmatrix}$（第一列）
-            </li>
-            <li>$\hat{j} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$ 变成 $\begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix}$（第二列）
-            </li>
-        </ul>
-        <p>
-            2D 平面内的任何向量都被映射到 3D 空间中的一个平面上。
-        </p>
-    </div>
 
-    <div class="content-block">
-        <h3>8.2.2 从 3D 到 2D（2×3 矩阵）</h3>
-        <div class="math-block">
-            $$
-            B = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix}
-            $$
-        </div>
-        <p>
-            这是<strong>投影</strong>到 xy 平面。3D 空间被"压扁"成 2D。
-        </p>
-        <ul>
-            <li>$\hat{i}$、$\hat{j}$ 保持不变（只取前两个分量）</li>
-            <li>$\hat{k}$ 变成 $\begin{bmatrix} 0 \\ 0 \end{bmatrix}$——z 轴方向被完全"消灭"</li>
-        </ul>
-    </div>
-
-    <div class="content-block">
-        <h3>8.2.3 向量到标量（1×n 矩阵 = 行向量）</h3>
-        <div class="math-block">
-            $$
-            C = \begin{bmatrix} 2 & 3 \end{bmatrix}
-            $$
-        </div>
-        <p>
-            这是 2D 到 1D 的变换。输入是 2D 向量，输出是一个数字（标量）。
-        </p>
-        <div class="math-block">
-            $$
-            C \begin{bmatrix} x \\ y \end{bmatrix} = 2x + 3y
-            $$
-        </div>
-        <p>
-            这实际上就是<strong>点积</strong>！我们将在第 9 章详细讨论。
+        <p style="text-align: center; margin-top: 1rem;">
+            🎮 就像把 2D 游戏角色放进 3D 世界——它只能在一个平面内移动，但存在于 3D 空间中。
         </p>
     </div>
 </div>
 
-<!-- ==================== SECTION 3: GEOMETRIC INTUITION ==================== -->
+<!-- ==================== SECTION 3 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">8.3 几何直觉</h2>
+    <h2 class="section-title">📥 8.3 例子：从 3D 到 2D</h2>
 
     <div class="content-block">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-            <div class="definition-card" style="border-left-color: var(--accent-blue);">
-                <div class="definition-title">列数 > 行数 (如 2×3)</div>
-                <p><strong>压缩维度</strong></p>
-                <p style="font-size: 0.9em; color: var(--text-secondary);">
-                    高维空间被投影/压缩到低维空间。信息丢失。
-                </p>
+        <div class="example-card">
+            <p><strong>2×3 矩阵（3D → 2D）</strong></p>
+            <div class="math-block">
+                $$ \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix} \begin{bmatrix} x \\ y \\ z \end{bmatrix} =
+                \begin{bmatrix} x \\ y \end{bmatrix} $$
             </div>
-
-            <div class="definition-card" style="border-left-color: var(--accent-green);">
-                <div class="definition-title">列数 < 行数 (如 3×2)</div>
-                        <p><strong>嵌入维度</strong></p>
-                        <p style="font-size: 0.9em; color: var(--text-secondary);">
-                            低维空间被嵌入到高维空间中（作为子空间）。
-                        </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== SECTION 4: APPLICATIONS ==================== -->
-    <div class="section fade-in">
-        <h2 class="section-title">8.4 应用</h2>
-
-        <div class="content-block">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-                <div class="definition-card">
-                    <div class="definition-title">📊 数据降维</div>
-                    <p>
-                        PCA 使用非方阵将高维数据投影到低维空间，保留最重要的信息。
-                    </p>
-                </div>
-
-                <div class="definition-card">
-                    <div class="definition-title">📷 图像压缩</div>
-                    <p>
-                        图像可以表示为高维向量，压缩就是投影到更低维度。
-                    </p>
-                </div>
-
-                <div class="definition-card">
-                    <div class="definition-title">🧠 神经网络</div>
-                    <p>
-                        每一层的权重矩阵通常是非方的，用于调整特征维度。
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== SECTION 5: SUMMARY ==================== -->
-    <div class="section fade-in">
-        <h2 class="section-title">本章总结</h2>
-
-        <div class="content-block">
-            <div class="theorem-card">
-                <div class="theorem-title">核心要点</div>
-                <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                    <li><strong>m×n 矩阵</strong>：从 n 维到 m 维的变换。</li>
-                    <li><strong>列数</strong> = 输入维度；<strong>行数</strong> = 输出维度。</li>
-                    <li>列数 > 行数 → 压缩（投影）；列数 < 行数 → 嵌入。</li>
-                    <li>1×n 矩阵（行向量）把向量变成标量——这与点积密切相关。</li>
-                </ol>
-            </div>
-
-            <p style="margin-top: 2rem;">
-                下一章，我们将深入探讨点积的几何意义，以及它与线性变换的惊人联系。
+            <p>
+                这是一个<strong>投影</strong>！3D 点被"压扁"到 XY 平面，丢失了 Z 信息。
             </p>
         </div>
+
+        <p style="text-align: center; margin-top: 1rem;">
+            📷 这就是相机的工作原理——把 3D 世界投影到 2D 照片上！
+        </p>
     </div>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
+
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li>矩阵不一定是方形的</li>
+                <li><strong>m×n 矩阵</strong>：从 n 维到 m 维的传送门</li>
+                <li>m > n → 嵌入到更高维度</li>
+                <li>m < n → 投影到更低维度（信息丢失）</li>
+            </ol>
+        </div>
+    </div>
+</div>

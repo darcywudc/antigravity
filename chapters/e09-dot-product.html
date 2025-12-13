@@ -1,211 +1,128 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 9</span>
-    <h1 class="chapter-title">点积与对偶性 <br><small style="font-size: 0.6em; color: var(--text-muted);">Dot Products and
-            Duality</small></h1>
+    <span class="chapter-badge">第 9 章</span>
+    <h1 class="chapter-title">点积：测量"志同道合" <br><small style="font-size: 0.6em; color: var(--text-muted);">Dot
+            Products</small></h1>
     <p class="chapter-description">
-        点积也许是你最早学会的向量运算，但它的真正含义远比"对应分量相乘再相加"深刻得多。
-        这一章将揭示点积与<strong>投影</strong>的关系，以及它与线性变换的神秘联系——<strong>对偶性</strong>。
+        如果两个人走的方向完全一样，他们就是"志同道合"。
+        点积就是测量两个向量有多"志同道合"的工具！
     </p>
 </div>
 
-<!-- ==================== SECTION 1: DEFINITION ==================== -->
+<!-- ==================== SECTION 1 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">9.1 点积的定义</h2>
+    <h2 class="section-title">🤝 9.1 两个向量有多像？</h2>
 
     <div class="content-block">
-        <h3>9.1.1 代数定义</h3>
-        <div class="math-block">
-            $$
-            \vec{v} \cdot \vec{w} = v_1 w_1 + v_2 w_2 + \cdots + v_n w_n
-            $$
-        </div>
+        <h3>🏃 跑步类比</h3>
         <p>
-            例如：$\begin{bmatrix} 1 \\ 2 \end{bmatrix} \cdot \begin{bmatrix} 3 \\ 4 \end{bmatrix} = 1 \cdot 3 + 2 \cdot 4
-            = 11$
+            想象两个人在跑步：
         </p>
-        <p>
-            结果是一个<strong>标量</strong>（数字），不是向量。
-        </p>
-    </div>
-
-    <div class="content-block">
-        <h3>9.1.2 几何定义</h3>
-        <div class="math-block">
-            $$ \vec{v} \cdot \vec{w} = |\vec{v}| \cdot |\vec{w}| \cdot \cos\theta $$
-        </div>
-        <p>
-            其中 $\theta$ 是两个向量之间的夹角。
-        </p>
+        <ul>
+            <li>如果他们<strong>同向奔跑</strong>，他们的"合作值"很高（正数）</li>
+            <li>如果他们<strong>垂直跑</strong>（一个向东，一个向北），合作值是零</li>
+            <li>如果他们<strong>反向跑</strong>，合作值是负数（在对抗）</li>
+        </ul>
 
         <div class="theorem-card">
-            <div class="theorem-title">几何直觉</div>
-            <p>
-                点积 = $|\vec{w}|$ × ($\vec{v}$ 在 $\vec{w}$ 方向上的投影长度)
-            </p>
-            <p style="font-size: 0.9em; color: var(--text-secondary);">
-                也可以反过来理解：$|\vec{v}|$ × ($\vec{w}$ 在 $\vec{v}$ 方向上的投影长度)
+            <div class="theorem-title">💡 点积的直觉</div>
+            <p style="text-align: center; font-size: 1.2rem;">
+                点积 = 两个向量"合作程度"的分数
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: PROJECTION ==================== -->
+<!-- ==================== SECTION 2 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">9.2 投影的几何</h2>
+    <h2 class="section-title">🧮 9.2 怎么计算？</h2>
 
     <div class="content-block">
-        <h3>9.2.1 图解</h3>
+        <div style="text-align: center; margin: 2rem 0;">
+            <div style="font-size: 1.3rem;">
+                $\vec{v} \cdot \vec{w} = v_1 w_1 + v_2 w_2$
+            </div>
+            <p style="margin-top: 1rem; color: var(--text-secondary);">
+                对应位置相乘，再相加！
+            </p>
+        </div>
 
-        <div
-            style="display: flex; gap: 3rem; justify-content: center; align-items: center; margin: 2rem 0; flex-wrap: wrap;">
-            <svg width="250" height="180" viewBox="0 0 250 180">
-                <defs>
-                    <marker id="arr-v-dot" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                        <path d="M0,0 L0,6 L8,3 z" fill="#4a9eff" />
-                    </marker>
-                    <marker id="arr-w-dot" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                        <path d="M0,0 L0,6 L8,3 z" fill="#f97316" />
-                    </marker>
-                </defs>
-
-                <!-- w vector (horizontal) -->
-                <line x1="20" y1="140" x2="200" y2="140" stroke="#f97316" stroke-width="2"
-                    marker-end="url(#arr-w-dot)" />
-                <text x="210" y="145" fill="#f97316" font-size="14">w</text>
-
-                <!-- v vector -->
-                <line x1="20" y1="140" x2="120" y2="40" stroke="#4a9eff" stroke-width="2"
-                    marker-end="url(#arr-v-dot)" />
-                <text x="125" y="35" fill="#4a9eff" font-size="14">v</text>
-
-                <!-- Projection line (dashed) -->
-                <line x1="120" y1="40" x2="120" y2="140" stroke="#10b981" stroke-width="1" stroke-dasharray="4,2" />
-
-                <!-- Projection on w -->
-                <line x1="20" y1="140" x2="120" y2="140" stroke="#10b981" stroke-width="3" />
-                <text x="70" y="160" fill="#10b981" font-size="12">投影</text>
-
-                <!-- Angle arc -->
-                <path d="M 50 140 A 30 30 0 0 0 35 115" stroke="#fff" fill="none" stroke-width="1" />
-                <text x="55" y="125" fill="#fff" font-size="10">θ</text>
-
-                <!-- Origin -->
-                <circle cx="20" cy="140" r="3" fill="#fff" />
-            </svg>
-
-            <div style="max-width: 250px;">
-                <p>
-                    $\vec{v}$ 在 $\vec{w}$ 方向上的投影长度是 $|\vec{v}| \cos\theta$。
-                </p>
-                <p>
-                    点积 = 这个投影长度 × $|\vec{w}|$。
-                </p>
+        <div class="example-card">
+            <p><strong>例子</strong></p>
+            <div class="math-block">
+                $$ \begin{bmatrix} 2 \\ 3 \end{bmatrix} \cdot \begin{bmatrix} 4 \\ 1 \end{bmatrix} = 2 \times 4 + 3
+                \times 1 = 8 + 3 = 11 $$
             </div>
         </div>
     </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📐 9.3 点积的符号</h2>
 
     <div class="content-block">
-        <h3>9.2.2 点积的符号</h3>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 1rem 0;">
-            <div class="definition-card" style="border-left-color: var(--accent-green);">
-                <div class="definition-title">$\vec{v} \cdot \vec{w} > 0$</div>
-                <p>夹角 < 90°<br>大致同向</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0;">
+            <div class="definition-card" style="border-left-color: var(--accent-green); text-align: center;">
+                <div class="definition-title">正数 ➕</div>
+                <p>夹角 &lt; 90°</p>
+                <p style="font-size: 0.9em;">大致同向</p>
             </div>
-            <div class="definition-card" style="border-left-color: var(--accent-orange);">
-                <div class="definition-title">$\vec{v} \cdot \vec{w} = 0$</div>
-                <p>夹角 = 90°<br><strong>正交（垂直）</strong></p>
+            <div class="definition-card" style="border-left-color: var(--accent-orange); text-align: center;">
+                <div class="definition-title">零 ⭕</div>
+                <p>夹角 = 90°</p>
+                <p style="font-size: 0.9em;"><strong>垂直！</strong></p>
             </div>
-            <div class="definition-card" style="border-left-color: var(--accent-red);">
-                <div class="definition-title">$\vec{v} \cdot \vec{w} < 0$</div>
-                        <p>夹角 > 90°<br>大致相反</p>
-                </div>
+            <div class="definition-card" style="border-left-color: var(--accent-red); text-align: center;">
+                <div class="definition-title">负数 ➖</div>
+                <p>夹角 &gt; 90°</p>
+                <p style="font-size: 0.9em;">大致反向</p>
             </div>
         </div>
-    </div>
 
-    <!-- ==================== SECTION 3: DUALITY ==================== -->
-    <div class="section fade-in">
-        <h2 class="section-title">9.3 对偶性：点积即线性变换</h2>
-
-        <div class="content-block">
-            <p>
-                这是本章最深刻的洞察：
-            </p>
-
-            <div class="theorem-card">
-                <div class="theorem-title">惊人的联系</div>
-                <p>
-                    与向量 $\vec{w}$ 做点积，等价于用一个 <strong>1×n 矩阵</strong>（$\vec{w}$ 的转置）做变换。
-                </p>
-                <div class="math-block">
-                    $$ \vec{v} \cdot \vec{w} = \vec{w}^T \vec{v} = \begin{bmatrix} w_1 & w_2 & \cdots & w_n
-                    \end{bmatrix} \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} $$
-                </div>
-            </div>
-
-            <p style="margin-top: 1rem;">
-                这意味着：<strong>每一个线性变换从 n 维到 1 维（即每一个 1×n 矩阵），都对应着某个向量的点积</strong>。
-                这种对应关系叫做<strong>对偶性 (Duality)</strong>。
+        <div class="theorem-card">
+            <div class="theorem-title">🔑 垂直判定</div>
+            <p style="text-align: center;">
+                $\vec{v} \cdot \vec{w} = 0$ ⟺ 两个向量<strong>垂直</strong>！
             </p>
         </div>
     </div>
+</div>
 
-    <!-- ==================== SECTION 4: APPLICATIONS ==================== -->
-    <div class="section fade-in">
-        <h2 class="section-title">9.4 应用</h2>
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🌍 9.4 哪里用到点积？</h2>
 
-        <div class="content-block">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-                <div class="definition-card">
-                    <div class="definition-title">📐 判断正交</div>
-                    <p>
-                        $\vec{v} \cdot \vec{w} = 0$ ⟺ $\vec{v} \perp \vec{w}$。
-                        这是检验垂直性的标准方法。
-                    </p>
-                </div>
-
-                <div class="definition-card">
-                    <div class="definition-title">💡 计算投影</div>
-                    <p>
-                        $\vec{v}$ 在 $\vec{w}$ 上的投影向量：
-                        $\text{proj}_{\vec{w}} \vec{v} = \frac{\vec{v} \cdot \vec{w}}{|\vec{w}|^2} \vec{w}$
-                    </p>
-                </div>
-
-                <div class="definition-card">
-                    <div class="definition-title">🎮 光照计算</div>
-                    <p>
-                        表面法线与光线方向的点积决定了表面的亮度——这是 3D 渲染的基础。
-                    </p>
-                </div>
-
-                <div class="definition-card">
-                    <div class="definition-title">🤖 相似度</div>
-                    <p>
-                        机器学习中，向量的点积（或余弦相似度）用于衡量两个向量的"相似程度"。
-                    </p>
-                </div>
+    <div class="content-block">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div class="definition-card">
+                <div class="definition-title">💡 游戏光照</div>
+                <p style="font-size: 0.9em;">光线和表面的点积决定了亮度</p>
+            </div>
+            <div class="definition-card">
+                <div class="definition-title">🤖 AI 推荐</div>
+                <p style="font-size: 0.9em;">用点积比较你和其他用户的喜好相似度</p>
+            </div>
+            <div class="definition-card">
+                <div class="definition-title">🎮 碰撞检测</div>
+                <p style="font-size: 0.9em;">判断物体在墙的哪一侧</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ==================== SECTION 5: SUMMARY ==================== -->
-    <div class="section fade-in">
-        <h2 class="section-title">本章总结</h2>
+<!-- ==================== SECTION 5 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 本章收获</h2>
 
-        <div class="content-block">
-            <div class="theorem-card">
-                <div class="theorem-title">核心要点</div>
-                <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                    <li><strong>代数定义</strong>：$\vec{v} \cdot \vec{w} = \sum v_i w_i$</li>
-                    <li><strong>几何定义</strong>：$|\vec{v}| |\vec{w}| \cos\theta$ = 投影长度 × 另一向量长度</li>
-                    <li><strong>正交判定</strong>：$\vec{v} \cdot \vec{w} = 0$ ⟺ 垂直</li>
-                    <li><strong>对偶性</strong>：与 $\vec{w}$ 点积 = 用 $\vec{w}^T$ 做线性变换</li>
-                </ol>
-            </div>
-
-            <p style="margin-top: 2rem;">
-                下一章，我们将学习另一种向量"乘法"——<strong>叉积</strong>，它只在 3D 中有意义，输出的是向量而不是标量。
-            </p>
+    <div class="content-block">
+        <div class="theorem-card">
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><strong>点积</strong> = 测量两个向量的"合作程度"</li>
+                <li>计算：对应位置相乘再相加</li>
+                <li>点积 = 0 ⟺ <strong>垂直</strong></li>
+                <li>应用：光照、AI 推荐、碰撞检测</li>
+            </ol>
         </div>
     </div>
+</div>

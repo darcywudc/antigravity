@@ -1,266 +1,293 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 1</span>
-    <h1 class="chapter-title">向量 (Vectors) <br><small style="font-size: 0.6em; color: var(--text-muted);">Essence of
-            Linear Algebra</small></h1>
+    <span class="chapter-badge">第 1 章</span>
+    <h1 class="chapter-title">向量是什么？ <br><small style="font-size: 0.6em; color: var(--text-muted);">What is a
+            Vector?</small></h1>
     <p class="chapter-description">
-        线性代数是现代数学的语言，而<strong>向量</strong>是这门语言中的"单词"。
-        在深入复杂的矩阵变换之前，我们必须对向量建立起坚如磐石的直觉。
-        本章将带你从多个维度重新认识向量，不再是枯燥的公式，而是充满生机的几何对象。
+        想象你在玩《我的世界》，要告诉朋友一个宝藏的位置。你会怎么说？
+        "向东走 100 格，向北走 50 格，再往上挖 20 格。"
+        恭喜你——你刚刚用了一个<strong>向量</strong>！
     </p>
 </div>
 
-<!-- PART 1: DEFINITIONS -->
+<!-- ==================== SECTION 1: 生活中的向量 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">1.1 向量的三种面孔 (Three Perspectives)</h2>
+    <h2 class="section-title">🎮 1.1 生活中到处都是向量</h2>
+
     <div class="content-block">
         <p>
-            "向量"这个词在不同人的脑海中会唤起完全不同的图像。要精通线性代数，你需要学会像<strong>物理学家</strong>一样思考几何，像<strong>程序员</strong>一样处理数据，像<strong>数学家</strong>一样抽象概括。
+            在你意识到之前，你已经每天都在用"向量"了：
         </p>
 
-        <!-- Tabs or Cards -->
-        <div style="display: flex; flex-direction: column; gap: 2rem; margin-top: 2rem;">
-
-            <!-- Perspective 1: Physics -->
-            <div class="definition-card" style="border-left: 5px solid var(--accent-blue);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <div class="definition-title" style="color:var(--accent-blue)">1. 物理学视角：空间中的箭头</div>
-                        <p>
-                            对物理学家来说，向量是空间中的一个<strong>箭头</strong>。由两个属性定义：
-                        </p>
-                        <ul>
-                            <li><strong>长度 (Magnitude)</strong>：如速度的大小，力的大小。</li>
-                            <li><strong>方向 (Direction)</strong>：如移动的方向，施力的方向。</li>
-                        </ul>
-                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 1rem;">
-                            <strong>关键特性：</strong> 向量可以在空间中自由平移。只要长度和方向不变，它就是同一个向量。
-                        </p>
-                    </div>
-                    <div style="min-width: 150px; text-align: center;">
-                        <svg width="120" height="100" viewBox="0 0 120 100">
-                            <defs>
-                                <marker id="m-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                                    <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff" />
-                                </marker>
-                            </defs>
-                            <line x1="10" y1="80" x2="80" y2="30" stroke="#4a9eff" stroke-width="3"
-                                marker-end="url(#m-blue)" />
-                            <text x="50" y="50" fill="#4a9eff" font-weight="bold">v</text>
-                            <!-- Translated copy -->
-                            <line x1="50" y1="90" x2="120" y2="40" stroke="#4a9eff" stroke-width="1"
-                                stroke-dasharray="2,2" marker-end="url(#m-blue)" />
-                            <text x="90" y="60" fill="#4a9eff" font-size="10">Same v</text>
-                        </svg>
-                    </div>
-                </div>
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+            <div class="definition-card" style="border-left-color: #10b981;">
+                <div class="definition-title">🏀 篮球传球</div>
+                <p>"传到篮筐右边 2 米、前面 5 米的位置！"</p>
             </div>
 
-            <!-- Perspective 2: CS -->
-            <div class="definition-card" style="border-left: 5px solid var(--accent-green);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <div class="definition-title" style="color:var(--accent-green)">2. 计算机视角：有序列表</div>
-                        <p>
-                            对程序员或数据分析师来说，向量只是一个<strong>有序的数字列表</strong>。
-                        </p>
-                        <p>
-                            例如，你在设计一个房产估价模型，你可能会用向量来表示一个房子：
-                            <br>
-                            <code
-                                style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:4px;">[ 面积, 卧室数, 房龄 ]</code>
-                        </p>
-                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 1rem;">
-                            <strong>关键特性：</strong> 顺序至关重要。维度就是列表的长度。
-                        </p>
-                    </div>
-                    <div
-                        style="min-width: 150px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: var(--accent-green); background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px;">
-                        class House {<br>
-                        &nbsp;&nbsp;vec features = [<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;120.5, <span style="color:#666">// Area</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;3, <span style="color:#666">// Rooms</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;10 <span style="color:#666">// Age</span><br>
-                        &nbsp;&nbsp;];<br>
-                        }
-                    </div>
-                </div>
+            <div class="definition-card" style="border-left-color: #f97316;">
+                <div class="definition-title">🎮 游戏走位</div>
+                <p>"向右移动 3 格，向上跳 2 格"</p>
             </div>
 
-            <!-- Perspective 3: Math -->
-            <div class="definition-card" style="border-left: 5px solid var(--accent-purple);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <div class="definition-title" style="color:var(--accent-purple)">3. 数学视角：抽象概括</div>
-                        <p>
-                            数学家希望概括一切。只要有一组对象，你可以把它们<strong>相加</strong>，也可以把它们<strong>乘以数字</strong>，
-                            并且这些运算满足一定的规则（公理），这组对象就被这就是一个"向量空间"。
-                        </p>
-                        <p style="font-size: 0.9em; color: var(--text-secondary);">
-                            这意味着，不仅仅是箭头和列表，<strong>函数</strong>（Functions）、<strong>多项式</strong>（Polynomials）也可以被视为向量！
-                            我们在第15章会详细探讨。
-                        </p>
-                    </div>
-                </div>
+            <div class="definition-card" style="border-left-color: #4a9eff;">
+                <div class="definition-title">🗺️ 导航</div>
+                <p>"向东 500 米，向北 300 米"</p>
             </div>
 
+            <div class="definition-card" style="border-left-color: #ec4899;">
+                <div class="definition-title">🚀 太空探索</div>
+                <p>"火箭朝东偏北 30° 方向，以每秒 1000 米的速度飞行"</p>
+            </div>
+        </div>
+
+        <div class="theorem-card">
+            <div class="theorem-title">💡 关键发现</div>
+            <p>
+                这些描述都有一个共同点：它们不只说"多少"，还说"往哪个方向"。
+                <br><br>
+                <strong>向量 = 大小 + 方向</strong>
+            </p>
         </div>
     </div>
 </div>
 
-<!-- PART 2: COORDINATE SYSTEM -->
+<!-- ==================== SECTION 2: 箭头的思维 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">1.2 建立联系：坐标系 (The Coordinate System)</h2>
+    <h2 class="section-title">➡️ 1.2 把向量想象成箭头</h2>
+
     <div class="content-block">
         <p>
-            在线性代数中，我们通常将物理视角（箭头）和计算机视角（列表）结合起来。
+            向量最直观的理解方式就是一支<strong>箭头</strong>：
         </p>
+        <ul>
+            <li>箭头的<strong>长度</strong>代表"走多远"或"力多大"</li>
+            <li>箭头的<strong>方向</strong>代表"往哪走"或"推向哪边"</li>
+        </ul>
+
+        <div style="display: flex; justify-content: center; margin: 2rem 0;">
+            <svg width="300" height="180" viewBox="0 0 300 180">
+                <defs>
+                    <marker id="arrow-main-y" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff" />
+                    </marker>
+                </defs>
+
+                <!-- Background grid -->
+                <g stroke="#333" stroke-width="0.5">
+                    <line x1="50" y1="20" x2="50" y2="160" />
+                    <line x1="100" y1="20" x2="100" y2="160" />
+                    <line x1="150" y1="20" x2="150" y2="160" />
+                    <line x1="200" y1="20" x2="200" y2="160" />
+                    <line x1="250" y1="20" x2="250" y2="160" />
+                    <line x1="50" y1="40" x2="250" y2="40" />
+                    <line x1="50" y1="80" x2="250" y2="80" />
+                    <line x1="50" y1="120" x2="250" y2="120" />
+                    <line x1="50" y1="160" x2="250" y2="160" />
+                </g>
+
+                <!-- The vector arrow -->
+                <line x1="50" y1="160" x2="200" y2="40" stroke="#4a9eff" stroke-width="4"
+                    marker-end="url(#arrow-main-y)" />
+
+                <!-- Labels -->
+                <text x="55" y="175" fill="#666" font-size="12">起点</text>
+                <text x="205" y="35" fill="#4a9eff" font-size="12" font-weight="bold">终点</text>
+
+                <!-- Length indicator -->
+                <text x="140" y="120" fill="#4a9eff" font-size="14" transform="rotate(-38, 140, 120)">长度 = 大小</text>
+
+                <!-- Direction arc -->
+                <path d="M 80 160 A 30 30 0 0 0 60 135" stroke="#f97316" fill="none" stroke-width="2" />
+                <text x="85" y="145" fill="#f97316" font-size="12">方向</text>
+            </svg>
+        </div>
+
+        <p style="text-align: center; color: var(--text-secondary);">
+            这支蓝色箭头就是一个向量：从起点出发，指向终点
+        </p>
+    </div>
+</div>
+
+<!-- ==================== SECTION 3: 坐标——向量的"地址" ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">📍 1.3 坐标：向量的"门牌号"</h2>
+
+    <div class="content-block">
         <p>
-            怎么结合？我们把箭头的<strong>尾部 (Tail)</strong> 固定在宇宙的中心——<strong>原点 (Origin)</strong>。
-            这样，箭头的<strong>头部 (Tip)</strong> 就唯一对应一个坐标点。
+            画箭头很直观，但如果要告诉电脑或朋友一个向量，我们需要更精确的方式——<strong>坐标</strong>。
         </p>
 
         <div class="example-card">
+            <p><strong>🎮 游戏类比</strong></p>
             <p>
-                当你看到向量 $\vec{v} = \begin{bmatrix} -2 \\ 3 \end{bmatrix}$ 时，把它读作一个<strong>运动指南</strong>：
+                想象你在一个方格纸上。你在原点（0, 0），宝藏在"向右 3 格，向上 2 格"的位置。
             </p>
-            <ol>
-                <li>从原点 $(0,0)$ 出发。</li>
-                <li>沿着 <span style="color:var(--accent-blue)">x轴</span> 向左走 <strong>2</strong> 步。</li>
-                <li>沿着 <span style="color:var(--accent-green)">y轴</span> 向上走 <strong>3</strong> 步。</li>
-                <li>这就到了箭头的终点。</li>
-            </ol>
+            <p>
+                我们可以写成：
+            </p>
+            <div style="text-align: center; font-size: 1.5rem; margin: 1rem 0;">
+                $\vec{v} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}$
+            </div>
+            <p style="font-size: 0.9em; color: var(--text-secondary);">
+                第一个数 = 横向（左右）<br>
+                第二个数 = 纵向（上下）
+            </p>
         </div>
     </div>
 
-    <!-- MAIN INTERACTIVE 1: COORDS -->
+    <!-- INTERACTIVE: 拖拽看坐标 -->
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">交互实验 I：坐标与几何 (Coordinates & Geometry)</span>
-            <span class="viz-badge" style="background: var(--accent-blue)">互动</span>
+            <span class="viz-title">🕹️ 动手试试：拖拽向量</span>
+            <span class="viz-badge" style="background: var(--accent-green);">互动</span>
         </div>
-        <div class="viz-canvas-wrapper" style="height: 450px;">
+        <div class="viz-canvas-wrapper" style="height: 400px;">
             <canvas id="viz-vector-basic" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
-            <p style="text-align: center; color: var(--text-primary); margin-bottom: 0.5rem;">
-                <strong>操作指南：</strong> 拖拽画面中蓝色箭头的尖端。
-            </p>
-            <div style="display: flex; justify-content: center; gap: 2rem; align-items: center;">
-                <div class="math-block" id="vector-display" style="min-width: 120px;">
-                    $$ \vec{v} = \begin{bmatrix} 2 \\ 1 \end{bmatrix} $$
-                </div>
-                <div style="font-size: 0.9em; color: var(--text-muted); max-width: 300px;">
-                    观察上面的数字如何随着箭头的移动而变化。<br>
-                    试着把向量拖到每个象限（Quadrant），看看符号的正负变化。
-                </div>
+            <div style="text-align: center;">
+                <p style="margin: 0;">当前向量坐标：</p>
+                <div id="vector-display" style="font-size: 1.5rem; margin: 0.5rem 0;"></div>
+                <p style="font-size: 0.9em; color: var(--text-muted);">
+                    抓住蓝色箭头的尖端，拖到任何你想去的地方！
+                </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- PART 3: ADDITION -->
+<!-- ==================== SECTION 4: 向量加法 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">1.3 向量加法 (Vector Addition)</h2>
+    <h2 class="section-title">➕ 1.4 向量加法：连续走两步</h2>
+
     <div class="content-block">
+        <h3>🚶 生活类比：走路</h3>
         <p>
-            现在我们知道了什么是向量，接下来的问题是：我们可以对它们做什么？
-            最基础的运算就是<strong>加法</strong>。
+            假设你从家出发：
         </p>
+        <ol>
+            <li>先向东走 3 步，向北走 1 步（第一个向量 $\vec{v}$）</li>
+            <li>再向东走 1 步，向北走 2 步（第二个向量 $\vec{w}$）</li>
+        </ol>
         <p>
-            不同于普通的数字加法 $1+1=2$，向量加法有独特的几何含义：<strong>路径的叠加</strong>。
+            最终你在哪里？<strong>向东 4 步，向北 3 步</strong>！
         </p>
+
+        <div class="math-block">
+            $$ \begin{bmatrix} 3 \\ 1 \end{bmatrix} + \begin{bmatrix} 1 \\ 2 \end{bmatrix} = \begin{bmatrix} 4 \\ 3
+            \end{bmatrix} $$
+        </div>
+
         <div class="theorem-card">
-            <div class="theorem-title">三角形法则 (Triangle Rule)</div>
+            <div class="theorem-title">🔑 向量加法规则</div>
             <p>
-                要计算 $\vec{v} + \vec{w}$：
-                想象你是一只蚂蚁，先沿着 $\vec{v}$ 走完，然后<strong>从 $\vec{v}$ 的终点开始</strong>，沿着 $\vec{w}$ 的方向和长度继续走。
-                你的起点到终点的直线距离，就是 $\vec{v} + \vec{w}$。
+                对应位置的数字相加！
+                <br>
+                横向加横向，纵向加纵向。就这么简单！
             </p>
         </div>
-
-        <p>
-            数值上，这非常简单：就是把对应的分量加起来。
-            $$ \begin{bmatrix} 1 \\ 2 \end{bmatrix} + \begin{bmatrix} 3 \\ -1 \end{bmatrix} = \begin{bmatrix} 1+3 \\
-            2+(-1) \end{bmatrix} = \begin{bmatrix} 4 \\ 1 \end{bmatrix} $$
-        </p>
     </div>
 
-    <!-- NEW INTERACTIVE 2: ADDITION -->
+    <!-- INTERACTIVE: 向量加法 -->
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">交互实验 II：加法的几何意义</span>
-            <span class="viz-badge" style="background: var(--accent-green)">核心</span>
+            <span class="viz-title">🕹️ 动手试试：向量加法</span>
+            <span class="viz-badge" style="background: var(--accent-blue);">互动</span>
         </div>
-        <div class="viz-canvas-wrapper" style="height: 500px;">
+        <div class="viz-canvas-wrapper" style="height: 400px;">
             <canvas id="viz-vector-add" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
-            <p style="text-align: center; margin-bottom: 1rem;">
-                <span style="color:#4a9eff">🔵 向量 v</span> + <span style="color:#f97316">🟠 向量 w</span> = <span
-                    style="color:#10b981">🟢 结果 (Sum)</span>
-            </p>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.9em;">
-                拖拽蓝色或橙色的向量。注意观察绿色向量是如何作为它们首尾相接的结果出现的。
-                <br>无论你先走 v 还是先走 w，终点是一样的（平行四边形法则）。
+            <p style="text-align: center; color: var(--text-muted);">
+                拖拽 <span style="color:#4a9eff">蓝色向量 v</span> 和 <span style="color:#f97316">橙色向量 w</span>，
+                观察 <span style="color:#10b981">绿色结果 (v+w)</span> 如何变化！
             </p>
         </div>
     </div>
 </div>
 
-<!-- PART 4: SCALING -->
+<!-- ==================== SECTION 5: 向量缩放 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">1.4 标量乘法 (Scaling)</h2>
+    <h2 class="section-title">✖️ 1.5 缩放向量：放大和缩小</h2>
+
     <div class="content-block">
+        <h3>🍕 生活类比：披萨食谱</h3>
         <p>
-            第二种基本运算是将向量乘以一个普通的数字（如 2, 0.5, -3）。
+            假设一份披萨需要 2 杯面粉和 1 杯水。
         </p>
         <p>
-            在此背景下，这些普通的数字被称为<strong>标量 (Scalar)</strong>，因为它们的主要作用就是<strong>缩放 (Scale)</strong> 向量。
+            如果我要做 <strong>3 份</strong>呢？很简单，每样东西都乘以 3：
         </p>
-
-        <ul style="margin: 1rem 0; padding-left: 2rem; color: var(--text-primary);">
-            <li><strong>拉伸</strong>：乘以大于 1 的数，向量变长。</li>
-            <li><strong>压缩</strong>：乘以 0 到 1 之间的数，向量变短。</li>
-            <li><strong>反向</strong>：乘以负数，向量方向翻转。</li>
-        </ul>
-
         <div class="math-block">
-            $$ 2 \cdot \begin{bmatrix} 3 \\ 1 \end{bmatrix} = \begin{bmatrix} 2 \cdot 3 \\ 2 \cdot 1 \end{bmatrix} =
-            \begin{bmatrix} 6 \\ 2 \end{bmatrix} $$
+            $$ 3 \times \begin{bmatrix} 2 \\ 1 \end{bmatrix} = \begin{bmatrix} 6 \\ 3 \end{bmatrix} $$
+        </div>
+        <p>
+            这就是<strong>标量乘法</strong>——用一个数字（标量）去缩放向量。
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 2rem 0; text-align: center;">
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px;">
+                <p style="font-size: 2rem;">×2</p>
+                <p>向量变成 2 倍长</p>
+            </div>
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px;">
+                <p style="font-size: 2rem;">×0.5</p>
+                <p>向量缩短一半</p>
+            </div>
+            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px;">
+                <p style="font-size: 2rem;">×(-1)</p>
+                <p>向量反向！</p>
+            </div>
         </div>
     </div>
 
-    <!-- NEW INTERACTIVE 3: SCALING -->
+    <!-- INTERACTIVE: 缩放 -->
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">交互实验 III：缩放向量</span>
-            <span class="viz-badge" style="background: var(--accent-purple)">实验</span>
+            <span class="viz-title">🕹️ 动手试试：缩放向量</span>
+            <span class="viz-badge" style="background: var(--accent-purple);">互动</span>
         </div>
-        <div class="viz-canvas-wrapper" style="height: 350px;">
+        <div class="viz-canvas-wrapper" style="height: 400px;">
             <canvas id="viz-vector-scale" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
-            <div style="display: flex; gap: 1rem; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                <label for="scalar-slider">标量 (Scalar): <span id="scalar-val"
-                        style="font-weight:bold; color:var(--accent-purple)">2.0</span></label>
-                <input type="range" id="scalar-slider" min="-3" max="3" step="0.1" value="2" style="width: 200px;">
+            <div style="text-align: center;">
+                <label>缩放倍数：<span id="scalar-val">2.0</span></label>
+                <br>
+                <input type="range" id="scalar-slider" min="-3" max="3" step="0.1" value="2"
+                    style="width: 80%; max-width: 300px; margin-top: 0.5rem;">
+                <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 1rem;">
+                    试试把滑块拉到负数，看看会发生什么！
+                </p>
             </div>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.9em;">
-                拖动滑块改变标量的值。看看当标量变负时会发生什么？
-            </p>
         </div>
     </div>
 </div>
 
+<!-- ==================== SECTION 6: 总结 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">总结</h2>
+    <h2 class="section-title">🎯 本章收获</h2>
+
     <div class="content-block">
-        <p>
-            我们学习了向量的两种基本运算：<strong>加法</strong>和<strong>数乘</strong>。
-        </p>
-        <p>
-            这看起来很简单，但请记住：整个线性代数的大厦，就是建立在这两块简单的积木之上的。
-            下一章，我们将把它们组合起来，创造出<strong>"线性组合"</strong>，那时神奇的事情就会发生。
-        </p>
+        <div class="theorem-card">
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><strong>向量</strong> = 同时有大小和方向的东西（像箭头）</li>
+                <li><strong>坐标</strong> = 用数字列表表示向量（如 $\begin{bmatrix} 3 \\ 2 \end{bmatrix}$）</li>
+                <li><strong>加法</strong> = 把两个向量"首尾相接"，对应位置数字相加</li>
+                <li><strong>缩放</strong> = 用一个数乘以向量，放大、缩小或反向</li>
+            </ol>
+        </div>
+
+        <div
+            style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(74, 158, 255, 0.1), rgba(16, 185, 129, 0.1)); border-radius: 12px;">
+            <p style="font-size: 1.3rem; margin: 0;">
+                🎉 <strong>恭喜！</strong> 你已经踏入了线性代数的世界！
+            </p>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                下一章，我们将学习如何用向量"搭建"整个空间。
+            </p>
+        </div>
     </div>
 </div>

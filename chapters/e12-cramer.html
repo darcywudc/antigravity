@@ -1,143 +1,76 @@
 <div class="chapter-header fade-in">
-    <span class="chapter-badge">Chapter 12</span>
-    <h1 class="chapter-title">克莱默法则 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cramer's Rule,
-            Explained Geometrically</small></h1>
+    <span class="chapter-badge">第 12 章</span>
+    <h1 class="chapter-title">用面积解方程 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cramer's
+            Rule</small></h1>
     <p class="chapter-description">
-        克莱默法则是一个用行列式直接求解线性方程组的公式。大多数教科书只是给出公式，让你去记忆。
-        这一章将用<strong>几何直觉</strong>解释这个公式为什么有效。
+        有个古老的公式，可以用行列式（面积）直接算出方程的解！
+        虽然计算量大，但思想非常优美。
     </p>
 </div>
 
-<!-- ==================== SECTION 1: THE PROBLEM ==================== -->
+<!-- ==================== SECTION 1 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">12.1 问题设定</h2>
+    <h2 class="section-title">🧩 12.1 方程像谜题</h2>
 
     <div class="content-block">
         <p>
-            我们要解线性方程组 $A\vec{x} = \vec{b}$：
+            假设有个谜题：
         </p>
         <div class="math-block">
-            $$
-            \begin{bmatrix} a & b \\ c & d \end{bmatrix}
-            \begin{bmatrix} x \\ y \end{bmatrix} =
-            \begin{bmatrix} e \\ f \end{bmatrix}
-            $$
+            $$ A \vec{x} = \vec{b} $$
         </div>
         <p>
-            我们想直接求出 $x$ 和 $y$，而不用高斯消元。
+            某个神秘向量 $\vec{x}$ 经过变换 A 后变成了 $\vec{b}$。我们要找出 $\vec{x}$。
         </p>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: CRAMER'S FORMULA ==================== -->
+<!-- ==================== SECTION 2 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">12.2 克莱默法则</h2>
+    <h2 class="section-title">📐 12.2 克莱默法则</h2>
 
     <div class="content-block">
+        <p>
+            克莱默发现了一个巧妙的方法：用<strong>面积比</strong>来求解！
+        </p>
+
         <div class="theorem-card">
             <div class="theorem-title">克莱默法则（2×2）</div>
             <div class="math-block">
-                $$ x = \frac{\det \begin{bmatrix} e & b \\ f & d \end{bmatrix}}{\det(A)} \quad,\quad
-                y = \frac{\det \begin{bmatrix} a & e \\ c & f \end{bmatrix}}{\det(A)} $$
+                $$ x = \frac{\det(\text{把第1列换成} \vec{b})}{\det(A)} $$
+                $$ y = \frac{\det(\text{把第2列换成} \vec{b})}{\det(A)} $$
             </div>
-            <p style="font-size: 0.9em; color: var(--text-secondary);">
-                分子：把 $A$ 的第 i 列替换成 $\vec{b}$，再求行列式。<br>
-                分母：$A$ 本身的行列式。
-            </p>
         </div>
 
         <div class="example-card">
-            <p><strong>例子：</strong> 解 $\begin{bmatrix} 2 & 1 \\ 1 & 3 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix}
-                = \begin{bmatrix} 5 \\ 5 \end{bmatrix}$</p>
+            <p><strong>例子</strong></p>
+            <p>解 $\begin{bmatrix} 2 & 1 \\ 1 & 3 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} 5
+                \\ 5 \end{bmatrix}$</p>
             <p style="margin-top: 1rem;">
-                $\det(A) = 2 \cdot 3 - 1 \cdot 1 = 5$
+                $\det(A) = 2 \times 3 - 1 \times 1 = 5$
             </p>
             <p>
-                $x = \frac{\det \begin{bmatrix} 5 & 1 \\ 5 & 3 \end{bmatrix}}{5} = \frac{15 - 5}{5} = 2$
+                $x = \frac{\det \begin{bmatrix} 5 & 1 \\ 5 & 3 \end{bmatrix}}{5} = \frac{15-5}{5} = 2$
             </p>
             <p>
-                $y = \frac{\det \begin{bmatrix} 2 & 5 \\ 1 & 5 \end{bmatrix}}{5} = \frac{10 - 5}{5} = 1$
-            </p>
-            <p><strong>答案：</strong> $x = 2$, $y = 1$</p>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 3: GEOMETRIC EXPLANATION ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">12.3 几何解释</h2>
-
-    <div class="content-block">
-        <h3>12.3.1 变换视角</h3>
-        <p>
-            $A\vec{x} = \vec{b}$ 的几何意义：$A$ 把某个未知向量 $\vec{x}$ 变换成 $\vec{b}$。我们要找的就是那个 $\vec{x}$。
-        </p>
-
-        <h3>12.3.2 面积比例</h3>
-        <p>
-            回想行列式的意义：$\det(A)$ 是变换 $A$ 对面积的缩放因子。
-        </p>
-        <p>
-            现在考虑由 $\hat{i}$ 和 $\vec{x}$ 围成的平行四边形。
-            它的面积与由 $A\hat{i}$（$A$ 的第一列）和 $A\vec{x} = \vec{b}$ 围成的平行四边形的面积，
-            也相差 $\det(A)$ 倍。
-        </p>
-
-        <div class="theorem-card">
-            <div class="theorem-title">关键等式</div>
-            <div class="math-block">
-                $$ y = \frac{\text{Area}(\hat{i}, \vec{x})}{\text{Area}(\hat{i}, \hat{j})} = \frac{\text{Area}(A\hat{i},
-                \vec{b})}{\det(A)} $$
-            </div>
-            <p style="font-size: 0.9em;">
-                而 $\text{Area}(A\hat{i}, \vec{b})$ 正是把 $A$ 的第二列换成 $\vec{b}$ 后的行列式！
+                $y = \frac{\det \begin{bmatrix} 2 & 5 \\ 1 & 5 \end{bmatrix}}{5} = \frac{10-5}{5} = 1$
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: GENERAL FORM ==================== -->
+<!-- ==================== SECTION 3 ==================== -->
 <div class="section fade-in">
-    <h2 class="section-title">12.4 一般形式</h2>
-
-    <div class="content-block">
-        <p>
-            对于 n×n 系统：
-        </p>
-        <div class="math-block">
-            $$ x_i = \frac{\det(A_i)}{\det(A)} $$
-        </div>
-        <p>
-            其中 $A_i$ 是把 $A$ 的第 i 列替换成 $\vec{b}$ 得到的矩阵。
-        </p>
-
-        <div class="definition-card" style="border-left-color: var(--accent-orange);">
-            <div class="definition-title">⚠️ 实用性警告</div>
-            <p>
-                克莱默法则概念优美，但计算代价高（需要计算 n+1 个行列式）。
-                实际中，高斯消元或 LU 分解更高效。
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 5: SUMMARY ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">本章总结</h2>
+    <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">核心要点</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2;">
-                <li>克莱默法则用行列式直接表达方程组的解。</li>
-                <li>$x_i = \det(A_i) / \det(A)$，其中 $A_i$ 是替换第 i 列后的矩阵。</li>
-                <li>几何本质：变换后的面积/体积比例不变。</li>
-                <li>理论价值高，计算效率低。</li>
+            <div class="theorem-title">今天你学会了</div>
+            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                <li><strong>克莱默法则</strong>用行列式（面积）解方程</li>
+                <li>替换对应的列，计算新行列式，除以原行列式</li>
+                <li>概念优美，但实际中高斯消元更高效</li>
             </ol>
         </div>
-
-        <p style="margin-top: 2rem;">
-            下一章，我们将学习如何在不同的坐标系之间"翻译"——这就是<strong>基变换</strong>。
-        </p>
     </div>
 </div>
