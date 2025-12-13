@@ -1,21 +1,21 @@
 steps:
   # 1. 构建 Docker 镜像
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/linear-algebra-app:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/linear-algebra-young:$COMMIT_SHA', '.']
 
   # 2. 推送镜像到 Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/linear-algebra-app:$COMMIT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/linear-algebra-young:$COMMIT_SHA']
 
-  # 3. 部署到 Cloud Run
+  # 3. 部署到 Cloud Run (服务名: linear-algebra-young)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
-      - 'linear-algebra-app'
+      - 'linear-algebra-young'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/linear-algebra-app:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/linear-algebra-young:$COMMIT_SHA'
       - '--region'
       - 'us-central1'
       - '--platform'
@@ -23,7 +23,7 @@ steps:
       - '--allow-unauthenticated'
 
 images:
-  - 'gcr.io/$PROJECT_ID/linear-algebra-app:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/linear-algebra-young:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
