@@ -37,10 +37,12 @@ window.chapterScripts['e02-combinations'] = function () {
         canvas.makeDraggable(iObj, (v) => {
             i_hat = v;
             canvas.draw();
+            updateBasisDisplay();
         });
         canvas.makeDraggable(jObj, (v) => {
             j_hat = v;
             canvas.draw();
+            updateBasisDisplay();
         });
 
         // Save original draw method
@@ -118,11 +120,34 @@ window.chapterScripts['e02-combinations'] = function () {
                 iObj.v.x = 1; iObj.v.y = 0;
                 jObj.v.x = 0; jObj.v.y = 1;
                 canvas.draw();
+                updateBasisDisplay();
             });
+        }
+
+        function updateBasisDisplay() {
+            const displayEl = document.getElementById('basis-numeric-display');
+            if (displayEl && window.katex) {
+                // Current basis vectors
+                const ix = i_hat.x.toFixed(1);
+                const iy = i_hat.y.toFixed(1);
+                const jx = j_hat.x.toFixed(1);
+                const jy = j_hat.y.toFixed(1);
+
+                // Result vector
+                const vx = (c1 * i_hat.x + c2 * j_hat.x).toFixed(1);
+                const vy = (c1 * i_hat.y + c2 * j_hat.y).toFixed(1);
+
+                katex.render(
+                    `2\\color{#f97316}{\\begin{bmatrix}${ix}\\\\${iy}\\end{bmatrix}} + 1\\color{#10b981}{\\begin{bmatrix}${jx}\\\\${jy}\\end{bmatrix}} = \\color{#fbbf24}{\\begin{bmatrix}${vx}\\\\${vy}\\end{bmatrix}}`,
+                    displayEl,
+                    { throwOnError: false, displayMode: true }
+                );
+            }
         }
 
         // Initial draw
         canvas.draw();
+        updateBasisDisplay();
     })();
 
 

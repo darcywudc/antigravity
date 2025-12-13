@@ -49,10 +49,12 @@ window.chapterScripts['e01-vectors'] = function () {
         canvas.makeDraggable(vObj, (newV) => {
             v = newV; // update ref
             canvas.draw(); // redraw sum
+            updateAddDisplay();
         });
         canvas.makeDraggable(wObj, (newW) => {
             w = newW;
             canvas.draw();
+            updateAddDisplay();
         });
 
         // Custom draw to show the "Head-to-Tail" or "Sum" vector
@@ -102,7 +104,26 @@ window.chapterScripts['e01-vectors'] = function () {
             ctx.setLineDash([]);
         };
 
+        function updateAddDisplay() {
+            const displayEl = document.getElementById('add-numeric-display');
+            if (displayEl && window.katex) {
+                const vx = v.x.toFixed(1);
+                const vy = v.y.toFixed(1);
+                const wx = w.x.toFixed(1);
+                const wy = w.y.toFixed(1);
+                const sx = (v.x + w.x).toFixed(1);
+                const sy = (v.y + w.y).toFixed(1);
+
+                katex.render(
+                    `\\color{#4a9eff}{\\begin{bmatrix}${vx}\\\\${vy}\\end{bmatrix}} + \\color{#f97316}{\\begin{bmatrix}${wx}\\\\${wy}\\end{bmatrix}} = \\color{#10b981}{\\begin{bmatrix}${sx}\\\\${sy}\\end{bmatrix}}`,
+                    displayEl,
+                    { throwOnError: false, displayMode: true }
+                );
+            }
+        }
+
         canvas.draw();
+        updateAddDisplay();
     })();
 
 
