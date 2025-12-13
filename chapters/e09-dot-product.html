@@ -233,6 +233,50 @@
                 <div class="rw-desc">文档与查询的相似度</div>
             </div>
         </div>
+
+        <!-- 新增：练习题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">✍️ 动手练习</div>
+            <p><strong>计算下列点积并判断两个向量的关系：</strong></p>
+            <ol>
+                <li>$(3, 4) \cdot (4, 3) = ?$</li>
+                <li>$(2, -1) \cdot (1, 2) = ?$</li>
+                <li>$(5, 0) \cdot (-3, 0) = ?$</li>
+            </ol>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <ol>
+                        <li>$3 \times 4 + 4 \times 3 = 12 + 12 = \mathbf{24}$ — 正数，大致同向</li>
+                        <li>$2 \times 1 + (-1) \times 2 = 2 - 2 = \mathbf{0}$ — <strong>垂直！</strong></li>
+                        <li>$5 \times (-3) + 0 \times 0 = \mathbf{-15}$ — 负数，大致反向（都在x轴上但方向相反）</li>
+                    </ol>
+                </div>
+            </details>
+        </div>
+
+        <!-- 新增：常见误区 -->
+        <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+            <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+            <p><strong>误区</strong>："点积是向量"</p>
+            <p><strong>纠正</strong>：点积的结果是一个<strong>数字（标量）</strong>，不是向量！</p>
+            <p style="margin-top: 0.5rem;">
+                点积 → 数字 | 叉积（下一章）→ 向量
+            </p>
+        </div>
+
+        <!-- 新增：趣味知识 -->
+        <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🎵 趣味应用：音乐推荐的秘密</div>
+            <p>
+                Spotify 和网易云音乐如何知道你喜欢什么歌？
+            </p>
+            <p style="margin-top: 0.5rem;">
+                它们把每首歌和每个用户都表示成高维向量，然后用<strong>点积</strong>（或余弦相似度）计算"匹配度"。
+                点积越大，推荐给你的可能性越高！
+            </p>
+        </div>
     </div>
 
     <!-- 总结 -->
