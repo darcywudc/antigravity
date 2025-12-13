@@ -1,22 +1,42 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 6 章</span>
-    <h1 class="chapter-title">神奇的魔法数字 <br><small style="font-size: 0.6em; color: var(--text-muted);">The
+    <h1 class="chapter-title">行列式：神奇的魔法数字 <br><small style="font-size: 0.6em; color: var(--text-muted);">The
             Determinant</small></h1>
     <p class="chapter-description">
-        每个矩阵都藏着一个秘密数字，叫做"行列式"。
+        每个矩阵都藏着一个秘密数字——行列式。
         它能告诉你：变换会把空间放大还是缩小？会不会把空间压扁？甚至会不会镜像翻转？
     </p>
 </div>
 
-<!-- ==================== SECTION 1: 面积变化 ==================== -->
+<!-- 核心词汇 -->
+<div class="section fade-in">
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">行列式</span><span class="vocab-en">Determinant</span></div>
+            <div class="vocab-item"><span class="vocab-zh">面积缩放</span><span class="vocab-en">Area Scaling</span></div>
+            <div class="vocab-item"><span class="vocab-zh">方向翻转</span><span class="vocab-en">Orientation Flip</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">奇异矩阵</span><span class="vocab-en">Singular Matrix</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
 <div class="section fade-in">
     <h2 class="section-title">📐 6.1 变换会改变面积</h2>
 
     <div class="content-block">
-        <h3>🍕 披萨类比</h3>
+        <h3>🍕 类比：烤披萨</h3>
         <p>
-            想象你有一个 1×1 的方形披萨。经过某个矩阵变换后，它可能会变成：
+            想象你有一个 1×1 的方形面团。经过某个矩阵变换后，它可能会变成：
         </p>
+        <ul>
+            <li>一个更大的形状（面积增加）</li>
+            <li>一个更小的形状（面积减少）</li>
+            <li>一条线（面积变成 0！）</li>
+        </ul>
 
         <div
             style="display: flex; gap: 2rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; align-items: center;">
@@ -24,114 +44,91 @@
                 <svg width="80" height="80" viewBox="0 0 80 80">
                     <rect x="10" y="10" width="60" height="60" fill="rgba(74, 158, 255, 0.3)" stroke="#4a9eff"
                         stroke-width="2" />
+                    <text x="40" y="45" text-anchor="middle" fill="#4a9eff" font-size="12">1</text>
                 </svg>
-                <p>原来<br>面积 = 1</p>
+                <p style="font-size: 0.9em;">原始面积 = 1</p>
             </div>
             <div style="font-size: 2rem;">→</div>
             <div style="text-align: center;">
                 <svg width="100" height="80" viewBox="0 0 100 80">
                     <polygon points="10,70 90,70 70,10 30,10" fill="rgba(16, 185, 129, 0.3)" stroke="#10b981"
                         stroke-width="2" />
+                    <text x="50" y="45" text-anchor="middle" fill="#10b981" font-size="12">?</text>
                 </svg>
-                <p>变形后<br>面积 = ?</p>
+                <p style="font-size: 0.9em;">新面积 = ?</p>
             </div>
         </div>
 
         <div class="theorem-card">
-            <div class="theorem-title">💡 行列式的意义</div>
+            <div class="theorem-title">💡 行列式的几何意义</div>
             <p style="font-size: 1.2rem; text-align: center;">
-                <strong>行列式 = 面积的放大倍数</strong>
+                <span class="term" data-en="Determinant">行列式</span> = 面积（或体积）的<strong>缩放因子</strong>
             </p>
-            <p style="text-align: center; margin-top: 1rem;">
+            <p style="text-align: center; margin-top: 0.5rem;">
                 如果 det(A) = 3，那么任何图形经过变换后，面积都会变成原来的 3 倍！
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: 正负号 ==================== -->
+<!-- SECTION 2 -->
 <div class="section fade-in">
-    <h2 class="section-title">🔄 6.2 正数还是负数？</h2>
+    <h2 class="section-title">➕➖ 6.2 正数、负数还是零？</h2>
 
     <div class="content-block">
-        <p>
-            行列式可以是正数，也可以是负数。这代表什么？
-        </p>
+        <p>行列式可以是正数、负数或零，每种情况都有特殊含义：</p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-            <div class="definition-card" style="border-left-color: var(--accent-green);">
-                <div class="definition-title">det > 0 ✅</div>
-                <p><strong>正常变换</strong></p>
-                <p style="font-size: 0.9em; color: var(--text-secondary);">
-                    空间被拉伸/压缩，但方向没有翻转。就像在纸的正面画画，变换后还在正面。
-                </p>
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number" style="background: linear-gradient(135deg, #10b981, #059669);">+</div>
+                <div class="step-content">
+                    <div class="step-label" style="color: #10b981;">det > 0：正常变换</div>
+                    <p>空间被拉伸或压缩，但<strong>方向不变</strong></p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        就像在纸的正面画画，变换后还是在正面
+                    </p>
+                </div>
             </div>
-
-            <div class="definition-card" style="border-left-color: var(--accent-red);">
-                <div class="definition-title">det < 0 🔄</div>
-                        <p><strong>镜像翻转</strong></p>
-                        <p style="font-size: 0.9em; color: var(--text-secondary);">
-                            空间被"翻过来"了！就像把纸翻到背面。左手变成了右手。
+            <div class="example-step">
+                <div class="step-number" style="background: linear-gradient(135deg, #ef4444, #dc2626);">−</div>
+                <div class="step-content">
+                    <div class="step-label" style="color: #ef4444;">det < 0：镜像翻转</div>
+                            <p>空间被<strong>"翻过来"</strong>了！</p>
+                            <p style="font-size: 0.9em; color: var(--text-muted);">
+                                就像把纸翻到背面。左手变成了右手。
+                            </p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number" style="background: linear-gradient(135deg, #666, #444);">0</div>
+                    <div class="step-content">
+                        <div class="step-label" style="color: #888;">det = 0：灾难！维度坍缩</div>
+                        <p>面积被压缩成了<strong>零</strong>！空间被压扁成更低的维度。</p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">
+                            2D 变成 1D（线）甚至 0D（点）
                         </p>
+                    </div>
                 </div>
             </div>
 
-            <div class="example-card">
-                <p><strong>🪞 镜子的例子</strong></p>
+            <div class="aha-box">
+                <div class="aha-title">恍然大悟时刻</div>
                 <p>
-                    水平翻转矩阵 $\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}$ 的行列式 = -1
+                    det = 0 意味着矩阵把空间<strong>压扁了</strong>，信息丢失了，<strong>无法恢复</strong>！
                 </p>
-                <p>
-                    面积不变（|−1| = 1），但空间被"镜像"了！
+                <p style="margin-top: 0.5rem;">
+                    这就是为什么 det = 0 的矩阵没有逆矩阵（下一章会详细讲）。
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- ==================== SECTION 3: 行列式为零 ==================== -->
+    <!-- SECTION 3 -->
     <div class="section fade-in">
-        <h2 class="section-title">😱 6.3 行列式 = 0：灾难发生！</h2>
+        <h2 class="section-title">🧮 6.3 如何计算行列式？</h2>
 
         <div class="content-block">
-            <p>
-                如果行列式等于零，意味着面积被压缩成了... <strong>零</strong>！
-            </p>
-
-            <div
-                style="display: flex; gap: 2rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap; align-items: center;">
-                <div style="text-align: center;">
-                    <svg width="80" height="80" viewBox="0 0 80 80">
-                        <rect x="10" y="10" width="60" height="60" fill="rgba(74, 158, 255, 0.3)" stroke="#4a9eff"
-                            stroke-width="2" />
-                    </svg>
-                    <p>2D 平面</p>
-                </div>
-                <div style="font-size: 2rem;">→</div>
-                <div style="text-align: center;">
-                    <svg width="80" height="80" viewBox="0 0 80 80">
-                        <line x1="10" y1="70" x2="70" y2="10" stroke="#ef4444" stroke-width="4" />
-                    </svg>
-                    <p style="color: var(--accent-red);">压成一条线！</p>
-                </div>
-            </div>
-
-            <div class="theorem-card">
-                <div class="theorem-title">🚨 det = 0 的含义</div>
-                <ul style="margin: 0;">
-                    <li>空间被"压扁"成更低的维度</li>
-                    <li>变换丢失了信息，<strong>无法恢复</strong>（不可逆）</li>
-                    <li>矩阵的列向量"排成一条线"（线性相关）</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== SECTION 4: 计算公式 ==================== -->
-    <div class="section fade-in">
-        <h2 class="section-title">🧮 6.4 怎么计算？</h2>
-
-        <div class="content-block">
-            <h3>2×2 矩阵（超级简单！）</h3>
+            <h3>2×2 矩阵：超级简单！</h3>
             <div style="text-align: center; margin: 2rem 0;">
                 <div style="font-size: 1.4rem;">
                     $\det\begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc$
@@ -141,37 +138,136 @@
                 </p>
             </div>
 
-            <div class="example-card">
-                <p><strong>快速练习</strong></p>
-                <div class="math-block">
-                    $$ \det\begin{bmatrix} 3 & 2 \\ 1 & 4 \end{bmatrix} = 3 \times 4 - 2 \times 1 = 12 - 2 = 10 $$
+            <div class="deep-dive">
+                <div class="deep-title">记忆口诀</div>
+                <p style="text-align: center; font-size: 1.2rem;">
+                    "主减副" —— 主对角线 (左上到右下) 的积，减去副对角线 (右上到左下) 的积
+                </p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">例1：普通变换</div>
+                        <div class="math-block">
+                            $\det\begin{bmatrix} 3 & 2 \\ 1 & 4 \end{bmatrix} = 3 \times 4 - 2 \times 1 = 12 - 2 = 10$
+                        </div>
+                        <p style="color: var(--accent-green);">面积放大 10 倍，方向不变</p>
+                    </div>
                 </div>
-                <p>这个变换会把面积放大 10 倍！</p>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">例2：镜像变换</div>
+                        <div class="math-block">
+                            $\det\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix} = (-1) \times 1 - 0 \times 0 = -1$
+                        </div>
+                        <p style="color: #ef4444;">面积不变，但方向翻转（镜像）</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">例3：压扁变换</div>
+                        <div class="math-block">
+                            $\det\begin{bmatrix} 2 & 4 \\ 1 & 2 \end{bmatrix} = 2 \times 2 - 4 \times 1 = 4 - 4 = 0$
+                        </div>
+                        <p style="color: #888;">灾难！两列成比例，空间被压成一条线</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="connection-box">
+                <div class="connection-title">和之前学的内容的联系</div>
+                <p>
+                    还记得第 2 章的"线性相关"吗？如果矩阵的列向量线性相关（在同一条线上），
+                    行列式就是 0！因为它们没办法"撑起"整个平面。
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- ==================== SECTION 5: 总结 ==================== -->
+    <!-- SECTION 4: 3D -->
+    <div class="section fade-in">
+        <h2 class="section-title">🧊 6.4 3D 行列式</h2>
+
+        <div class="content-block">
+            <p>
+                在 3D 中，行列式代表<strong>体积</strong>的缩放因子：
+            </p>
+            <ul>
+                <li>det > 0：体积缩放，方向（"手性"）不变</li>
+                <li>det < 0：体积缩放，右手系变成左手系</li>
+                <li>det = 0：体积变成 0，空间被压成平面/线/点</li>
+            </ul>
+
+            <div class="definition-card">
+                <div class="definition-title">3×3 行列式计算</div>
+                <p>公式比较复杂，但核心思想不变：测量"基向量围成的体积"</p>
+                <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.5rem;">
+                    具体公式：$a(ei-fh) - b(di-fg) + c(dh-eg)$，按第一行展开
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 应用 -->
+    <div class="section fade-in">
+        <h2 class="section-title">🌍 6.5 行列式的应用</h2>
+
+        <div class="real-world">
+            <div class="real-world-item">
+                <div class="rw-icon">🔍</div>
+                <div class="rw-title">判断可逆性</div>
+                <div class="rw-desc">det ≠ 0 才有逆矩阵</div>
+            </div>
+            <div class="real-world-item">
+                <div class="rw-icon">📐</div>
+                <div class="rw-title">计算面积</div>
+                <div class="rw-desc">两个向量围成的平行四边形</div>
+            </div>
+            <div class="real-world-item">
+                <div class="rw-icon">🎮</div>
+                <div class="rw-title">碰撞检测</div>
+                <div class="rw-desc">判断点在三角形内/外</div>
+            </div>
+            <div class="real-world-item">
+                <div class="rw-icon">🧮</div>
+                <div class="rw-title">解方程组</div>
+                <div class="rw-desc">克莱默法则（第 12 章）</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 总结 -->
     <div class="section fade-in">
         <h2 class="section-title">🎯 本章收获</h2>
 
         <div class="content-block">
+            <div class="vocab-summary">
+                <div class="vocab-title">词汇复习</div>
+                <div class="vocab-list">
+                    <div class="vocab-item"><span class="vocab-zh">行列式</span><span class="vocab-en">面积/体积缩放因子</span>
+                    </div>
+                    <div class="vocab-item"><span class="vocab-zh">奇异矩阵</span><span class="vocab-en">det=0，不可逆</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="theorem-card">
-                <div class="theorem-title">今天你学会了</div>
+                <div class="theorem-title">核心要点</div>
                 <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
-                    <li><strong>行列式</strong> = 面积（/体积）的放大倍数</li>
+                    <li><span class="term" data-en="Determinant">行列式</span> = 面积/体积的缩放因子</li>
                     <li><strong>det > 0</strong>：正常变换；<strong>det < 0</strong>：镜像翻转</li>
-                    <li><strong>det = 0</strong>：空间被压扁，维度降低，变换不可逆</li>
-                    <li>2×2 公式：$ad - bc$</li>
+                    <li><strong>det = 0</strong>：空间被压扁，矩阵不可逆</li>
+                    <li>2×2 公式：$ad - bc$（"主减副"）</li>
                 </ol>
             </div>
 
-            <div
-                style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(249, 115, 22, 0.1)); border-radius: 12px;">
-                <p style="font-size: 1.2rem; margin: 0;">
-                    🔮 <strong>记住这个魔法</strong>
-                </p>
-                <p style="margin-top: 0.5rem;">
+            <div class="aha-box">
+                <div class="aha-title">记住这个魔法</div>
+                <p>
                     行列式是矩阵的"健康指标"——如果是 0，这个矩阵就"生病"了（不可逆）！
                 </p>
             </div>

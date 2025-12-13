@@ -1,61 +1,125 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 11 章</span>
-    <h1 class="chapter-title">叉积的秘密 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cross Products &
-            Transformations</small></h1>
+    <h1 class="chapter-title">叉积与行列式的秘密联系 <br><small style="font-size: 0.6em; color: var(--text-muted);">Cross Products
+            in the Light of Transformations</small></h1>
     <p class="chapter-description">
         上一章我们学了叉积怎么用。这一章揭示一个更深的秘密：
-        叉积的公式是怎么来的？为什么偏偏是那样计算？
+        叉积的公式到底是怎么来的？为什么偏偏是那样计算？
     </p>
 </div>
 
-<!-- ==================== SECTION 1 ==================== -->
+<!-- 核心词汇 -->
+<div class="section fade-in">
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">平行六面体</span><span class="vocab-en">Parallelepiped</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">体积</span><span class="vocab-en">Volume</span></div>
+            <div class="vocab-item"><span class="vocab-zh">三重积</span><span class="vocab-en">Triple Product</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
 <div class="section fade-in">
     <h2 class="section-title">🎁 11.1 叉积与体积</h2>
 
     <div class="content-block">
-        <p>
-            回想一下：
-        </p>
+        <p>回想一下我们学过的：</p>
         <ul>
             <li>2D 中的<strong>行列式</strong> = 平行四边形面积</li>
             <li>3D 中的<strong>行列式</strong> = 平行六面体体积</li>
         </ul>
-        <p>
-            叉积和行列式有着神秘的联系！
-        </p>
 
         <div class="theorem-card">
             <div class="theorem-title">🔮 惊人的联系</div>
+            <p>如果你有三个 3D 向量 $\vec{x}$, $\vec{v}$, $\vec{w}$：</p>
+            <div class="math-block">
+                $$ \vec{x} \cdot (\vec{v} \times \vec{w}) = \text{由这三个向量围成的平行六面体的体积} $$
+            </div>
+            <p style="text-align: center;">
+                这叫做<span class="term" data-en="Triple Product">三重积</span>！
+            </p>
+        </div>
+
+        <div class="aha-box">
+            <div class="aha-title">几何直觉</div>
             <p>
-                $\vec{x} \cdot (\vec{v} \times \vec{w})$ = 由 $\vec{x}$, $\vec{v}$, $\vec{w}$
-                围成的平行六面体的<strong>体积</strong>！
+                $\vec{v} \times \vec{w}$ 的长度是平行四边形的面积（底面积），
+                方向是垂直于这个面。
+            </p>
+            <p style="margin-top: 0.5rem;">
+                点积 $\vec{x} \cdot (\vec{v} \times \vec{w})$ 测量 $\vec{x}$ 在垂直方向上的投影（高度）。
+            </p>
+            <p style="margin-top: 0.5rem; font-weight: bold;">
+                底面积 × 高度 = 体积！这就是为什么三重积等于体积。
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2 ==================== -->
+<!-- SECTION 2 -->
 <div class="section fade-in">
-    <h2 class="section-title">🤔 11.2 为什么垂直？</h2>
+    <h2 class="section-title">🤔 11.2 为什么叉积必然垂直？</h2>
 
     <div class="content-block">
         <p>
-            当 $\vec{x}$ 和 $\vec{v}$、$\vec{w}$ 在同一平面时，体积为 0（因为被压扁了）。
+            当 $\vec{x}$ 和 $\vec{v}$、$\vec{w}$ 在<strong>同一个平面</strong>内时，
+            这三个向量无法围成一个"立体"——它们被压扁了！
         </p>
-        <p>
-            这意味着：
-        </p>
+        <p>所以体积 = 0，这意味着：</p>
+
         <div class="math-block">
             $$ \vec{v} \cdot (\vec{v} \times \vec{w}) = 0 $$
             $$ \vec{w} \cdot (\vec{v} \times \vec{w}) = 0 $$
         </div>
-        <p style="text-align: center;">
-            点积为 0 = 垂直！所以叉积<strong>必然</strong>垂直于原来两个向量。
-        </p>
+
+        <div class="theorem-card">
+            <div class="theorem-title">数学必然性</div>
+            <p>
+                点积为零 = 垂直！<br>
+                所以 $\vec{v} \times \vec{w}$ <strong>必然</strong>垂直于 $\vec{v}$ 和 $\vec{w}$。
+            </p>
+            <p style="margin-top: 0.5rem; font-size: 0.95em; color: var(--text-secondary);">
+                这不是人为规定的，而是从体积公式<strong>数学推导</strong>出来的！
+            </p>
+        </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3 ==================== -->
+<!-- SECTION 3 -->
+<div class="section fade-in">
+    <h2 class="section-title">🧮 11.3 叉积公式的来源</h2>
+
+    <div class="content-block">
+        <div class="deep-dive">
+            <div class="deep-title">用对偶性推导</div>
+            <p>
+                我们想找一个向量 $\vec{p}$，使得对于任意 $\vec{x}$：
+            </p>
+            <div class="math-block">
+                $$ \vec{x} \cdot \vec{p} = \det([\vec{x}, \vec{v}, \vec{w}]) $$
+            </div>
+            <p style="margin-top: 0.5rem;">
+                意思是：$\vec{x}$ 与 $\vec{p}$ 的点积等于三向量行列式（体积）。
+            </p>
+            <p style="margin-top: 0.5rem;">
+                通过展开 3×3 行列式并整理，就能得出叉积的精确公式！
+            </p>
+        </div>
+
+        <div class="connection-box">
+            <div class="connection-title">概念之间的优美联系</div>
+            <p>
+                叉积 → 面积 → 行列式 → 体积 → 对偶性 → 线性变换<br>
+                所有这些概念在深层是互相联系的！
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
 
@@ -64,8 +128,10 @@
             <div class="theorem-title">深层理解</div>
             <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
                 <li>叉积与 3D 行列式（体积）密切相关</li>
-                <li>叉积垂直于原向量是数学的<strong>必然结果</strong>，不是人为规定的</li>
-                <li>线性代数的不同概念之间存在优美的联系</li>
+                <li><span class="term" data-en="Triple Product">三重积</span> $\vec{x} \cdot (\vec{v} \times \vec{w})$ = 体积
+                </li>
+                <li>叉积垂直于原向量是<strong>数学的必然结果</strong></li>
+                <li>线性代数的不同概念在深层相互联系</li>
             </ol>
         </div>
     </div>

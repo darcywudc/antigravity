@@ -1,51 +1,95 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 2 章</span>
-    <h1 class="chapter-title">用向量搭建世界 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear Combinations
-            & Span</small></h1>
+    <h1 class="chapter-title">用向量搭建整个世界 <br><small style="font-size: 0.6em; color: var(--text-muted);">Linear
+            Combinations, Span & Basis</small></h1>
     <p class="chapter-description">
-        如果给你两块乐高积木，你能搭出多少种不同的形状？
-        这一章会告诉你：用两个向量做"原料"，你能到达空间的哪些地方！
+        如果给你两块特殊的乐高积木，你能搭出整栋房子吗？
+        这一章揭示：用两个向量做"原料"，你能到达空间中的哪些地方！
     </p>
 </div>
 
-<!-- ==================== SECTION 1: 配方 ==================== -->
+<!-- 核心词汇 -->
 <div class="section fade-in">
-    <h2 class="section-title">🧪 2.1 向量的"配方"</h2>
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">线性组合</span><span class="vocab-en">Linear Combination</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">张成空间</span><span class="vocab-en">Span</span></div>
+            <div class="vocab-item"><span class="vocab-zh">基向量</span><span class="vocab-en">Basis Vectors</span></div>
+            <div class="vocab-item"><span class="vocab-zh">线性无关</span><span class="vocab-en">Linearly Independent</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">线性相关</span><span class="vocab-en">Linearly Dependent</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="section fade-in">
+    <h2 class="section-title">🧪 2.1 线性组合：向量的"配方"</h2>
 
     <div class="content-block">
-        <h3>🍹 奶茶店类比</h3>
+        <h3>🍹 类比：奶茶店的秘密配方</h3>
         <p>
-            想象你在奶茶店打工。店里有两种基础原料：
+            想象你在奶茶店工作。店里有两种基础原料：
         </p>
         <ul>
-            <li>☕ <strong>红茶</strong>（浓郁的味道）</li>
-            <li>🥛 <strong>牛奶</strong>（奶香的味道）</li>
+            <li>☕ <strong>红茶浓缩液</strong>：浓郁的茶香</li>
+            <li>🥛 <strong>牛奶</strong>：顺滑的奶香</li>
         </ul>
         <p>
-            老板说："今天的特调是 <strong>3 份红茶 + 2 份牛奶</strong>。"
+            老板说："今天的招牌奶茶是 <strong>3 份红茶 + 2 份牛奶</strong>。"
         </p>
         <p>
-            这就是一个<strong>线性组合</strong>！你用两种原料，按照一定的比例，调出了一杯新饮品。
+            这就是一个<span class="term" data-en="Linear Combination">线性组合</span>！
         </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">💡 线性组合</div>
+            <div class="theorem-title">💡 线性组合的定义</div>
             <p>
-                把几个向量进行<strong>缩放</strong>（乘以系数），然后<strong>相加</strong>。
+                把几个向量分别<strong>缩放</strong>（乘以系数），然后<strong>相加</strong>。
             </p>
             <div class="math-block">
                 $$ a \cdot \vec{v} + b \cdot \vec{w} $$
             </div>
             <p style="font-size: 0.9em; color: var(--text-secondary);">
-                这里的 a 和 b 就是"几份"的意思（配方比例）
+                这里的 a 和 b 可以是任意数字（正数、负数、零、小数都行）
             </p>
+        </div>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">入门例子</div>
+                    <p>$2 \cdot \begin{bmatrix}1\\0\end{bmatrix} + 3 \cdot \begin{bmatrix}0\\1\end{bmatrix} =
+                        \begin{bmatrix}2\\3\end{bmatrix}$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">负数系数</div>
+                    <p>$2 \cdot \begin{bmatrix}1\\1\end{bmatrix} + (-1) \cdot \begin{bmatrix}1\\0\end{bmatrix} =
+                        \begin{bmatrix}1\\2\end{bmatrix}$</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">负号代表"减去"或"反向"</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">任意组合</div>
+                    <p>$0.5 \cdot \vec{v} + 1.7 \cdot \vec{w} - 0.3 \cdot \vec{u}$ —— 系数可以是任何实数！</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: 基向量 ==================== -->
+<!-- SECTION 2: 基向量 -->
 <div class="section fade-in">
-    <h2 class="section-title">🧱 2.2 空间的"乐高积木"</h2>
+    <h2 class="section-title">🧱 2.2 基向量：空间的"标准积木"</h2>
 
     <div class="content-block">
         <p>
@@ -53,84 +97,85 @@
         </p>
 
         <div style="display: flex; gap: 3rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
-            <div style="text-align: center;">
-                <svg width="120" height="120" viewBox="0 0 120 120">
-                    <line x1="20" y1="100" x2="100" y2="100" stroke="#f97316" stroke-width="4" />
-                    <polygon points="100,100 90,95 90,105" fill="#f97316" />
-                    <text x="60" y="90" fill="#f97316" font-size="14" font-weight="bold" text-anchor="middle">î</text>
-                </svg>
-                <p><strong>î</strong> = 向右 1 格</p>
-                <p style="font-size: 0.9em; color: var(--text-muted);">$\begin{bmatrix} 1 \\ 0 \end{bmatrix}$</p>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(249, 115, 22, 0.1); border-radius: 12px;">
+                <p style="font-size: 2rem; margin: 0; color: #f97316;">î</p>
+                <p style="margin: 0.5rem 0;">向右 1 个单位</p>
+                <p style="font-size: 1.2rem;">$\begin{bmatrix} 1 \\ 0 \end{bmatrix}$</p>
             </div>
-
-            <div style="text-align: center;">
-                <svg width="120" height="120" viewBox="0 0 120 120">
-                    <line x1="20" y1="100" x2="20" y2="20" stroke="#10b981" stroke-width="4" />
-                    <polygon points="20,20 15,30 25,30" fill="#10b981" />
-                    <text x="35" y="60" fill="#10b981" font-size="14" font-weight="bold">ĵ</text>
-                </svg>
-                <p><strong>ĵ</strong> = 向上 1 格</p>
-                <p style="font-size: 0.9em; color: var(--text-muted);">$\begin{bmatrix} 0 \\ 1 \end{bmatrix}$</p>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 12px;">
+                <p style="font-size: 2rem; margin: 0; color: #10b981;">ĵ</p>
+                <p style="margin: 0.5rem 0;">向上 1 个单位</p>
+                <p style="font-size: 1.2rem;">$\begin{bmatrix} 0 \\ 1 \end{bmatrix}$</p>
             </div>
         </div>
 
-        <div class="example-card">
-            <p><strong>🎯 例子</strong></p>
+        <div class="aha-box">
+            <div class="aha-title">恍然大悟时刻</div>
             <p>
-                坐标 (3, 2) 意思是什么？
+                坐标 (3, 2) 的<strong>真正含义</strong>是：$3\hat{i} + 2\hat{j}$<br>
+                也就是"3 份 î 加上 2 份 ĵ"的线性组合！
             </p>
-            <p style="text-align: center; font-size: 1.2rem;">
-                向右走 <span style="color:#f97316">3 个 î</span>，向上走 <span style="color:#10b981">2 个 ĵ</span>
+            <p style="margin-top: 0.5rem;">
+                <strong>每一个坐标都是线性组合的简写！</strong>
             </p>
-            <div class="math-block">
-                $$ \begin{bmatrix} 3 \\ 2 \end{bmatrix} = 3\hat{i} + 2\hat{j} $$
-            </div>
+        </div>
+
+        <div class="theorem-card">
+            <div class="theorem-title">🔑 基向量 Basis Vectors</div>
+            <p>
+                <span class="term" data-en="Basis">基向量</span>是一组"积木"，通过它们的线性组合可以表示空间中的<strong>任何向量</strong>。
+            </p>
+            <p style="margin-top: 0.5rem; font-size: 0.95em;">
+                î 和 ĵ 是最常用的标准基，但不是唯一的选择！
+            </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3: SPAN ==================== -->
+<!-- SECTION 3: Span -->
 <div class="section fade-in">
-    <h2 class="section-title">🌍 2.3 你能到达哪里？（Span）</h2>
+    <h2 class="section-title">🌍 2.3 张成空间：你能到达哪里？</h2>
 
     <div class="content-block">
-        <h3>🎮 游戏关卡类比</h3>
+        <h3>🎮 类比：游戏角色的移动范围</h3>
         <p>
-            想象你在一个游戏里，只能使用两种移动方式：
+            想象你在玩一个游戏，只有两种移动方式：
         </p>
         <ul>
-            <li>按 A 键：向右跳</li>
-            <li>按 B 键：向上跳</li>
+            <li>按 <strong>A 键</strong>：按照向量 $\vec{v}$ 的方向跳一步（可以按多次，也可以反向）</li>
+            <li>按 <strong>B 键</strong>：按照向量 $\vec{w}$ 的方向跳一步</li>
         </ul>
         <p>
-            只要能按任意次数的 A 和 B（包括负数次，即反向），你能到达屏幕上的<strong>每一个点</strong>！
+            问题：你能到达地图上的哪些位置？
         </p>
-        <p>
-            所有你能到达的地方，就叫做这两个向量的 <strong>Span（张成空间）</strong>。
-        </p>
+
+        <div class="theorem-card">
+            <div class="theorem-title">💡 张成空间 Span</div>
+            <p>
+                向量 $\vec{v}$ 和 $\vec{w}$ 的<span class="term"
+                    data-en="Span">张成空间</span>，就是通过它们的<strong>所有可能线性组合</strong>能到达的位置集合。
+            </p>
+            <div class="math-block">
+                $$ \text{span}(\vec{v}, \vec{w}) = \{ a\vec{v} + b\vec{w} \mid a, b \in \mathbb{R} \} $$
+            </div>
+        </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-            <div class="definition-card" style="border-left-color: var(--accent-blue);">
+            <div class="definition-card" style="border-left-color: var(--accent-green);">
                 <div class="definition-title">😊 好情况</div>
-                <p>
-                    两个向量指向<strong>不同方向</strong>。
-                    <br>
-                    → Span = 整个 2D 平面！
-                </p>
+                <p>两个向量指向<strong>不同方向</strong></p>
+                <p style="font-weight: bold;">→ Span = 整个 2D 平面！</p>
+                <p style="font-size: 0.85em; color: var(--text-muted);">你可以到达任何地方</p>
             </div>
-
             <div class="definition-card" style="border-left-color: var(--accent-red);">
                 <div class="definition-title">😢 糟糕情况</div>
-                <p>
-                    两个向量指向<strong>同一条线</strong>。
-                    <br>
-                    → Span = 只是一条线！
-                </p>
+                <p>两个向量在<strong>同一条线上</strong></p>
+                <p style="font-weight: bold;">→ Span = 只是一条线！</p>
+                <p style="font-size: 0.85em; color: var(--text-muted);">你被困在这条线上</p>
             </div>
         </div>
     </div>
 
-    <!-- INTERACTIVE: Span -->
     <div class="viz-container">
         <div class="viz-header">
             <span class="viz-title">🕹️ 拖拽基向量，观察网格变化</span>
@@ -140,94 +185,91 @@
             <canvas id="viz-basis-change" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <div>
-                    <p style="margin: 0;">
-                        拖拽 <span style="color:#f97316">橙色 î</span> 和 <span style="color:#10b981">绿色 ĵ</span>！
-                    </p>
-                    <p style="font-size: 0.9em; color: var(--text-muted);">
-                        注意黄色点 (2î + 1ĵ) 如何随着网格移动。
-                    </p>
-                </div>
-                <button class="btn btn-secondary" id="reset-basis">重置</button>
-            </div>
+            <p style="text-align: center;">
+                拖拽 <span style="color:#f97316; font-weight:bold;">橙色 î</span> 和
+                <span style="color:#10b981; font-weight:bold;">绿色 ĵ</span>！观察黄色点如何移动。
+            </p>
+            <button class="btn btn-secondary" id="reset-basis">重置</button>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: 线性相关 ==================== -->
+<!-- SECTION 4: 线性相关/无关 -->
 <div class="section fade-in">
-    <h2 class="section-title">🔗 2.4 "多余的"向量</h2>
+    <h2 class="section-title">🔗 2.4 线性相关 vs 线性无关</h2>
 
     <div class="content-block">
-        <h3>🛒 购物车类比</h3>
-        <p>
-            如果你有：
-        </p>
+        <h3>🛒 类比：购物车里的"多余"物品</h3>
+        <p>如果你有：</p>
         <ul>
             <li>一张 100 元纸币</li>
             <li>两张 50 元纸币</li>
         </ul>
         <p>
-            其中一个是"多余的"——你不需要三样都有，因为一张 100 块可以换成两张 50 块。
-        </p>
-        <p>
-            在向量世界里，如果一个向量可以用其他向量表示出来，它就是<strong>线性相关</strong>的（多余的）。
+            其中一个是"多余的"——因为一张 100 可以用两张 50 代替！
         </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">🔑 判断方法</div>
+            <div class="theorem-title">🔑 关键定义</div>
             <ul style="margin: 0;">
-                <li><strong>线性无关</strong>：每个向量都贡献新方向 ✅</li>
-                <li><strong>线性相关</strong>：有向量是"多余的" ❌</li>
+                <li><span class="term" data-en="Linearly Independent">线性无关</span>：每个向量都贡献"新方向"，没有多余</li>
+                <li><span class="term" data-en="Linearly Dependent">线性相关</span>：有向量可以被其他向量表示出来，是"多余"的</li>
             </ul>
+        </div>
+
+        <div class="deep-dive">
+            <div class="deep-title">检验方法</div>
+            <p>如果存在不全为零的系数使得 $a\vec{v} + b\vec{w} = \vec{0}$，则线性相关。</p>
+            <p>直观理解：如果两个向量在同一条直线上，它们就线性相关。</p>
         </div>
     </div>
 
-    <!-- INTERACTIVE: Span Check -->
     <div class="viz-container">
         <div class="viz-header">
-            <span class="viz-title">🕹️ 让向量重合，观察维度坍缩</span>
+            <span class="viz-title">🕹️ 把两个向量拖到同一条线上</span>
             <span class="viz-badge" style="background: var(--accent-blue);">探索</span>
         </div>
         <div class="viz-canvas-wrapper" style="height: 400px;">
             <canvas id="viz-span-check" style="width: 100%; height: 100%;"></canvas>
         </div>
         <div class="viz-controls">
-            <div style="text-align: center;">
-                <p>状态：<span id="span-status" style="font-weight: bold; font-size: 1.2rem;">平面 (2D)</span></p>
-                <p style="font-size: 0.9em; color: var(--text-muted);">
-                    把两个向量拖到同一条线上，看看会发生什么！
-                </p>
-            </div>
+            <p style="text-align: center;">状态：<span id="span-status"
+                    style="font-weight: bold; font-size: 1.3rem;"></span></p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 5: 总结 ==================== -->
+<!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
-        <div class="theorem-card">
-            <div class="theorem-title">今天你学会了</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
-                <li><strong>线性组合</strong> = 缩放 + 相加（就像调饮料的配方）</li>
-                <li><strong>基向量</strong> î 和 ĵ 是空间的"积木"</li>
-                <li><strong>Span</strong> = 用这些积木能搭建出的所有位置</li>
-                <li><strong>线性无关</strong> = 每个向量都有独特贡献</li>
-            </ol>
+        <div class="vocab-summary">
+            <div class="vocab-title">词汇复习</div>
+            <div class="vocab-list">
+                <div class="vocab-item"><span class="vocab-zh">线性组合</span><span class="vocab-en">缩放+相加</span></div>
+                <div class="vocab-item"><span class="vocab-zh">张成空间</span><span class="vocab-en">能到达的所有位置</span></div>
+                <div class="vocab-item"><span class="vocab-zh">基向量</span><span class="vocab-en">空间的"积木"</span></div>
+                <div class="vocab-item"><span class="vocab-zh">线性无关</span><span class="vocab-en">没有多余的向量</span></div>
+            </div>
         </div>
 
-        <div
-            style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(236, 72, 153, 0.1)); border-radius: 12px;">
-            <p style="font-size: 1.1rem; margin: 0;">
-                💡 <strong>关键直觉</strong>
+        <div class="aha-box">
+            <div class="aha-title">本章核心洞察</div>
+            <p>
+                坐标系只是一种"语言"。<strong>换一组基向量，就像换一种地图</strong>——世界还是那个世界，只是描述方式变了。
+                这个思想将在第 13 章"基变换"中发挥巨大作用！
             </p>
-            <p style="margin-top: 0.5rem;">
-                坐标系只是一种"语言"。换一组基向量，就像换一种地图——世界还是那个世界，只是描述方式变了。
-            </p>
+        </div>
+
+        <div class="concept-map">
+            <div class="concept-node">线性组合</div>
+            <div class="concept-arrow">→</div>
+            <div class="concept-node">张成空间</div>
+            <div class="concept-arrow">→</div>
+            <div class="concept-node">基向量</div>
+            <div class="concept-arrow">→</div>
+            <div class="concept-node" style="background: linear-gradient(135deg, #10b981, #059669);">下一章：变换空间</div>
         </div>
     </div>
 </div>

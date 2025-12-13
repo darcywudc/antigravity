@@ -1,24 +1,36 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 9 章</span>
-    <h1 class="chapter-title">点积：测量"志同道合" <br><small style="font-size: 0.6em; color: var(--text-muted);">Dot
-            Products</small></h1>
+    <h1 class="chapter-title">点积：测量"志同道合" <br><small style="font-size: 0.6em; color: var(--text-muted);">Dot Products
+            and Duality</small></h1>
     <p class="chapter-description">
         如果两个人走的方向完全一样，他们就是"志同道合"。
-        点积就是测量两个向量有多"志同道合"的工具！
+        <strong>点积</strong>就是测量两个向量有多"志同道合"的魔法工具！
     </p>
 </div>
 
-<!-- ==================== SECTION 1 ==================== -->
+<!-- 核心词汇 -->
 <div class="section fade-in">
-    <h2 class="section-title">🤝 9.1 两个向量有多像？</h2>
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">点积</span><span class="vocab-en">Dot Product</span></div>
+            <div class="vocab-item"><span class="vocab-zh">内积</span><span class="vocab-en">Inner Product</span></div>
+            <div class="vocab-item"><span class="vocab-zh">投影</span><span class="vocab-en">Projection</span></div>
+            <div class="vocab-item"><span class="vocab-zh">垂直</span><span class="vocab-en">Perpendicular</span></div>
+            <div class="vocab-item"><span class="vocab-zh">对偶性</span><span class="vocab-en">Duality</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="section fade-in">
+    <h2 class="section-title">🤝 9.1 两个向量有多"像"？</h2>
 
     <div class="content-block">
-        <h3>🏃 跑步类比</h3>
-        <p>
-            想象两个人在跑步：
-        </p>
+        <h3>🏃 类比：跑步方向</h3>
+        <p>想象两个人在跑步：</p>
         <ul>
-            <li>如果他们<strong>同向奔跑</strong>，他们的"合作值"很高（正数）</li>
+            <li>如果他们<strong>同向奔跑</strong>，"合作值"很高（正数）</li>
             <li>如果他们<strong>垂直跑</strong>（一个向东，一个向北），合作值是零</li>
             <li>如果他们<strong>反向跑</strong>，合作值是负数（在对抗）</li>
         </ul>
@@ -26,19 +38,19 @@
         <div class="theorem-card">
             <div class="theorem-title">💡 点积的直觉</div>
             <p style="text-align: center; font-size: 1.2rem;">
-                点积 = 两个向量"合作程度"的分数
+                <span class="term" data-en="Dot Product">点积</span> = 两个向量"合作程度"的分数
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2 ==================== -->
+<!-- SECTION 2 -->
 <div class="section fade-in">
-    <h2 class="section-title">🧮 9.2 怎么计算？</h2>
+    <h2 class="section-title">🧮 9.2 如何计算点积？</h2>
 
     <div class="content-block">
         <div style="text-align: center; margin: 2rem 0;">
-            <div style="font-size: 1.3rem;">
+            <div style="font-size: 1.4rem;">
                 $\vec{v} \cdot \vec{w} = v_1 w_1 + v_2 w_2$
             </div>
             <p style="margin-top: 1rem; color: var(--text-secondary);">
@@ -46,83 +58,179 @@
             </p>
         </div>
 
-        <div class="example-card">
-            <p><strong>例子</strong></p>
-            <div class="math-block">
-                $$ \begin{bmatrix} 2 \\ 3 \end{bmatrix} \cdot \begin{bmatrix} 4 \\ 1 \end{bmatrix} = 2 \times 4 + 3
-                \times 1 = 8 + 3 = 11 $$
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">例1：同方向</div>
+                    <div class="math-block">
+                        $\begin{bmatrix} 2 \\ 0 \end{bmatrix} \cdot \begin{bmatrix} 3 \\ 0 \end{bmatrix} = 2 \times 3 +
+                        0 \times 0 = 6 > 0$
+                    </div>
+                    <p style="color: var(--accent-green);">正数 → 大致同向</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">例2：垂直</div>
+                    <div class="math-block">
+                        $\begin{bmatrix} 2 \\ 0 \end{bmatrix} \cdot \begin{bmatrix} 0 \\ 3 \end{bmatrix} = 2 \times 0 +
+                        0 \times 3 = 0$
+                    </div>
+                    <p style="color: var(--accent-orange);">零 → 完全垂直！</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">例3：反向</div>
+                    <div class="math-block">
+                        $\begin{bmatrix} 2 \\ 0 \end{bmatrix} \cdot \begin{bmatrix} -3 \\ 0 \end{bmatrix} = 2 \times
+                        (-3) + 0 \times 0 = -6 < 0$ </div>
+                            <p style="color: var(--accent-red);">负数 → 大致反向</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ==================== SECTION 3 ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">📐 9.3 点积的符号</h2>
+    <!-- SECTION 3 -->
+    <div class="section fade-in">
+        <h2 class="section-title">📐 9.3 点积的符号</h2>
 
-    <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0;">
-            <div class="definition-card" style="border-left-color: var(--accent-green); text-align: center;">
-                <div class="definition-title">正数 ➕</div>
-                <p>夹角 &lt; 90°</p>
-                <p style="font-size: 0.9em;">大致同向</p>
+        <div class="content-block">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0;">
+                <div class="definition-card" style="border-left-color: var(--accent-green); text-align: center;">
+                    <div class="definition-title">正数 ➕</div>
+                    <p>夹角 < 90°</p>
+                            <p style="font-size: 0.9em;">大致同向</p>
+                </div>
+                <div class="definition-card" style="border-left-color: var(--accent-orange); text-align: center;">
+                    <div class="definition-title">零 ⭕</div>
+                    <p>夹角 = 90°</p>
+                    <p style="font-size: 0.9em; font-weight: bold;">垂直！</p>
+                </div>
+                <div class="definition-card" style="border-left-color: var(--accent-red); text-align: center;">
+                    <div class="definition-title">负数 ➖</div>
+                    <p>夹角 > 90°</p>
+                    <p style="font-size: 0.9em;">大致反向</p>
+                </div>
             </div>
-            <div class="definition-card" style="border-left-color: var(--accent-orange); text-align: center;">
-                <div class="definition-title">零 ⭕</div>
-                <p>夹角 = 90°</p>
-                <p style="font-size: 0.9em;"><strong>垂直！</strong></p>
-            </div>
-            <div class="definition-card" style="border-left-color: var(--accent-red); text-align: center;">
-                <div class="definition-title">负数 ➖</div>
-                <p>夹角 &gt; 90°</p>
-                <p style="font-size: 0.9em;">大致反向</p>
-            </div>
-        </div>
 
-        <div class="theorem-card">
-            <div class="theorem-title">🔑 垂直判定</div>
-            <p style="text-align: center;">
-                $\vec{v} \cdot \vec{w} = 0$ ⟺ 两个向量<strong>垂直</strong>！
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 4 ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">🌍 9.4 哪里用到点积？</h2>
-
-    <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-            <div class="definition-card">
-                <div class="definition-title">💡 游戏光照</div>
-                <p style="font-size: 0.9em;">光线和表面的点积决定了亮度</p>
+            <div class="theorem-card">
+                <div class="theorem-title">🔑 垂直判定法则</div>
+                <p style="text-align: center; font-size: 1.1rem;">
+                    $\vec{v} \cdot \vec{w} = 0$ ⟺ 两个向量<strong>垂直</strong>（<span class="term"
+                        data-en="Perpendicular">正交</span>）
+                </p>
             </div>
-            <div class="definition-card">
-                <div class="definition-title">🤖 AI 推荐</div>
-                <p style="font-size: 0.9em;">用点积比较你和其他用户的喜好相似度</p>
-            </div>
-            <div class="definition-card">
-                <div class="definition-title">🎮 碰撞检测</div>
-                <p style="font-size: 0.9em;">判断物体在墙的哪一侧</p>
+
+            <div class="aha-box">
+                <div class="aha-title">恍然大悟时刻</div>
+                <p>
+                    判断两个向量是否垂直，不需要画图、量角度。只需要计算点积，看是不是零！
+                </p>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ==================== SECTION 5 ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">🎯 本章收获</h2>
+    <!-- SECTION 4: 几何公式 -->
+    <div class="section fade-in">
+        <h2 class="section-title">📏 9.4 点积与投影</h2>
 
-    <div class="content-block">
-        <div class="theorem-card">
-            <div class="theorem-title">今天你学会了</div>
-            <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
-                <li><strong>点积</strong> = 测量两个向量的"合作程度"</li>
-                <li>计算：对应位置相乘再相加</li>
-                <li>点积 = 0 ⟺ <strong>垂直</strong></li>
-                <li>应用：光照、AI 推荐、碰撞检测</li>
-            </ol>
+        <div class="content-block">
+            <p>点积还有另一个神奇的几何含义：</p>
+
+            <div class="theorem-card">
+                <div class="theorem-title">几何公式</div>
+                <div class="math-block">
+                    $$ \vec{v} \cdot \vec{w} = |\vec{v}| \cdot |\vec{w}| \cdot \cos\theta $$
+                </div>
+                <p style="text-align: center;">
+                    = $\vec{v}$ 的长度 × $\vec{w}$ 的长度 × 夹角的余弦
+                </p>
+            </div>
+
+            <div class="deep-dive">
+                <div class="deep-title">投影的视角</div>
+                <p>
+                    $\vec{v} \cdot \vec{w}$ 也可以理解为：把 $\vec{v}$ <span class="term" data-en="Projection">投影</span>到
+                    $\vec{w}$ 方向，
+                    然后乘以 $\vec{w}$ 的长度。
+                </p>
+                <p style="margin-top: 0.5rem;">
+                    想象太阳从 $\vec{w}$ 的方向照过来，$\vec{v}$ 在地上投下的影子长度，
+                    再乘以 $|\vec{w}|$。
+                </p>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- SECTION 5: 对偶性 -->
+    <div class="section fade-in">
+        <h2 class="section-title">✨ 9.5 惊人的对偶性</h2>
+
+        <div class="content-block">
+            <div class="aha-box">
+                <div class="aha-title">深刻洞察：点积其实是线性变换！</div>
+                <p>
+                    把向量 $\vec{v} = \begin{bmatrix} v_1 \\ v_2 \end{bmatrix}$ 转置成行向量 $[v_1, v_2]$，
+                    它就变成了一个 <strong>1×2 矩阵</strong>！
+                </p>
+                <div class="math-block">
+                    $$ [v_1, v_2] \begin{bmatrix} w_1 \\ w_2 \end{bmatrix} = v_1 w_1 + v_2 w_2 $$
+                </div>
+                <p style="margin-top: 0.5rem;">
+                    这是一个从 2D 到 1D 的线性变换！<span class="term" data-en="Duality">对偶性</span>揭示了
+                    "向量"和"线性变换"之间的深层联系。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 应用 -->
+    <div class="section fade-in">
+        <h2 class="section-title">🌍 9.6 点积的应用</h2>
+
+        <div class="real-world">
+            <div class="real-world-item">
+                <div class="rw-icon">💡</div>
+                <div class="rw-title">游戏光照</div>
+                <div class="rw-desc">光线和表面的点积决定亮度</div>
+            </div>
+            <div class="real-world-item">
+                <div class="rw-icon">🤖</div>
+                <div class="rw-title">AI 推荐</div>
+                <div class="rw-desc">用点积比较用户偏好相似度</div>
+            </div>
+            <div class="real-world-item">
+                <div class="rw-icon">🎮</div>
+                <div class="rw-title">碰撞检测</div>
+                <div class="rw-desc">判断物体在墙的哪一侧</div>
+            </div>
+            <div class="real-world-item">
+                <div class="rw-icon">🔍</div>
+                <div class="rw-title">搜索引擎</div>
+                <div class="rw-desc">文档与查询的相似度</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 总结 -->
+    <div class="section fade-in">
+        <h2 class="section-title">🎯 本章收获</h2>
+
+        <div class="content-block">
+            <div class="theorem-card">
+                <div class="theorem-title">核心要点</div>
+                <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
+                    <li><span class="term" data-en="Dot Product">点积</span> = 测量两个向量的"合作程度"</li>
+                    <li>计算：$v_1 w_1 + v_2 w_2$（对应相乘再相加）</li>
+                    <li><strong>点积 = 0 ⟺ 垂直</strong></li>
+                    <li>几何公式：$|\vec{v}||\vec{w}|\cos\theta$</li>
+                    <li>对偶性：点积其实是 1×n 矩阵变换</li>
+                </ol>
+            </div>
+        </div>
+    </div>

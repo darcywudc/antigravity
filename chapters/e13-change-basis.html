@@ -1,81 +1,168 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 13 章</span>
-    <h1 class="chapter-title">翻译不同的语言 <br><small style="font-size: 0.6em; color: var(--text-muted);">Change of
+    <h1 class="chapter-title">基变换：翻译不同的语言 <br><small style="font-size: 0.6em; color: var(--text-muted);">Change of
             Basis</small></h1>
     <p class="chapter-description">
-        你用中文描述位置，朋友用英文描述——说的是同一个地方，但用了不同的"语言"。
-        基变换就是在不同的数学"语言"之间翻译！
+        同一个位置，用中文描述和用英文描述，坐标数字会不同——但地点还是那个地点！
+        <strong>基变换</strong>就是在不同数学"语言"之间做翻译。
     </p>
 </div>
 
-<!-- ==================== SECTION 1 ==================== -->
+<!-- 核心词汇 -->
 <div class="section fade-in">
-    <h2 class="section-title">🗣️ 13.1 不同的视角</h2>
-
-    <div class="content-block">
-        <h3>🗺️ 地图类比</h3>
-        <p>
-            想象两个人描述同一个宝藏位置：
-        </p>
-        <ul>
-            <li><strong>你</strong>：向东 3 步，向北 2 步</li>
-            <li><strong>朋友</strong>（面朝东北）：向前 4 步，向左 1 步</li>
-        </ul>
-        <p>
-            说的是同一个点，但因为选择的"基准方向"不同，数字完全不同！
-        </p>
-    </div>
-</div>
-
-<!-- ==================== SECTION 2 ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">🔄 13.2 翻译矩阵</h2>
-
-    <div class="content-block">
-        <p>
-            如果我们知道朋友的"语言"（他的基向量在我们的坐标系下是什么），
-            就可以用矩阵来翻译！
-        </p>
-
-        <div class="theorem-card">
-            <div class="theorem-title">🔑 基变换</div>
-            <ul style="margin: 0;">
-                <li><strong>$P$</strong>：把"朋友的语言"翻译成"你的语言"</li>
-                <li><strong>$P^{-1}$</strong>：把"你的语言"翻译成"朋友的语言"</li>
-            </ul>
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">基变换</span><span class="vocab-en">Change of Basis</span></div>
+            <div class="vocab-item"><span class="vocab-zh">基变换矩阵</span><span class="vocab-en">Change of Basis
+                    Matrix</span></div>
+            <div class="vocab-item"><span class="vocab-zh">相似变换</span><span class="vocab-en">Similarity Transform</span>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3 ==================== -->
+<!-- SECTION 1 -->
 <div class="section fade-in">
-    <h2 class="section-title">🤔 13.3 为什么要换基？</h2>
+    <h2 class="section-title">🗣️ 13.1 不同的视角，同一个世界</h2>
+
+    <div class="content-block">
+        <h3>🗺️ 类比：两个人描述同一个宝藏位置</h3>
+        <p>想象两个探险家找到了宝藏：</p>
+        <ul>
+            <li><strong>你</strong>：从营地出发，向东 3 步，向北 2 步</li>
+            <li><strong>朋友</strong>（面朝东北）：从营地出发，向前 4 步，向左 1 步</li>
+        </ul>
+        <p>
+            说的是<strong>同一个点</strong>，但因为选择的"基准方向"不同，坐标数字完全不同！
+        </p>
+
+        <div class="theorem-card">
+            <div class="theorem-title">💡 核心概念</div>
+            <p>
+                <span class="term" data-en="Basis">基</span>就是我们选择的"参考方向"。
+                标准基是 î 和 ĵ，但我们可以选择任何两个不平行的向量作为新的基。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 2 -->
+<div class="section fade-in">
+    <h2 class="section-title">🔄 13.2 基变换矩阵</h2>
+
+    <div class="content-block">
+        <p>如果我们知道新基向量在标准基下的坐标，就可以用矩阵来"翻译"！</p>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">P</div>
+                <div class="step-content">
+                    <div class="step-label">基变换矩阵 P</div>
+                    <p>
+                        矩阵的列是新基向量（用标准基表示）。<br>
+                        $P$ 把"新语言"翻译成"标准语言"。
+                    </p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">P⁻¹</div>
+                <div class="step-content">
+                    <div class="step-label">逆矩阵 P⁻¹</div>
+                    <p>
+                        $P^{-1}$ 做相反的事：把"标准语言"翻译成"新语言"。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="deep-dive">
+            <div class="deep-title">例子</div>
+            <p>
+                假设新基向量是 $\vec{b_1} = \begin{bmatrix}2\\1\end{bmatrix}$ 和 $\vec{b_2} = \begin{bmatrix}-1\\1\end{bmatrix}$
+            </p>
+            <p style="margin-top: 0.5rem;">
+                基变换矩阵：$P = \begin{bmatrix}2 & -1\\1 & 1\end{bmatrix}$
+            </p>
+            <p style="margin-top: 0.5rem;">
+                如果一个向量在新基下的坐标是 $(3, 2)$，那么它在标准基下的坐标是：<br>
+                $P \begin{bmatrix}3\\2\end{bmatrix} = \begin{bmatrix}2 \times 3 + (-1) \times 2\\1 \times 3 + 1 \times
+                2\end{bmatrix} = \begin{bmatrix}4\\5\end{bmatrix}$
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 3 -->
+<div class="section fade-in">
+    <h2 class="section-title">🔮 13.3 在不同语言里描述同一个变换</h2>
+
+    <div class="content-block">
+        <p>
+            如果你和朋友用不同的基，同一个线性变换 A 在你们眼中的矩阵会不同！
+        </p>
+
+        <div class="theorem-card">
+            <div class="theorem-title">🔑 相似变换公式</div>
+            <p>设 A 是变换在标准基下的矩阵，B 是<strong>同一个变换</strong>在新基下的矩阵：</p>
+            <div class="math-block">
+                $$ B = P^{-1} A P $$
+            </div>
+            <p style="text-align: center; margin-top: 0.5rem;">
+                A 和 B 叫做<span class="term" data-en="Similar Matrices">相似矩阵</span>
+            </p>
+        </div>
+
+        <div class="aha-box">
+            <div class="aha-title">直觉理解</div>
+            <p>$P^{-1} A P$ 的意思是：</p>
+            <ol>
+                <li>$P$：先把"新语言"翻译成"标准语言"</li>
+                <li>$A$：用标准语言执行变换</li>
+                <li>$P^{-1}$：再把结果翻译回"新语言"</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 4 -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 13.4 为什么要换基？</h2>
 
     <div class="content-block">
         <p>
             有时候换一种"语言"，问题会变得<strong>更简单</strong>！
         </p>
 
-        <div class="example-card">
-            <p><strong>🎮 游戏类比</strong></p>
+        <div class="definition-card">
+            <div class="definition-title">🎮 游戏类比</div>
             <p>
                 如果游戏角色总是沿着一个斜坡移动，用"沿着斜坡/垂直斜坡"作为坐标轴，
-                比用"水平/垂直"坐标轴更方便计算！
+                比用"水平/垂直"坐标轴更方便计算物理效果！
+            </p>
+        </div>
+
+        <div class="connection-box">
+            <div class="connection-title">与特征向量的联系</div>
+            <p>
+                下一章会讲到：如果我们选择<strong>特征向量</strong>作为新的基，
+                变换矩阵会变成最简单的形式——对角矩阵！
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4 ==================== -->
+<!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">今天你学会了</div>
+            <div class="theorem-title">核心要点</div>
             <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
                 <li>同一个向量在不同基下有不同的坐标</li>
-                <li><strong>基变换矩阵</strong>用于在不同坐标系之间翻译</li>
+                <li><span class="term" data-en="Change of Basis Matrix">基变换矩阵</span> P 在不同坐标系之间翻译</li>
+                <li>相似矩阵 $B = P^{-1}AP$ 描述同一个变换</li>
                 <li>选择合适的基可以<strong>简化问题</strong></li>
             </ol>
         </div>

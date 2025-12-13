@@ -1,51 +1,74 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 7 章</span>
-    <h1 class="chapter-title">Ctrl+Z：撤销变换 <br><small style="font-size: 0.6em; color: var(--text-muted);">Inverse
-            Matrices</small></h1>
+    <h1 class="chapter-title">逆矩阵：Ctrl+Z 撤销键 <br><small style="font-size: 0.6em; color: var(--text-muted);">Inverse
+            Matrices, Column Space & Null Space</small></h1>
     <p class="chapter-description">
-        你按错了按钮，把照片旋转歪了？按 Ctrl+Z 撤销！
-        在数学世界里，"逆矩阵"就是矩阵变换的撤销键。
+        你按错了按钮，把照片旋转歪了？按 Ctrl+Z 就能撤销！
+        在数学世界里，<strong>逆矩阵</strong>就是变换的撤销键。但有时候，撤销是不可能的...
     </p>
 </div>
 
-<!-- ==================== SECTION 1: 撤销的概念 ==================== -->
+<!-- 核心词汇 -->
 <div class="section fade-in">
-    <h2 class="section-title">⏪ 7.1 每个操作都能撤销吗？</h2>
-
-    <div class="content-block">
-        <h3>🎮 游戏存档类比</h3>
-        <p>
-            在游戏里，如果你做了某个操作：
-        </p>
-        <ul>
-            <li><strong>旋转角色 90°</strong> → 撤销：再转回 -90°</li>
-            <li><strong>放大 2 倍</strong> → 撤销：缩小到 0.5 倍</li>
-        </ul>
-        <p>
-            这种"做反向操作"在数学里叫做<strong>逆矩阵</strong>，写作 $A^{-1}$。
-        </p>
-
-        <div class="theorem-card">
-            <div class="theorem-title">🔑 逆矩阵的定义</div>
-            <div class="math-block">
-                $$ A \times A^{-1} = I \quad (\text{恒等矩阵，什么都不做}) $$
-            </div>
-            <p style="text-align: center;">先做 A，再做 $A^{-1}$，等于什么都没做！</p>
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">逆矩阵</span><span class="vocab-en">Inverse Matrix</span></div>
+            <div class="vocab-item"><span class="vocab-zh">可逆</span><span class="vocab-en">Invertible</span></div>
+            <div class="vocab-item"><span class="vocab-zh">列空间</span><span class="vocab-en">Column Space</span></div>
+            <div class="vocab-item"><span class="vocab-zh">零空间</span><span class="vocab-en">Null Space</span></div>
+            <div class="vocab-item"><span class="vocab-zh">秩</span><span class="vocab-en">Rank</span></div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: 什么时候不能撤销 ==================== -->
+<!-- SECTION 1 -->
+<div class="section fade-in">
+    <h2 class="section-title">⏪ 7.1 撤销变换</h2>
+
+    <div class="content-block">
+        <h3>🎮 类比：游戏中的撤销</h3>
+        <p>在游戏或软件中：</p>
+        <ul>
+            <li><strong>旋转角色 90°</strong> → 撤销：再转 -90°</li>
+            <li><strong>放大 2 倍</strong> → 撤销：缩小到 0.5 倍</li>
+            <li><strong>向右移动 10 格</strong> → 撤销：向左移动 10 格</li>
+        </ul>
+
+        <div class="theorem-card">
+            <div class="theorem-title">💡 逆矩阵的定义</div>
+            <p>
+                如果矩阵 A 代表一个变换，那么 <span class="term" data-en="Inverse Matrix">逆矩阵</span> $A^{-1}$ 就是它的"撤销键"：
+            </p>
+            <div class="math-block">
+                $$ A \times A^{-1} = A^{-1} \times A = I $$
+            </div>
+            <p style="text-align: center;">
+                先做 A 再做 $A^{-1}$，等于什么都没做（$I$ 是<span class="term" data-en="Identity Matrix">恒等矩阵</span>）
+            </p>
+        </div>
+
+        <div class="deep-dive">
+            <div class="deep-title">恒等矩阵 Identity Matrix</div>
+            <p>
+                恒等矩阵是"什么都不做"的矩阵：$I = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$
+            </p>
+            <p>任何向量乘以 I 都保持不变，就像"×1"对数字的效果。</p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 2 -->
 <div class="section fade-in">
     <h2 class="section-title">🚫 7.2 有些操作无法撤销</h2>
 
     <div class="content-block">
-        <h3>📸 照片类比</h3>
+        <h3>📸 类比：彩色变黑白</h3>
         <p>
             想象你把一张彩色照片转成了黑白照片。
         </p>
-        <p>
-            你<strong>无法</strong>通过任何操作把它变回彩色！因为颜色信息<strong>丢失了</strong>。
+        <p style="margin-top: 1rem;">
+            你<strong>无法</strong>通过任何操作把它变回彩色！因为颜色信息<strong>永远丢失了</strong>。
         </p>
 
         <div
@@ -54,62 +77,136 @@
                 <div
                     style="width: 80px; height: 80px; background: linear-gradient(45deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6); border-radius: 8px;">
                 </div>
-                <p>彩色</p>
+                <p style="font-size: 0.9em;">彩色</p>
             </div>
-            <div style="font-size: 2rem;">→</div>
+            <div style="font-size: 1.5rem;">→</div>
             <div style="text-align: center;">
                 <div
                     style="width: 80px; height: 80px; background: linear-gradient(45deg, #444, #666, #888, #aaa, #ccc); border-radius: 8px;">
                 </div>
-                <p>黑白</p>
+                <p style="font-size: 0.9em;">黑白</p>
             </div>
-            <div style="font-size: 2rem; color: var(--accent-red);">✗→</div>
+            <div style="font-size: 1.5rem; color: var(--accent-red);">✗→</div>
             <div style="text-align: center; color: var(--accent-red);">
-                <p>无法恢复！</p>
+                <p style="font-weight: bold;">无法恢复！</p>
             </div>
         </div>
 
         <div class="theorem-card" style="border-left-color: var(--accent-red);">
-            <div class="theorem-title">🚨 逆矩阵不存在的情况</div>
+            <div class="theorem-title">🚨 什么时候没有逆矩阵？</div>
             <p>
-                当 <strong>det(A) = 0</strong> 时，矩阵没有逆！
+                当 <strong>det(A) = 0</strong> 时，矩阵<strong>不可逆</strong>！
             </p>
-            <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.5rem;">
-                因为变换把空间压扁了，信息丢失了，无法恢复。
+            <p style="margin-top: 0.5rem; font-size: 0.95em;">
+                原因：变换把空间压扁了（降维了），信息丢失了，无法恢复。
+            </p>
+        </div>
+
+        <div class="connection-box">
+            <div class="connection-title">与上一章的联系</div>
+            <p>
+                det = 0 意味着空间被压扁成更低维度。多个不同的输入向量被映射到同一个输出，
+                所以无法分辨原来是哪一个——信息丢失了！
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3: 解方程 ==================== -->
+<!-- SECTION 3 -->
 <div class="section fade-in">
     <h2 class="section-title">🧮 7.3 逆矩阵能解方程！</h2>
 
     <div class="content-block">
-        <p>
-            假设有个谜题：
-        </p>
+        <p>假设有个谜题：</p>
         <div class="math-block">
             $$ A \times \vec{x} = \vec{b} $$
         </div>
         <p>
-            "我对某个神秘向量 $\vec{x}$ 做了变换 A，得到了 $\vec{b}$。原来的 $\vec{x}$ 是什么？"
+            "我对某个神秘向量 $\vec{x}$ 做了变换 A，得到了 $\vec{b}$。求原来的 $\vec{x}$？"
         </p>
 
-        <div class="example-card">
-            <p><strong>🔍 解法</strong></p>
-            <p>用逆矩阵"撤销"！</p>
-            <div class="math-block">
-                $$ \vec{x} = A^{-1} \times \vec{b} $$
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">如果 A 可逆</div>
+                    <p>只需两边同乘 $A^{-1}$：$A^{-1} \times A \times \vec{x} = A^{-1} \times \vec{b}$</p>
+                </div>
             </div>
-            <p>就这么简单！逆矩阵把变换反过来做，找出原来的向量。</p>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">左边简化</div>
+                    <p>$A^{-1} \times A = I$，所以 $I \times \vec{x} = \vec{x}$</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">✓</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="step-label" style="color: var(--accent-green);">解决！</div>
+                    <div class="math-block">
+                        $$ \vec{x} = A^{-1} \times \vec{b} $$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box">
+            <div class="aha-title">恍然大悟时刻</div>
+            <p>
+                这就是为什么逆矩阵如此重要！它让我们能"倒推"出原始数据。
+            </p>
+            <p style="margin-top: 0.5rem;">
+                在机器学习中，很多算法的本质就是求逆矩阵或类似的操作。
+            </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: 2x2 逆矩阵公式 ==================== -->
+<!-- SECTION 4: 列空间和零空间 -->
 <div class="section fade-in">
-    <h2 class="section-title">📝 7.4 2×2 逆矩阵速查</h2>
+    <h2 class="section-title">🌐 7.4 列空间与零空间</h2>
+
+    <div class="content-block">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+            <div class="definition-card" style="border-left-color: var(--accent-blue);">
+                <div class="definition-title">列空间 Column Space</div>
+                <p>
+                    矩阵 A 能把输入向量变换到<strong>哪些位置</strong>？
+                </p>
+                <p style="font-size: 0.9em; margin-top: 0.5rem;">
+                    = A 的列向量的所有可能线性组合<br>
+                    = 变换的"输出范围"
+                </p>
+            </div>
+            <div class="definition-card" style="border-left-color: var(--accent-purple);">
+                <div class="definition-title">零空间 Null Space</div>
+                <p>
+                    哪些向量被变换后会变成<strong>零向量</strong>？
+                </p>
+                <p style="font-size: 0.9em; margin-top: 0.5rem;">
+                    如果 $A\vec{v} = \vec{0}$，则 $\vec{v}$ 在零空间中<br>
+                    = 被"压扁消失"的方向
+                </p>
+            </div>
+        </div>
+
+        <div class="theorem-card">
+            <div class="theorem-title">🔑 秩 Rank</div>
+            <p>
+                <span class="term" data-en="Rank">秩</span> = 列空间的维度 = 变换后空间的"真实维度"
+            </p>
+            <ul style="margin: 0.5rem 0 0 0;">
+                <li>满秩（rank = n）：空间没有被压扁，矩阵可逆</li>
+                <li>非满秩（rank < n）：空间被压到更低维度，矩阵不可逆</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 5: 2×2 逆矩阵公式 -->
+<div class="section fade-in">
+    <h2 class="section-title">📝 7.5 2×2 逆矩阵速查</h2>
 
     <div class="content-block">
         <div style="text-align: center; margin: 2rem 0;">
@@ -122,26 +219,39 @@
         <div class="definition-card">
             <div class="definition-title">📋 记忆口诀</div>
             <ol>
-                <li>交换主对角线 (a 和 d 换位置)</li>
-                <li>副对角线变号 (b 和 c 加负号)</li>
-                <li>整体除以行列式 (ad - bc)</li>
+                <li><strong>交换</strong>主对角线（a 和 d 换位置）</li>
+                <li><strong>变号</strong>副对角线（b 和 c 加负号）</li>
+                <li><strong>除以</strong>行列式（ad - bc）</li>
             </ol>
+            <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.5rem;">
+                注意：如果 ad - bc = 0（行列式为零），则无法求逆！
+            </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 5: 总结 ==================== -->
+<!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
+        <div class="vocab-summary">
+            <div class="vocab-title">词汇复习</div>
+            <div class="vocab-list">
+                <div class="vocab-item"><span class="vocab-zh">逆矩阵</span><span class="vocab-en">变换的撤销键</span></div>
+                <div class="vocab-item"><span class="vocab-zh">列空间</span><span class="vocab-en">输出的范围</span></div>
+                <div class="vocab-item"><span class="vocab-zh">零空间</span><span class="vocab-en">被压扁的方向</span></div>
+                <div class="vocab-item"><span class="vocab-zh">秩</span><span class="vocab-en">真实输出维度</span></div>
+            </div>
+        </div>
+
         <div class="theorem-card">
-            <div class="theorem-title">今天你学会了</div>
+            <div class="theorem-title">核心要点</div>
             <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
-                <li><strong>逆矩阵 $A^{-1}$</strong> = 变换的"撤销键"</li>
-                <li><strong>$A \times A^{-1} = I$</strong>（恒等矩阵）</li>
-                <li>det = 0 → <strong>没有逆</strong>（信息丢失）</li>
-                <li>逆矩阵可以用来<strong>解方程</strong></li>
+                <li><span class="term" data-en="Inverse">逆矩阵</span> $A^{-1}$ = 变换的"撤销键"</li>
+                <li>$A \times A^{-1} = I$（恒等矩阵）</li>
+                <li><strong>det = 0 → 没有逆</strong>（信息丢失）</li>
+                <li>逆矩阵可以用来<strong>解方程</strong>：$\vec{x} = A^{-1}\vec{b}$</li>
             </ol>
         </div>
     </div>

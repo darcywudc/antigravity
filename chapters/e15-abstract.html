@@ -5,126 +5,240 @@
     <p class="chapter-description">
         到目前为止，我们把向量想象成"箭头"或"数字列表"。
         但线性代数的真正魔力在于：<strong>很多东西都可以是向量</strong>！
-        函数可以是向量，音乐可以是向量，甚至颜色也可以是向量。
+        函数、音乐、颜色、甚至扑克策略——都可以用线性代数来分析。
     </p>
 </div>
 
-<!-- ==================== SECTION 1 ==================== -->
+<!-- 核心词汇 -->
+<div class="section fade-in">
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">向量空间</span><span class="vocab-en">Vector Space</span></div>
+            <div class="vocab-item"><span class="vocab-zh">公理</span><span class="vocab-en">Axioms</span></div>
+            <div class="vocab-item"><span class="vocab-zh">函数空间</span><span class="vocab-en">Function Space</span></div>
+            <div class="vocab-item"><span class="vocab-zh">内积空间</span><span class="vocab-en">Inner Product Space</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
 <div class="section fade-in">
     <h2 class="section-title">🤔 15.1 什么才算"向量"？</h2>
 
     <div class="content-block">
-        <p>
-            回想一下我们对向量做的事情：
-        </p>
+        <p>回想一下我们对向量做的事情：</p>
         <ul>
             <li><strong>加法</strong>：两个向量可以相加</li>
             <li><strong>数乘</strong>：向量可以被数字缩放</li>
         </ul>
-        <p>
-            实际上，<strong>任何能做这两件事的东西</strong>，都可以叫做"向量"！
+        <p style="margin-top: 1rem;">
+            实际上，<strong>任何能做这两件事的东西</strong>，数学上都可以叫做"向量"！
         </p>
 
         <div class="theorem-card">
             <div class="theorem-title">💡 向量的本质</div>
-            <p>
+            <p style="text-align: center; font-size: 1.2rem;">
                 向量不是关于"箭头"的——而是关于<strong>加法</strong>和<strong>缩放</strong>的！
+            </p>
+        </div>
+
+        <div class="aha-box">
+            <div class="aha-title">思维转变</div>
+            <p>
+                从"向量是什么"转变为"向量能做什么"。
+                只要满足特定的运算规则，任何东西都可以是向量。
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2 ==================== -->
+<!-- SECTION 2 -->
 <div class="section fade-in">
     <h2 class="section-title">🎨 15.2 惊人的例子</h2>
 
     <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
-            <div class="definition-card" style="border-left-color: var(--accent-blue);">
-                <div class="definition-title">🎵 音乐信号</div>
-                <p style="font-size: 0.9em;">
-                    两首歌可以混合（加法），音量可以调节（缩放）。所以音乐是向量！
-                </p>
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">🎵</div>
+                <div class="step-content">
+                    <div class="step-label">音乐信号</div>
+                    <p>两首歌可以混合（加法），音量可以调节（缩放）。</p>
+                    <p style="color: var(--accent-green); font-weight: bold;">所以音乐信号是向量！</p>
+                </div>
             </div>
-
-            <div class="definition-card" style="border-left-color: var(--accent-green);">
-                <div class="definition-title">📈 函数</div>
-                <p style="font-size: 0.9em;">
-                    $f(x) + g(x)$ 是新函数，$2f(x)$ 也是。所以函数可以是向量！
-                </p>
+            <div class="example-step">
+                <div class="step-number">📈</div>
+                <div class="step-content">
+                    <div class="step-label">函数</div>
+                    <p>$f(x) + g(x)$ 是新函数，$2f(x)$ 也是新函数。</p>
+                    <p style="color: var(--accent-green); font-weight: bold;">所以函数可以构成向量空间！</p>
+                </div>
             </div>
-
-            <div class="definition-card" style="border-left-color: var(--accent-purple);">
-                <div class="definition-title">🎨 颜色</div>
-                <p style="font-size: 0.9em;">
-                    RGB 颜色可以混合，也可以调亮/调暗。颜色是 3D 向量！
-                </p>
+            <div class="example-step">
+                <div class="step-number">🎨</div>
+                <div class="step-content">
+                    <div class="step-label">颜色</div>
+                    <p>RGB 颜色可以混合，也可以调亮调暗。</p>
+                    <p style="color: var(--accent-green); font-weight: bold;">颜色是 3D 向量！</p>
+                </div>
             </div>
-
-            <div class="definition-card" style="border-left-color: var(--accent-orange);">
-                <div class="definition-title">📐 多项式</div>
-                <p style="font-size: 0.9em;">
-                    $x^2 + x$ 和 $3x$ 可以相加，也可以乘以数字。多项式是向量！
-                </p>
+            <div class="example-step">
+                <div class="step-number">📐</div>
+                <div class="step-content">
+                    <div class="step-label">多项式</div>
+                    <p>$x^2 + x$ 和 $3x$ 可以相加，也可以乘以系数。</p>
+                    <p style="color: var(--accent-green); font-weight: bold;">多项式构成无限维向量空间！</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">🎲</div>
+                <div class="step-content">
+                    <div class="step-label">概率分布</div>
+                    <p>两个分布可以混合，权重可以调整。</p>
+                    <p style="color: var(--accent-green); font-weight: bold;">概率分布是向量！</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3 ==================== -->
+<!-- SECTION 3 -->
 <div class="section fade-in">
     <h2 class="section-title">✨ 15.3 为什么这很酷？</h2>
 
     <div class="content-block">
-        <p>
-            一旦你证明某个东西是"向量空间"，所有我们学过的工具<strong>自动适用</strong>！
-        </p>
-        <ul>
-            <li>基与维度</li>
-            <li>线性变换</li>
-            <li>特征值和特征向量</li>
-            <li>...等等</li>
-        </ul>
-
-        <div class="example-card">
-            <p><strong>🤯 例子：微分是线性变换！</strong></p>
+        <div class="why-matters">
+            <div class="why-title">抽象的力量</div>
             <p>
-                对函数求导满足：$(f+g)' = f' + g'$ 和 $(cf)' = cf'$
+                一旦你证明某个东西是<span class="term" data-en="Vector Space">向量空间</span>，
+                所有我们学过的线性代数工具<strong>自动适用</strong>！
             </p>
+        </div>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+            <div style="text-align: center; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
+                <p style="font-size: 0.9em;">✅ 基与维度</p>
+            </div>
+            <div style="text-align: center; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
+                <p style="font-size: 0.9em;">✅ 线性变换</p>
+            </div>
+            <div style="text-align: center; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
+                <p style="font-size: 0.9em;">✅ 矩阵表示</p>
+            </div>
+            <div style="text-align: center; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
+                <p style="font-size: 0.9em;">✅ 特征值</p>
+            </div>
+        </div>
+
+        <div class="deep-dive">
+            <div class="deep-title">🤯 例子：微分是线性变换！</div>
             <p>
-                这意味着<strong>微分可以用矩阵表示</strong>！（在高级课程中你会学到这个）
+                对函数求导满足两条规则：
+            </p>
+            <div class="math-block">
+                $$ (f + g)' = f' + g' \quad \text{和} \quad (cf)' = cf' $$
+            </div>
+            <p style="margin-top: 0.5rem;">
+                这正是线性变换的定义！所以<strong>微分可以用矩阵表示</strong>。
+            </p>
+            <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.5rem;">
+                在高级课程中，你会学到微分算子的"特征函数"是 $e^{kx}$——这就是傅里叶分析的起点！
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4 ==================== -->
+<!-- SECTION 4 -->
+<div class="section fade-in">
+    <h2 class="section-title">📜 15.4 向量空间的公理</h2>
+
+    <div class="content-block">
+        <p>一个集合要成为<span class="term" data-en="Vector Space">向量空间</span>，需要满足 8 条<span class="term"
+                data-en="Axioms">公理</span>：</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+            <div class="definition-card">
+                <div class="definition-title">加法公理</div>
+                <ol style="margin: 0; font-size: 0.9em;">
+                    <li>交换律：u + v = v + u</li>
+                    <li>结合律：(u + v) + w = u + (v + w)</li>
+                    <li>零元素：存在 0 使 v + 0 = v</li>
+                    <li>逆元素：存在 -v 使 v + (-v) = 0</li>
+                </ol>
+            </div>
+            <div class="definition-card">
+                <div class="definition-title">数乘公理</div>
+                <ol style="margin: 0; font-size: 0.9em;">
+                    <li>a(bv) = (ab)v</li>
+                    <li>1 · v = v</li>
+                    <li>a(u + v) = au + av</li>
+                    <li>(a + b)v = av + bv</li>
+                </ol>
+            </div>
+        </div>
+
+        <p style="font-size: 0.95em; color: var(--text-secondary);">
+            这些规则看起来"显然"，但正是它们定义了什么是向量空间。
+            任何满足这些规则的东西都享有线性代数的所有工具！
+        </p>
+    </div>
+</div>
+
+<!-- 总结 & 毕业 -->
 <div class="section fade-in">
     <h2 class="section-title">🎓 恭喜毕业！</h2>
 
     <div class="content-block">
         <div
-            style="text-align: center; padding: 3rem; background: linear-gradient(135deg, rgba(74, 158, 255, 0.1), rgba(16, 185, 129, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 16px;">
-            <p style="font-size: 2rem; margin: 0;">🎉</p>
-            <h3 style="margin: 1rem 0;">你完成了线性代数的本质之旅！</h3>
-            <p style="margin: 1rem 0;">
-                从简单的箭头开始，你现在理解了：
-            </p>
-            <ul style="text-align: left; max-width: 400px; margin: 0 auto; line-height: 2;">
-                <li>向量可以相加和缩放</li>
-                <li>矩阵代表变换</li>
-                <li>行列式测量面积/体积变化</li>
-                <li>特征向量是变换中的"不动方向"</li>
-                <li>这些概念远远超越了箭头和数字</li>
-            </ul>
+            style="text-align: center; padding: 3rem; background: linear-gradient(135deg, rgba(74, 158, 255, 0.1), rgba(16, 185, 129, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 20px;">
+            <p style="font-size: 3rem; margin: 0;">🎉</p>
+            <h3 style="margin: 1rem 0; font-size: 1.8rem;">你完成了线性代数的本质之旅！</h3>
 
-            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 12px;">
-                <p style="font-size: 1.1rem; margin: 0;">
-                    💡 <strong>记住这个核心思想</strong>
+            <div style="text-align: left; max-width: 500px; margin: 2rem auto;">
+                <p style="font-weight: bold; margin-bottom: 1rem;">从简单的箭头开始，你现在理解了：</p>
+                <ul style="line-height: 2.2;">
+                    <li><span class="term" data-en="Vector">向量</span>可以加法和缩放</li>
+                    <li><span class="term" data-en="Matrix">矩阵</span>代表线性变换</li>
+                    <li><span class="term" data-en="Determinant">行列式</span>测量面积/体积变化</li>
+                    <li><span class="term" data-en="Eigenvector">特征向量</span>是变换中的"不动方向"</li>
+                    <li>这些概念<strong>远远超越</strong>了箭头和数字</li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 16px;">
+                <p style="font-size: 1.3rem; margin: 0; font-weight: bold;">
+                    💡 记住这个核心思想
                 </p>
-                <p style="margin-top: 0.5rem;">
-                    线性代数不是关于计算——它是关于<strong>理解空间如何变换</strong>。
+                <p style="margin-top: 1rem; font-size: 1.1rem;">
+                    线性代数不是关于计算——它是关于<br>
+                    <strong>理解空间如何变换</strong>。
                 </p>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <p style="font-size: 1rem; color: var(--text-secondary);">
+                    你现在拥有了看待世界的新视角。<br>
+                    游戏、AI、物理、工程——到处都有线性代数的影子。<br>
+                    继续探索吧！🚀
+                </p>
+            </div>
+        </div>
+
+        <div class="vocab-summary" style="margin-top: 2rem;">
+            <div class="vocab-title">全课程核心词汇总结</div>
+            <div class="vocab-list">
+                <div class="vocab-item"><span class="vocab-zh">向量 Vector</span><span class="vocab-en">大小+方向</span></div>
+                <div class="vocab-item"><span class="vocab-zh">矩阵 Matrix</span><span class="vocab-en">线性变换</span></div>
+                <div class="vocab-item"><span class="vocab-zh">行列式 Det</span><span class="vocab-en">面积缩放</span></div>
+                <div class="vocab-item"><span class="vocab-zh">逆矩阵 Inverse</span><span class="vocab-en">撤销变换</span>
+                </div>
+                <div class="vocab-item"><span class="vocab-zh">点积 Dot</span><span class="vocab-en">合作程度</span></div>
+                <div class="vocab-item"><span class="vocab-zh">叉积 Cross</span><span class="vocab-en">垂直方向</span></div>
+                <div class="vocab-item"><span class="vocab-zh">特征值 Eigen</span><span class="vocab-en">不动方向</span></div>
+                <div class="vocab-item"><span class="vocab-zh">向量空间</span><span class="vocab-en">加法+数乘</span></div>
             </div>
         </div>
     </div>

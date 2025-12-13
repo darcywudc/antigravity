@@ -1,99 +1,168 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 8 章</span>
-    <h1 class="chapter-title">穿越维度的传送门 <br><small style="font-size: 0.6em; color: var(--text-muted);">Non-square
-            Matrices</small></h1>
+    <h1 class="chapter-title">穿越维度的传送门 <br><small style="font-size: 0.6em; color: var(--text-muted);">Nonsquare Matrices
+            as Transformations</small></h1>
     <p class="chapter-description">
-        目前为止我们只见过方形矩阵（2×2 或 3×3）。
-        但矩阵也可以是长方形的！它们能把你从一个维度"传送"到另一个维度。
+        到目前为止，我们只见过方形矩阵。但矩阵也可以是长方形的！
+        它们就像维度之间的传送门——能把你从 2D 送到 3D，或者从 3D 压缩到 2D。
     </p>
 </div>
 
-<!-- ==================== SECTION 1 ==================== -->
+<!-- 核心词汇 -->
+<div class="section fade-in">
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">非方阵</span><span class="vocab-en">Nonsquare Matrix</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">m×n 矩阵</span><span class="vocab-en">m×n Matrix</span></div>
+            <div class="vocab-item"><span class="vocab-zh">嵌入</span><span class="vocab-en">Embedding</span></div>
+            <div class="vocab-item"><span class="vocab-zh">投影</span><span class="vocab-en">Projection</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
 <div class="section fade-in">
     <h2 class="section-title">🚪 8.1 维度传送门</h2>
 
     <div class="content-block">
-        <h3>🎮 游戏地图类比</h3>
-        <p>
-            想象你在玩一个游戏，有一个传送门：
-        </p>
+        <h3>🎮 类比：游戏地图的传送门</h3>
+        <p>想象你在玩一个游戏：</p>
         <ul>
-            <li>从 <strong>2D 地图</strong>（平面）传送到 <strong>3D 世界</strong></li>
-            <li>或者从 <strong>3D 世界</strong>压缩到 <strong>2D 小地图</strong></li>
+            <li>有一个传送门把你从 <strong>2D 地图</strong> 送到 <strong>3D 世界</strong></li>
+            <li>另一个传送门把你从 <strong>3D 世界</strong> 压缩回 <strong>2D 小地图</strong></li>
         </ul>
         <p>
-            非方形矩阵就是这样的传送门！
+            <span class="term" data-en="Nonsquare Matrix">非方阵</span>就是这样的传送门！
         </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">🔑 矩阵的形状</div>
-            <p>
-                一个 <strong>m×n</strong> 矩阵：
-            </p>
+            <div class="theorem-title">💡 m×n 矩阵的含义</div>
+            <p>一个 <strong>m×n</strong> 矩阵：</p>
             <ul style="margin: 0.5rem 0 0 0;">
-                <li>n 列 → 输入是 n 维空间</li>
-                <li>m 行 → 输出是 m 维空间</li>
+                <li><strong>n 列</strong> → 输入空间是 n 维</li>
+                <li><strong>m 行</strong> → 输出空间是 m 维</li>
+            </ul>
+            <p style="margin-top: 1rem; text-align: center; font-size: 1.1rem;">
+                <strong>n 维</strong> $\xrightarrow{\text{m×n 矩阵}}$ <strong>m 维</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 2 -->
+<div class="section fade-in">
+    <h2 class="section-title">📤 8.2 从低维到高维（嵌入）</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">→</div>
+                <div class="step-content">
+                    <div class="step-label">3×2 矩阵：2D → 3D</div>
+                    <div class="math-block">
+                        $\begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} =
+                        \begin{bmatrix} x \\ y \\ x+y \end{bmatrix}$
+                    </div>
+                    <p style="margin-top: 0.5rem;">
+                        2D 平面上的点被<span class="term" data-en="Embedding">嵌入</span>到 3D 空间中，
+                        落在一个倾斜的平面上。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box">
+            <div class="aha-title">几何直觉</div>
+            <p>
+                想象把一张纸（2D）放进房间（3D）里。纸上的每个点现在都有了一个 3D 坐标，
+                但这些点仍然只能在纸面上移动——它们被"嵌入"到了 3D 空间的一个子集中。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 3 -->
+<div class="section fade-in">
+    <h2 class="section-title">📥 8.3 从高维到低维（投影）</h2>
+
+    <div class="content-block">
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">→</div>
+                <div class="step-content">
+                    <div class="step-label">2×3 矩阵：3D → 2D</div>
+                    <div class="math-block">
+                        $\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix} \begin{bmatrix} x \\ y \\ z \end{bmatrix}
+                        = \begin{bmatrix} x \\ y \end{bmatrix}$
+                    </div>
+                    <p style="margin-top: 0.5rem;">
+                        这是一个<span class="term" data-en="Projection">投影</span>！
+                        3D 点被"压扁"到 XY 平面，Z 坐标信息<strong>丢失</strong>了。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="connection-box">
+            <div class="connection-title">与现实世界的联系</div>
+            <p>
+                📷 <strong>相机就是这样工作的</strong>：把 3D 世界投影到 2D 照片上。
+                你无法从照片完全还原 3D 场景（深度信息丢失了）。
+            </p>
+        </div>
+
+        <div class="theorem-card" style="border-left-color: var(--accent-orange);">
+            <div class="theorem-title">⚠️ 重要区别</div>
+            <ul style="margin: 0;">
+                <li><strong>m > n（升维）</strong>：没有信息丢失，可以"逆向"（伪逆）</li>
+                <li><strong>m < n（降维）</strong>：信息丢失，无法完全恢复</li>
             </ul>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2 ==================== -->
+<!-- 应用 -->
 <div class="section fade-in">
-    <h2 class="section-title">📤 8.2 例子：从 2D 到 3D</h2>
+    <h2 class="section-title">🌍 8.4 非方阵的应用</h2>
 
-    <div class="content-block">
-        <div class="example-card">
-            <p><strong>3×2 矩阵（2D → 3D）</strong></p>
-            <div class="math-block">
-                $$ \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} =
-                \begin{bmatrix} x \\ y \\ x+y \end{bmatrix} $$
-            </div>
-            <p>
-                一个 2D 平面上的点 $(x, y)$ 被"嵌入"到 3D 空间中，变成 $(x, y, x+y)$。
-            </p>
+    <div class="real-world">
+        <div class="real-world-item">
+            <div class="rw-icon">📊</div>
+            <div class="rw-title">数据降维</div>
+            <div class="rw-desc">PCA 把高维数据投影到低维</div>
         </div>
-
-        <p style="text-align: center; margin-top: 1rem;">
-            🎮 就像把 2D 游戏角色放进 3D 世界——它只能在一个平面内移动，但存在于 3D 空间中。
-        </p>
+        <div class="real-world-item">
+            <div class="rw-icon">🤖</div>
+            <div class="rw-title">词嵌入</div>
+            <div class="rw-desc">把单词映射到向量空间</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">🎮</div>
+            <div class="rw-title">3D 渲染</div>
+            <div class="rw-desc">把 3D 场景投影到 2D 屏幕</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">📱</div>
+            <div class="rw-title">图像压缩</div>
+            <div class="rw-desc">减少存储维度</div>
+        </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3 ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">📥 8.3 例子：从 3D 到 2D</h2>
-
-    <div class="content-block">
-        <div class="example-card">
-            <p><strong>2×3 矩阵（3D → 2D）</strong></p>
-            <div class="math-block">
-                $$ \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix} \begin{bmatrix} x \\ y \\ z \end{bmatrix} =
-                \begin{bmatrix} x \\ y \end{bmatrix} $$
-            </div>
-            <p>
-                这是一个<strong>投影</strong>！3D 点被"压扁"到 XY 平面，丢失了 Z 信息。
-            </p>
-        </div>
-
-        <p style="text-align: center; margin-top: 1rem;">
-            📷 这就是相机的工作原理——把 3D 世界投影到 2D 照片上！
-        </p>
-    </div>
-</div>
-
-<!-- ==================== SECTION 4 ==================== -->
+<!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">今天你学会了</div>
+            <div class="theorem-title">核心要点</div>
             <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
                 <li>矩阵不一定是方形的</li>
-                <li><strong>m×n 矩阵</strong>：从 n 维到 m 维的传送门</li>
-                <li>m > n → 嵌入到更高维度</li>
-                <li>m < n → 投影到更低维度（信息丢失）</li>
+                <li><strong>m×n 矩阵</strong>：从 n 维到 m 维的"传送门"</li>
+                <li><strong>m > n</strong>（升维）：嵌入，信息保留</li>
+                <li><strong>m < n</strong>（降维）：投影，信息丢失</li>
             </ol>
         </div>
     </div>

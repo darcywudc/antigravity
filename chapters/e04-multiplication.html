@@ -1,110 +1,204 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 4 章</span>
-    <h1 class="chapter-title">连续技！矩阵连招 <br><small style="font-size: 0.6em; color: var(--text-muted);">Matrix
-            Multiplication</small></h1>
+    <h1 class="chapter-title">连招大师：矩阵乘法 <br><small style="font-size: 0.6em; color: var(--text-muted);">Matrix
+            Multiplication as Composition</small></h1>
     <p class="chapter-description">
-        在格斗游戏里，高手会打出"连招"——一连串组合技。
-        矩阵乘法就是把两个变换"连起来"，变成一个超级大招！
+        在格斗游戏里，高手会打出"连招"——一连串组合技造成巨大伤害。
+        矩阵乘法的本质，就是把两个变换"连起来"，形成一个超级大招！
     </p>
 </div>
 
-<!-- ==================== SECTION 1: 连续变换 ==================== -->
+<!-- 核心词汇 -->
 <div class="section fade-in">
-    <h2 class="section-title">🎮 4.1 两个变换连起来</h2>
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">矩阵乘法</span><span class="vocab-en">Matrix
+                    Multiplication</span></div>
+            <div class="vocab-item"><span class="vocab-zh">复合变换</span><span class="vocab-en">Composition</span></div>
+            <div class="vocab-item"><span class="vocab-zh">不可交换性</span><span class="vocab-en">Non-commutativity</span>
+            </div>
+            <div class="vocab-item"><span class="vocab-zh">结合律</span><span class="vocab-en">Associativity</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1: 为什么要连续变换 -->
+<div class="section fade-in">
+    <h2 class="section-title">🎮 4.1 为什么需要"连招"？</h2>
 
     <div class="content-block">
-        <h3>👊 格斗游戏类比</h3>
+        <h3>🕹️ 类比：游戏角色的组合动作</h3>
         <p>
-            假设你学会了两招：
+            想象你在玩一个格斗游戏。单个招式可能威力有限，但如果你能把多个招式连起来：
         </p>
         <ul>
-            <li><strong>招式 A</strong>：旋转踢（把对手转 90°）</li>
-            <li><strong>招式 B</strong>：横推拳（把对手推向一边）</li>
+            <li><strong>招式 A</strong>：旋转踢（让对手转 90°）</li>
+            <li><strong>招式 B</strong>：横推拳（把对手推向一侧）</li>
         </ul>
         <p>
-            如果你先 A 后 B 连起来，就是一个"连招"！
+            "先 A 后 B"组成的<strong>连招</strong>，效果远大于单个招式！
+        </p>
+
+        <div class="aha-box">
+            <div class="aha-title">关键洞察</div>
+            <p>
+                在数学世界里，<span class="term" data-en="Matrix Multiplication">矩阵乘法</span> $B \times A$ 的含义就是：
+                <strong>"先做变换 A，再做变换 B"</strong>
+            </p>
+            <p style="margin-top: 0.5rem;">
+                注意顺序！先写的 A 反而是先执行的。这就像"穿衣服"——先穿内衣再穿外套，
+                但我们说"外套套在内衣上"。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 2: 顺序的重要性 -->
+<div class="section fade-in">
+    <h2 class="section-title">⚠️ 4.2 顺序很重要！</h2>
+
+    <div class="content-block">
+        <h3>👟 类比：穿鞋和穿袜子</h3>
+        <p>
+            "先穿袜子再穿鞋" vs "先穿鞋再穿袜子" —— 结果完全不同！
         </p>
         <p>
-            在数学里，矩阵乘法 $B \times A$ 就是"先做 A，再做 B"的连招。
+            矩阵乘法也是如此：
+        </p>
+
+        <div class="theorem-card" style="border-left-color: var(--accent-red);">
+            <div class="theorem-title">🚨 不可交换性</div>
+            <div class="math-block">
+                $$ AB \neq BA \quad \text{（大多数情况下）} $$
+            </div>
+            <p>先旋转再剪切 ≠ 先剪切再旋转，最终形状会完全不同！</p>
+        </div>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">例子：两种不同顺序</div>
+                    <p>设 A = 旋转 90°，B = 沿 x 轴缩放 2 倍</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">BA（先 A 后 B）</div>
+                    <p>先旋转 → 原来的横向变成纵向 → 再缩放 x 轴 → 纵向不受影响</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">AB（先 B 后 A）</div>
+                    <p>先缩放 x 轴 → 变宽了 → 再旋转 → 宽的那边转到了纵向</p>
+                    <p style="color: var(--accent-orange); font-weight: bold;">结果完全不同！</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="connection-box">
+            <div class="connection-title">数学与生活的联结</div>
+            <p>
+                很多生活中的操作也是"不可交换"的：
+            </p>
+            <ul>
+                <li>先加热再加盐 vs 先加盐再加热 → 味道可能不同</li>
+                <li>先化妆再洗脸 vs 先洗脸再化妆 → 结果天差地别</li>
+                <li>先存钱再取钱 vs 先取钱再存钱 → 可能透支！</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 3: 如何计算 -->
+<div class="section fade-in">
+    <h2 class="section-title">🧮 4.3 矩阵乘法怎么算？</h2>
+
+    <div class="content-block">
+        <h3>🎯 核心思路：追踪基向量</h3>
+        <p>
+            回想上一章：矩阵的列就是变换后的基向量。那矩阵乘法呢？
         </p>
 
         <div class="theorem-card">
-            <div class="theorem-title">⚠️ 顺序很重要！</div>
-            <p>
-                先踢后推 ≠ 先推后踢！
-                <br><br>
-                数学表达：$AB \neq BA$（大多数情况）
-            </p>
+            <div class="theorem-title">💡 计算方法</div>
+            <p>要计算 $B \times A$（先 A 后 B）：</p>
+            <ol>
+                <li>看 A 把 î 变到哪里（A 的第一列）</li>
+                <li>用 B 再把这个结果变换一次 → 得到新矩阵的第一列</li>
+                <li>对 ĵ 重复同样过程 → 得到第二列</li>
+            </ol>
         </div>
-    </div>
 
-    <!-- 顺序对比图 -->
-    <div style="display: flex; gap: 2rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
-        <div style="text-align: center; max-width: 200px;">
-            <p style="font-size: 1.2rem;">🔄 → 📐</p>
-            <p>先旋转，后剪切</p>
-            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px;">
-                结果 A
-            </div>
-        </div>
-        <div style="font-size: 2rem; align-self: center;">≠</div>
-        <div style="text-align: center; max-width: 200px;">
-            <p style="font-size: 1.2rem;">📐 → 🔄</p>
-            <p>先剪切，后旋转</p>
-            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: 8px;">
-                结果 B（不同！）
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== SECTION 2: 计算方法 ==================== -->
-<div class="section fade-in">
-    <h2 class="section-title">🧮 4.2 怎么计算连招？</h2>
-
-    <div class="content-block">
-        <h3>🎯 追踪基向量法</h3>
-        <p>
-            还记得吗？矩阵的列就是 î 和 ĵ 去了哪里。
-        </p>
-        <p>
-            要计算 $B \times A$（先 A 后 B），只需要：
-        </p>
-        <ol>
-            <li>看 A 把 î 变到哪里（A 的第一列）</li>
-            <li>再用 B 把这个结果再变一次</li>
-            <li>对 ĵ 重复同样的过程</li>
-        </ol>
-
-        <div class="example-card">
-            <p><strong>🎮 例子</strong></p>
-            <p>
-                招式 A（旋转 90°）：$\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$
-            </p>
-            <p>
-                招式 B（横向拉伸）：$\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$
-            </p>
-            <p>
-                连招 $B \times A$ = ?
-            </p>
-            <p style="margin-top: 1rem;">
-                A 把 î$\begin{bmatrix}1\\0\end{bmatrix}$ 变成 $\begin{bmatrix}0\\1\end{bmatrix}$，
-                然后 B 把它变成 $\begin{bmatrix}0\\1\end{bmatrix}$（不变）
-            </p>
-            <p>
-                A 把 ĵ$\begin{bmatrix}0\\1\end{bmatrix}$ 变成 $\begin{bmatrix}-1\\0\end{bmatrix}$，
-                然后 B 把它变成 $\begin{bmatrix}-2\\0\end{bmatrix}$
-            </p>
+        <div class="deep-dive">
+            <div class="deep-title">完整计算例子</div>
+            <p><strong>问题</strong>：计算 $B \times A$，其中</p>
             <div class="math-block">
-                $$ B \times A = \begin{bmatrix} 0 & -2 \\ 1 & 0 \end{bmatrix} $$
+                $$ A = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix} \text{（旋转 90°）}, \quad
+                B = \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix} \text{（横向拉伸 2 倍）} $$
             </div>
+
+            <div class="example-ladder" style="margin-top: 1.5rem;">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">A 把 î 变到哪里？</div>
+                        <p>A 的第一列：$(0, 1)$，即原来的 ĵ 方向</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">B 再把 (0,1) 变到哪里？</div>
+                        <p>$B \times \begin{bmatrix}0\\1\end{bmatrix} = \begin{bmatrix}2 \times 0 + 0 \times 1\\0 \times
+                            0 + 1 \times 1\end{bmatrix} = \begin{bmatrix}0\\1\end{bmatrix}$</p>
+                        <p style="color: var(--text-muted);">这是新矩阵的<strong>第一列</strong></p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">A 把 ĵ 变到哪里？</div>
+                        <p>A 的第二列：$(-1, 0)$，即 -î 方向</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-label">B 再把 (-1,0) 变到哪里？</div>
+                        <p>$B \times \begin{bmatrix}-1\\0\end{bmatrix} = \begin{bmatrix}-2\\0\end{bmatrix}$</p>
+                        <p style="color: var(--text-muted);">这是新矩阵的<strong>第二列</strong></p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">最终答案</div>
+                        <div class="math-block">
+                            $$ B \times A = \begin{bmatrix} 0 & -2 \\ 1 & 0 \end{bmatrix} $$
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aha-box">
+            <div class="aha-title">恍然大悟时刻</div>
+            <p>
+                矩阵乘法那个"行乘列"的公式，本质上就是在追踪基向量的旅程！
+                公式虽然看起来复杂，但背后的道理很简单：看看积木走到了哪里。
+            </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3: 交互 ==================== -->
+<!-- SECTION 4: 交互 -->
 <div class="section fade-in">
-    <h2 class="section-title">🕹️ 4.3 亲自试试连招</h2>
+    <h2 class="section-title">🕹️ 4.4 亲自体验连招</h2>
 
     <div class="viz-container">
         <div class="viz-header">
@@ -116,67 +210,133 @@
         </div>
         <div class="viz-controls">
             <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <button class="btn btn-primary" id="btn-step-by-step">分两步看 (A → B)</button>
-                <button class="btn btn-secondary" id="btn-composite">直接放大招 (B×A)</button>
-                <button class="btn btn-secondary" id="btn-reset-comp">重置</button>
+                <button class="btn btn-primary" id="btn-step-by-step">📍 分两步看 (A → B)</button>
+                <button class="btn btn-secondary" id="btn-composite">⚡ 直接放大招 (BA)</button>
+                <button class="btn btn-secondary" id="btn-reset-comp">🔄 重置</button>
             </div>
-            <p style="text-align: center; margin-top: 1rem; font-size: 0.9em; color: var(--text-muted);">
-                对比一下：分两步和放大招，最终结果完全一样！
+            <p style="text-align: center; margin-top: 1rem; color: var(--text-muted);">
+                观察：分两步和直接放大招，最终结果完全一样！<br>
+                这就是<span class="term" data-en="Composition">复合变换</span>的威力。
+            </p>
+        </div>
+    </div>
+
+    <div class="challenge-box">
+        <div class="challenge-title">思考挑战</div>
+        <p>
+            如果你想先剪切再旋转，矩阵应该怎么写？是"旋转矩阵 × 剪切矩阵"还是反过来？
+        </p>
+        <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.5rem;">
+            提示：记住 BA 的意思是"先 A 后 B"
+        </p>
+    </div>
+</div>
+
+<!-- SECTION 5: 结合律 -->
+<div class="section fade-in">
+    <h2 class="section-title">🔗 4.5 一个好消息：结合律成立</h2>
+
+    <div class="content-block">
+        <p>
+            虽然矩阵乘法不满足交换律（AB ≠ BA），但它满足<span class="term" data-en="Associativity">结合律</span>：
+        </p>
+        <div class="math-block">
+            $$ (AB)C = A(BC) $$
+        </div>
+
+        <div class="definition-card">
+            <div class="definition-title">意义</div>
+            <p>
+                三个变换连起来，无论你先算前两个还是后两个，最终结果一样。
+            </p>
+            <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.5rem;">
+                这让我们可以灵活地组织复杂的变换链。
             </p>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: 应用 ==================== -->
+<!-- SECTION 6: 应用 -->
 <div class="section fade-in">
-    <h2 class="section-title">🌍 4.4 游戏和动画是怎么做的？</h2>
+    <h2 class="section-title">🌍 4.6 现实中的矩阵连招</h2>
 
-    <div class="content-block">
-        <p>
-            每次你玩 3D 游戏，角色的每一帧动画都在做矩阵乘法！
-        </p>
+    <div class="why-matters">
+        <div class="why-title">这在哪里用到？</div>
+        <p>每次你玩 3D 游戏、看动画电影，你的设备都在疯狂计算矩阵乘法！</p>
+    </div>
 
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
-            <div class="definition-card" style="border-left-color: var(--accent-blue);">
-                <div class="definition-title">🎮 角色移动</div>
-                <p>位移 + 旋转 + 缩放 = 连续矩阵乘法</p>
-            </div>
-
-            <div class="definition-card" style="border-left-color: var(--accent-green);">
-                <div class="definition-title">🤖 机器人手臂</div>
-                <p>每个关节都是一个旋转矩阵，连乘得到手的位置</p>
-            </div>
-
-            <div class="definition-card" style="border-left-color: var(--accent-purple);">
-                <div class="definition-title">📷 相机视角</div>
-                <p>把世界"旋转"到相机看到的角度</p>
-            </div>
+    <div class="real-world">
+        <div class="real-world-item">
+            <div class="rw-icon">🎮</div>
+            <div class="rw-title">游戏角色动画</div>
+            <div class="rw-desc">移动→旋转→缩放 = 连续矩阵乘法</div>
         </div>
+        <div class="real-world-item">
+            <div class="rw-icon">🤖</div>
+            <div class="rw-title">机械臂控制</div>
+            <div class="rw-desc">多个关节旋转的组合</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">📷</div>
+            <div class="rw-title">相机视角</div>
+            <div class="rw-desc">把世界"旋转"到相机视角</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">🧠</div>
+            <div class="rw-title">深度学习</div>
+            <div class="rw-desc">神经网络就是矩阵连乘！</div>
+        </div>
+    </div>
 
-        <p style="text-align: center; font-size: 1.1rem; margin-top: 2rem;">
-            💡 GPU（显卡）的主要工作就是<strong>飞速计算矩阵乘法</strong>！
+    <div class="deep-dive">
+        <div class="deep-title">硬核知识：GPU 的秘密</div>
+        <p>
+            你的显卡（GPU）每秒钟执行<strong>数十亿次</strong>矩阵乘法来渲染游戏画面。
+            GPU 之所以比 CPU 更适合这个工作，是因为矩阵乘法的每个元素可以<strong>并行计算</strong>！
+        </p>
+        <p style="margin-top: 0.5rem;">
+            这也是为什么训练 AI 模型需要强大的 GPU——深度学习本质上就是大量的矩阵连乘。
         </p>
     </div>
 </div>
 
-<!-- ==================== SECTION 5: 总结 ==================== -->
+<!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
+        <div class="vocab-summary">
+            <div class="vocab-title">词汇复习</div>
+            <div class="vocab-list">
+                <div class="vocab-item"><span class="vocab-zh">矩阵乘法</span><span class="vocab-en">变换的"连招"</span></div>
+                <div class="vocab-item"><span class="vocab-zh">复合变换</span><span class="vocab-en">多个变换合成一个</span></div>
+                <div class="vocab-item"><span class="vocab-zh">不可交换</span><span class="vocab-en">顺序影响结果</span></div>
+                <div class="vocab-item"><span class="vocab-zh">结合律</span><span class="vocab-en">分组不影响结果</span></div>
+            </div>
+        </div>
+
         <div class="theorem-card">
-            <div class="theorem-title">今天你学会了</div>
+            <div class="theorem-title">核心要点</div>
             <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
-                <li><strong>矩阵乘法</strong> = 两个变换"连招"</li>
-                <li><strong>$B \times A$</strong> 意思是"先 A 后 B"</li>
-                <li><strong>顺序很重要</strong>：$AB \neq BA$</li>
-                <li>游戏、动画、机器人都在用矩阵乘法！</li>
+                <li><span class="term" data-en="Matrix Multiplication">矩阵乘法</span> BA = 先做 A 再做 B</li>
+                <li><strong>顺序很重要</strong>：AB ≠ BA（不可交换）</li>
+                <li>计算方法：追踪基向量经过两次变换后去了哪里</li>
+                <li><strong>结合律成立</strong>：(AB)C = A(BC)</li>
             </ol>
         </div>
 
+        <div class="concept-map">
+            <div class="concept-node">单个变换</div>
+            <div class="concept-arrow">→</div>
+            <div class="concept-node">矩阵乘法</div>
+            <div class="concept-arrow">=</div>
+            <div class="concept-node">复合变换</div>
+            <div class="concept-arrow">→</div>
+            <div class="concept-node" style="background: linear-gradient(135deg, #10b981, #059669);">3D 世界！</div>
+        </div>
+
         <div
-            style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1)); border-radius: 12px;">
+            style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(239, 68, 68, 0.1)); border-radius: 12px;">
             <p style="font-size: 1.2rem; margin: 0;">
                 🎮 <strong>下次玩游戏时想一想</strong>
             </p>

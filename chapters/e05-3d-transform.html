@@ -1,184 +1,224 @@
 <div class="chapter-header fade-in">
     <span class="chapter-badge">第 5 章</span>
-    <h1 class="chapter-title">3D 世界！ <br><small style="font-size: 0.6em; color: var(--text-muted);">3D Linear
-            Transformations</small></h1>
+    <h1 class="chapter-title">欢迎来到 3D 世界 <br><small
+            style="font-size: 0.6em; color: var(--text-muted);">Three-Dimensional Linear Transformations</small></h1>
     <p class="chapter-description">
-        2D 太无聊了？让我们进入 3D 的世界！
-        游戏里的 3D 角色、VR 眼镜里的虚拟世界，都是用 3D 矩阵实现的。
+        2D 很有趣，但真正的魔法发生在 3D 世界！
+        游戏里的 3D 角色、VR 眼镜里的虚拟世界、电影特效——都是 3D 矩阵在幕后工作。
     </p>
 </div>
 
-<!-- ==================== SECTION 1: 3D 基向量 ==================== -->
+<!-- 核心词汇 -->
 <div class="section fade-in">
-    <h2 class="section-title">🧊 5.1 多了一个方向</h2>
-
-    <div class="content-block">
-        <p>
-            在 2D 里我们有两个方向：左右 (î) 和 上下 (ĵ)。
-        </p>
-        <p>
-            在 3D 里，多了一个方向：<strong>前后</strong>！这就是 $\hat{k}$。
-        </p>
-
-        <div style="display: flex; gap: 2rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
-            <div style="text-align: center; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
-                <p style="color: #f97316; font-size: 1.5rem; margin: 0;">î</p>
-                <p style="margin: 0.5rem 0 0 0;">→ 向右</p>
-                <p style="font-size: 0.9em; color: var(--text-muted);">(1, 0, 0)</p>
+    <div class="vocab-summary">
+        <div class="vocab-title">本章核心词汇</div>
+        <div class="vocab-list">
+            <div class="vocab-item"><span class="vocab-zh">三维空间</span><span class="vocab-en">3D Space</span></div>
+            <div class="vocab-item"><span class="vocab-zh">3×3 矩阵</span><span class="vocab-en">3×3 Matrix</span></div>
+            <div class="vocab-item"><span class="vocab-zh">绕轴旋转</span><span class="vocab-en">Rotation about Axis</span>
             </div>
-            <div style="text-align: center; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
-                <p style="color: #10b981; font-size: 1.5rem; margin: 0;">ĵ</p>
-                <p style="margin: 0.5rem 0 0 0;">↑ 向上</p>
-                <p style="font-size: 0.9em; color: var(--text-muted);">(0, 1, 0)</p>
-            </div>
-            <div style="text-align: center; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
-                <p style="color: #4a9eff; font-size: 1.5rem; margin: 0;">k̂</p>
-                <p style="margin: 0.5rem 0 0 0;">⊙ 向前（出屏幕）</p>
-                <p style="font-size: 0.9em; color: var(--text-muted);">(0, 0, 1)</p>
-            </div>
-        </div>
-
-        <div class="theorem-card">
-            <div class="theorem-title">🎮 游戏坐标</div>
-            <p>
-                在《我的世界》里：
-            </p>
-            <ul style="margin: 0.5rem 0 0 0;">
-                <li>X = 东西方向</li>
-                <li>Y = 上下方向</li>
-                <li>Z = 南北方向</li>
-            </ul>
+            <div class="vocab-item"><span class="vocab-zh">投影</span><span class="vocab-en">Projection</span></div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 2: 3x3 矩阵 ==================== -->
+<!-- SECTION 1 -->
+<div class="section fade-in">
+    <h2 class="section-title">🧊 5.1 多了一个方向</h2>
+
+    <div class="content-block">
+        <p>在 2D 中，我们有两个基向量：</p>
+        <ul>
+            <li><span style="color:#f97316; font-weight:bold;">î</span>：向右</li>
+            <li><span style="color:#10b981; font-weight:bold;">ĵ</span>：向上</li>
+        </ul>
+
+        <p>在 3D 中，我们多了一个：</p>
+        <ul>
+            <li><span style="color:#4a9eff; font-weight:bold;">k̂</span>：向前（出屏幕/朝向你）</li>
+        </ul>
+
+        <div style="display: flex; gap: 1.5rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
+            <div style="text-align: center; padding: 1.5rem; background: rgba(249, 115, 22, 0.1); border-radius: 12px;">
+                <p style="font-size: 2rem; margin: 0; color: #f97316;">î</p>
+                <p style="margin: 0.5rem 0;">$\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}$</p>
+                <p style="font-size: 0.9em;">向右 (X轴)</p>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 12px;">
+                <p style="font-size: 2rem; margin: 0; color: #10b981;">ĵ</p>
+                <p style="margin: 0.5rem 0;">$\begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}$</p>
+                <p style="font-size: 0.9em;">向上 (Y轴)</p>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(74, 158, 255, 0.1); border-radius: 12px;">
+                <p style="font-size: 2rem; margin: 0; color: #4a9eff;">k̂</p>
+                <p style="margin: 0.5rem 0;">$\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$</p>
+                <p style="font-size: 0.9em;">向前 (Z轴)</p>
+            </div>
+        </div>
+
+        <div class="connection-box">
+            <div class="connection-title">《我的世界》坐标系</div>
+            <p>在《我的世界》中：X = 东西，Y = 上下，Z = 南北</p>
+            <p>当你看到坐标 (100, 64, -200)，意思是：向东 100 格，高度 64，向南 200 格</p>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 2 -->
 <div class="section fade-in">
     <h2 class="section-title">📦 5.2 3×3 矩阵</h2>
 
     <div class="content-block">
-        <p>
-            2D 变换用 2×2 矩阵，3D 变换用 <strong>3×3 矩阵</strong>：
-        </p>
+        <p>2D 变换用 2×2 矩阵，3D 变换用 <span class="term" data-en="3×3 Matrix">3×3 矩阵</span>：</p>
 
         <div style="text-align: center; margin: 2rem 0;">
-            <div style="font-size: 1.3rem;">
+            <div style="font-size: 1.4rem;">
                 $\begin{bmatrix}
                 \color{#f97316}{a} & \color{#10b981}{d} & \color{#4a9eff}{g} \\
                 \color{#f97316}{b} & \color{#10b981}{e} & \color{#4a9eff}{h} \\
                 \color{#f97316}{c} & \color{#10b981}{f} & \color{#4a9eff}{i}
                 \end{bmatrix}$
             </div>
-            <p style="margin-top: 1rem; font-size: 0.95em;">
+            <p style="margin-top: 1rem;">
                 <span style="color:#f97316">第1列</span> = î 去哪了 &nbsp;|&nbsp;
                 <span style="color:#10b981">第2列</span> = ĵ 去哪了 &nbsp;|&nbsp;
                 <span style="color:#4a9eff">第3列</span> = k̂ 去哪了
             </p>
         </div>
 
-        <p>
-            规则完全一样，只是多了一个维度！
-        </p>
+        <div class="aha-box">
+            <div class="aha-title">规则完全相同！</div>
+            <p>
+                3D 矩阵和 2D 矩阵的本质完全一样——<strong>列就是变换后的基向量</strong>。
+                只是多了一维，从 4 个数变成了 9 个数。
+            </p>
+        </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 3: 3D 变换例子 ==================== -->
+<!-- SECTION 3 -->
 <div class="section fade-in">
     <h2 class="section-title">🎢 5.3 3D 变换图鉴</h2>
 
     <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-            <div class="definition-card">
-                <div class="definition-title">🔄 绕 Z 轴旋转</div>
-                <p style="font-size: 0.9em;">
-                    就像旋转一个飞盘——物体在 XY 平面内转圈，高度 (Z) 不变。
-                </p>
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">🔄 绕 Z 轴旋转</div>
+                    <p>就像旋转一个飞盘——物体在 XY 平面内转圈，高度 (Z) 不变</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        矩阵形式：Z 列不变，X 和 Y 列按照 2D 旋转规则变化
+                    </p>
+                </div>
             </div>
-
-            <div class="definition-card">
-                <div class="definition-title">🔄 绕 X 轴旋转</div>
-                <p style="font-size: 0.9em;">
-                    就像翻滚——前后翻转，左右位置不变。
-                </p>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">🔄 绕 X 轴旋转</div>
+                    <p>就像翻跟斗——前后翻转，左右位置不变</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        想象健身房的翻转运动
+                    </p>
+                </div>
             </div>
-
-            <div class="definition-card">
-                <div class="definition-title">🔄 绕 Y 轴旋转</div>
-                <p style="font-size: 0.9em;">
-                    就像转头——左右看，高度不变。
-                </p>
+            <div class="example-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-label">🔄 绕 Y 轴旋转</div>
+                    <p>就像转头——左右看，高度不变</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        这是游戏中最常见的相机旋转
+                    </p>
+                </div>
             </div>
-
-            <div class="definition-card">
-                <div class="definition-title">📸 投影到平面</div>
-                <p style="font-size: 0.9em;">
-                    把 3D 物体"拍扁"成 2D 照片——这就是相机在做的事！
-                </p>
+            <div class="example-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-label">📸 投影</div>
+                    <p>把 3D 物体"拍扁"成 2D 照片</p>
+                    <p style="font-size: 0.9em; color: var(--text-muted);">
+                        这就是相机和你的眼睛在做的事情！
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== SECTION 4: 应用 ==================== -->
+<!-- SECTION 4: 应用 -->
 <div class="section fade-in">
-    <h2 class="section-title">🌍 5.4 这在哪里用到？</h2>
+    <h2 class="section-title">🌍 5.4 无处不在的 3D 矩阵</h2>
 
-    <div class="content-block">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
-            <div class="example-card">
-                <p><strong>🎮 所有 3D 游戏</strong></p>
-                <p style="font-size: 0.9em;">
-                    角色移动、相机旋转、爆炸效果...全是 3×3 矩阵（或更大）。
-                </p>
-            </div>
+    <div class="why-matters">
+        <div class="why-title">为什么 3D 矩阵如此重要？</div>
+        <p>因为我们生活在 3D 世界，而所有数字 3D 内容都需要矩阵来计算！</p>
+    </div>
 
-            <div class="example-card">
-                <p><strong>🥽 VR/AR</strong></p>
-                <p style="font-size: 0.9em;">
-                    追踪你的头部运动，实时计算虚拟世界应该怎么显示。
-                </p>
-            </div>
-
-            <div class="example-card">
-                <p><strong>✈️ 飞行模拟</strong></p>
-                <p style="font-size: 0.9em;">
-                    飞机姿态（俯仰、偏航、滚转）= 三个旋转矩阵的乘积。
-                </p>
-            </div>
-
-            <div class="example-card">
-                <p><strong>🤖 机器人</strong></p>
-                <p style="font-size: 0.9em;">
-                    机械臂的每个关节都是一个旋转矩阵。
-                </p>
-            </div>
+    <div class="real-world">
+        <div class="real-world-item">
+            <div class="rw-icon">🎮</div>
+            <div class="rw-title">所有 3D 游戏</div>
+            <div class="rw-desc">角色移动、相机旋转、爆炸效果</div>
         </div>
+        <div class="real-world-item">
+            <div class="rw-icon">🥽</div>
+            <div class="rw-title">VR/AR 应用</div>
+            <div class="rw-desc">实时追踪头部运动</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">✈️</div>
+            <div class="rw-title">飞行模拟</div>
+            <div class="rw-desc">俯仰、偏航、滚转</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">🤖</div>
+            <div class="rw-title">机器人</div>
+            <div class="rw-desc">机械臂的每个关节</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">🎬</div>
+            <div class="rw-title">电影特效</div>
+            <div class="rw-desc">CGI 角色动画</div>
+        </div>
+        <div class="real-world-item">
+            <div class="rw-icon">🏗️</div>
+            <div class="rw-title">建筑设计</div>
+            <div class="rw-desc">3D 建模软件</div>
+        </div>
+    </div>
+
+    <div class="deep-dive">
+        <div class="deep-title">有趣的事实</div>
+        <p>
+            你的显卡每秒钟要做<strong>数十亿次</strong> 3D 矩阵运算来渲染游戏画面。
+            一个 60 帧的游戏，意味着每秒要完整计算 60 次整个 3D 场景！
+        </p>
     </div>
 </div>
 
-<!-- ==================== SECTION 5: 总结 ==================== -->
+<!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
 
     <div class="content-block">
         <div class="theorem-card">
-            <div class="theorem-title">今天你学会了</div>
+            <div class="theorem-title">核心要点</div>
             <ol style="margin: 0; padding-left: 1.5rem; line-height: 2.2;">
-                <li>3D 有三个基向量：î, ĵ, k̂</li>
-                <li>3D 变换用 <strong>3×3 矩阵</strong></li>
-                <li>规则和 2D 完全一样，只是多一维</li>
-                <li>游戏、VR、机器人都在用 3D 矩阵！</li>
+                <li>3D 有三个基向量：<span style="color:#f97316">î</span>, <span style="color:#10b981">ĵ</span>, <span
+                        style="color:#4a9eff">k̂</span></li>
+                <li>3D 变换用 <span class="term" data-en="3×3 Matrix">3×3 矩阵</span></li>
+                <li>规则和 2D 完全一样：<strong>列 = 变换后的基向量</strong></li>
+                <li>游戏、VR、机器人、电影特效都在用 3D 矩阵！</li>
             </ol>
         </div>
 
-        <div
-            style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 12px;">
-            <p style="font-size: 1.2rem; margin: 0;">
-                🎮 <strong>有趣的事实</strong>
-            </p>
-            <p style="margin-top: 0.5rem;">
-                你的显卡每秒钟要做<strong>数十亿次</strong>矩阵运算来渲染游戏画面！
-            </p>
+        <div class="concept-map">
+            <div class="concept-node">2D 矩阵</div>
+            <div class="concept-arrow">+1维</div>
+            <div class="concept-node">3D 矩阵</div>
+            <div class="concept-arrow">→</div>
+            <div class="concept-node" style="background: linear-gradient(135deg, #10b981, #059669);">下一章：行列式</div>
         </div>
     </div>
 </div>
