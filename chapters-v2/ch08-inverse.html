@@ -115,19 +115,100 @@
     <h2 class="section-title">🎯 实战应用</h2>
 
     <div class="content-block">
+        <!-- 问题1：坐标逆变换 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
-            <div class="deep-title">🎮 问题：坐标逆变换</div>
+            <div class="deep-title">🎮 问题：从屏幕坐标反算世界坐标</div>
             <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>已知物体在屏幕坐标系的位置，如何转换回世界坐标系？</p>
+                <p><strong>场景</strong>：游戏中，摄像机的变换矩阵 $M = \begin{bmatrix}2 & 0\\0 & 1\end{bmatrix}$（水平方向放大2倍）。</p>
+                <p>一个物体在屏幕上显示在 $(6, 3)$，它的<strong>真实世界坐标</strong>是多少？</p>
             </div>
-            <p>答案：如果 $P_{screen} = M \cdot P_{world}$，则 $P_{world} = M^{-1} \cdot P_{screen}$</p>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">理解问题</div>
+                        <p>屏幕坐标 = $M \times$ 世界坐标</p>
+                        <p>即 $P_{screen} = M \cdot P_{world}$</p>
+                        <p>我们知道 $P_{screen} = (6, 3)$，要反算 $P_{world}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算逆矩阵</div>
+                        <p>$M = \begin{bmatrix}2 & 0\\0 & 1\end{bmatrix}$</p>
+                        <p>$\det(M) = 2 \times 1 - 0 \times 0 = 2 \neq 0$ ✓ 可逆</p>
+                        <p>$M^{-1} = \frac{1}{2}\begin{bmatrix}1 & 0\\0 & 2\end{bmatrix} = \begin{bmatrix}0.5 & 0\\0 &
+                            1\end{bmatrix}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">应用逆变换</div>
+                        <p>$P_{world} = M^{-1} \cdot P_{screen}$</p>
+                        <div class="math-block">
+                            $\begin{bmatrix}0.5 & 0\\0 & 1\end{bmatrix}\begin{bmatrix}6\\3\end{bmatrix} =
+                            \begin{bmatrix}0.5 \times 6 + 0 \times 3\\0 \times 6 + 1 \times 3\end{bmatrix} =
+                            \begin{bmatrix}3\\3\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>世界坐标是 $(3, 3)$。</p>
+                        <p>验证：$M \cdot (3, 3)^T = (6, 3)^T$ ✓</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- 问题2：结构求解 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
-            <div class="deep-title">🏗️ 问题：静定结构求解</div>
+            <div class="deep-title">🏗️ 问题：求结构节点位移</div>
             <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>结构平衡方程 $K \cdot u = F$（刚度 × 位移 = 力）</p>
-                <p>求位移：$u = K^{-1} \cdot F$</p>
+                <p><strong>场景</strong>：刚度矩阵 $K = \begin{bmatrix}4 & 1\\1 & 3\end{bmatrix}$（kN/mm），外力 $F =
+                    \begin{bmatrix}10\\5\end{bmatrix}$（kN）。</p>
+                <p><strong>问题</strong>：求节点位移 $u$，满足 $K \cdot u = F$。</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">计算行列式</div>
+                        <p>$\det(K) = 4 \times 3 - 1 \times 1 = 12 - 1 = 11 \neq 0$ ✓</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算逆矩阵</div>
+                        <p>$K^{-1} = \frac{1}{11}\begin{bmatrix}3 & -1\\-1 & 4\end{bmatrix}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">求解位移</div>
+                        <div class="math-block">
+                            $u = K^{-1} \cdot F = \frac{1}{11}\begin{bmatrix}3 & -1\\-1 &
+                            4\end{bmatrix}\begin{bmatrix}10\\5\end{bmatrix} =
+                            \frac{1}{11}\begin{bmatrix}30-5\\-10+20\end{bmatrix} =
+                            \frac{1}{11}\begin{bmatrix}25\\10\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>$u_1 \approx 2.27$ mm，$u_2 \approx 0.91$ mm</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

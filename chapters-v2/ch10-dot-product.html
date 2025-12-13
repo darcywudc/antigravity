@@ -122,26 +122,117 @@
         <h2 class="section-title">🎯 实战应用</h2>
 
         <div class="content-block">
+            <!-- 问题1：视野检测 - 详细分析 -->
             <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
-                <div class="deep-title">🎮 问题：视野检测</div>
+                <div class="deep-title">🎮 问题：敌人在视野内吗？</div>
                 <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                    <p>玩家面向 $(1, 0)$，敌人方向是 $(0.8, 0.6)$。敌人在视野内吗？</p>
+                    <p><strong>场景</strong>：玩家在原点，面朝方向 $\vec{d} = (1, 0)$，视野角度为 90°。</p>
+                    <p>敌人在位置 $(3, 2)$。<strong>问题</strong>：敌人在视野范围内吗？</p>
                 </div>
-                <p>点积 = $1 \times 0.8 + 0 \times 0.6 = 0.8 > 0$ → 在前方 ✓</p>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">确定敌人方向向量</div>
+                            <p>敌人方向 $\vec{e} = (3, 2)$</p>
+                            <p>单位化：$|\vec{e}| = \sqrt{9+4} = \sqrt{13} \approx 3.6$</p>
+                            <p>$\hat{e} = (3/3.6, 2/3.6) \approx (0.83, 0.55)$</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-label">计算点积</div>
+                            <p>$\vec{d} \cdot \hat{e} = 1 \times 0.83 + 0 \times 0.55 = 0.83$</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-label">判断夹角</div>
+                            <p>因为 $\cos\theta = 0.83$，所以 $\theta = \arccos(0.83) \approx 34°$</p>
+                            <p>视野范围是 ±45°（共90°），34° < 45°</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案</div>
+                            <p><strong>敌人在视野内</strong>（夹角 34° < 45°）</p>
+                                    <p>快速判断：点积 > $\cos 45° = 0.707$ → 在视野内 ✓</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- 问题2：力的分解 - 详细分析 -->
             <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
-                <div class="deep-title">🏗️ 问题：力的分量</div>
+                <div class="deep-title">🏗️ 问题：斜拉力的分解</div>
                 <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                    <p>斜拉力 $\vec{F} = (100, 50)$ 牛顿，沿水平方向的分量是多少？</p>
+                    <p><strong>场景</strong>：用绳子拉一个箱子，拉力 $\vec{F} = (80, 60)$ 牛顿（斜向上拉）。</p>
+                    <p><strong>问题</strong>：沿水平方向的有效拉力是多少？沿垂直方向呢？</p>
                 </div>
-                <p>沿 $(1, 0)$ 方向投影 = $100 \times 1 + 50 \times 0 = 100$ 牛顿</p>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">水平分量（沿 $(1, 0)$ 方向投影）</div>
+                            <p>$F_{水平} = \vec{F} \cdot (1, 0) = 80 \times 1 + 60 \times 0 = 80$ 牛顿</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-label">垂直分量（沿 $(0, 1)$ 方向投影）</div>
+                            <p>$F_{垂直} = \vec{F} \cdot (0, 1) = 80 \times 0 + 60 \times 1 = 60$ 牛顿</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案与验证</div>
+                            <p>水平分量 = 80N（推箱子前进的力）</p>
+                            <p>垂直分量 = 60N（减轻箱子对地面压力）</p>
+                            <p>验证：$|\vec{F}| = \sqrt{80^2 + 60^2} = 100$ N ✓</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- 问题3：余弦相似度 - 详细分析 -->
             <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
-                <div class="deep-title">📊 问题：余弦相似度</div>
+                <div class="deep-title">📊 问题：电影推荐相似度</div>
                 <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                    <p>在推荐系统中，用户偏好向量的点积表示<strong>相似程度</strong>。</p>
+                    <p><strong>场景</strong>：用户A的偏好向量 $(5, 1, 4)$（动作、爱情、科幻评分）</p>
+                    <p>用户B的偏好 $(4, 2, 5)$，用户C的偏好 $(1, 5, 1)$</p>
+                    <p><strong>问题</strong>：A 与谁更相似？</p>
+                </div>
+
+                <div class="example-ladder">
+                    <div class="example-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-label">计算 A·B</div>
+                            <p>$A \cdot B = 5 \times 4 + 1 \times 2 + 4 \times 5 = 20 + 2 + 20 = 42$</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-label">计算 A·C</div>
+                            <p>$A \cdot C = 5 \times 1 + 1 \times 5 + 4 \times 1 = 5 + 5 + 4 = 14$</p>
+                        </div>
+                    </div>
+                    <div class="example-step">
+                        <div class="step-number">✓</div>
+                        <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="step-label" style="color: var(--accent-green);">答案</div>
+                            <p>$A \cdot B = 42 > A \cdot C = 14$</p>
+                            <p><strong>用户 A 与用户 B 更相似</strong>（都喜欢动作和科幻片）</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

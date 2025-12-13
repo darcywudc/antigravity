@@ -134,18 +134,88 @@
     <h2 class="section-title">🎯 实战应用</h2>
 
     <div class="content-block">
+        <!-- 问题1：背面剔除 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
-            <div class="deep-title">🎮 问题：背面剔除</div>
+            <div class="deep-title">🎮 问题：3D游戏中的背面剔除</div>
             <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>在 3D 游戏中，如何判断一个三角形是面向相机还是背对相机？</p>
+                <p><strong>场景</strong>：在3D游戏中渲染一个立方体，它有6个面。但屏幕上只能看到朝向相机的面（最多3个），背对相机的面不需要渲染（节省性能50%+）。</p>
+                <p><strong>问题</strong>：如何快速判断一个三角形面是正面还是背面？</p>
             </div>
-            <p>答案：计算三角形顶点构成的行列式。正 = 正面，负 = 背面。</p>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">理解原理</div>
+                        <p>三角形有三个顶点 $A, B, C$，按<strong>逆时针</strong>排列时被定义为正面。</p>
+                        <p>投影到屏幕后，如果仍然是逆时针 → 正面；变成顺时针 → 背面。</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">用行列式判断</div>
+                        <p>构造两个边向量：$\vec{AB} = B - A$，$\vec{AC} = C - A$</p>
+                        <p>计算2D行列式（叉积的z分量）：</p>
+                        <div class="math-block">
+                            $\det = (B_x - A_x)(C_y - A_y) - (B_y - A_y)(C_x - A_x)$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">例</div>
+                    <div class="step-content">
+                        <div class="step-label">具体计算</div>
+                        <p>顶点：$A = (0, 0)$，$B = (4, 0)$，$C = (2, 3)$</p>
+                        <p>$\vec{AB} = (4, 0)$，$\vec{AC} = (2, 3)$</p>
+                        <p>$\det = 4 \times 3 - 0 \times 2 = 12 > 0$ → <strong>逆时针，正面！</strong></p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">结论</div>
+                        <p>$\det > 0$ → 正面（渲染）</p>
+                        <p>$\det < 0$ → 背面（跳过）</p>
+                                <p>$\det = 0$ → 边缘（三点共线，面积为0）</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- 问题2：方程组可解性 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
-            <div class="deep-title">🏗️ 问题：方程组是否有唯一解</div>
+            <div class="deep-title">🏗️ 问题：结构平衡方程是否有唯一解</div>
             <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>线性方程组 $A\vec{x} = \vec{b}$ 有唯一解 ⟺ $\det(A) \neq 0$</p>
+                <p><strong>场景</strong>：一个桥墩受到两个方向的约束力 $F_1, F_2$，需要满足平衡条件：</p>
+                <p>$\begin{cases}2F_1 + 3F_2 = 10\\4F_1 + 6F_2 = 20\end{cases}$</p>
+                <p><strong>问题</strong>：能求出唯一的 $F_1, F_2$ 吗？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">写成矩阵形式</div>
+                        <p>$A = \begin{bmatrix}2 & 3\\4 & 6\end{bmatrix}$，求 $\det(A)$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算行列式</div>
+                        <p>$\det(A) = 2 \times 6 - 3 \times 4 = 12 - 12 = 0$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(239, 68, 68, 0.1);">
+                        <div class="step-label" style="color: var(--accent-red);">分析</div>
+                        <p>$\det = 0$ → 矩阵奇异，<strong>没有唯一解</strong>！</p>
+                        <p>观察发现：第二个方程 = 第一个方程 × 2，两个方程本质上是同一个！</p>
+                        <p>这意味着约束不足（超静定或机动）。</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

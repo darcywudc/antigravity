@@ -139,29 +139,96 @@
     <h2 class="section-title">🎯 实战应用</h2>
 
     <div class="content-block">
+        <!-- 问题1：旋转游戏角色 - 完整分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
             <div class="deep-title">🎮 问题：旋转游戏角色</div>
             <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>角色在位置 $(5, 0)$，需要绕原点旋转 45°。新位置在哪？</p>
+                <p><strong>场景</strong>：角色站在位置 $(5, 0)$，需要绕原点旋转 45°。</p>
+                <p><strong>问题</strong>：旋转后的新位置坐标是什么？</p>
             </div>
+
             <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">确定旋转矩阵</div>
+                        <p>旋转 $\theta = 45°$ 的矩阵是：</p>
+                        <div class="math-block">
+                            $R_{45} = \begin{bmatrix}\cos 45° & -\sin 45°\\\sin 45° & \cos 45°\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">代入三角函数值</div>
+                        <p>$\cos 45° = \sin 45° = \frac{\sqrt{2}}{2} \approx 0.707$</p>
+                        <div class="math-block">
+                            $R_{45} = \begin{bmatrix}0.707 & -0.707\\0.707 & 0.707\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">执行矩阵-向量乘法</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}0.707 & -0.707\\0.707 & 0.707\end{bmatrix}\begin{bmatrix}5\\0\end{bmatrix} =
+                            5\begin{bmatrix}0.707\\0.707\end{bmatrix} + 0\begin{bmatrix}-0.707\\0.707\end{bmatrix}$
+                        </div>
+                        <p>$= \begin{bmatrix}5 \times 0.707\\5 \times 0.707\end{bmatrix} =
+                            \begin{bmatrix}3.54\\3.54\end{bmatrix}$</p>
+                    </div>
+                </div>
                 <div class="example-step">
                     <div class="step-number">✓</div>
                     <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
-                        <p>$\cos 45° = \sin 45° = \frac{\sqrt{2}}{2} \approx 0.707$</p>
-                        <p>新位置 = $(5 \times 0.707, 5 \times 0.707) \approx (3.54, 3.54)$</p>
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>新位置是 $(3.54, 3.54)$</p>
+                        <p>验证：与原点距离仍是 $\sqrt{3.54^2 + 3.54^2} = 5$ ✓（旋转不改变距离）</p>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- 问题2：刚度矩阵 - 详细分析 -->
         <div class="deep-dive" style="border-left: 4px solid var(--accent-orange);">
-            <div class="deep-title">🏗️ 问题：刚度矩阵</div>
+            <div class="deep-title">🏗️ 问题：计算结构内力</div>
             <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                <p>在结构工程中，<strong>刚度矩阵</strong>描述力与位移的关系：</p>
-                <p>$\vec{F} = K \cdot \vec{u}$（力 = 刚度矩阵 × 位移）</p>
+                <p><strong>场景</strong>：刚度矩阵 $K = \begin{bmatrix}100 & 50\\50 & 80\end{bmatrix}$（kN/mm），位移 $u =
+                    \begin{bmatrix}0.2\\0.1\end{bmatrix}$（mm）。</p>
+                <p><strong>问题</strong>：节点力 $F = K \cdot u$ 是多少？</p>
             </div>
-            <p>这正是矩阵-向量乘法！刚度矩阵是一种"变换"。</p>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">理解物理意义</div>
+                        <p>刚度矩阵描述"位移→力"的变换：</p>
+                        <p>$F = K \cdot u$（力 = 刚度 × 位移）</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">执行矩阵乘法</div>
+                        <div class="math-block">
+                            $\begin{bmatrix}100 & 50\\50 & 80\end{bmatrix}\begin{bmatrix}0.2\\0.1\end{bmatrix} =
+                            0.2\begin{bmatrix}100\\50\end{bmatrix} + 0.1\begin{bmatrix}50\\80\end{bmatrix}$
+                        </div>
+                        <p>$= \begin{bmatrix}20\\10\end{bmatrix} + \begin{bmatrix}5\\8\end{bmatrix} =
+                            \begin{bmatrix}25\\18\end{bmatrix}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>$F_1 = 25$ kN，$F_2 = 18$ kN</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
