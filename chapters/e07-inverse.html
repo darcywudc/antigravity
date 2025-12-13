@@ -164,42 +164,91 @@
 </div>
 
 <!-- SECTION 4: 列空间和零空间 -->
+<!-- SECTION 4: 列空间和零空间 -->
 <div class="section fade-in">
-    <h2 class="section-title">🌐 7.4 列空间与零空间</h2>
+    <h2 class="section-title">🌐 7.4 深入理解：矩阵的"射程"与"盲区"</h2>
 
     <div class="content-block">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-            <div class="definition-card" style="border-left-color: var(--accent-blue);">
-                <div class="definition-title">列空间 Column Space</div>
-                <p>
-                    矩阵 A 能把输入向量变换到<strong>哪些位置</strong>？
-                </p>
-                <p style="font-size: 0.9em; margin-top: 0.5rem;">
-                    = A 的列向量的所有可能线性组合<br>
-                    = 变换的"输出范围"
-                </p>
+        <p>
+            当一个矩阵变换把空间"压扁"（不可逆）时，会发生两件事：
+            有些地方去不了了，有些东西消失了。这就是<span class="term" data-en="Column Space">列空间</span>和<span class="term"
+                data-en="Null Space">零空间</span>的故事。
+        </p>
+
+        <!-- 1. 列空间 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue);">
+            <div class="deep-title">1. 列空间 (Column Space)："射程范围"</div>
+            <p>
+                <strong>直觉</strong>：矩阵能到达的所有位置的集合。<br>
+                这就好比你的飞船有两个引擎（基向量），不管怎么组合开启，这艘船能飞到的所有地方，就是列空间。
+            </p>
+            <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                <li><strong>满秩 (Full Rank)</strong>：引擎推力方向不同，飞船能飞到平面上任何一点。列空间 = 整个平面。</li>
+                <li><strong>降秩</strong>：两个引擎推力方向相同（共线）。飞船虽然有两个引擎，但只能沿着一条线飞！列空间 = 一条直线。</li>
+            </ul>
+        </div>
+
+        <!-- 2. 零空间 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-red); margin-top: 1.5rem;">
+            <div class="deep-title">2. 零空间 (Null Space)："被压缩的维度"</div>
+            <p>
+                <strong>直觉</strong>：那些变换后会被<strong>压缩成零</strong>的向量。<br>
+                就像在拍照片时（3D变2D），如果你拿一根筷子正对着镜头，在照片上它就"消失"成了一个点。这根筷子的方向，就在"零空间"里！
+            </p>
+            <div class="math-block">
+                $$ A \vec{v} = \vec{0} $$
             </div>
-            <div class="definition-card" style="border-left-color: var(--accent-purple);">
-                <div class="definition-title">零空间 Null Space</div>
-                <p>
-                    哪些向量被变换后会变成<strong>零向量</strong>？
-                </p>
-                <p style="font-size: 0.9em; margin-top: 0.5rem;">
-                    如果 $A\vec{v} = \vec{0}$，则 $\vec{v}$ 在零空间中<br>
-                    = 被"压扁消失"的方向
-                </p>
+            <p style="text-align: center; color: var(--text-muted);">
+                所有满足这个方程的 $\vec{v}$，都在零空间里。
+            </p>
+        </div>
+
+        <!-- 3. 具体例子 -->
+        <h3 style="margin-top: 2rem;">🧮 破案实战：一个压扁的矩阵</h3>
+
+        <p>来看这个把平面压成直线的矩阵：</p>
+        <div class="math-block">
+            $$ A = \begin{bmatrix} 1 & -1 \\ 1 & -1 \end{bmatrix} $$
+        </div>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">找列空间（输出在在哪？）</div>
+                    <p>
+                        看列向量：$\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ 和 $\begin{bmatrix} -1 \\ -1 \end{bmatrix}$。<br>
+                        都在直线 $y=x$ 上！所以列空间就是<strong>直线 $y=x$</strong>。
+                        <br><small>任何输入向量被变换后，都会落在这条线上。</small>
+                    </p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">找零空间（谁变成了零？）</div>
+                    <p>
+                        我们要找 $\vec{v}=\begin{bmatrix}x\\y\end{bmatrix}$ 让 $1x - 1y = 0$。<br>
+                        这意味 $x=y$。比如 $\begin{bmatrix}1\\1\end{bmatrix}$ 经过变换会变成 $1-1=0$，消失了！
+                        <br>
+                        所以零空间是<strong>直线 $y=x$ 上的所有向量</strong>。
+                    </p>
+                </div>
             </div>
         </div>
 
         <div class="theorem-card">
-            <div class="theorem-title">🔑 秩 Rank</div>
+            <div class="theorem-title">🔑 秩 (Rank) 的真正含义</div>
             <p>
-                <span class="term" data-en="Rank">秩</span> = 列空间的维度 = 变换后空间的"真实维度"
+                <span class="term" data-en="Rank">秩</span>就是列空间的维度（输出空间的这种维度）。
             </p>
-            <ul style="margin: 0.5rem 0 0 0;">
-                <li>满秩（rank = n）：空间没有被压扁，矩阵可逆</li>
-                <li>非满秩（rank < n）：空间被压到更低维度，矩阵不可逆</li>
-            </ul>
+            <p style="margin-top: 0.5rem;">
+                <strong>秩-零化度定理</strong>：
+                <br>
+                输入维度 (n) = 输出维度 (Rank) + 消失维度 (Nullity)
+                <br>
+                <small>你原本有 n 维，变换后剩下了 Rank 维，那么肯定有 Nullity 维被压扁消失了！</small>
+            </p>
         </div>
     </div>
 </div>
