@@ -56,6 +56,48 @@
                 底面积 × 高度 = 体积！这就是为什么三重积等于体积。
             </p>
         </div>
+
+        <!-- 新增：具体计算例子 -->
+        <h3 style="margin-top: 2rem;">🧮 实战演算：计算平行六面体体积</h3>
+
+        <p>假设有三个向量围成一个"斜盒子"：</p>
+        <div class="math-block">
+            $$ \vec{a} = \begin{bmatrix}1\\0\\0\end{bmatrix}, \quad \vec{b} = \begin{bmatrix}0\\1\\0\end{bmatrix}, \quad
+            \vec{c} = \begin{bmatrix}0\\0\\1\end{bmatrix} $$
+        </div>
+
+        <div class="example-ladder">
+            <div class="example-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-label">先算叉积 $\vec{b} \times \vec{c}$</div>
+                    <p>
+                        $\vec{b} \times \vec{c} = \begin{bmatrix}0\\1\\0\end{bmatrix} \times
+                        \begin{bmatrix}0\\0\\1\end{bmatrix} = \begin{bmatrix}1\\0\\0\end{bmatrix}$
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 0.9em;">这是 ĵ × k̂ = î（右手定则）</p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-label">再算点积 $\vec{a} \cdot (\vec{b} \times \vec{c})$</div>
+                    <p>
+                        $\begin{bmatrix}1\\0\\0\end{bmatrix} \cdot \begin{bmatrix}1\\0\\0\end{bmatrix} = 1 \times 1 + 0
+                        \times 0 + 0 \times 0 = \mathbf{1}$
+                    </p>
+                </div>
+            </div>
+            <div class="example-step">
+                <div class="step-number">✓</div>
+                <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="step-label" style="color: var(--accent-green);">结论</div>
+                    <p>
+                        体积 = 1。这正是标准单位立方体的体积！
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
