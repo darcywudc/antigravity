@@ -597,6 +597,196 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用向量解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            学会了向量的加法和数乘，我们来看看它们如何解决真实世界中的问题。
+        </p>
+
+        <!-- 问题 1：游戏角色移动 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎮 问题 1：游戏角色的最终位置</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：你正在开发一款 2D 游戏。玩家角色从位置 $(0, 0)$ 出发，执行了以下三个移动指令：</p>
+                <ul>
+                    <li>第一步：向右走 3 格，向上走 2 格</li>
+                    <li>第二步：向左走 1 格，向上走 4 格</li>
+                    <li>第三步：向右走 2 格，向下走 1 格</li>
+                </ul>
+                <p><strong>问题</strong>：角色最终在什么位置？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">识别概念：这是向量加法</div>
+                        <p>每一步移动都是一个向量。最终位置 = 所有移动向量的<strong>和</strong>。</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">用向量表示每一步</div>
+                        <div class="math-block">
+                            $\vec{m_1} = \begin{bmatrix}3\\2\end{bmatrix}, \quad \vec{m_2} =
+                            \begin{bmatrix}-1\\4\end{bmatrix}, \quad \vec{m_3} = \begin{bmatrix}2\\-1\end{bmatrix}$
+                        </div>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">向左 = 负x，向下 = 负y</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">计算向量和</div>
+                        <div class="math-block">
+                            $\vec{m_1} + \vec{m_2} + \vec{m_3} = \begin{bmatrix}3+(-1)+2\\2+4+(-1)\end{bmatrix} =
+                            \begin{bmatrix}4\\5\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>角色最终位置是 <strong>(4, 5)</strong>，即从原点向右 4 格、向上 5 格。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 编程启示</div>
+                <p>在游戏开发中，角色的 <code>position</code> 通常就是一个向量。每一帧更新时，我们只需要把 <code>velocity</code>（速度向量）加到
+                    <code>position</code> 上即可！</p>
+                <pre
+                    style="background: var(--bg-tertiary); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem;">position = position + velocity * deltaTime</pre>
+            </div>
+        </div>
+
+        <!-- 问题 2：风帆航行 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">⛵ 问题 2：风帆航行与合力</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一艘帆船正在海上航行。引擎提供向东的推力 $\vec{E} = (5, 0)$ 公里/小时，同时有一股风从东南方向吹来，产生向西北的风力 $\vec{W} =
+                    (-2, 3)$ 公里/小时。</p>
+                <p><strong>问题</strong>：帆船实际的航行速度和方向是什么？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">识别概念：向量加法（力的合成）</div>
+                        <p>合速度 = 引擎速度 + 风力影响</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算合速度向量</div>
+                        <div class="math-block">
+                            $\vec{V} = \vec{E} + \vec{W} = \begin{bmatrix}5\\0\end{bmatrix} +
+                            \begin{bmatrix}-2\\3\end{bmatrix} = \begin{bmatrix}3\\3\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">计算速率（向量长度）</div>
+                        <div class="math-block">
+                            $|\vec{V}| = \sqrt{3^2 + 3^2} = \sqrt{18} \approx 4.24 \text{ 公里/小时}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>帆船以约 <strong>4.24 公里/小时</strong> 的速度，向<strong>东北方向</strong>（45°）航行。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：缩放与动画 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🎬 问题 3：动画中的平滑移动</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：你正在制作一个动画，需要让一个物体从点 A$(2, 1)$ 平滑地移动到点 B$(8, 4)$。动画持续 60 帧。</p>
+                <p><strong>问题</strong>：第 20 帧时，物体应该在什么位置？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">识别概念：向量加法 + 数乘</div>
+                        <p>位移向量 = 终点 - 起点；每帧移动 = 位移 × (1/总帧数)</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算总位移向量</div>
+                        <div class="math-block">
+                            $\vec{D} = B - A = \begin{bmatrix}8-2\\4-1\end{bmatrix} = \begin{bmatrix}6\\3\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-label">第 20 帧 = 进度 20/60 = 1/3</div>
+                        <div class="math-block">
+                            $\text{位置} = A + \frac{20}{60} \times \vec{D} = \begin{bmatrix}2\\1\end{bmatrix} +
+                            \frac{1}{3}\begin{bmatrix}6\\3\end{bmatrix} = \begin{bmatrix}2+2\\1+1\end{bmatrix} =
+                            \begin{bmatrix}4\\2\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>第 20 帧时，物体应该在 <strong>(4, 2)</strong>。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是"线性插值"</div>
+                <p>这个技术叫做 <strong>Linear Interpolation (Lerp)</strong>，是游戏开发和动画制作中最基础也最常用的技术之一。公式：</p>
+                <div class="math-block">
+                    $\text{Lerp}(A, B, t) = A + t \times (B - A) = (1-t) \times A + t \times B$
+                </div>
+                <p style="font-size: 0.9em; color: var(--text-muted);">其中 $t$ 是进度百分比（0 到 1 之间）。</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：自己试试！</div>
+            <p><strong>问题</strong>：一架无人机从 $(0, 0)$ 起飞，先向东飞 100 米，再向北飞 80 米，然后被风吹向西南 $(−30, −20)$ 米。它现在在哪里？离起点多远？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>最终位置 = $(100, 0) + (0, 80) + (-30, -20) = (70, 60)$</p>
+                    <p>离起点距离 = $\sqrt{70^2 + 60^2} = \sqrt{4900 + 3600} = \sqrt{8500} \approx 92.2$ 米</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- ==================== 总结 ==================== -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>

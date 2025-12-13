@@ -337,6 +337,178 @@
     </div>
 </div>
 
+<!-- ==================== 实战应用 ==================== -->
+<div class="section fade-in">
+    <h2 class="section-title">🎯 实战应用：用线性组合解决真实问题</h2>
+
+    <div class="content-block">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            线性组合不只是课本上的公式，它在现实中无处不在——从调色到资源分配，再到3D建模。
+        </p>
+
+        <!-- 问题 1：调色 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-blue); margin-bottom: 2rem;">
+            <div class="deep-title">🎨 问题 1：数字调色板</div>
+
+            <div style="background: rgba(74, 158, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：你是一名UI设计师，需要创建一种"薄荷绿"主题色。你知道：</p>
+                <ul>
+                    <li>纯青色 (Cyan) 的 RGB 值是 $(0, 255, 255)$</li>
+                    <li>纯白色 (White) 的 RGB 值是 $(255, 255, 255)$</li>
+                </ul>
+                <p><strong>问题</strong>：如何用 70% 的青色混合 30% 的白色，得到薄荷绿的 RGB 值？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">识别概念：颜色混合 = 线性组合</div>
+                        <p>混合色 = $0.7 \times \text{青色} + 0.3 \times \text{白色}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算线性组合</div>
+                        <div class="math-block">
+                            $0.7 \begin{bmatrix}0\\255\\255\end{bmatrix} + 0.3 \begin{bmatrix}255\\255\\255\end{bmatrix}
+                            = \begin{bmatrix}0+76.5\\178.5+76.5\\178.5+76.5\end{bmatrix} =
+                            \begin{bmatrix}76.5\\255\\255\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>薄荷绿的 RGB 值约为 <strong>(77, 255, 255)</strong>（四舍五入到整数）。</p>
+                        <div
+                            style="width: 50px; height: 30px; background: rgb(77, 255, 255); border-radius: 4px; margin-top: 0.5rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 设计启示</div>
+                <p>Photoshop 和 Figma 的"颜色混合"功能，本质上就是在计算两个颜色向量的线性组合！</p>
+            </div>
+        </div>
+
+        <!-- 问题 2：资源分配 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-orange); margin-bottom: 2rem;">
+            <div class="deep-title">🏭 问题 2：工厂资源分配</div>
+
+            <div style="background: rgba(249, 115, 22, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：一家咖啡店有两种招牌饮品：</p>
+                <ul>
+                    <li><strong>拿铁</strong>：需要 1 份浓缩咖啡 + 2 份牛奶</li>
+                    <li><strong>卡布奇诺</strong>：需要 1 份浓缩咖啡 + 1 份牛奶 + 1 份奶泡</li>
+                </ul>
+                <p>用向量表示：拿铁 $= (1, 2, 0)$，卡布奇诺 $= (1, 1, 1)$（咖啡，牛奶，奶泡）</p>
+                <p><strong>问题</strong>：如果今天要做 5 杯拿铁和 3 杯卡布奇诺，总共需要多少原料？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">识别概念：总需求 = 线性组合</div>
+                        <p>总需求 = $5 \times \text{拿铁} + 3 \times \text{卡布奇诺}$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">计算</div>
+                        <div class="math-block">
+                            $5 \begin{bmatrix}1\\2\\0\end{bmatrix} + 3 \begin{bmatrix}1\\1\\1\end{bmatrix} =
+                            \begin{bmatrix}5+3\\10+3\\0+3\end{bmatrix} = \begin{bmatrix}8\\13\\3\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p>需要 <strong>8 份浓缩咖啡</strong>、<strong>13 份牛奶</strong>、<strong>3 份奶泡</strong>。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 3：判断可达性 -->
+        <div class="deep-dive" style="border-left: 4px solid var(--accent-purple);">
+            <div class="deep-title">🧭 问题 3：你能到达那里吗？（张成空间）</div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>场景</strong>：在一个网格地图上，你只能执行两种移动：</p>
+                <ul>
+                    <li>移动 A：向右 2 格，向上 1 格 → $\vec{a} = (2, 1)$</li>
+                    <li>移动 B：向右 1 格，向上 3 格 → $\vec{b} = (1, 3)$</li>
+                </ul>
+                <p><strong>问题</strong>：从原点出发，你能到达 $(5, 8)$ 吗？如果能，需要各执行多少次？</p>
+            </div>
+
+            <div class="example-ladder">
+                <div class="example-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-label">设立方程：线性组合问题</div>
+                        <p>找 $x, y$ 使得 $x \cdot \vec{a} + y \cdot \vec{b} = (5, 8)$</p>
+                        <div class="math-block">
+                            $x \begin{bmatrix}2\\1\end{bmatrix} + y \begin{bmatrix}1\\3\end{bmatrix} =
+                            \begin{bmatrix}5\\8\end{bmatrix}$
+                        </div>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-label">解方程组</div>
+                        <p>$2x + y = 5$ 且 $x + 3y = 8$</p>
+                        <p>从第一个方程得 $y = 5 - 2x$，代入第二个：</p>
+                        <p>$x + 3(5 - 2x) = 8 \Rightarrow x + 15 - 6x = 8 \Rightarrow -5x = -7 \Rightarrow x = 1.4$</p>
+                        <p>$y = 5 - 2(1.4) = 2.2$</p>
+                    </div>
+                </div>
+                <div class="example-step">
+                    <div class="step-number">✓</div>
+                    <div class="step-content" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="step-label" style="color: var(--accent-green);">答案</div>
+                        <p><strong>理论上可以</strong>（因为 $(5, 8)$ 在 $\vec{a}$ 和 $\vec{b}$ 的张成空间内），需要 1.4 次移动 A 和 2.2 次移动 B。
+                        </p>
+                        <p style="font-size: 0.9em; color: var(--text-muted);">但如果只允许整数次移动，则无法精确到达 $(5, 8)$。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aha-box" style="margin-top: 1rem;">
+                <div class="aha-title">💡 这就是"张成空间"的实际意义</div>
+                <p>两个不共线的向量可以张成整个 2D 平面，所以理论上任何点都可到达。但如果系数被限制（如只能是整数），那么只有部分点可以精确到达。</p>
+            </div>
+        </div>
+
+        <!-- 挑战题 -->
+        <div class="challenge-box" style="margin-top: 2rem;">
+            <div class="challenge-title">🚀 挑战：自己试试！</div>
+            <p><strong>问题</strong>：向量 $\vec{u} = (1, 2)$ 和 $\vec{v} = (2, 4)$ 能张成整个 2D 平面吗？能到达点 $(3, 6)$ 吗？能到达点 $(1, 0)$
+                吗？</p>
+            <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                <div
+                    style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                    <p>❌ <strong>不能张成整个平面</strong>！因为 $\vec{v} = 2\vec{u}$，它们线性相关，只能张成一条直线 $y = 2x$。</p>
+                    <p>✅ 能到达 $(3, 6)$：因为 $(3, 6) = 3 \cdot (1, 2)$，点在直线上。</p>
+                    <p>❌ 不能到达 $(1, 0)$：因为 $(1, 0)$ 不在直线 $y = 2x$ 上。</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
 <!-- 总结 -->
 <div class="section fade-in">
     <h2 class="section-title">🎯 本章收获</h2>
