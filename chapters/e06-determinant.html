@@ -185,6 +185,69 @@
                     行列式就是 0！因为它们没办法"撑起"整个平面。
                 </p>
             </div>
+
+            <!-- 新增：练习题 -->
+            <div class="challenge-box" style="margin-top: 2rem;">
+                <div class="challenge-title">✍️ 动手练习</div>
+                <p><strong>计算下列矩阵的行列式：</strong></p>
+                <ol>
+                    <li>$\begin{bmatrix} 3 & 1 \\ 2 & 4 \end{bmatrix}$</li>
+                    <li>$\begin{bmatrix} 5 & 10 \\ 1 & 2 \end{bmatrix}$</li>
+                    <li>$\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$（这是什么变换的矩阵？）</li>
+                </ol>
+                <details style="margin-top: 1rem;">
+                    <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                    <div
+                        style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                        <ol>
+                            <li>$3 \times 4 - 1 \times 2 = 12 - 2 = \mathbf{10}$ — 面积放大 10 倍</li>
+                            <li>$5 \times 2 - 10 \times 1 = 10 - 10 = \mathbf{0}$ — 灾难！空间被压扁了（列向量成比例）</li>
+                            <li>$0 \times 0 - (-1) \times 1 = 1$ — 这是 90° 旋转！面积不变，方向也不变</li>
+                        </ol>
+                    </div>
+                </details>
+            </div>
+
+            <!-- 新增：思考题 -->
+            <div class="challenge-box" style="margin-top: 2rem;">
+                <div class="challenge-title">🤔 想一想</div>
+                <p><strong>如果矩阵 A 的行列式是 2，矩阵 B 的行列式是 3，那么 AB 的行列式是多少？</strong></p>
+                <details style="margin-top: 1rem;">
+                    <summary style="cursor: pointer; color: var(--accent-blue); font-weight: bold;">👆 点击查看答案</summary>
+                    <div
+                        style="margin-top: 0.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                        <p><strong>答案</strong>：$\det(AB) = \det(A) \times \det(B) = 2 \times 3 = \mathbf{6}$</p>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>直觉</strong>：A 把面积放大 2 倍，B 再放大 3 倍，总共放大 $2 \times 3 = 6$ 倍！
+                        </p>
+                        <p style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.5rem;">
+                            🎯 这是行列式的乘法性质：$\det(AB) = \det(A) \cdot \det(B)$
+                        </p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- 新增：常见误区 -->
+            <div class="definition-card" style="border-left-color: var(--accent-orange); margin-top: 2rem;">
+                <div class="definition-title" style="color: var(--accent-orange);">⚠️ 常见误区</div>
+                <p><strong>误区</strong>："行列式是面积"</p>
+                <p><strong>纠正</strong>：行列式是面积的<strong>缩放因子</strong>，不是面积本身。</p>
+                <p style="margin-top: 0.5rem;">
+                    如果你有一个面积为 7 的图形，经过 det=2 的变换后，新面积是 $7 \times 2 = 14$，不是 2。
+                </p>
+            </div>
+
+            <!-- 新增：趣味知识 -->
+            <div class="deep-dive" style="margin-top: 2rem; border-left: 4px solid var(--accent-purple);">
+                <div class="deep-title">🎮 趣味应用：游戏中的碰撞检测</div>
+                <p>
+                    在游戏中判断一个点是否在三角形内部，可以用行列式！
+                </p>
+                <p style="margin-top: 0.5rem;">
+                    把点和三角形的三个顶点组成的向量做行列式运算，通过符号判断点在三角形的哪一侧。
+                    这比其他方法更快，所以游戏引擎经常使用它。
+                </p>
+            </div>
         </div>
     </div>
 
