@@ -20,14 +20,14 @@
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
         }
 
         header {
             text-align: center;
-            padding: 20px 0;
+            padding: 15px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
         }
@@ -45,22 +45,22 @@
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             background: linear-gradient(90deg, #2ed573, #00d4ff, #7c3aed);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .subtitle {
             color: #888;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 420px;
+            grid-template-columns: 1fr 380px;
             gap: 20px;
         }
 
@@ -75,12 +75,12 @@
             background: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 20px;
+            padding: 15px;
         }
 
         #canvas {
             width: 100%;
-            height: 500px;
+            height: 450px;
             background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
             border-radius: 10px;
             display: block;
@@ -88,20 +88,20 @@
 
         .view-tabs {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .view-tab {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             color: #888;
             cursor: pointer;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: all 0.2s;
         }
 
@@ -111,30 +111,26 @@
             color: #2ed573;
         }
 
-        .view-tab:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
         /* Control Panel */
         .control-panel {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 20px;
-            max-height: 90vh;
+            padding: 15px;
+            max-height: 85vh;
             overflow-y: auto;
         }
 
         .section {
-            margin-bottom: 18px;
+            margin-bottom: 15px;
         }
 
         .section h3 {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #888;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -151,24 +147,24 @@
         /* Formula Card */
         .formula-card {
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #2ed573;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 3px solid #2ed573;
         }
 
         .formula-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #2ed573;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .formula-main {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: #fff;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .formula-main .var {
@@ -176,119 +172,109 @@
         }
 
         .formula-desc {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #aaa;
             line-height: 1.4;
         }
 
-        /* Scenario Selector */
-        .scenario-btns {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .scenario-btn {
-            flex: 1;
-            padding: 12px 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #aaa;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-        }
-
-        .scenario-btn.active {
-            background: rgba(46, 213, 115, 0.2);
-            border-color: rgba(46, 213, 115, 0.4);
-            color: #2ed573;
-        }
-
-        .scenario-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        /* Support Grid Display */
-        .support-grid {
+        /* Support Height Controls */
+        .height-controls {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
-        .support-card {
+        .height-control {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 12px 10px;
+            border-radius: 8px;
+            padding: 10px 8px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .support-card.normal {
-            border-color: rgba(46, 213, 115, 0.3);
-        }
-
-        .support-card.warning {
-            border-color: rgba(255, 165, 2, 0.4);
-            background: rgba(255, 165, 2, 0.1);
-        }
-
-        .support-card.danger {
-            border-color: rgba(255, 107, 107, 0.4);
-            background: rgba(255, 107, 107, 0.1);
-        }
-
-        .support-label {
+        .height-control-label {
             font-size: 0.7rem;
             color: #888;
             margin-bottom: 4px;
         }
 
-        .support-value {
-            font-size: 1rem;
-            font-weight: 700;
+        .height-control-value {
+            font-size: 0.85rem;
+            font-weight: 600;
             font-family: 'JetBrains Mono', monospace;
+            color: #00d4ff;
+            margin-bottom: 4px;
         }
 
-        .support-detail {
+        .height-slider {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .height-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #00d4ff, #2ed573);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Support Info Grid */
+        .support-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .support-info {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 0.65rem;
+        }
+
+        .support-info-label {
             color: #666;
-            margin-top: 4px;
+            margin-bottom: 2px;
         }
 
-        .support-stiffness {
-            font-size: 0.7rem;
-            margin-top: 4px;
+        .support-info-value {
             font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
         }
 
-        /* Summary Stats */
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .stat-card {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 10px;
             text-align: center;
         }
 
         .stat-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #888;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .stat-value {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
         }
@@ -297,22 +283,22 @@
         .eccentricity-display {
             background: rgba(124, 58, 237, 0.1);
             border: 1px solid rgba(124, 58, 237, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
             text-align: center;
         }
 
         .ecc-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #7c3aed;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .ecc-values {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 20px;
         }
 
         .ecc-item {
@@ -320,30 +306,30 @@
         }
 
         .ecc-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #888;
         }
 
         .ecc-value {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
             color: #f472b6;
         }
 
-        /* Animation Controls */
+        /* Buttons */
         .btn-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .btn {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: none;
-            border-radius: 10px;
-            font-size: 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -359,16 +345,50 @@
             color: #ccc;
         }
 
-        /* Sliders */
+        .btn-small {
+            padding: 6px 10px;
+            font-size: 0.7rem;
+        }
+
+        /* Preset Buttons */
+        .preset-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .preset-btn.active {
+            background: rgba(46, 213, 115, 0.2);
+            border-color: rgba(46, 213, 115, 0.4);
+            color: #2ed573;
+        }
+
+        /* Seismic Force Slider */
         .slider-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .slider-label {
             display: flex;
             justify-content: space-between;
             margin-bottom: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #ccc;
         }
 
@@ -379,90 +399,35 @@
 
         input[type="range"] {
             width: 100%;
-            height: 5px;
+            height: 4px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            border-radius: 2px;
             outline: none;
             -webkit-appearance: none;
-            appearance: none;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             background: linear-gradient(135deg, #2ed573, #00d4ff);
             border-radius: 50%;
             cursor: pointer;
         }
 
-        /* Torsion Alert */
-        .torsion-alert {
-            background: rgba(255, 107, 107, 0.15);
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .torsion-alert.show {
-            display: block;
-        }
-
-        .torsion-title {
-            color: #ff6b6b;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .torsion-text {
-            font-size: 0.8rem;
-            color: #ccc;
-            line-height: 1.5;
-        }
-
-        /* Info Cards */
-        .info-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        @media (max-width: 1000px) {
-            .info-cards {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .info-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .info-card h4 {
-            color: #2ed573;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-
-        .info-card p {
-            color: #888;
-            font-size: 0.78rem;
-            line-height: 1.5;
-        }
-
-        .formula-inline {
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 3px 6px;
-            border-radius: 4px;
-            color: #00d4ff;
+        /* Info Text */
+        .info-text {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
             font-size: 0.7rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .info-text strong {
+            color: #00d4ff;
         }
     </style>
 </head>
@@ -472,48 +437,84 @@
         <header>
             <a href="index.html" class="back-link">← 返回概览</a>
             <h1>🏢 橡胶隔震支座仿真</h1>
-            <p class="subtitle">振动台缩尺模型 - 高烈度区地铁车辆段上盖隔震结构</p>
+            <p class="subtitle">振动台缩尺模型 - 支座高度调节与刚度中心偏移</p>
         </header>
 
         <div class="main-layout">
             <div class="viz-container">
                 <canvas id="canvas"></canvas>
                 <div class="view-tabs">
-                    <div class="view-tab active" data-view="plan">俯视图 (支座布置)</div>
-                    <div class="view-tab" data-view="forces">力的分布</div>
-                    <div class="view-tab" data-view="stiffness">刚度分布</div>
+                    <div class="view-tab active" data-view="plan">俯视图</div>
+                    <div class="view-tab" data-view="elevation">立面图</div>
+                    <div class="view-tab" data-view="stiffness">刚度分析</div>
                 </div>
             </div>
 
             <div class="control-panel">
                 <!-- Core Formula -->
                 <div class="formula-card">
-                    <div class="formula-title">⚡ 橡胶支座水平刚度模型</div>
+                    <div class="formula-title">⚡ 刚度中心计算</div>
                     <div class="formula-main">
-                        K<sub>h</sub> = K<sub>0</sub> × (1 - (<span class="var">P</span>/<span
-                            class="var">P<sub>cr</sub></span>)²)
+                        C<sub>S</sub> = Σ(K<sub>h,i</sub> × x<sub>i</sub>) / Σ(K<sub>h,i</sub>)
                     </div>
                     <div class="formula-desc">
-                        水平刚度随竖向荷载降低。当 P → P<sub>cr</sub> 时，K<sub>h</sub> → 0<br>
-                        支座直径 D=60mm | 总重 W≈85.6kN ≈ 8.7吨
+                        K<sub>h</sub> = K<sub>0</sub> × (1 - (P/P<sub>cr</sub>)²) | 支座高差 → 反力重分配 → K<sub>h</sub>变化 →
+                        C<sub>S</sub>偏移
                     </div>
                 </div>
 
-                <!-- Scenario Selection -->
+                <!-- Support Heights -->
                 <div class="section">
-                    <h3>工况选择</h3>
-                    <div class="scenario-btns">
-                        <div class="scenario-btn active" data-scenario="normal">正常分布</div>
-                        <div class="scenario-btn" data-scenario="eccentric">偏心分布</div>
-                        <div class="scenario-btn" data-scenario="max_torsion">最大扭转</div>
-                        <div class="scenario-btn" data-scenario="custom">自定义</div>
+                    <h3>支座高度调节 (mm)</h3>
+                    <div class="height-controls">
+                        <div class="height-control">
+                            <div class="height-control-label">支座 8</div>
+                            <div class="height-control-value" id="h8-value">0</div>
+                            <input type="range" class="height-slider" id="h8" min="-10" max="10" value="0" step="0.5">
+                        </div>
+                        <div class="height-control">
+                            <div class="height-control-label">支座 11</div>
+                            <div class="height-control-value" id="h11-value">0</div>
+                            <input type="range" class="height-slider" id="h11" min="-10" max="10" value="0" step="0.5">
+                        </div>
+                        <div class="height-control">
+                            <div class="height-control-label">支座 25</div>
+                            <div class="height-control-value" id="h25-value">0</div>
+                            <input type="range" class="height-slider" id="h25" min="-10" max="10" value="0" step="0.5">
+                        </div>
+                        <div class="height-control">
+                            <div class="height-control-label">支座 4</div>
+                            <div class="height-control-value" id="h4-value">0</div>
+                            <input type="range" class="height-slider" id="h4" min="-10" max="10" value="0" step="0.5">
+                        </div>
+                        <div class="height-control">
+                            <div class="height-control-label">支座 16</div>
+                            <div class="height-control-value" id="h16-value">0</div>
+                            <input type="range" class="height-slider" id="h16" min="-10" max="10" value="0" step="0.5">
+                        </div>
+                        <div class="height-control">
+                            <div class="height-control-label">支座 30</div>
+                            <div class="height-control-value" id="h30-value">0</div>
+                            <input type="range" class="height-slider" id="h30" min="-10" max="10" value="0" step="0.5">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Support Grid -->
+                <!-- Preset Configurations -->
                 <div class="section">
-                    <h3>支座状态 (6个支座, D=60mm)</h3>
-                    <div class="support-grid" id="support-grid">
+                    <h3>预设配置</h3>
+                    <div class="preset-btns">
+                        <div class="preset-btn active" data-preset="level">水平</div>
+                        <div class="preset-btn" data-preset="tilt-x">X向倾斜</div>
+                        <div class="preset-btn" data-preset="tilt-y">Y向倾斜</div>
+                        <div class="preset-btn" data-preset="twist">扭转</div>
+                    </div>
+                </div>
+
+                <!-- Support Info -->
+                <div class="section">
+                    <h3>支座状态 (反力/面压/刚度)</h3>
+                    <div class="support-info-grid" id="support-info-grid">
                         <!-- Generated by JS -->
                     </div>
                 </div>
@@ -525,282 +526,196 @@
                         <div class="stat-value" id="total-weight" style="color: #ffa502;">85.58 kN</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">平均刚度比</div>
-                        <div class="stat-value" id="avg-stiffness" style="color: #2ed573;">99.0%</div>
+                        <div class="stat-label">支座直径 D</div>
+                        <div class="stat-value" id="bearing-diameter" style="color: #2ed573;">60 mm</div>
                     </div>
                 </div>
 
                 <!-- Eccentricity Display -->
                 <div class="eccentricity-display">
-                    <div class="ecc-title">刚度中心偏移 (e = C<sub>S</sub> - C<sub>M</sub>)</div>
+                    <div class="ecc-title">刚度中心偏移 e = C<sub>S</sub> - C<sub>M</sub></div>
                     <div class="ecc-values">
                         <div class="ecc-item">
                             <div class="ecc-label">e<sub>x</sub></div>
-                            <div class="ecc-value" id="ecc-x">0.00 m</div>
+                            <div class="ecc-value" id="ecc-x">0.000 m</div>
                         </div>
                         <div class="ecc-item">
                             <div class="ecc-label">e<sub>y</sub></div>
-                            <div class="ecc-value" id="ecc-y">0.00 m</div>
+                            <div class="ecc-value" id="ecc-y">0.000 m</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">偏心率</div>
-                            <div class="ecc-value" id="ecc-ratio">0.0%</div>
+                            <div class="ecc-label">|e|</div>
+                            <div class="ecc-value" id="ecc-mag">0.000 m</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Torsion Alert -->
-                <div class="torsion-alert" id="torsion-alert">
-                    <div class="torsion-title">⚠️ 扭转耦合警告</div>
-                    <div class="torsion-text" id="torsion-text">
-                        刚度中心偏离质心，地震力将产生扭转力矩 M<sub>T</sub> = F × e
-                    </div>
-                </div>
-
-                <!-- Seismic Control -->
+                <!-- Seismic Force -->
                 <div class="section">
-                    <h3>地震力输入</h3>
+                    <h3>地震力</h3>
                     <div class="slider-group">
                         <div class="slider-label">
-                            <span>水平地震力 F</span>
+                            <span>水平力 F</span>
                             <span class="slider-value" id="force-value">0 kN</span>
                         </div>
-                        <input type="range" id="force-slider" min="-100" max="100" value="0">
-                    </div>
-                    <div class="slider-group">
-                        <div class="slider-label">
-                            <span>偏心调节</span>
-                            <span class="slider-value" id="eccentric-value">0%</span>
-                        </div>
-                        <input type="range" id="eccentric-slider" min="0" max="100" value="0">
+                        <input type="range" id="force-slider" min="-50" max="50" value="0">
                     </div>
                 </div>
 
-                <!-- Animation Controls -->
-                <div class="section">
-                    <h3>动画控制</h3>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" id="btn-animate">▶ 地震模拟</button>
-                        <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
-                    </div>
+                <!-- Animation -->
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="btn-animate">▶ 地震模拟</button>
+                    <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
                 </div>
-            </div>
-        </div>
 
-        <!-- Info Cards -->
-        <div class="info-cards">
-            <div class="info-card">
-                <h4>🔧 橡胶支座特性</h4>
-                <p>
-                    天然橡胶叠层隔震支座由交替叠层的橡胶片和钢板组成。
-                    <span class="formula-inline">K<sub>h</sub> = G×A/T<sub>r</sub></span><br>
-                    竖向荷载增大会降低水平刚度（P-Δ效应）。
-                </p>
-            </div>
-            <div class="info-card">
-                <h4>⚖️ 刚度中心 C<sub>S</sub></h4>
-                <p>
-                    刚度中心由各支座刚度加权计算：<br>
-                    <span class="formula-inline">C<sub>S</sub> = Σ(K<sub>i</sub>×x<sub>i</sub>) /
-                        Σ(K<sub>i</sub>)</span><br>
-                    当支座反力不均匀时，C<sub>S</sub> 会偏离质心 C<sub>M</sub>。
-                </p>
-            </div>
-            <div class="info-card">
-                <h4>🔄 扭转耦合</h4>
-                <p>
-                    当 e = C<sub>S</sub> - C<sub>M</sub> ≠ 0 时，水平地震力会产生扭转力矩：<br>
-                    <span class="formula-inline">M<sub>T</sub> = F × e</span><br>
-                    建筑会同时发生平移和转动。
-                </p>
+                <!-- Info -->
+                <div class="info-text">
+                    <strong>操作说明：</strong><br>
+                    1. 调节支座高度，观察刚度中心C<sub>S</sub>的偏移<br>
+                    2. 支座高度变化 → 反力重分配 → K<sub>h</sub>变化<br>
+                    3. 扭转力矩 M<sub>T</sub> = F × e（当e≠0时）
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // ============================================================
+        // CANVAS SETUP
+        // ============================================================
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
         function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth - 40;
-            canvas.height = 500;
+            canvas.width = canvas.parentElement.clientWidth - 30;
+            canvas.height = 450;
         }
         resizeCanvas();
         window.addEventListener('resize', () => { resizeCanvas(); draw(); });
 
         // ============================================================
-        // RUBBER BEARING DESIGN PARAMETERS
-        // 基于振动台缩尺模型 - "高烈度区地铁车辆段上盖隔震结构振动台试验"
+        // MODEL PARAMETERS - 振动台缩尺模型
         // ============================================================
 
-        // Bearing geometry - 固定直径 (振动台试验支座)
-        const BEARING_DIAMETER = 0.060; // m = 60mm (所有支座统一尺寸)
-        const BEARING_AREA = Math.PI * Math.pow(BEARING_DIAMETER / 2, 2); // m² = 0.00283 m²
+        // 建筑布局: 2行 × 3列，两跨
+        //    8 -------- 11 -------- 25
+        //    |    跨1   |    跨2    |
+        //    4 -------- 16 -------- 30
 
-        // Material properties (缩尺橡胶支座)
-        const SHEAR_MODULUS = 0.4; // MPa (G - 缩尺橡胶支座剪切模量，略低于标准)
-        const RUBBER_LAYER_THICKNESS = 2; // mm per layer (缩尺)
-        const NUM_RUBBER_LAYERS = 10; // number of rubber layers (缩尺)
-        const TOTAL_RUBBER_THICKNESS = (RUBBER_LAYER_THICKNESS * NUM_RUBBER_LAYERS) / 1000; // m = 0.02m
-        const STEEL_PLATE_THICKNESS = 1; // mm per steel plate
+        const SPAN_X = 0.6; // m (每跨X方向长度)
+        const SPAN_Y = 0.4; // m (Y方向宽度)
+        const TOTAL_LENGTH = SPAN_X * 2; // 1.2m
+        const TOTAL_WIDTH = SPAN_Y; // 0.4m
 
-        // Reaction forces from table (kN) - 设计工况
-        // 总重 W = 85.58 kN ≈ 8.7吨 (振动台缩尺模型)
-        // Row 1: 8, 11, 25 (top)
-        // Row 2: 4, 16, 30 (bottom)
-        const NORMAL_REACTIONS = [10.01, 22.77, 10.01, 10.07, 22.64, 10.07]; // kN
-        const TOTAL_WEIGHT = NORMAL_REACTIONS.reduce((a, b) => a + b, 0); // ≈ 85.58 kN
+        // 支座初始反力 (kN) - 来自表格数据
+        const INITIAL_REACTIONS = {
+            '8': 10.0075,   // 左上
+            '11': 22.7747,  // 中上
+            '25': 10.0053,  // 右上
+            '4': 10.0727,   // 左下
+            '16': 22.6419,  // 中下
+            '30': 10.0744   // 右下
+        };
 
-        // Model geometry (振动台模型尺寸估算)
-        const BUILDING_WIDTH = 1.2; // m (X方向，缩尺模型)
-        const BUILDING_DEPTH = 0.8; // m (Y方向，缩尺模型)
+        // 支座位置 (以质心为原点)
+        const SUPPORT_POSITIONS = {
+            '8': { x: -SPAN_X, y: SPAN_Y / 2 },
+            '11': { x: 0, y: SPAN_Y / 2 },
+            '25': { x: SPAN_X, y: SPAN_Y / 2 },
+            '4': { x: -SPAN_X, y: -SPAN_Y / 2 },
+            '16': { x: 0, y: -SPAN_Y / 2 },
+            '30': { x: SPAN_X, y: -SPAN_Y / 2 }
+        };
 
-        // Support positions (2行 × 3列)
-        const SUPPORTS_CONFIG = [
-            { label: '8', x: -BUILDING_WIDTH / 2, y: BUILDING_DEPTH / 2, isCenter: false },
-            { label: '11', x: 0, y: BUILDING_DEPTH / 2, isCenter: true },
-            { label: '25', x: BUILDING_WIDTH / 2, y: BUILDING_DEPTH / 2, isCenter: false },
-            { label: '4', x: -BUILDING_WIDTH / 2, y: -BUILDING_DEPTH / 2, isCenter: false },
-            { label: '16', x: 0, y: -BUILDING_DEPTH / 2, isCenter: true },
-            { label: '30', x: BUILDING_WIDTH / 2, y: -BUILDING_DEPTH / 2, isCenter: false }
-        ];
+        const SUPPORT_IDS = ['8', '11', '25', '4', '16', '30'];
+        const TOTAL_WEIGHT = Object.values(INITIAL_REACTIONS).reduce((a, b) => a + b, 0); // 85.58 kN
 
-        // ============================================================
-        // BEARING STIFFNESS CALCULATIONS (固定直径60mm)
-        // ============================================================
+        // 支座参数 - 根据面压15MPa设计
+        const TARGET_PRESSURE = 12; // MPa (设计面压)
+        const AVG_REACTION = TOTAL_WEIGHT / 6; // 平均反力
+        const BEARING_AREA = (AVG_REACTION * 1000) / (TARGET_PRESSURE * 1e6); // m²
+        const BEARING_DIAMETER = Math.sqrt(4 * BEARING_AREA / Math.PI); // m
+        const BEARING_D_MM = BEARING_DIAMETER * 1000; // mm
 
-        // Shape factor S = D / (4 × t_layer)
-        const SHAPE_FACTOR = BEARING_DIAMETER / (4 * RUBBER_LAYER_THICKNESS / 1000);
+        // 橡胶支座参数
+        const SHEAR_MODULUS = 0.4; // MPa
+        const RUBBER_LAYER_T = 2; // mm
+        const NUM_LAYERS = 8;
+        const TOTAL_RUBBER_T = (RUBBER_LAYER_T * NUM_LAYERS) / 1000; // m
+        const SHAPE_FACTOR = BEARING_DIAMETER / (4 * RUBBER_LAYER_T / 1000);
 
-        // Baseline horizontal stiffness: Kh0 = G × A / Tr (kN/m)
-        const Kh0_BASELINE = SHEAR_MODULUS * 1000 * BEARING_AREA / TOTAL_RUBBER_THICKNESS;
-
-        // Vertical stiffness: Kv = Ec × A / Tr
-        // Ec = 6 × G × S² (compression modulus)
+        // 刚度计算
+        const Kh0 = SHEAR_MODULUS * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m
         const Ec = 6 * SHEAR_MODULUS * SHAPE_FACTOR * SHAPE_FACTOR; // MPa
-        const Kv_BASELINE = Ec * 1000 * BEARING_AREA / TOTAL_RUBBER_THICKNESS; // kN/m
+        const Kv = Ec * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m
+        const P_cr = Math.PI * Math.PI * SHEAR_MODULUS * 1000 * BEARING_AREA * SHAPE_FACTOR * SHAPE_FACTOR / TOTAL_RUBBER_T; // kN
 
-        // Critical buckling load: P_cr ≈ π² × G × A × S² / Tr
-        const P_CR = Math.PI * Math.PI * SHEAR_MODULUS * 1000 * BEARING_AREA * SHAPE_FACTOR * SHAPE_FACTOR / TOTAL_RUBBER_THICKNESS; // kN
+        // 上部结构刚度 (估算)
+        const SUPER_STIFFNESS = Kv * 3; // 假设上部结构刚度为支座竖向刚度的3倍
 
-        // Effective horizontal stiffness with P-delta effect
-        // Kh_eff = Kh0 × (1 - (P/P_cr)²)
-        function calcEffectiveHorizontalStiffness(N) {
-            const ratio = N / P_CR;
-            return Kh0_BASELINE * Math.max(0, 1 - ratio * ratio);
-        }
-
-        // State
+        // ============================================================
+        // STATE
+        // ============================================================
         let state = {
             view: 'plan',
-            scenario: 'normal',
-            supports: [],
+            heights: { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 }, // mm
+            supports: {},
             force: 0,
-            eccentricFactor: 0,
             buildingDisp: { x: 0, y: 0, rot: 0 },
             isAnimating: false,
             animPhase: 0
         };
 
-        // Initialize supports with fixed bearing diameter
-        function initSupports(scenario) {
-            state.supports = [];
+        // ============================================================
+        // CALCULATIONS
+        // ============================================================
 
-            let reactions;
-            if (scenario === 'normal') {
-                reactions = [...NORMAL_REACTIONS];
-            } else if (scenario === 'eccentric') {
-                // Eccentric: increase left side, decrease right side
-                reactions = [
-                    NORMAL_REACTIONS[0] * 1.8,  // 8 - increase
-                    NORMAL_REACTIONS[1] * 1.3,  // 11 - increase
-                    NORMAL_REACTIONS[2] * 0.2,  // 25 - decrease significantly
-                    NORMAL_REACTIONS[3] * 1.8,  // 4 - increase
-                    NORMAL_REACTIONS[4] * 1.3,  // 16 - increase
-                    NORMAL_REACTIONS[5] * 0.2   // 30 - decrease significantly
-                ];
-            } else if (scenario === 'max_torsion') {
-                // Maximum torsion: diagonal pattern
-                reactions = [
-                    NORMAL_REACTIONS[0] * 2.0,  // 8 - max
-                    NORMAL_REACTIONS[1] * 0.5,  // 11 - low
-                    NORMAL_REACTIONS[2] * 0.1,  // 25 - min
-                    NORMAL_REACTIONS[3] * 0.1,  // 4 - min
-                    NORMAL_REACTIONS[4] * 0.5,  // 16 - low
-                    NORMAL_REACTIONS[5] * 2.0   // 30 - max
-                ];
-            } else {
-                reactions = [...NORMAL_REACTIONS];
-            }
+        // 根据支座高差计算反力重分配
+        function calculateReactions() {
+            // 简化模型：使用刚性上部结构假设
+            // 支座高差导致反力变化：ΔN = Kv × Δh
+            // 但需要保持总反力不变
 
-            SUPPORTS_CONFIG.forEach((cfg, i) => {
-                const N = reactions[i];
+            let totalDeltaN = 0;
+            const deltaN = {};
 
-                // All bearings use same diameter (60mm)
-                const D = BEARING_DIAMETER;
-                const A = BEARING_AREA;
+            SUPPORT_IDS.forEach(id => {
+                const h = state.heights[id] / 1000; // mm -> m
+                deltaN[id] = Kv * h; // 高度增加 → 反力增加
+                totalDeltaN += deltaN[id];
+            });
 
-                // Actual pressure under current load
-                const actualPressure = (N * 1000) / (A * 1e6); // MPa
+            // 调整使总反力保持不变
+            const avgDelta = totalDeltaN / 6;
 
-                // Effective stiffness under current load
-                const ratio = N / P_CR;
-                const Kh_eff = calcEffectiveHorizontalStiffness(N);
-                const stiffnessRatio = Kh0_BASELINE > 0 ? Kh_eff / Kh0_BASELINE : 0;
+            SUPPORT_IDS.forEach(id => {
+                const baseN = INITIAL_REACTIONS[id];
+                const adjustedDelta = deltaN[id] - avgDelta;
+                const newN = Math.max(0.1, baseN + adjustedDelta);
 
-                state.supports.push({
-                    label: cfg.label,
-                    x: cfg.x,
-                    y: cfg.y,
-                    isCenter: cfg.isCenter,
-                    D: D,                    // Diameter (m)
-                    D_mm: D * 1000,          // Diameter in mm = 60mm
-                    A: A,                    // Area (m²)
-                    S: SHAPE_FACTOR,         // Shape factor
-                    N: N,                    // Current axial load (kN)
-                    designN: NORMAL_REACTIONS[i], // Design axial load (kN)
-                    pressure: actualPressure, // Current pressure (MPa)
-                    Kh0: Kh0_BASELINE,       // Baseline horizontal stiffness (kN/m)
-                    Kh: Kh_eff,              // Effective horizontal stiffness (kN/m)
-                    Kv: Kv_BASELINE,         // Vertical stiffness (kN/m)
-                    P_cr: P_CR,              // Critical buckling load (kN)
-                    ratio: ratio,            // P/P_cr ratio
-                    stiffnessRatio: stiffnessRatio
-                });
+                const pressure = (newN * 1000) / (BEARING_AREA * 1e6); // MPa
+                const ratio = newN / P_cr;
+                const Kh = Kh0 * Math.max(0, 1 - ratio * ratio);
+
+                state.supports[id] = {
+                    x: SUPPORT_POSITIONS[id].x,
+                    y: SUPPORT_POSITIONS[id].y,
+                    h: state.heights[id],
+                    N: newN,
+                    pressure: pressure,
+                    Kh: Kh,
+                    ratio: ratio,
+                    stiffnessRatio: Kh / Kh0
+                };
             });
         }
 
-        // Apply eccentric factor for custom scenario
-        function applyEccentricFactor(factor) {
-            state.eccentricFactor = factor;
-            const f = factor / 100;
-
-            state.supports.forEach((s, i) => {
-                let normalN = NORMAL_REACTIONS[i];
-                let eccentricN;
-
-                // Eccentric pattern: left side heavy, right side light
-                if (s.x < 0) {
-                    eccentricN = normalN * (1 + f * 1.0);
-                } else if (s.x > 0) {
-                    eccentricN = normalN * (1 - f * 0.8);
-                } else {
-                    eccentricN = normalN * (1 + f * 0.3);
-                }
-
-                s.N = Math.max(0.1, eccentricN);
-                s.pressure = (s.N * 1000) / (BEARING_AREA * 1e6);
-                s.ratio = s.N / P_CR;
-                s.Kh = calcEffectiveHorizontalStiffness(s.N);
-                s.stiffnessRatio = Kh0_BASELINE > 0 ? s.Kh / Kh0_BASELINE : 0;
-            });
-        }
-
-        // Calculate center of stiffness and eccentricity
-        function calculateEccentricity() {
+        // 计算刚度中心
+        function calculateStiffnessCenter() {
             let sumKx = 0, sumKy = 0, sumK = 0;
 
-            state.supports.forEach(s => {
+            SUPPORT_IDS.forEach(id => {
+                const s = state.supports[id];
                 sumKx += s.Kh * s.x;
                 sumKy += s.Kh * s.y;
                 sumK += s.Kh;
@@ -809,132 +724,108 @@
             const Cs_x = sumK > 0 ? sumKx / sumK : 0;
             const Cs_y = sumK > 0 ? sumKy / sumK : 0;
 
-            // Center of mass assumed at origin
-            const ex = Cs_x;
-            const ey = Cs_y;
-            const e_magnitude = Math.sqrt(ex * ex + ey * ey);
-            const e_ratio = e_magnitude / Math.sqrt(BUILDING_WIDTH * BUILDING_WIDTH + BUILDING_DEPTH * BUILDING_DEPTH) * 100;
-
-            return { Cs_x, Cs_y, ex, ey, e_magnitude, e_ratio, totalK: sumK };
+            return {
+                x: Cs_x,
+                y: Cs_y,
+                ex: Cs_x, // 质心在原点
+                ey: Cs_y,
+                e_mag: Math.sqrt(Cs_x * Cs_x + Cs_y * Cs_y),
+                totalK: sumK
+            };
         }
 
-        // DOM Elements
-        const supportGrid = document.getElementById('support-grid');
-        const totalWeightEl = document.getElementById('total-weight');
-        const avgStiffnessEl = document.getElementById('avg-stiffness');
-        const eccXEl = document.getElementById('ecc-x');
-        const eccYEl = document.getElementById('ecc-y');
-        const eccRatioEl = document.getElementById('ecc-ratio');
-        const torsionAlert = document.getElementById('torsion-alert');
-        const torsionText = document.getElementById('torsion-text');
-        const forceSlider = document.getElementById('force-slider');
-        const forceValue = document.getElementById('force-value');
-        const eccentricSlider = document.getElementById('eccentric-slider');
-        const eccentricValue = document.getElementById('eccentric-value');
-        const btnAnimate = document.getElementById('btn-animate');
-        const btnReset = document.getElementById('btn-reset');
+        // ============================================================
+        // UI UPDATES
+        // ============================================================
 
-        // Create support display cards
-        function createSupportCards() {
-            supportGrid.innerHTML = '';
-            state.supports.forEach((s, i) => {
-                const card = document.createElement('div');
-                card.className = 'support-card normal';
-                card.id = `support-card-${i}`;
-                card.innerHTML = `
-                    <div class="support-label">支座 ${s.label} (D=${s.D_mm.toFixed(0)}mm)</div>
-                    <div class="support-value" id="support-value-${i}" style="color: #2ed573;">${s.N.toFixed(2)} kN</div>
-                    <div class="support-detail" id="support-pressure-${i}">σ=${s.pressure.toFixed(1)} MPa</div>
-                    <div class="support-stiffness" id="support-stiffness-${i}" style="color: #00d4ff;">Kh=${(s.stiffnessRatio * 100).toFixed(1)}%</div>
+        function updateUI() {
+            calculateReactions();
+            const cs = calculateStiffnessCenter();
+
+            // Update support info grid
+            const grid = document.getElementById('support-info-grid');
+            grid.innerHTML = '';
+
+            SUPPORT_IDS.forEach(id => {
+                const s = state.supports[id];
+                const statusColor = s.stiffnessRatio > 0.9 ? '#2ed573' :
+                    s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
+
+                const div = document.createElement('div');
+                div.className = 'support-info';
+                div.innerHTML = `
+                    <div class="support-info-label">支座 ${id}</div>
+                    <div class="support-info-value" style="color: ${statusColor}">
+                        ${s.N.toFixed(1)}kN / ${s.pressure.toFixed(1)}MPa
+                    </div>
+                    <div class="support-info-value" style="color: #00d4ff; font-size: 0.6rem;">
+                        Kh=${(s.stiffnessRatio * 100).toFixed(0)}%
+                    </div>
                 `;
-                supportGrid.appendChild(card);
-            });
-        }
-
-        // Update display
-        function updateDisplay() {
-            const ecc = calculateEccentricity();
-
-            // Update support cards
-            let totalN = 0;
-            let totalK = 0;
-
-            state.supports.forEach((s, i) => {
-                const card = document.getElementById(`support-card-${i}`);
-                const valueEl = document.getElementById(`support-value-${i}`);
-                const pressureEl = document.getElementById(`support-pressure-${i}`);
-                const stiffEl = document.getElementById(`support-stiffness-${i}`);
-
-                valueEl.textContent = s.N.toFixed(2) + ' kN';
-                pressureEl.textContent = `σ=${s.pressure.toFixed(1)} MPa`;
-                stiffEl.textContent = `Kh=${(s.stiffnessRatio * 100).toFixed(1)}%`;
-
-                totalN += s.N;
-                totalK += s.stiffnessRatio;
-
-                // Color coding based on pressure
-                if (s.pressure > 25 || s.stiffnessRatio < 0.5) {
-                    card.className = 'support-card danger';
-                    valueEl.style.color = '#ff6b6b';
-                    pressureEl.style.color = '#ff6b6b';
-                    stiffEl.style.color = '#ff6b6b';
-                } else if (s.pressure > 18 || s.stiffnessRatio < 0.8) {
-                    card.className = 'support-card warning';
-                    valueEl.style.color = '#ffa502';
-                    pressureEl.style.color = '#ffa502';
-                    stiffEl.style.color = '#ffa502';
-                } else {
-                    card.className = 'support-card normal';
-                    valueEl.style.color = '#2ed573';
-                    pressureEl.style.color = '#888';
-                    stiffEl.style.color = '#00d4ff';
-                }
+                grid.appendChild(div);
             });
 
-            // Summary stats
-            totalWeightEl.textContent = totalN.toFixed(2) + ' kN';
-            avgStiffnessEl.textContent = ((totalK / state.supports.length) * 100).toFixed(1) + '%';
+            // Update eccentricity display
+            document.getElementById('ecc-x').textContent = cs.ex.toFixed(4) + ' m';
+            document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
+            document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
 
-            // Eccentricity
-            eccXEl.textContent = ecc.ex.toFixed(3) + ' m';
-            eccYEl.textContent = ecc.ey.toFixed(3) + ' m';
-            eccRatioEl.textContent = ecc.e_ratio.toFixed(1) + '%';
+            // Update stats
+            document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
+            document.getElementById('bearing-diameter').textContent = BEARING_D_MM.toFixed(0) + ' mm';
 
-            // Torsion alert
-            if (ecc.e_ratio > 3) {
-                torsionAlert.classList.add('show');
-                const Mt = Math.abs(state.force) * ecc.e_magnitude;
-                torsionText.innerHTML = `偏心距 e = ${ecc.e_magnitude.toFixed(3)} m<br>
-                    扭转力矩 M<sub>T</sub> = ${state.force.toFixed(0)} × ${ecc.e_magnitude.toFixed(3)} = ${Mt.toFixed(1)} kN·m`;
-            } else {
-                torsionAlert.classList.remove('show');
-            }
-
-            return ecc;
+            draw();
         }
 
-        // Scenario buttons
-        document.querySelectorAll('.scenario-btn').forEach(btn => {
+        // ============================================================
+        // HEIGHT SLIDER HANDLERS
+        // ============================================================
+
+        SUPPORT_IDS.forEach(id => {
+            const slider = document.getElementById('h' + id);
+            const valueEl = document.getElementById('h' + id + '-value');
+
+            slider.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                state.heights[id] = val;
+                valueEl.textContent = val.toFixed(1);
+                updateUI();
+            });
+        });
+
+        // Preset configurations
+        document.querySelectorAll('.preset-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                state.scenario = btn.dataset.scenario;
 
-                if (state.scenario === 'custom') {
-                    eccentricSlider.disabled = false;
-                } else {
-                    eccentricSlider.disabled = true;
-                    eccentricSlider.value = state.scenario === 'eccentric' ? 100 : 0;
-                    eccentricValue.textContent = state.scenario === 'eccentric' ? '100%' : '0%';
+                const preset = btn.dataset.preset;
+
+                switch (preset) {
+                    case 'level':
+                        state.heights = { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 };
+                        break;
+                    case 'tilt-x':
+                        // X向倾斜：右侧高
+                        state.heights = { '8': -3, '11': 0, '25': 3, '4': -3, '16': 0, '30': 3 };
+                        break;
+                    case 'tilt-y':
+                        // Y向倾斜：上侧高
+                        state.heights = { '8': 3, '11': 3, '25': 3, '4': -3, '16': -3, '30': -3 };
+                        break;
+                    case 'twist':
+                        // 扭转：对角高
+                        state.heights = { '8': 5, '11': 0, '25': -5, '4': -5, '16': 0, '30': 5 };
+                        break;
                 }
 
-                initSupports(state.scenario);
-                if (state.scenario === 'eccentric') {
-                    applyEccentricFactor(100);
-                }
-                createSupportCards();
-                updateDisplay();
-                draw();
+                // Update sliders
+                SUPPORT_IDS.forEach(id => {
+                    document.getElementById('h' + id).value = state.heights[id];
+                    document.getElementById('h' + id + '-value').textContent = state.heights[id].toFixed(1);
+                });
+
+                updateUI();
             });
         });
 
@@ -948,25 +839,19 @@
             });
         });
 
-        // Sliders
+        // Force slider
+        const forceSlider = document.getElementById('force-slider');
+        const forceValue = document.getElementById('force-value');
         forceSlider.addEventListener('input', (e) => {
             state.force = parseFloat(e.target.value);
             forceValue.textContent = state.force.toFixed(0) + ' kN';
-            updateDisplay();
-            draw();
-        });
-
-        eccentricSlider.addEventListener('input', (e) => {
-            const factor = parseFloat(e.target.value);
-            eccentricValue.textContent = factor.toFixed(0) + '%';
-            applyEccentricFactor(factor);
-            createSupportCards();
-            updateDisplay();
             draw();
         });
 
         // Animation
         let animationId = null;
+        const btnAnimate = document.getElementById('btn-animate');
+        const btnReset = document.getElementById('btn-reset');
 
         btnAnimate.addEventListener('click', () => {
             if (!state.isAnimating) {
@@ -989,48 +874,46 @@
             forceSlider.value = 0;
             forceValue.textContent = '0 kN';
             btnAnimate.textContent = '▶ 地震模拟';
-            updateDisplay();
             draw();
         });
 
         function animate() {
             if (!state.isAnimating) return;
 
-            state.animPhase += 0.08;
-
-            // Sinusoidal seismic force
-            state.force = Math.sin(state.animPhase) * 80;
+            state.animPhase += 0.06;
+            state.force = Math.sin(state.animPhase) * 40;
             forceSlider.value = state.force;
             forceValue.textContent = state.force.toFixed(0) + ' kN';
 
-            const ecc = calculateEccentricity();
+            const cs = calculateStiffnessCenter();
 
             // Building response
-            const totalK = state.supports.reduce((sum, s) => sum + s.Kh, 0);
-            const disp = state.force / (totalK > 0 ? totalK : 1);
-
-            // Torsion response
-            const torsionMoment = state.force * ecc.e_magnitude;
-            const J = state.supports.reduce((sum, s) => sum + s.Kh * (s.x * s.x + s.y * s.y), 0);
+            const disp = state.force / cs.totalK;
+            const torsionMoment = state.force * cs.e_mag;
+            const J = SUPPORT_IDS.reduce((sum, id) => {
+                const s = state.supports[id];
+                return sum + s.Kh * (s.x * s.x + s.y * s.y);
+            }, 0);
             const rotation = J > 0 ? torsionMoment / J : 0;
 
-            // Apply damping
-            state.buildingDisp.x = state.buildingDisp.x * 0.9 + disp * 0.1;
-            state.buildingDisp.rot = state.buildingDisp.rot * 0.9 + rotation * 0.1;
+            state.buildingDisp.x = state.buildingDisp.x * 0.85 + disp * 0.15;
+            state.buildingDisp.rot = state.buildingDisp.rot * 0.85 + rotation * 0.15;
 
-            updateDisplay();
             draw();
             animationId = requestAnimationFrame(animate);
         }
 
-        // Drawing
+        // ============================================================
+        // DRAWING
+        // ============================================================
+
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (state.view === 'plan') {
                 drawPlanView();
-            } else if (state.view === 'forces') {
-                drawForcesView();
+            } else if (state.view === 'elevation') {
+                drawElevationView();
             } else {
                 drawStiffnessView();
             }
@@ -1039,50 +922,54 @@
         function drawPlanView() {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const scale = 35; // pixels per meter
+            const scale = 280; // pixels per meter
 
             ctx.save();
-            ctx.translate(centerX + state.buildingDisp.x * scale * 10, centerY);
-            ctx.rotate(state.buildingDisp.rot * 0.5);
+            ctx.translate(centerX + state.buildingDisp.x * scale * 5, centerY);
+            ctx.rotate(state.buildingDisp.rot * 0.3);
 
             // Building outline
-            const buildW = BUILDING_WIDTH * scale;
-            const buildD = BUILDING_DEPTH * scale;
+            const w = TOTAL_LENGTH * scale;
+            const d = TOTAL_WIDTH * scale;
 
             ctx.fillStyle = 'rgba(61, 90, 128, 0.3)';
-            ctx.fillRect(-buildW / 2, -buildD / 2, buildW, buildD);
+            ctx.fillRect(-w / 2, -d / 2, w, d);
             ctx.strokeStyle = '#5c7a99';
             ctx.lineWidth = 2;
-            ctx.strokeRect(-buildW / 2, -buildD / 2, buildW, buildD);
+            ctx.strokeRect(-w / 2, -d / 2, w, d);
 
-            // Grid lines
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 1;
+            // Span divider
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.setLineDash([5, 5]);
             ctx.beginPath();
-            ctx.moveTo(-buildW / 2, 0);
-            ctx.lineTo(buildW / 2, 0);
-            ctx.moveTo(0, -buildD / 2);
-            ctx.lineTo(0, buildD / 2);
+            ctx.moveTo(0, -d / 2);
+            ctx.lineTo(0, d / 2);
             ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Labels
+            ctx.font = '11px Inter';
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'center';
+            ctx.fillText('跨1', -w / 4, 0);
+            ctx.fillText('跨2', w / 4, 0);
 
             // Draw supports
-            const maxN = Math.max(...state.supports.map(s => s.N));
-            const ecc = calculateEccentricity();
-
-            state.supports.forEach(s => {
+            SUPPORT_IDS.forEach(id => {
+                const s = state.supports[id];
                 const px = s.x * scale;
-                const py = -s.y * scale; // Flip Y for screen coords
+                const py = -s.y * scale;
 
-                const size = 15 + (s.N / maxN) * 15;
+                const size = 18;
 
                 // Color based on stiffness ratio
                 let color;
-                if (s.stiffnessRatio < 0.5) {
-                    color = '#ff6b6b';
-                } else if (s.stiffnessRatio < 0.8) {
+                if (s.stiffnessRatio > 0.9) {
+                    color = '#2ed573';
+                } else if (s.stiffnessRatio > 0.7) {
                     color = '#ffa502';
                 } else {
-                    color = '#2ed573';
+                    color = '#ff6b6b';
                 }
 
                 // Draw bearing
@@ -1094,43 +981,47 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
+                // Height indicator
+                if (s.h !== 0) {
+                    ctx.font = '9px JetBrains Mono';
+                    ctx.fillStyle = s.h > 0 ? '#00d4ff' : '#f472b6';
+                    ctx.textAlign = 'center';
+                    ctx.fillText((s.h > 0 ? '+' : '') + s.h.toFixed(1), px, py + size + 12);
+                }
+
                 // Label
                 ctx.font = 'bold 11px Inter';
                 ctx.fillStyle = '#fff';
                 ctx.textAlign = 'center';
-                ctx.fillText(s.label, px, py + 4);
+                ctx.fillText(id, px, py + 4);
             });
 
             // Center of Mass (CM)
             ctx.beginPath();
-            ctx.arc(0, 0, 8, 0, Math.PI * 2);
+            ctx.arc(0, 0, 6, 0, Math.PI * 2);
             ctx.fillStyle = '#ffa502';
             ctx.fill();
             ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1.5;
             ctx.stroke();
-            ctx.font = 'bold 10px Inter';
-            ctx.fillStyle = '#ffa502';
-            ctx.fillText('CM', 15, 4);
 
             // Center of Stiffness (CS)
-            const csX = ecc.Cs_x * scale;
-            const csY = -ecc.Cs_y * scale;
+            const cs = calculateStiffnessCenter();
+            const csX = cs.x * scale;
+            const csY = -cs.y * scale;
+
             ctx.beginPath();
-            ctx.arc(csX, csY, 8, 0, Math.PI * 2);
+            ctx.arc(csX, csY, 6, 0, Math.PI * 2);
             ctx.fillStyle = '#f472b6';
             ctx.fill();
             ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1.5;
             ctx.stroke();
-            ctx.font = 'bold 10px Inter';
-            ctx.fillStyle = '#f472b6';
-            ctx.fillText('CS', csX + 15, csY + 4);
 
             // Eccentricity line
-            if (ecc.e_magnitude > 0.01) {
+            if (cs.e_mag > 0.001) {
                 ctx.beginPath();
-                ctx.setLineDash([5, 5]);
+                ctx.setLineDash([4, 4]);
                 ctx.moveTo(0, 0);
                 ctx.lineTo(csX, csY);
                 ctx.strokeStyle = '#f472b6';
@@ -1138,195 +1029,202 @@
                 ctx.stroke();
                 ctx.setLineDash([]);
 
-                // e label
-                ctx.font = '11px JetBrains Mono';
+                ctx.font = '10px JetBrains Mono';
                 ctx.fillStyle = '#f472b6';
-                ctx.fillText(`e = ${ecc.e_magnitude.toFixed(3)}m`, (csX) / 2, (csY) / 2 - 10);
+                ctx.fillText(`e=${(cs.e_mag * 1000).toFixed(1)}mm`, csX / 2 + 20, csY / 2);
             }
 
-            // Seismic force arrow
-            if (Math.abs(state.force) > 1) {
-                const arrowLen = Math.abs(state.force) * 0.8;
+            // Legend
+            ctx.restore();
+            ctx.font = '10px Inter';
+            ctx.textAlign = 'left';
+
+            ctx.fillStyle = '#ffa502';
+            ctx.fillRect(20, canvas.height - 50, 10, 10);
+            ctx.fillStyle = '#888';
+            ctx.fillText('CM (质心)', 35, canvas.height - 41);
+
+            ctx.fillStyle = '#f472b6';
+            ctx.fillRect(20, canvas.height - 35, 10, 10);
+            ctx.fillStyle = '#888';
+            ctx.fillText('CS (刚度中心)', 35, canvas.height - 26);
+
+            // Force arrow
+            if (Math.abs(state.force) > 0.5) {
+                ctx.save();
+                ctx.translate(centerX, centerY);
+
+                const arrowLen = Math.abs(state.force) * 1.5;
                 const dir = state.force > 0 ? 1 : -1;
+                const startX = -TOTAL_LENGTH * scale / 2 - 40;
 
                 ctx.beginPath();
-                ctx.moveTo(-buildW / 2 - 30, 0);
-                ctx.lineTo(-buildW / 2 - 30 + dir * arrowLen, 0);
+                ctx.moveTo(startX, 0);
+                ctx.lineTo(startX + dir * arrowLen, 0);
                 ctx.strokeStyle = '#00d4ff';
-                ctx.lineWidth = 4;
+                ctx.lineWidth = 3;
                 ctx.stroke();
 
                 // Arrow head
                 ctx.beginPath();
-                ctx.moveTo(-buildW / 2 - 30 + dir * arrowLen, 0);
-                ctx.lineTo(-buildW / 2 - 30 + dir * arrowLen - dir * 10, -8);
-                ctx.lineTo(-buildW / 2 - 30 + dir * arrowLen - dir * 10, 8);
+                ctx.moveTo(startX + dir * arrowLen, 0);
+                ctx.lineTo(startX + dir * arrowLen - dir * 8, -6);
+                ctx.lineTo(startX + dir * arrowLen - dir * 8, 6);
                 ctx.closePath();
                 ctx.fillStyle = '#00d4ff';
                 ctx.fill();
 
-                ctx.font = 'bold 12px Inter';
-                ctx.fillStyle = '#00d4ff';
-                ctx.fillText(`F=${state.force.toFixed(0)}kN`, -buildW / 2 - 50, -20);
+                ctx.font = 'bold 11px Inter';
+                ctx.fillText(`F=${state.force.toFixed(0)}kN`, startX - 30, -15);
+
+                ctx.restore();
             }
-
-            ctx.restore();
-
-            // Legend
-            ctx.font = '12px Inter';
-            ctx.fillStyle = '#888';
-            ctx.fillText('俯视图 - 支座布置', 20, 30);
-
-            // Color legend
-            const legendY = canvas.height - 40;
-            ctx.fillStyle = '#2ed573';
-            ctx.fillRect(20, legendY, 12, 12);
-            ctx.fillStyle = '#888';
-            ctx.fillText('正常', 38, legendY + 10);
-
-            ctx.fillStyle = '#ffa502';
-            ctx.fillRect(80, legendY, 12, 12);
-            ctx.fillStyle = '#888';
-            ctx.fillText('刚度降低', 98, legendY + 10);
-
-            ctx.fillStyle = '#ff6b6b';
-            ctx.fillRect(170, legendY, 12, 12);
-            ctx.fillStyle = '#888';
-            ctx.fillText('危险', 188, legendY + 10);
         }
 
-        function drawForcesView() {
+        function drawElevationView() {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2 + 50;
-            const scale = 35;
+            const scale = 200;
 
-            // Title
-            ctx.font = 'bold 14px Inter';
+            ctx.font = '12px Inter';
             ctx.fillStyle = '#888';
-            ctx.fillText('支座反力分布 (N)', 20, 30);
+            ctx.textAlign = 'left';
+            ctx.fillText('立面图 (X-Z视图)', 20, 30);
 
-            // Draw bar chart
-            const barWidth = 60;
-            const maxN = Math.max(...state.supports.map(s => s.N));
-            const startX = centerX - (state.supports.length * barWidth) / 2;
-
-            state.supports.forEach((s, i) => {
-                const x = startX + i * barWidth + barWidth / 2;
-                const barHeight = (s.N / maxN) * 200;
-
-                // Color based on stiffness
-                let color;
-                if (s.stiffnessRatio < 0.5) {
-                    color = '#ff6b6b';
-                } else if (s.stiffnessRatio < 0.8) {
-                    color = '#ffa502';
-                } else {
-                    color = '#2ed573';
-                }
-
-                // Bar
-                ctx.fillStyle = color;
-                ctx.fillRect(x - 20, centerY - barHeight, 40, barHeight);
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(x - 20, centerY - barHeight, 40, barHeight);
-
-                // Value
-                ctx.font = 'bold 11px JetBrains Mono';
-                ctx.fillStyle = '#fff';
-                ctx.textAlign = 'center';
-                ctx.fillText(s.N.toFixed(1), x, centerY - barHeight - 8);
-
-                // Label
-                ctx.font = '12px Inter';
-                ctx.fillStyle = '#888';
-                ctx.fillText(s.label, x, centerY + 20);
-            });
-
-            // Baseline
+            // Ground line
             ctx.beginPath();
-            ctx.moveTo(startX - 20, centerY);
-            ctx.lineTo(startX + state.supports.length * barWidth + 20, centerY);
+            ctx.moveTo(centerX - TOTAL_LENGTH * scale / 2 - 50, centerY + 80);
+            ctx.lineTo(centerX + TOTAL_LENGTH * scale / 2 + 50, centerY + 80);
             ctx.strokeStyle = '#555';
             ctx.lineWidth = 2;
             ctx.stroke();
+
+            // Draw supports and heights
+            const topRow = ['8', '11', '25'];
+
+            topRow.forEach(id => {
+                const s = state.supports[id];
+                const px = centerX + s.x * scale;
+                const baseY = centerY + 80;
+                const topY = baseY - 60 - s.h * 3; // Scale height difference
+
+                // Support body
+                ctx.fillStyle = s.stiffnessRatio > 0.9 ? '#2ed573' :
+                    s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
+                ctx.fillRect(px - 15, topY, 30, baseY - topY);
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(px - 15, topY, 30, baseY - topY);
+
+                // Height label
+                ctx.font = '10px JetBrains Mono';
+                ctx.fillStyle = '#00d4ff';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${s.h.toFixed(1)}mm`, px, topY - 8);
+
+                // ID label
+                ctx.font = 'bold 11px Inter';
+                ctx.fillStyle = '#fff';
+                ctx.fillText(id, px, baseY - 30);
+            });
+
+            // Building floor (connecting tops)
+            const leftS = state.supports['8'];
+            const midS = state.supports['11'];
+            const rightS = state.supports['25'];
+
+            const leftX = centerX + leftS.x * scale;
+            const midX = centerX + midS.x * scale;
+            const rightX = centerX + rightS.x * scale;
+
+            const leftY = centerY + 80 - 60 - leftS.h * 3;
+            const midY = centerY + 80 - 60 - midS.h * 3;
+            const rightY = centerY + 80 - 60 - rightS.h * 3;
+
+            ctx.beginPath();
+            ctx.moveTo(leftX - 20, leftY);
+            ctx.lineTo(midX, midY);
+            ctx.lineTo(rightX + 20, rightY);
+            ctx.strokeStyle = '#5c7a99';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Floor fill
+            ctx.fillStyle = 'rgba(61, 90, 128, 0.5)';
+            ctx.beginPath();
+            ctx.moveTo(leftX - 20, leftY);
+            ctx.lineTo(midX, midY);
+            ctx.lineTo(rightX + 20, rightY);
+            ctx.lineTo(rightX + 20, rightY - 30);
+            ctx.lineTo(leftX - 20, leftY - 30);
+            ctx.closePath();
+            ctx.fill();
         }
 
         function drawStiffnessView() {
             const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2 + 50;
+            const centerY = canvas.height / 2 + 30;
 
-            // Title
-            ctx.font = 'bold 14px Inter';
+            ctx.font = '12px Inter';
             ctx.fillStyle = '#888';
-            ctx.fillText('水平刚度分布 K_h = K_0 × (1 - (P/P_cr)²)', 20, 30);
+            ctx.textAlign = 'left';
+            ctx.fillText('刚度分析 - Kh = K0 × (1 - (P/Pcr)²)', 20, 30);
 
-            // Draw stiffness bars
-            const barWidth = 60;
-            const startX = centerX - (state.supports.length * barWidth) / 2;
+            // Bar chart
+            const barWidth = 50;
+            const maxHeight = 180;
+            const startX = centerX - (SUPPORT_IDS.length * (barWidth + 20)) / 2;
 
-            state.supports.forEach((s, i) => {
-                const x = startX + i * barWidth + barWidth / 2;
-                const barHeight = s.stiffnessRatio * 200;
+            SUPPORT_IDS.forEach((id, i) => {
+                const s = state.supports[id];
+                const x = startX + i * (barWidth + 20);
+                const barHeight = s.stiffnessRatio * maxHeight;
 
-                // Color
-                let color;
-                if (s.stiffnessRatio < 0.5) {
-                    color = '#ff6b6b';
-                } else if (s.stiffnessRatio < 0.8) {
-                    color = '#ffa502';
-                } else {
-                    color = '#00d4ff';
-                }
-
-                // Full bar (reference)
+                // Reference bar (100%)
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-                ctx.fillRect(x - 20, centerY - 200, 40, 200);
+                ctx.fillRect(x, centerY - maxHeight, barWidth, maxHeight);
 
                 // Actual stiffness bar
+                const color = s.stiffnessRatio > 0.9 ? '#2ed573' :
+                    s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
                 ctx.fillStyle = color;
-                ctx.fillRect(x - 20, centerY - barHeight, 40, barHeight);
+                ctx.fillRect(x, centerY - barHeight, barWidth, barHeight);
                 ctx.strokeStyle = '#fff';
                 ctx.lineWidth = 1;
-                ctx.strokeRect(x - 20, centerY - barHeight, 40, barHeight);
+                ctx.strokeRect(x, centerY - barHeight, barWidth, barHeight);
 
                 // Value
                 ctx.font = 'bold 11px JetBrains Mono';
                 ctx.fillStyle = '#fff';
                 ctx.textAlign = 'center';
-                ctx.fillText((s.stiffnessRatio * 100).toFixed(1) + '%', x, centerY - barHeight - 8);
-
-                // P/P_cr ratio
-                ctx.font = '10px JetBrains Mono';
-                ctx.fillStyle = '#888';
-                ctx.fillText(`P/P_cr=${(s.ratio * 100).toFixed(1)}%`, x, centerY + 35);
+                ctx.fillText(`${(s.stiffnessRatio * 100).toFixed(0)}%`, x + barWidth / 2, centerY - barHeight - 8);
 
                 // Label
-                ctx.font = '12px Inter';
+                ctx.font = '11px Inter';
                 ctx.fillStyle = '#888';
-                ctx.fillText(s.label, x, centerY + 20);
+                ctx.fillText(id, x + barWidth / 2, centerY + 20);
+
+                // Reaction force
+                ctx.font = '9px JetBrains Mono';
+                ctx.fillStyle = '#666';
+                ctx.fillText(`${s.N.toFixed(1)}kN`, x + barWidth / 2, centerY + 35);
             });
 
             // Baseline
             ctx.beginPath();
             ctx.moveTo(startX - 20, centerY);
-            ctx.lineTo(startX + state.supports.length * barWidth + 20, centerY);
+            ctx.lineTo(startX + SUPPORT_IDS.length * (barWidth + 20), centerY);
             ctx.strokeStyle = '#555';
             ctx.lineWidth = 2;
             ctx.stroke();
-
-            // Formula reminder
-            ctx.font = '12px JetBrains Mono';
-            ctx.fillStyle = '#00d4ff';
-            ctx.textAlign = 'left';
-            ctx.fillText('K_h = K_0 × (1 - (P/P_cr)²)', 20, canvas.height - 30);
         }
 
-        // Initialize
-        initSupports('normal');
-        createSupportCards();
-        updateDisplay();
-        draw();
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
+
+        calculateReactions();
+        updateUI();
     </script>
 </body>
 
