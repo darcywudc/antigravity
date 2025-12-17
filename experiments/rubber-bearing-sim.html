@@ -528,19 +528,39 @@
 
                 <!-- Bearing Parameters (Configurable) -->
                 <div class="section">
-                    <h3>🔧 支座参数配置</h3>
+                    <h3>🔧 边缘支座 (4,8,25,30)</h3>
                     <div class="param-grid">
                         <div class="param-item">
                             <label>直径 D (mm)</label>
-                            <input type="number" id="param-diameter" value="44" min="20" max="100" step="1">
-                        </div>
-                        <div class="param-item">
-                            <label>橡胶层厚 t<sub>r</sub> (mm)</label>
-                            <input type="number" id="param-rubber-t" value="2" min="1" max="10" step="0.5">
+                            <input type="number" id="param-edge-diameter" value="44" min="20" max="100" step="1">
                         </div>
                         <div class="param-item">
                             <label>橡胶层数 n</label>
-                            <input type="number" id="param-layers" value="10" min="3" max="30" step="1">
+                            <input type="number" id="param-edge-layers" value="10" min="3" max="30" step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>🔧 中间支座 (11,16)</h3>
+                    <div class="param-grid">
+                        <div class="param-item">
+                            <label>直径 D (mm)</label>
+                            <input type="number" id="param-mid-diameter" value="55" min="20" max="100" step="1">
+                        </div>
+                        <div class="param-item">
+                            <label>橡胶层数 n</label>
+                            <input type="number" id="param-mid-layers" value="10" min="3" max="30" step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>⚙️ 材料与结构参数</h3>
+                    <div class="param-grid">
+                        <div class="param-item">
+                            <label>橡胶层厚 t<sub>r</sub> (mm)</label>
+                            <input type="number" id="param-rubber-t" value="2" min="1" max="10" step="0.5">
                         </div>
                         <div class="param-item">
                             <label>剪切模量 G (MPa)</label>
@@ -549,6 +569,10 @@
                         <div class="param-item">
                             <label>屈服面压 σ<sub>cr</sub> (MPa)</label>
                             <input type="number" id="param-yield-pressure" value="30" min="15" max="50" step="1">
+                        </div>
+                        <div class="param-item">
+                            <label>上部结构EI (kN·m²)</label>
+                            <input type="number" id="param-ei" value="5000" min="100" max="100000" step="100">
                         </div>
                     </div>
                     <button class="btn btn-small btn-secondary" id="btn-apply-params"
@@ -560,25 +584,29 @@
                     <h3>📊 计算结果</h3>
                     <div class="calc-results">
                         <div class="calc-row">
-                            <span>面积 A</span>
-                            <span id="calc-area">1520 mm²</span>
+                            <span>边缘支座 Kh0</span>
+                            <span id="calc-kh0-edge">30 kN/m</span>
                         </div>
                         <div class="calc-row">
-                            <span>形状系数 S</span>
-                            <span id="calc-shape">5.5</span>
+                            <span>中间支座 Kh0</span>
+                            <span id="calc-kh0-mid">45 kN/m</span>
                         </div>
                         <div class="calc-row">
-                            <span>总橡胶厚 T<sub>r</sub></span>
-                            <span id="calc-total-rubber">20 mm</span>
+                            <span>边缘支座 Kv</span>
+                            <span id="calc-kv-edge">500 kN/m</span>
                         </div>
                         <div class="calc-row">
-                            <span>基准水平刚度 K<sub>h0</sub></span>
-                            <span id="calc-kh0">30.4 kN/m</span>
+                            <span>中间支座 Kv</span>
+                            <span id="calc-kv-mid">800 kN/m</span>
                         </div>
                         <div class="calc-row">
-                            <span>竖向刚度 K<sub>v</sub></span>
-                            <span id="calc-kv">548 kN/m</span>
+                            <span>反力重分配系数 α</span>
+                            <span id="calc-alpha">0.85</span>
                         </div>
+                    </div>
+                    <div class="info-text" style="margin-top: 8px; font-size: 0.6rem;">
+                        ΔN = Kv × Δh × α<br>
+                        α = 1 / (1 + Kv×L³/(3×EI))
                     </div>
                 </div>
 
@@ -645,8 +673,8 @@
                         <div class="stat-value" id="total-weight" style="color: #ffa502;">85.58 kN</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">支座直径 D</div>
-                        <div class="stat-value" id="bearing-diameter" style="color: #2ed573;">60 mm</div>
+                        <div class="stat-label">边缘/中间直径</div>
+                        <div class="stat-value" id="bearing-diameter" style="color: #2ed573;">44/55 mm</div>
                     </div>
                 </div>
 
@@ -810,61 +838,107 @@
         const TOTAL_WEIGHT = Object.values(INITIAL_REACTIONS).reduce((a, b) => a + b, 0); // 85.58 kN
 
         // ============================================================
-        // 可配置参数系统
+        // 可配置参数系统 - 支持边缘支座和中间支座分别配置
         // ============================================================
 
         // 可配置参数 (用户可调)
         let params = {
-            diameter: 44,       // mm - 支座直径
-            rubberLayerT: 2,    // mm - 橡胶层厚度
-            numLayers: 10,      // 层数
-            shearModulus: 0.4,  // MPa - 剪切模量
-            yieldPressure: 30   // MPa - 屈服面压
+            // 边缘支座 (4, 8, 25, 30)
+            edgeDiameter: 44,       // mm
+            edgeLayers: 10,         // 层数
+            // 中间支座 (11, 16)
+            midDiameter: 55,        // mm
+            midLayers: 10,          // 层数
+            // 共用材料参数
+            rubberLayerT: 2,        // mm - 橡胶层厚度
+            shearModulus: 0.4,      // MPa - 剪切模量
+            yieldPressure: 30,      // MPa - 屈服面压
+            // 上部结构参数
+            EI: 5000                // kN·m² - 弯曲刚度
         };
+
+        // 边缘支座 IDs
+        const EDGE_IDS = ['4', '8', '25', '30'];
+        // 中间支座 IDs
+        const MID_IDS = ['11', '16'];
 
         // 计算结果 (基于params计算)
         let calc = {
-            diameter_m: 0,      // m
-            area: 0,            // m²
-            area_mm2: 0,        // mm²
-            totalRubberT: 0,    // m
-            shapeFactor: 0,
-            Kh0: 0,             // kN/m - 基准水平刚度
-            Kv: 0,              // kN/m - 竖向刚度
-            Ec: 0               // MPa - 压缩模量
+            // 边缘支座参数
+            edge: {
+                diameter_m: 0,
+                area: 0,
+                area_mm2: 0,
+                totalRubberT: 0,
+                shapeFactor: 0,
+                Kh0: 0,
+                Kv: 0
+            },
+            // 中间支座参数
+            mid: {
+                diameter_m: 0,
+                area: 0,
+                area_mm2: 0,
+                totalRubberT: 0,
+                shapeFactor: 0,
+                Kh0: 0,
+                Kv: 0
+            },
+            // 反力重分配系数
+            alpha: 0
         };
+
+        // 计算单个支座组的参数
+        function calcBearingParams(diameter_mm, numLayers) {
+            const diameter_m = diameter_mm / 1000;
+            const area = Math.PI * Math.pow(diameter_m / 2, 2);
+            const totalRubberT = (params.rubberLayerT * numLayers) / 1000;
+            const shapeFactor = diameter_m / (4 * params.rubberLayerT / 1000);
+
+            const Kh0 = params.shearModulus * 1000 * area / totalRubberT;
+            const Ec = 6 * params.shearModulus * shapeFactor * shapeFactor;
+            const Kv = Ec * 1000 * area / totalRubberT;
+
+            return {
+                diameter_m,
+                area,
+                area_mm2: area * 1e6,
+                totalRubberT,
+                shapeFactor,
+                Kh0,
+                Kv
+            };
+        }
 
         // 根据params重新计算所有派生值
         function recalculateParams() {
-            calc.diameter_m = params.diameter / 1000; // m
-            calc.area = Math.PI * Math.pow(calc.diameter_m / 2, 2); // m²
-            calc.area_mm2 = calc.area * 1e6; // mm²
-            calc.totalRubberT = (params.rubberLayerT * params.numLayers) / 1000; // m
-            calc.shapeFactor = calc.diameter_m / (4 * params.rubberLayerT / 1000);
+            // 计算边缘支座参数
+            calc.edge = calcBearingParams(params.edgeDiameter, params.edgeLayers);
+            // 计算中间支座参数
+            calc.mid = calcBearingParams(params.midDiameter, params.midLayers);
 
-            // 刚度计算
-            calc.Kh0 = params.shearModulus * 1000 * calc.area / calc.totalRubberT; // kN/m
-            calc.Ec = 6 * params.shearModulus * calc.shapeFactor * calc.shapeFactor; // MPa
-            calc.Kv = calc.Ec * 1000 * calc.area / calc.totalRubberT; // kN/m
+            // 计算反力重分配系数 α = 1 / (1 + Kv × L³ / (3 × EI))
+            // 使用平均Kv和跨度L = 0.6m
+            const avgKv = (calc.edge.Kv * 4 + calc.mid.Kv * 2) / 6;
+            const L = SPAN_X; // 0.6m
+            calc.alpha = 1 / (1 + avgKv * Math.pow(L, 3) / (3 * params.EI));
 
             // 更新UI显示
             updateCalcDisplay();
 
             console.log('参数更新:');
-            console.log('  直径 D =', params.diameter, 'mm');
-            console.log('  面积 A =', calc.area_mm2.toFixed(1), 'mm²');
-            console.log('  形状系数 S =', calc.shapeFactor.toFixed(2));
-            console.log('  基准水平刚度 Kh0 =', calc.Kh0.toFixed(1), 'kN/m');
-            console.log('  竖向刚度 Kv =', calc.Kv.toFixed(1), 'kN/m');
+            console.log('  边缘支座: D=' + params.edgeDiameter + 'mm, Kh0=' + calc.edge.Kh0.toFixed(1) + ' kN/m, Kv=' + calc.edge.Kv.toFixed(0) + ' kN/m');
+            console.log('  中间支座: D=' + params.midDiameter + 'mm, Kh0=' + calc.mid.Kh0.toFixed(1) + ' kN/m, Kv=' + calc.mid.Kv.toFixed(0) + ' kN/m');
+            console.log('  上部结构 EI=' + params.EI + ' kN·m², α=' + calc.alpha.toFixed(3));
         }
 
         // 更新计算结果显示
         function updateCalcDisplay() {
-            document.getElementById('calc-area').textContent = calc.area_mm2.toFixed(0) + ' mm²';
-            document.getElementById('calc-shape').textContent = calc.shapeFactor.toFixed(2);
-            document.getElementById('calc-total-rubber').textContent = (calc.totalRubberT * 1000).toFixed(0) + ' mm';
-            document.getElementById('calc-kh0').textContent = calc.Kh0.toFixed(1) + ' kN/m';
-            document.getElementById('calc-kv').textContent = calc.Kv.toFixed(0) + ' kN/m';
+            document.getElementById('calc-kh0-edge').textContent = calc.edge.Kh0.toFixed(1) + ' kN/m';
+            document.getElementById('calc-kh0-mid').textContent = calc.mid.Kh0.toFixed(1) + ' kN/m';
+            document.getElementById('calc-kv-edge').textContent = calc.edge.Kv.toFixed(0) + ' kN/m';
+            document.getElementById('calc-kv-mid').textContent = calc.mid.Kv.toFixed(0) + ' kN/m';
+            document.getElementById('calc-alpha').textContent = calc.alpha.toFixed(3);
         }
 
         // 初始化计算
@@ -897,24 +971,32 @@
         // CALCULATIONS
         // ============================================================
 
+        // 获取支座属于哪一组
+        function isEdgeSupport(id) {
+            return EDGE_IDS.includes(id);
+        }
+
         // 计算有效水平刚度
         // Kh = Kh0 × (1 - (σ/σ_cr)²)
-        function calcEffectiveKh(pressure) {
+        function calcEffectiveKh(pressure, bearingParams) {
             const ratio = pressure / params.yieldPressure;
-            return calc.Kh0 * Math.max(0, 1 - ratio * ratio);
+            return bearingParams.Kh0 * Math.max(0, 1 - ratio * ratio);
         }
 
         // 根据支座高差计算反力重分配
         function calculateReactions() {
-            // 支座高差导致反力变化：ΔN = Kv × Δh
-            // 但需要保持总反力不变（静力平衡）
+            // 支座高差导致反力变化：ΔN = Kv × Δh × α
+            // α 是反力重分配系数，考虑上部结构EI
+            // 需要保持总反力不变（静力平衡）
 
             let totalDeltaN = 0;
             const deltaN = {};
 
             SUPPORT_IDS.forEach(id => {
                 const h = state.heights[id] / 1000; // mm -> m
-                deltaN[id] = calc.Kv * h; // 高度增加 → 反力增加
+                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                // 使用α修正反力变化
+                deltaN[id] = bearingParams.Kv * h * calc.alpha;
                 totalDeltaN += deltaN[id];
             });
 
@@ -926,12 +1008,15 @@
                 const adjustedDelta = deltaN[id] - avgDelta;
                 const newN = Math.max(0.1, baseN + adjustedDelta);
 
+                // 获取对应支座组的参数
+                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+
                 // 计算面压 (MPa)
-                const pressure = (newN * 1000) / (calc.area * 1e6);
+                const pressure = (newN * 1000) / (bearingParams.area * 1e6);
 
                 // 计算有效水平刚度
-                const Kh = calcEffectiveKh(pressure);
-                const stiffnessRatio = Kh / calc.Kh0;
+                const Kh = calcEffectiveKh(pressure, bearingParams);
+                const stiffnessRatio = Kh / bearingParams.Kh0;
                 const pressureRatio = pressure / params.yieldPressure;
 
                 state.supports[id] = {
@@ -941,6 +1026,9 @@
                     N: newN,
                     pressure: pressure,
                     Kh: Kh,
+                    Kh0: bearingParams.Kh0,
+                    Kv: bearingParams.Kv,
+                    diameter: isEdgeSupport(id) ? params.edgeDiameter : params.midDiameter,
                     pressureRatio: pressureRatio,
                     stiffnessRatio: stiffnessRatio
                 };
@@ -1042,7 +1130,7 @@
 
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
-            document.getElementById('bearing-diameter').textContent = params.diameter.toFixed(0) + ' mm';
+            document.getElementById('bearing-diameter').textContent = params.edgeDiameter + '/' + params.midDiameter + ' mm';
 
             // Store for animation
             state.displacement = Math.sqrt(ux * ux + uy * uy);
@@ -1107,12 +1195,18 @@
 
         // Parameter apply button
         document.getElementById('btn-apply-params').addEventListener('click', () => {
-            // Read values from inputs
-            params.diameter = parseFloat(document.getElementById('param-diameter').value);
+            // Read values from inputs - 边缘支座
+            params.edgeDiameter = parseFloat(document.getElementById('param-edge-diameter').value);
+            params.edgeLayers = parseInt(document.getElementById('param-edge-layers').value);
+            // 中间支座
+            params.midDiameter = parseFloat(document.getElementById('param-mid-diameter').value);
+            params.midLayers = parseInt(document.getElementById('param-mid-layers').value);
+            // 共用材料参数
             params.rubberLayerT = parseFloat(document.getElementById('param-rubber-t').value);
-            params.numLayers = parseInt(document.getElementById('param-layers').value);
             params.shearModulus = parseFloat(document.getElementById('param-shear-g').value);
             params.yieldPressure = parseFloat(document.getElementById('param-yield-pressure').value);
+            // 上部结构参数
+            params.EI = parseFloat(document.getElementById('param-ei').value);
 
             // Recalculate derived values
             recalculateParams();
