@@ -510,7 +510,8 @@
                 <div class="view-tabs">
                     <div class="view-tab active" data-view="plan">俯视图</div>
                     <div class="view-tab" data-view="trajectory">轨迹图</div>
-                    <div class="view-tab" data-view="stiffness">刚度分析</div>
+                    <div class="view-tab" data-view="spectrum">反应谱</div>
+                    <div class="view-tab" data-view="stiffness">刚度</div>
                 </div>
             </div>
 
@@ -728,10 +729,10 @@
                     </div>
                 </div>
 
-                <!-- Motion Response -->
+                <!-- Relative Displacement -->
                 <div class="eccentricity-display"
                     style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3);">
-                    <div class="ecc-title" style="color: #00d4ff;">📍 相对位移响应</div>
+                    <div class="ecc-title" style="color: #00d4ff;">📍 相对位移 (支座变形)</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
                             <div class="ecc-label">u<sub>x</sub></div>
@@ -746,27 +747,47 @@
                             <div class="ecc-value" id="shear-strain" style="color: #ffa502;">0%</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Absolute Acceleration -->
+                <div class="eccentricity-display"
+                    style="background: rgba(255, 165, 2, 0.1); border-color: rgba(255, 165, 2, 0.3);">
+                    <div class="ecc-title" style="color: #ffa502;">⚡ 绝对加速度 (结构受力)</div>
+                    <div class="ecc-values">
+                        <div class="ecc-item">
+                            <div class="ecc-label">a<sub>g</sub></div>
+                            <div class="ecc-value" id="input-acc" style="color: #ff6b6b;">0.00 g</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">a<sub>abs</sub></div>
+                            <div class="ecc-value" id="abs-acc" style="color: #2ed573;">0.00 g</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">隔震率</div>
+                            <div class="ecc-value" id="isolation-rate" style="color: #00d4ff;">--%</div>
+                        </div>
+                    </div>
                     <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
-                        γ = u / T<sub>r</sub> (剪应变，限值约250%)
+                        隔震率 = 1 - a<sub>abs</sub>/a<sub>g</sub>
                     </div>
                 </div>
 
                 <!-- System Properties -->
                 <div class="eccentricity-display"
                     style="background: rgba(46, 213, 115, 0.1); border-color: rgba(46, 213, 115, 0.3);">
-                    <div class="ecc-title" style="color: #2ed573;">⚡ 隔震系统参数</div>
+                    <div class="ecc-title" style="color: #2ed573;">📊 系统参数</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
                             <div class="ecc-label">周期 T</div>
                             <div class="ecc-value" id="period" style="color: #2ed573;">1.0 s</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">ΣK<sub>h</sub></div>
-                            <div class="ecc-value" id="total-kh" style="color: #2ed573;">180 kN/m</div>
-                        </div>
-                        <div class="ecc-item">
                             <div class="ecc-label">max u</div>
                             <div class="ecc-value" id="max-disp" style="color: #ff6b6b;">0 mm</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">max a</div>
+                            <div class="ecc-value" id="max-acc" style="color: #ff6b6b;">0.00 g</div>
                         </div>
                     </div>
                 </div>
@@ -982,14 +1003,22 @@
             mass: TOTAL_WEIGHT / 9.81,  // 质量 (t)
             period: 0,              // 周期 (s)
             omega: 0,               // 圆频率 (rad/s)
-            // 运动响应
-            displacement: 0,
-            velocity: 0,
+            // 运动响应 - 相对量
+            displacement: 0,        // 相对位移
+            velocity: 0,            // 相对速度
+            acceleration: 0,        // 相对加速度
             rotation: 0,
+            // 运动响应 - 绝对量
+            absAcceleration: 0,     // 绝对加速度 (m/s²)
+            inputAcceleration: 0,   // 输入加速度 (m/s²)
+            isolationRate: 0,       // 隔震率
+            // 最大值记录
             maxDisp: 0,
+            maxAbsAcc: 0,
             // 动画状态
             buildingDisp: { x: 0, y: 0, rot: 0 },
             buildingVel: { x: 0, y: 0 },
+            buildingAcc: { x: 0, y: 0 },
             isAnimating: false,
             animTime: 0,
             // 轨迹记录
@@ -1310,9 +1339,11 @@
             cancelAnimationFrame(animationId);
             state.buildingDisp = { x: 0, y: 0, rot: 0 };
             state.buildingVel = { x: 0, y: 0 };
+            state.buildingAcc = { x: 0, y: 0 };
             state.animTime = 0;
             state.trajectory = [];
             state.maxDisp = 0;
+            state.maxAbsAcc = 0;
             btnAnimate.textContent = '▶ 地震模拟';
             updateUI();
         });
@@ -1396,11 +1427,44 @@
                 state.trajectory.shift();
             }
 
-            // 更新显示
+            // 计算绝对加速度
+            // a_abs = ü + a_g (相对加速度 + 输入加速度)
+            const abs_acc_x = acc_x + ag_x;
+            const abs_acc_y = acc_y + ag_y;
+            const abs_acc = Math.sqrt(abs_acc_x * abs_acc_x + abs_acc_y * abs_acc_y);
+            const input_acc = Math.sqrt(ag_x * ag_x + ag_y * ag_y);
+
+            // 计算隔震率
+            const isolationRate = input_acc > 0.01 ? (1 - abs_acc / input_acc) * 100 : 0;
+
+            // 更新最大值记录
+            if (abs_acc > state.maxAbsAcc) {
+                state.maxAbsAcc = abs_acc;
+            }
+
+            // 更新显示 - 相对位移
             document.getElementById('disp-x').textContent = (state.buildingDisp.x * 1000).toFixed(1) + ' mm';
             document.getElementById('disp-y').textContent = (state.buildingDisp.y * 1000).toFixed(1) + ' mm';
-            document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
             document.getElementById('max-disp').textContent = (state.maxDisp * 1000).toFixed(1) + ' mm';
+
+            // 更新显示 - 绝对加速度
+            document.getElementById('input-acc').textContent = (input_acc / g).toFixed(2) + ' g';
+            document.getElementById('abs-acc').textContent = (abs_acc / g).toFixed(2) + ' g';
+            document.getElementById('isolation-rate').textContent = isolationRate.toFixed(0) + '%';
+            document.getElementById('max-acc').textContent = (state.maxAbsAcc / g).toFixed(2) + ' g';
+
+            // 隔震率颜色
+            const isoEl = document.getElementById('isolation-rate');
+            if (isolationRate > 50) {
+                isoEl.style.color = '#2ed573';
+            } else if (isolationRate > 20) {
+                isoEl.style.color = '#ffa502';
+            } else {
+                isoEl.style.color = '#ff6b6b';
+            }
+
+            // 更新显示 - 扭转
+            document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
             document.getElementById('torsion-moment').textContent = torsionMoment.toFixed(2) + ' kN·m';
 
             // 更新剪应变
@@ -1431,6 +1495,8 @@
                 drawPlanView();
             } else if (state.view === 'trajectory') {
                 drawTrajectoryView();
+            } else if (state.view === 'spectrum') {
+                drawSpectrumView();
             } else {
                 drawStiffnessView();
             }
@@ -1728,6 +1794,175 @@
                 ctx.fillText(`uy: ${latest.y.toFixed(1)}mm`, canvas.width - 20, canvas.height - 35);
                 ctx.fillStyle = '#f472b6';
                 ctx.fillText(`φ: ${(latest.rot * 180 / Math.PI).toFixed(2)}°`, canvas.width - 20, canvas.height - 20);
+            }
+        }
+
+        // 反应谱视图 - 显示周期与响应的关系
+        function drawSpectrumView() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const marginLeft = 60;
+            const marginBottom = 50;
+            const marginTop = 40;
+            const marginRight = 30;
+            const plotW = canvas.width - marginLeft - marginRight;
+            const plotH = canvas.height - marginTop - marginBottom;
+
+            ctx.font = '12px Inter';
+            ctx.fillStyle = '#888';
+            ctx.textAlign = 'left';
+            ctx.fillText('反应谱 - 周期与响应关系', 20, 25);
+
+            // 绘制坐标轴
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(marginLeft, marginTop);
+            ctx.lineTo(marginLeft, canvas.height - marginBottom);
+            ctx.lineTo(canvas.width - marginRight, canvas.height - marginBottom);
+            ctx.stroke();
+
+            // 轴标签
+            ctx.font = 'bold 11px Inter';
+            ctx.fillStyle = '#00d4ff';
+            ctx.textAlign = 'center';
+            ctx.fillText('周期 T (s)', centerX, canvas.height - 10);
+
+            ctx.save();
+            ctx.translate(15, centerY);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('加速度响应 Sa (g)', 0, 0);
+            ctx.restore();
+
+            // 计算平动周期和扭转周期
+            const Tx = state.period;
+            const Jm = state.mass * (TOTAL_LENGTH * TOTAL_LENGTH + TOTAL_WIDTH * TOTAL_WIDTH) / 12; // 质量惯性矩
+            const Jk = state.J || 0.1; // 扭转刚度
+            const Tr = 2 * Math.PI * Math.sqrt(Jm / Jk); // 扭转周期
+
+            // 绘制设计反应谱 (简化的抗震规范谱)
+            const periods = [];
+            const accels = [];
+            const Tg = 0.4; // 特征周期
+            const maxSa = state.pga * 2.5; // 平台段放大系数约2.5
+
+            for (let T = 0.05; T <= 4; T += 0.05) {
+                periods.push(T);
+                let Sa;
+                if (T < 0.1) {
+                    Sa = state.pga + (maxSa - state.pga) * (T / 0.1);
+                } else if (T < Tg) {
+                    Sa = maxSa;
+                } else {
+                    Sa = maxSa * Math.pow(Tg / T, 0.9);
+                }
+                accels.push(Sa);
+            }
+
+            // 绘制谱曲线
+            const maxT = 4;
+            const maxA = maxSa * 1.2;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#2ed573';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < periods.length; i++) {
+                const x = marginLeft + (periods[i] / maxT) * plotW;
+                const y = canvas.height - marginBottom - (accels[i] / maxA) * plotH;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // 绘制平动周期标记
+            const Tx_x = marginLeft + (Tx / maxT) * plotW;
+            const Tx_Sa = Tx < 0.1 ? state.pga + (maxSa - state.pga) * (Tx / 0.1) :
+                Tx < Tg ? maxSa : maxSa * Math.pow(Tg / Tx, 0.9);
+            const Tx_y = canvas.height - marginBottom - (Tx_Sa / maxA) * plotH;
+
+            ctx.beginPath();
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#00d4ff';
+            ctx.moveTo(Tx_x, canvas.height - marginBottom);
+            ctx.lineTo(Tx_x, Tx_y);
+            ctx.lineTo(marginLeft, Tx_y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.beginPath();
+            ctx.arc(Tx_x, Tx_y, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#00d4ff';
+            ctx.fill();
+
+            // 绘制扭转周期标记
+            if (Tr > 0 && Tr < maxT) {
+                const Tr_x = marginLeft + (Tr / maxT) * plotW;
+                const Tr_Sa = Tr < 0.1 ? state.pga + (maxSa - state.pga) * (Tr / 0.1) :
+                    Tr < Tg ? maxSa : maxSa * Math.pow(Tg / Tr, 0.9);
+                const Tr_y = canvas.height - marginBottom - (Tr_Sa / maxA) * plotH;
+
+                ctx.beginPath();
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#f472b6';
+                ctx.moveTo(Tr_x, canvas.height - marginBottom);
+                ctx.lineTo(Tr_x, Tr_y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.beginPath();
+                ctx.arc(Tr_x, Tr_y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#f472b6';
+                ctx.fill();
+            }
+
+            // 图例
+            ctx.font = '10px Inter';
+            ctx.textAlign = 'left';
+
+            ctx.fillStyle = '#2ed573';
+            ctx.fillRect(marginLeft + 10, marginTop + 10, 20, 3);
+            ctx.fillStyle = '#888';
+            ctx.fillText('设计反应谱', marginLeft + 35, marginTop + 15);
+
+            ctx.beginPath();
+            ctx.arc(marginLeft + 20, marginTop + 35, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#00d4ff';
+            ctx.fill();
+            ctx.fillStyle = '#888';
+            ctx.fillText(`平动周期 Tx = ${Tx.toFixed(2)} s`, marginLeft + 35, marginTop + 38);
+
+            ctx.beginPath();
+            ctx.arc(marginLeft + 20, marginTop + 55, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#f472b6';
+            ctx.fill();
+            ctx.fillStyle = '#888';
+            ctx.fillText(`扭转周期 Tθ = ${Tr.toFixed(2)} s`, marginLeft + 35, marginTop + 58);
+
+            // X轴刻度
+            ctx.font = '9px JetBrains Mono';
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'center';
+            for (let t = 0; t <= 4; t += 0.5) {
+                const x = marginLeft + (t / maxT) * plotW;
+                ctx.fillText(t.toFixed(1), x, canvas.height - marginBottom + 15);
+            }
+
+            // Y轴刻度
+            ctx.textAlign = 'right';
+            for (let a = 0; a <= maxA; a += 0.2) {
+                const y = canvas.height - marginBottom - (a / maxA) * plotH;
+                ctx.fillText(a.toFixed(1), marginLeft - 5, y + 3);
+            }
+
+            // 显示周期比
+            ctx.font = 'bold 11px Inter';
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#ffa502';
+            ctx.fillText(`Tθ/Tx = ${(Tr / Tx).toFixed(2)}`, canvas.width - 20, marginTop + 20);
+
+            if (Tr / Tx < 0.9) {
+                ctx.fillStyle = '#ff6b6b';
+                ctx.fillText('⚠️ 扭转效应显著', canvas.width - 20, marginTop + 40);
             }
         }
 
