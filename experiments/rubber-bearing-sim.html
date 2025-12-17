@@ -1632,49 +1632,76 @@
             ctx.fillStyle = '#888';
             ctx.fillText('CS (刚度中心)', 35, canvas.height - 26);
 
-            // Force arrow with direction
-            if (state.force > 0.5) {
+            // 显示地震波方向和当前位移
+            if (state.isAnimating) {
+                // 地震波方向指示 (X和Y都有)
+                const arrowLen = 40;
+                const baseX = canvas.width - 80;
+                const baseY = 60;
+
+                // 坐标轴
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(baseX - 30, baseY);
+                ctx.lineTo(baseX + 30, baseY);
+                ctx.moveTo(baseX, baseY + 30);
+                ctx.lineTo(baseX, baseY - 30);
+                ctx.stroke();
+
+                ctx.font = '9px Inter';
+                ctx.fillStyle = '#666';
+                ctx.textAlign = 'center';
+                ctx.fillText('X', baseX + 35, baseY + 4);
+                ctx.fillText('Y', baseX, baseY - 35);
+
+                // 当前加速度方向
+                const dispScale = 1;
+                const ax = state.buildingDisp.x * 1000 * dispScale;
+                const ay = -state.buildingDisp.y * 1000 * dispScale;
+
+                ctx.beginPath();
+                ctx.moveTo(baseX, baseY);
+                ctx.lineTo(baseX + ax, baseY + ay);
+                ctx.strokeStyle = '#00d4ff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // 箭头
+                ctx.beginPath();
+                ctx.arc(baseX + ax, baseY + ay, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#00d4ff';
+                ctx.fill();
+
+                ctx.font = 'bold 10px Inter';
+                ctx.fillStyle = '#00d4ff';
+                ctx.textAlign = 'left';
+                ctx.fillText('位移方向', baseX - 30, baseY + 50);
+            }
+
+            // 在中心绘制轨迹预览
+            if (state.trajectory.length > 1) {
                 ctx.save();
                 ctx.translate(centerX, centerY);
 
-                const angleRad = state.forceAngle * Math.PI / 180;
-                const arrowLen = state.force * 1.5;
-
-                // Arrow start position (outside building)
-                const startDist = TOTAL_LENGTH * scale / 2 + 50;
-                const startX = -startDist * Math.cos(angleRad);
-                const startY = startDist * Math.sin(angleRad); // Note: Y is flipped
-
-                // Arrow end position
-                const endX = startX + arrowLen * Math.cos(angleRad);
-                const endY = startY - arrowLen * Math.sin(angleRad); // Note: Y is flipped
-
-                // Draw arrow line
+                // 绘制最近的轨迹点
+                const trajScale = scale * 5;
                 ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.lineTo(endX, endY);
-                ctx.strokeStyle = '#00d4ff';
-                ctx.lineWidth = 4;
+                for (let i = Math.max(0, state.trajectory.length - 50); i < state.trajectory.length; i++) {
+                    const p = state.trajectory[i];
+                    const x = p.x / 1000 * trajScale; // mm -> m -> pixels
+                    const y = -p.y / 1000 * trajScale;
+                    const alpha = (i - state.trajectory.length + 50) / 50;
+
+                    if (i === Math.max(0, state.trajectory.length - 50)) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.strokeStyle = 'rgba(46, 213, 115, 0.5)';
+                ctx.lineWidth = 2;
                 ctx.stroke();
-
-                // Arrow head
-                ctx.save();
-                ctx.translate(endX, endY);
-                ctx.rotate(-angleRad);
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(-12, -6);
-                ctx.lineTo(-12, 6);
-                ctx.closePath();
-                ctx.fillStyle = '#00d4ff';
-                ctx.fill();
-                ctx.restore();
-
-                // Force label
-                ctx.font = 'bold 11px Inter';
-                ctx.fillStyle = '#00d4ff';
-                ctx.textAlign = 'center';
-                ctx.fillText(`F=${state.force.toFixed(0)}kN @${state.forceAngle}°`, startX, startY + 20);
 
                 ctx.restore();
             }
