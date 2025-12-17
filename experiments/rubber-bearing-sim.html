@@ -1507,9 +1507,15 @@
             const centerY = canvas.height / 2;
             const scale = 280; // pixels per meter
 
+            // 位移放大倍数 - 让位移可见但不要超出边界
+            const dispScale = 100; // 1mm -> 100px (可见但受限)
+            const dispX = Math.max(-100, Math.min(100, state.buildingDisp.x * 1000 * dispScale / 1000));
+            const dispY = Math.max(-100, Math.min(100, state.buildingDisp.y * 1000 * dispScale / 1000));
+            const rotScale = 5; // 扭转放大
+
             ctx.save();
-            ctx.translate(centerX + state.buildingDisp.x * scale * 5, centerY);
-            ctx.rotate(state.buildingDisp.rot * 0.3);
+            ctx.translate(centerX + dispX, centerY - dispY);
+            ctx.rotate(state.buildingDisp.rot * rotScale);
 
             // Building outline
             const w = TOTAL_LENGTH * scale;
