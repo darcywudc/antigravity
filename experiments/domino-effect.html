@@ -434,8 +434,10 @@
                 <div class="insight-box">
                     <div class="insight-title">💡 核心原理</div>
                     <div class="insight-text">
-                        结构总重量不变。当一个支座失效，它的荷载会<strong>全部转移</strong>到相邻支座，
-                        可能导致连锁失效 —— 这就是<strong>多米诺效应</strong>。
+                        支座失效引发<strong>三重后果</strong>：<br>
+                        1️⃣ <strong>荷载重分配</strong>: 失效支座的荷载转移到邻居<br>
+                        2️⃣ <strong>刚度中心偏移</strong>: C<sub>S</sub> 偏离 C<sub>M</sub>，产生扭转耦合<br>
+                        3️⃣ <strong>摩擦力减小</strong>: F<sub>f</sub>=μN，该支座阻尼丧失
                     </div>
                 </div>
 
@@ -509,25 +511,26 @@
                 <h4>📊 荷载重分配</h4>
                 <p>
                     当一个支座失效（反力=0），其荷载按距离反比分配给相邻支座。
-                    距离越近，承担的额外荷载越多。
+                    距离越近，承担的额外荷载越多。<br>
+                    <strong>后果</strong>: 邻居支座可能超载失效。
                 </p>
                 <div class="formula">ΔR_i = R_failed × (1/d_i) / Σ(1/d_j)</div>
             </div>
             <div class="info-card">
-                <h4>⚠️ 超载失效</h4>
+                <h4>🔄 刚度中心偏移</h4>
                 <p>
-                    每个支座都有极限承载力。当实际荷载超过极限时，
-                    支座失效（变形过大或结构破坏）。
+                    失效支座不再贡献水平刚度，导致刚度中心C<sub>S</sub>偏移。<br>
+                    当 C<sub>S</sub> ≠ C<sub>M</sub> 时，地震力产生<strong>扭转力矩</strong>: M<sub>T</sub> = F × e。
                 </p>
-                <div class="formula">R_actual > R_capacity → 失效</div>
+                <div class="formula">C<sub>S</sub> = Σ(K_i × x_i) / Σ(K_i), e = C<sub>S</sub> - C<sub>M</sub></div>
             </div>
             <div class="info-card">
-                <h4>💥 连续倒塌</h4>
+                <h4>💥 连续倒塔</h4>
                 <p>
-                    失效→重分配→邻居超载→邻居失效→再重分配...
-                    这个<strong>恶性循环</strong>就是连续倒塌。
+                    失效→重分配→邻居超载→邻居失效→再重分配...<br>
+                    同时，刚度中心越来越偏，扭转放大，形成<strong>恶性循环</strong>。
                 </p>
-                <div class="formula">Progressive Collapse</div>
+                <div class="formula">Progressive Collapse + Torsional Amplification</div>
             </div>
         </div>
     </div>
