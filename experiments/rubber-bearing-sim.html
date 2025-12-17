@@ -747,26 +747,26 @@
                     </div>
                 </div>
 
-                <!-- Absolute Acceleration -->
+                <!-- Shear Strain Limit Check -->
                 <div class="eccentricity-display"
                     style="background: rgba(255, 165, 2, 0.1); border-color: rgba(255, 165, 2, 0.3);">
-                    <div class="ecc-title" style="color: #ffa502;">⚡ 绝对加速度 (结构受力)</div>
+                    <div class="ecc-title" style="color: #ffa502;">📏 剪应变检查</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
-                            <div class="ecc-label">a<sub>g</sub></div>
-                            <div class="ecc-value" id="input-acc" style="color: #ff6b6b;">0.00 g</div>
+                            <div class="ecc-label">γ<sub>cm</sub></div>
+                            <div class="ecc-value" id="strain-cm" style="color: #2ed573;">0%</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">a<sub>abs</sub></div>
-                            <div class="ecc-value" id="abs-acc" style="color: #2ed573;">0.00 g</div>
+                            <div class="ecc-label">γ<sub>角</sub></div>
+                            <div class="ecc-value" id="strain-corner" style="color: #ffa502;">0%</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">隔震率</div>
-                            <div class="ecc-value" id="isolation-rate" style="color: #00d4ff;">--%</div>
+                            <div class="ecc-label">限值</div>
+                            <div class="ecc-value" style="color: #888;">200%</div>
                         </div>
                     </div>
                     <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
-                        隔震率 = 1 - a<sub>abs</sub>/a<sub>g</sub>
+                        γ = 位移 / 橡胶总厚度 (Tr=20mm)
                     </div>
                 </div>
 
@@ -860,18 +860,16 @@
                     </div>
                 </div>
 
-                <!-- Animation -->
-                <div class="btn-group">
-                    <button class="btn btn-primary" id="btn-animate">▶ 地震模拟</button>
-                    <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
-                </div>
-
                 <!-- Info -->
                 <div class="info-text">
-                    <strong>操作说明：</strong><br>
-                    1. 调节支座高度 → 刚度中心C<sub>S</sub>偏移<br>
-                    2. 设置地震力方向 → 观察扭转力矩<br>
-                    3. 扭转力矩 M<sub>T</sub> = |F| × |e| × sin(θ - θ<sub>e</sub>)
+                    <strong>📋 操作说明：</strong><br>
+                    1. 调节支座高度 → 刚度中心偏移 → 产生偏心<br>
+                    2. 偏心导致扭转 → 角位移放大<br>
+                    3. 检查: 角位移 vs 隔震沟宽度<br>
+                    <br>
+                    <strong>⚠️ 位移限值：</strong><br>
+                    • 隔震沟: 避免碰撞<br>
+                    • 支座剪应变: ≤200% (通常)
                 </div>
             </div>
         </div>
@@ -1316,10 +1314,42 @@
                 cornerEl.style.color = '#2ed573';
             }
 
+            // ============================================================
+            // 剪应变检查 (两个限值都要检查！)
+            // ============================================================
+            // avgTr 是橡胶总厚度 (m)，已在上面计算
+            const strainCm = (Sd / avgTr) * 100; // %
+            const strainCorner = (cornerMaxDisp / avgTr) * 100; // %
+            const strainLimit = 200; // 通常限值200%
+
+            document.getElementById('strain-cm').textContent = strainCm.toFixed(0) + '%';
+            document.getElementById('strain-corner').textContent = strainCorner.toFixed(0) + '%';
+
+            // 剪应变颜色
+            const strainCmEl = document.getElementById('strain-cm');
+            if (strainCm > strainLimit) {
+                strainCmEl.style.color = '#ff6b6b';
+                strainCmEl.textContent = strainCm.toFixed(0) + '% ⚠️';
+            } else if (strainCm > strainLimit * 0.8) {
+                strainCmEl.style.color = '#ffa502';
+            } else {
+                strainCmEl.style.color = '#2ed573';
+            }
+
+            const strainCornerEl = document.getElementById('strain-corner');
+            if (strainCorner > strainLimit) {
+                strainCornerEl.style.color = '#ff6b6b';
+                strainCornerEl.textContent = strainCorner.toFixed(0) + '% ⚠️超限!';
+            } else if (strainCorner > strainLimit * 0.8) {
+                strainCornerEl.style.color = '#ffa502';
+            } else {
+                strainCornerEl.style.color = '#2ed573';
+            }
+
             // 偏心和扭转显示
             document.getElementById('ecc-disp').textContent = (cs.e_mag * 1000).toFixed(1) + ' mm';
-            document.getElementById('rotation-angle').textContent = '扭转放大 ×' + torsionAmplify.toFixed(2);
-            document.getElementById('torsion-moment').textContent = '偏心率 ' + (eccRatio * 100).toFixed(1) + '%';
+            document.getElementById('rotation-angle').textContent = '放大 ×' + torsionAmplify.toFixed(2);
+            document.getElementById('torsion-moment').textContent = '偏心 ' + (eccRatio * 100).toFixed(1) + '%';
 
             // 位移响应显示
             document.getElementById('max-disp').textContent = (Sd * 1000).toFixed(1) + ' mm';
@@ -1337,8 +1367,7 @@
             }
 
             // 在控制台输出便于调试
-            console.log('反应谱计算: PGA=' + state.pga + 'g, T=' + T.toFixed(2) + 's, β=' + beta.toFixed(2) +
-                ', Sd=' + (Sd * 1000).toFixed(1) + 'mm, 角位移=' + (cornerMaxDisp * 1000).toFixed(1) + 'mm, 限值=' + state.gapWidth + 'mm');
+            console.log('反应谱计算: PGA=' + state.pga + 'g, T=' + T.toFixed(2) + 's, Sd=' + (Sd * 1000).toFixed(1) + 'mm, γcm=' + strainCm.toFixed(0) + '%, γ角=' + strainCorner.toFixed(0) + '%');
 
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
@@ -1459,227 +1488,6 @@
             gapValue.textContent = state.gapWidth.toFixed(0);
             updateUI();
         });
-
-        // Animation
-        let animationId = null;
-        const btnAnimate = document.getElementById('btn-animate');
-        const btnReset = document.getElementById('btn-reset');
-
-        btnAnimate.addEventListener('click', () => {
-            if (!state.isAnimating) {
-                state.isAnimating = true;
-                btnAnimate.textContent = '⏸ 暂停';
-                animate();
-            } else {
-                state.isAnimating = false;
-                btnAnimate.textContent = '▶ 继续';
-                cancelAnimationFrame(animationId);
-            }
-        });
-
-        btnReset.addEventListener('click', () => {
-            state.isAnimating = false;
-            cancelAnimationFrame(animationId);
-            state.buildingDisp = { x: 0, y: 0, rot: 0 };
-            state.buildingVel = { x: 0, y: 0 };
-            state.buildingAcc = { x: 0, y: 0 };
-            state.animTime = 0;
-            state.trajectory = [];
-            state.maxDisp = 0;
-            state.maxEdgeDisp = 0;
-            state.maxAbsAcc = 0;
-            btnAnimate.textContent = '▶ 地震模拟';
-            updateUI();
-        });
-
-        function animate() {
-            if (!state.isAnimating) return;
-
-            const dt = 0.02; // 时间步长 (s)
-            state.animTime += dt;
-            const t = state.animTime;
-
-            // 地震加速度输入 (简谐波或模拟真实地震波)
-            let ag_x, ag_y;
-            const g = 9.81; // m/s²
-
-            if (state.selectedWave === 'sine') {
-                // 简谐波: 频率约等于系统固有频率以产生共振
-                const exciteFreq = 1 / state.period * 0.8; // 略低于共振频率
-                const omega_e = 2 * Math.PI * exciteFreq;
-                ag_x = state.pga * g * Math.sin(omega_e * t);
-                ag_y = state.pga * g * Math.sin(omega_e * t + Math.PI / 4); // 45度相位差
-            } else {
-                // 模拟真实地震波的随机特性
-                const envelope = Math.exp(-0.1 * Math.abs(t - 2)) * (t < 10 ? 1 : 0);
-                const highFreq = Math.sin(2 * Math.PI * 5 * t) + 0.5 * Math.sin(2 * Math.PI * 8 * t);
-                const lowFreq = Math.sin(2 * Math.PI * 1.5 * t);
-                ag_x = state.pga * g * envelope * (0.7 * lowFreq + 0.3 * highFreq);
-                ag_y = state.pga * g * envelope * (0.7 * Math.sin(2 * Math.PI * 1.3 * t) + 0.3 * Math.sin(2 * Math.PI * 6 * t + 1));
-            }
-
-            // Newmark-β 积分 (β=1/4, γ=1/2 为常加速度法)
-            const beta = 0.25;
-            const gamma = 0.5;
-            const omega = state.omega;
-            const xi = state.damping;
-            const K = state.totalKh;
-            const M = state.mass;
-            const C = 2 * xi * omega * M; // 阻尼系数
-
-            // X方向 SDOF
-            const ax_old = -omega * omega * state.buildingDisp.x - 2 * xi * omega * state.buildingVel.x - ag_x / M * M;
-            const Keff_x = M / (beta * dt * dt) + gamma / (beta * dt) * C + K;
-            const Reff_x = -M * ag_x + M * (state.buildingDisp.x / (beta * dt * dt) + state.buildingVel.x / (beta * dt) + (1 / (2 * beta) - 1) * ax_old);
-            const du_x = Reff_x / Keff_x;
-
-            // 简化为欧拉法更直观
-            // ü + 2ξωu̇ + ω²u = -a_g
-            const acc_x = -2 * xi * omega * state.buildingVel.x - omega * omega * state.buildingDisp.x - ag_x;
-            const acc_y = -2 * xi * omega * state.buildingVel.y - omega * omega * state.buildingDisp.y - ag_y;
-
-            state.buildingVel.x += acc_x * dt;
-            state.buildingVel.y += acc_y * dt;
-            state.buildingDisp.x += state.buildingVel.x * dt;
-            state.buildingDisp.y += state.buildingVel.y * dt;
-
-            // 扭转响应 (简化)
-            const cs = state.cs || calculateStiffnessCenter();
-            const J = state.J || 0.1;
-            // 扭转力矩由偏心引起
-            const Fx = K * state.buildingDisp.x;
-            const Fy = K * state.buildingDisp.y;
-            const torsionMoment = Fx * cs.ey - Fy * cs.ex;
-            const torsionOmega = Math.sqrt(J / state.mass);
-            state.buildingDisp.rot = state.buildingDisp.rot * 0.95 + (torsionMoment / J) * 0.05;
-
-            // 更新最大位移
-            const currentDisp = Math.sqrt(state.buildingDisp.x * state.buildingDisp.x + state.buildingDisp.y * state.buildingDisp.y);
-            if (currentDisp > state.maxDisp) {
-                state.maxDisp = currentDisp;
-            }
-
-            // 计算边缘支座位移 u_edge = u_cm + θ × r_max
-            const rMax = state.rMax || 0.6; // 默认值
-            const edgeDisp = currentDisp + Math.abs(state.buildingDisp.rot) * rMax;
-            if (edgeDisp > state.maxEdgeDisp) {
-                state.maxEdgeDisp = edgeDisp;
-            }
-
-            // 记录轨迹
-            state.trajectory.push({
-                x: state.buildingDisp.x * 1000, // mm
-                y: state.buildingDisp.y * 1000, // mm
-                rot: state.buildingDisp.rot
-            });
-
-            // 限制轨迹长度
-            if (state.trajectory.length > state.maxTrajectoryPoints) {
-                state.trajectory.shift();
-            }
-
-            // 计算绝对加速度
-            // a_abs = ü + a_g (相对加速度 + 输入加速度)
-            const abs_acc_x = acc_x + ag_x;
-            const abs_acc_y = acc_y + ag_y;
-            const abs_acc = Math.sqrt(abs_acc_x * abs_acc_x + abs_acc_y * abs_acc_y);
-            const input_acc = Math.sqrt(ag_x * ag_x + ag_y * ag_y);
-
-            // 计算隔震率
-            const isolationRate = input_acc > 0.01 ? (1 - abs_acc / input_acc) * 100 : 0;
-
-            // 更新最大值记录
-            if (abs_acc > state.maxAbsAcc) {
-                state.maxAbsAcc = abs_acc;
-            }
-
-            // 更新显示 - 相对位移
-            document.getElementById('disp-x').textContent = (state.buildingDisp.x * 1000).toFixed(1) + ' mm';
-            document.getElementById('disp-y').textContent = (state.buildingDisp.y * 1000).toFixed(1) + ' mm';
-            document.getElementById('max-disp').textContent = (state.maxDisp * 1000).toFixed(1) + ' mm';
-
-            // 更新显示 - 绝对加速度
-            document.getElementById('input-acc').textContent = (input_acc / g).toFixed(2) + ' g';
-            document.getElementById('abs-acc').textContent = (abs_acc / g).toFixed(2) + ' g';
-            document.getElementById('isolation-rate').textContent = isolationRate.toFixed(0) + '%';
-            document.getElementById('max-acc').textContent = (state.maxAbsAcc / g).toFixed(2) + ' g';
-
-            // 隔震率颜色
-            const isoEl = document.getElementById('isolation-rate');
-            if (isolationRate > 50) {
-                isoEl.style.color = '#2ed573';
-            } else if (isolationRate > 20) {
-                isoEl.style.color = '#ffa502';
-            } else {
-                isoEl.style.color = '#ff6b6b';
-            }
-
-            // 更新显示 - 扭转
-            document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
-            document.getElementById('torsion-moment').textContent = torsionMoment.toFixed(2) + ' kN·m';
-
-            // 更新边缘位移和放大系数
-            const amplifyFactor = currentDisp > 0.0001 ? edgeDisp / currentDisp : 1.0;
-            document.getElementById('max-edge-disp').textContent = (state.maxEdgeDisp * 1000).toFixed(1) + ' mm';
-            document.getElementById('torsion-amplify').textContent = amplifyFactor.toFixed(2);
-
-            // 放大系数颜色
-            const ampEl = document.getElementById('torsion-amplify');
-            if (amplifyFactor > 1.3) {
-                ampEl.style.color = '#ff6b6b';
-            } else if (amplifyFactor > 1.1) {
-                ampEl.style.color = '#ffa502';
-            } else {
-                ampEl.style.color = '#2ed573';
-            }
-
-            // 计算角支座位移 (角8和角30是对角)
-            // 角8在(-0.6, 0.2)，角30在(0.6, -0.2)
-            const theta = state.buildingDisp.rot;
-            const s8 = state.supports['8'];
-            const s30 = state.supports['30'];
-
-            // 角支座位移 = 质心位移 + 扭转引起的切向位移
-            // u_i = u_cm + θ × r_i (r_i是到扭转中心的距离向量)
-            const r8 = Math.sqrt(s8.x * s8.x + s8.y * s8.y);
-            const r30 = Math.sqrt(s30.x * s30.x + s30.y * s30.y);
-            const corner8Disp = currentDisp + theta * r8;
-            const corner30Disp = currentDisp - theta * r30; // 相反方向
-
-            // 甩尾比 = 两端位移之比
-            const whipRatio = Math.abs(corner8Disp) > 0.0001 ?
-                Math.abs(corner30Disp / corner8Disp) : 1.0;
-
-            document.getElementById('corner-8-disp').textContent = (Math.abs(corner8Disp) * 1000).toFixed(1) + ' mm';
-            document.getElementById('corner-30-disp').textContent = (Math.abs(corner30Disp) * 1000).toFixed(1) + ' mm';
-            document.getElementById('whip-ratio').textContent = whipRatio.toFixed(2);
-
-            // 甩尾比颜色
-            const whipEl = document.getElementById('whip-ratio');
-            if (Math.abs(whipRatio - 1) > 0.3) {
-                whipEl.style.color = '#ff6b6b';
-            } else if (Math.abs(whipRatio - 1) > 0.1) {
-                whipEl.style.color = '#ffa502';
-            } else {
-                whipEl.style.color = '#2ed573';
-            }
-
-            // 更新剪应变
-            const avgTr = (calc.edge.totalRubberT + calc.mid.totalRubberT) / 2;
-            const shearStrain = (currentDisp / avgTr) * 100;
-            document.getElementById('shear-strain').textContent = shearStrain.toFixed(0) + '%';
-            const strainEl = document.getElementById('shear-strain');
-            if (shearStrain > 200) {
-                strainEl.style.color = '#ff6b6b';
-            } else if (shearStrain > 150) {
-                strainEl.style.color = '#ffa502';
-            } else {
-                strainEl.style.color = '#2ed573';
-            }
-
-            draw();
-            animationId = requestAnimationFrame(animate);
-        }
 
         // ============================================================
         // DRAWING
