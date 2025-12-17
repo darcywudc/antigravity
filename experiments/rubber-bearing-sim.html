@@ -1090,149 +1090,112 @@
         }
 
         // ============================================================
-        // 根据支座高差计算反力重分配 (协调变形模型 + EI修正)
+        // 根据支座高差计算反力重分配 (强迫沉降模型)
         // 
-        // 力学模型: 弹性梁/板 + 弹性支座
+        // 力学模型: 弹性梁/板 + 弹性支座 + 强迫沉降
         // 
-        // 修正方法：使用α系数近似考虑上部结构弯曲刚度EI
+        // 正确的处理方式：
+        // 1. 初始状态：各支座反力为INITIAL_REACTIONS
+        // 2. 强迫沉降：支座i抬高hi → 多受荷 → 反力增加
+        // 3. 反力变化：ΔNi = Kv_eff × hi × α
+        // 4. 满足整体力矩平衡
+        // 
         // α = 1 / (1 + Kv × L³ / (3 × EI))
-        // - α→1: 刚性板（高EI）
-        // - α→0: 柔性梁（低EI，反力变化减小）
-        // 
-        // 有效刚度: Keff = Kv × α
-        // 
-        // 几何布置:
-        //    8 -------- 11 -------- 25     y = +0.2m
-        //    |   L=0.6m  |   L=0.6m  |
-        //    4 -------- 16 -------- 30     y = -0.2m
-        //   x=-0.6m    x=0        x=+0.6m
+        // - α→1: 刚性板，反力变化大
+        // - α→0: 柔性梁，反力变化小
         // ============================================================
         function calculateReactions() {
-            // 获取各支座的有效竖向刚度（考虑α修正）
-            const Keff = {};
-            const alpha = calc.alpha; // 反力重分配系数
+            const alpha = calc.alpha;
 
             console.log('刚度计算: α=' + alpha.toFixed(4) + ', EI=' + params.EI + ' kN·m²');
 
+            // 第一步：计算因高差导致的反力变化
+            let totalDeltaN = 0;
+            const deltaN = {};
+
             SUPPORT_IDS.forEach(id => {
+                const h = state.heights[id] / 1000; // mm -> m
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                // 使用α修正的有效刚度
-                Keff[id] = bearingParams.Kv * alpha;
+                // 反力变化 = Kv × h × α
+                // 正高差(抬高) → 反力增加
+                deltaN[id] = bearingParams.Kv * h * alpha;
+                totalDeltaN += deltaN[id];
             });
 
-            // 构建系数矩阵 A 和右侧向量 b
-            // [A] × [δ0, θx, θy]^T = [b]
-            // 
-            // 方程1: Σ(Kvi × (δ0 + θx×yi + θy×xi - hi)) = W
-            // 方程2: Σ(Kvi × (δ0 + θx×yi + θy×xi - hi) × xi) = 0
-            // 方程3: Σ(Kvi × (δ0 + θx×yi + θy×xi - hi) × yi) = 0
+            // 第二步：调整使总反力保持不变（静力平衡）
+            // ΣN = W 必须满足
+            const avgDelta = totalDeltaN / 6;
 
-            let A11 = 0, A12 = 0, A13 = 0; // 方程1系数
-            let A21 = 0, A22 = 0, A23 = 0; // 方程2系数
-            let A31 = 0, A32 = 0, A33 = 0; // 方程3系数
-            let b1 = 0, b2 = 0, b3 = 0;     // 右侧向量
+            // 第三步：检查力矩平衡，计算需要的修正
+            // Σ(ΔN × x) = 0, Σ(ΔN × y) = 0
+            let sumMx = 0, sumMy = 0;
+            let sumKx2 = 0, sumKy2 = 0;
 
             SUPPORT_IDS.forEach(id => {
                 const x = SUPPORT_POSITIONS[id].x;
                 const y = SUPPORT_POSITIONS[id].y;
-                const h = state.heights[id] / 1000; // mm -> m
-                const k = Keff[id]; // 使用α修正后的有效刚度
+                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                const effectiveK = bearingParams.Kv * alpha;
 
-                // 方程1: ΣNi = W
-                A11 += k;           // δ0的系数
-                A12 += k * y;       // θx的系数
-                A13 += k * x;       // θy的系数
-                b1 += k * h;        // 强迫位移项
-
-                // 方程2: Σ(Ni × xi) = 0
-                A21 += k * x;       // δ0的系数
-                A22 += k * x * y;   // θx的系数
-                A23 += k * x * x;   // θy的系数
-                b2 += k * h * x;    // 强迫位移项
-
-                // 方程3: Σ(Ni × yi) = 0
-                A31 += k * y;       // δ0的系数
-                A32 += k * y * y;   // θx的系数
-                A33 += k * x * y;   // θy的系数
-                b3 += k * h * y;    // 强迫位移项
+                const adjustedDelta = deltaN[id] - avgDelta;
+                sumMx += adjustedDelta * x;
+                sumMy += adjustedDelta * y;
+                sumKx2 += effectiveK * x * x;
+                sumKy2 += effectiveK * y * y;
             });
 
-            // b1 需要加上总重量
-            b1 += TOTAL_WEIGHT;
+            // 力矩修正系数
+            const corrX = sumKx2 > 0 ? -sumMx / sumKx2 : 0;
+            const corrY = sumKy2 > 0 ? -sumMy / sumKy2 : 0;
 
-            // 解3×3线性方程组: A × x = b
-            // 使用克莱默法则
-            const detA = A11 * (A22 * A33 - A23 * A32)
-                - A12 * (A21 * A33 - A23 * A31)
-                + A13 * (A21 * A32 - A22 * A31);
-
-            if (Math.abs(detA) < 1e-10) {
-                console.error('刚度矩阵奇异，无法求解');
-                return;
-            }
-
-            // δ0 (竖向位移)
-            const detA1 = b1 * (A22 * A33 - A23 * A32)
-                - A12 * (b2 * A33 - A23 * b3)
-                + A13 * (b2 * A32 - A22 * b3);
-            const delta0 = detA1 / detA;
-
-            // θx (绕X轴转角)
-            const detA2 = A11 * (b2 * A33 - A23 * b3)
-                - b1 * (A21 * A33 - A23 * A31)
-                + A13 * (A21 * b3 - b2 * A31);
-            const thetaX = detA2 / detA;
-
-            // θy (绕Y轴转角)
-            const detA3 = A11 * (A22 * b3 - b2 * A32)
-                - A12 * (A21 * b3 - b2 * A31)
-                + b1 * (A21 * A32 - A22 * A31);
-            const thetaY = detA3 / detA;
-
-            console.log('协调变形求解: δ0=' + (delta0 * 1000).toFixed(3) + 'mm, θx=' + (thetaX * 1000).toFixed(4) + 'mrad, θy=' + (thetaY * 1000).toFixed(4) + 'mrad');
-
-            // 计算各支座反力
+            // 第四步：计算最终反力
             let totalN = 0;
             SUPPORT_IDS.forEach(id => {
                 const x = SUPPORT_POSITIONS[id].x;
                 const y = SUPPORT_POSITIONS[id].y;
-                const h = state.heights[id] / 1000; // mm -> m
-                const k = Keff[id]; // 使用α修正后的有效刚度
-
-                // 支座变形
-                const delta_i = delta0 + thetaX * y + thetaY * x - h;
-                // 支座反力
-                const N = k * delta_i;
-                totalN += N;
-
-                // 获取对应支座组的参数
+                const baseN = INITIAL_REACTIONS[id];
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                const effectiveK = bearingParams.Kv * alpha;
 
-                // 计算面压 (MPa) - 使用绝对值，因为N可能为负（提离）
-                const pressure = Math.max(0, (N * 1000) / (bearingParams.area * 1e6));
+                // 反力 = 初始反力 + 高差导致的变化 - 平均值 + 力矩修正
+                const adjustedDelta = deltaN[id] - avgDelta;
+                const momentCorr = effectiveK * (corrX * x + corrY * y);
+                const newN = baseN + adjustedDelta + momentCorr;
+
+                totalN += newN;
+
+                // 计算面压 (MPa)
+                const pressure = Math.max(0, (newN * 1000) / (bearingParams.area * 1e6));
 
                 // 计算有效水平刚度
-                const Kh = N > 0 ? calcEffectiveKh(pressure, bearingParams) : 0; // 提离时Kh=0
-                const stiffnessRatio = N > 0 ? Kh / bearingParams.Kh0 : 0;
+                const Kh = newN > 0 ? calcEffectiveKh(pressure, bearingParams) : 0;
+                const stiffnessRatio = newN > 0 ? Kh / bearingParams.Kh0 : 0;
                 const pressureRatio = pressure / params.yieldPressure;
 
                 state.supports[id] = {
                     x: x,
                     y: y,
                     h: state.heights[id],
-                    N: N,
+                    N: newN,
                     pressure: pressure,
                     Kh: Kh,
                     Kh0: bearingParams.Kh0,
-                    Kv: k,
+                    Kv: bearingParams.Kv,
                     diameter: isEdgeSupport(id) ? params.edgeDiameter : params.midDiameter,
                     pressureRatio: pressureRatio,
                     stiffnessRatio: stiffnessRatio,
-                    isUplift: N <= 0 // 标记是否提离
+                    isUplift: newN <= 0
                 };
             });
 
-            console.log('反力平衡检验: ΣN=' + totalN.toFixed(3) + 'kN, W=' + TOTAL_WEIGHT.toFixed(3) + 'kN, 误差=' + ((totalN - TOTAL_WEIGHT) / TOTAL_WEIGHT * 100).toFixed(2) + '%');
+            console.log('反力计算: 总反力=' + totalN.toFixed(2) + 'kN, W=' + TOTAL_WEIGHT.toFixed(2) + 'kN');
+
+            // 输出各支座反力便于调试
+            let reactionLog = '各支座反力: ';
+            SUPPORT_IDS.forEach(id => {
+                reactionLog += id + '=' + state.supports[id].N.toFixed(1) + 'kN ';
+            });
+            console.log(reactionLog);
         }
 
         // 计算刚度中心
