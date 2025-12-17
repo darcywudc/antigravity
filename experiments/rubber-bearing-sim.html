@@ -552,13 +552,45 @@
 
                 <!-- Seismic Force -->
                 <div class="section">
-                    <h3>地震力</h3>
+                    <h3>地震力控制</h3>
                     <div class="slider-group">
                         <div class="slider-label">
-                            <span>水平力 F</span>
+                            <span>力大小 |F|</span>
                             <span class="slider-value" id="force-value">0 kN</span>
                         </div>
-                        <input type="range" id="force-slider" min="-50" max="50" value="0">
+                        <input type="range" id="force-slider" min="0" max="50" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>力方向 θ</span>
+                            <span class="slider-value" id="angle-value">0°</span>
+                        </div>
+                        <input type="range" id="angle-slider" min="0" max="360" value="0">
+                    </div>
+                    <div class="preset-btns" style="margin-top: 8px;">
+                        <div class="preset-btn" data-angle="0">X向 (0°)</div>
+                        <div class="preset-btn" data-angle="90">Y向 (90°)</div>
+                        <div class="preset-btn" data-angle="45">45°</div>
+                    </div>
+                </div>
+
+                <!-- Torsion Result -->
+                <div class="eccentricity-display"
+                    style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3);">
+                    <div class="ecc-title" style="color: #ff6b6b;">⚠️ 扭转力矩 M<sub>T</sub> = F × e</div>
+                    <div class="ecc-values">
+                        <div class="ecc-item">
+                            <div class="ecc-label">M<sub>T</sub></div>
+                            <div class="ecc-value" id="torsion-moment" style="color: #ff6b6b;">0.000 kN·m</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">F<sub>x</sub></div>
+                            <div class="ecc-value" id="force-x" style="color: #00d4ff;">0.0 kN</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">F<sub>y</sub></div>
+                            <div class="ecc-value" id="force-y" style="color: #00d4ff;">0.0 kN</div>
+                        </div>
                     </div>
                 </div>
 
@@ -571,9 +603,9 @@
                 <!-- Info -->
                 <div class="info-text">
                     <strong>操作说明：</strong><br>
-                    1. 调节支座高度，观察刚度中心C<sub>S</sub>的偏移<br>
-                    2. 支座高度变化 → 反力重分配 → K<sub>h</sub>变化<br>
-                    3. 扭转力矩 M<sub>T</sub> = F × e（当e≠0时）
+                    1. 调节支座高度 → 刚度中心C<sub>S</sub>偏移<br>
+                    2. 设置地震力方向 → 观察扭转力矩<br>
+                    3. 扭转力矩 M<sub>T</sub> = |F| × |e| × sin(θ - θ<sub>e</sub>)
                 </div>
             </div>
         </div>
@@ -630,28 +662,41 @@
         const SUPPORT_IDS = ['8', '11', '25', '4', '16', '30'];
         const TOTAL_WEIGHT = Object.values(INITIAL_REACTIONS).reduce((a, b) => a + b, 0); // 85.58 kN
 
-        // 支座参数 - 根据面压15MPa设计
-        const TARGET_PRESSURE = 12; // MPa (设计面压)
-        const AVG_REACTION = TOTAL_WEIGHT / 6; // 平均反力
-        const BEARING_AREA = (AVG_REACTION * 1000) / (TARGET_PRESSURE * 1e6); // m²
+        // ============================================================
+        // 支座参数设计
+        // ============================================================
+
+        // 屈服面压 (临界面压) - 用户定义
+        const YIELD_PRESSURE = 30; // MPa (σ_cr)
+
+        // 设计面压 - 根据中间支座（最大反力）设计
+        // 中间支座反力约22.7kN，希望面压约15MPa，这样有足够余量
+        const MAX_REACTION = Math.max(...Object.values(INITIAL_REACTIONS)); // 22.77 kN
+        const DESIGN_PRESSURE = 15; // MPa (设计面压，相对于屈服面压有余量)
+
+        // 根据最大反力和设计面压计算支座直径
+        const BEARING_AREA = (MAX_REACTION * 1000) / (DESIGN_PRESSURE * 1e6); // m²
         const BEARING_DIAMETER = Math.sqrt(4 * BEARING_AREA / Math.PI); // m
-        const BEARING_D_MM = BEARING_DIAMETER * 1000; // mm
+        const BEARING_D_MM = BEARING_DIAMETER * 1000; // mm ≈ 44mm
 
         // 橡胶支座参数
-        const SHEAR_MODULUS = 0.4; // MPa
-        const RUBBER_LAYER_T = 2; // mm
-        const NUM_LAYERS = 8;
-        const TOTAL_RUBBER_T = (RUBBER_LAYER_T * NUM_LAYERS) / 1000; // m
+        const SHEAR_MODULUS = 0.4; // MPa (G)
+        const RUBBER_LAYER_T = 2; // mm per layer
+        const NUM_LAYERS = 10;
+        const TOTAL_RUBBER_T = (RUBBER_LAYER_T * NUM_LAYERS) / 1000; // m = 0.02m
         const SHAPE_FACTOR = BEARING_DIAMETER / (4 * RUBBER_LAYER_T / 1000);
 
-        // 刚度计算
-        const Kh0 = SHEAR_MODULUS * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m
-        const Ec = 6 * SHEAR_MODULUS * SHAPE_FACTOR * SHAPE_FACTOR; // MPa
-        const Kv = Ec * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m
-        const P_cr = Math.PI * Math.PI * SHEAR_MODULUS * 1000 * BEARING_AREA * SHAPE_FACTOR * SHAPE_FACTOR / TOTAL_RUBBER_T; // kN
+        // 基准刚度计算
+        const Kh0 = SHEAR_MODULUS * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m (基准水平刚度)
+        const Ec = 6 * SHEAR_MODULUS * SHAPE_FACTOR * SHAPE_FACTOR; // MPa (压缩模量)
+        const Kv = Ec * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m (竖向刚度)
 
-        // 上部结构刚度 (估算)
-        const SUPER_STIFFNESS = Kv * 3; // 假设上部结构刚度为支座竖向刚度的3倍
+        console.log('支座参数:');
+        console.log('  直径 D =', BEARING_D_MM.toFixed(1), 'mm');
+        console.log('  面积 A =', (BEARING_AREA * 1e6).toFixed(1), 'mm²');
+        console.log('  基准水平刚度 Kh0 =', Kh0.toFixed(1), 'kN/m');
+        console.log('  竖向刚度 Kv =', Kv.toFixed(1), 'kN/m');
+        console.log('  屈服面压 σ_cr =', YIELD_PRESSURE, 'MPa');
 
         // ============================================================
         // STATE
@@ -660,7 +705,8 @@
             view: 'plan',
             heights: { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 }, // mm
             supports: {},
-            force: 0,
+            force: 0,           // 力大小 (kN)
+            forceAngle: 0,      // 力方向 (度)
             buildingDisp: { x: 0, y: 0, rot: 0 },
             isAnimating: false,
             animPhase: 0
@@ -670,11 +716,17 @@
         // CALCULATIONS
         // ============================================================
 
+        // 计算有效水平刚度
+        // Kh = Kh0 × (1 - (σ/σ_cr)²)
+        function calcEffectiveKh(pressure) {
+            const ratio = pressure / YIELD_PRESSURE;
+            return Kh0 * Math.max(0, 1 - ratio * ratio);
+        }
+
         // 根据支座高差计算反力重分配
         function calculateReactions() {
-            // 简化模型：使用刚性上部结构假设
             // 支座高差导致反力变化：ΔN = Kv × Δh
-            // 但需要保持总反力不变
+            // 但需要保持总反力不变（静力平衡）
 
             let totalDeltaN = 0;
             const deltaN = {};
@@ -693,9 +745,13 @@
                 const adjustedDelta = deltaN[id] - avgDelta;
                 const newN = Math.max(0.1, baseN + adjustedDelta);
 
-                const pressure = (newN * 1000) / (BEARING_AREA * 1e6); // MPa
-                const ratio = newN / P_cr;
-                const Kh = Kh0 * Math.max(0, 1 - ratio * ratio);
+                // 计算面压 (MPa)
+                const pressure = (newN * 1000) / (BEARING_AREA * 1e6);
+
+                // 计算有效水平刚度
+                const Kh = calcEffectiveKh(pressure);
+                const stiffnessRatio = Kh / Kh0;
+                const pressureRatio = pressure / YIELD_PRESSURE;
 
                 state.supports[id] = {
                     x: SUPPORT_POSITIONS[id].x,
@@ -704,8 +760,8 @@
                     N: newN,
                     pressure: pressure,
                     Kh: Kh,
-                    ratio: ratio,
-                    stiffnessRatio: Kh / Kh0
+                    pressureRatio: pressureRatio,
+                    stiffnessRatio: stiffnessRatio
                 };
             });
         }
@@ -769,6 +825,20 @@
             document.getElementById('ecc-x').textContent = cs.ex.toFixed(4) + ' m';
             document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
             document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
+
+            // Calculate force components
+            const angleRad = state.forceAngle * Math.PI / 180;
+            const Fx = state.force * Math.cos(angleRad);
+            const Fy = state.force * Math.sin(angleRad);
+
+            // Calculate torsion moment: MT = Fx * ey - Fy * ex (cross product)
+            // Or simplified: MT = F * e * sin(angle between force and eccentricity)
+            const torsionMoment = Math.abs(Fx * cs.ey - Fy * cs.ex);
+
+            // Update force and torsion display
+            document.getElementById('force-x').textContent = Fx.toFixed(1) + ' kN';
+            document.getElementById('force-y').textContent = Fy.toFixed(1) + ' kN';
+            document.getElementById('torsion-moment').textContent = torsionMoment.toFixed(3) + ' kN·m';
 
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
@@ -845,7 +915,27 @@
         forceSlider.addEventListener('input', (e) => {
             state.force = parseFloat(e.target.value);
             forceValue.textContent = state.force.toFixed(0) + ' kN';
-            draw();
+            updateUI();
+        });
+
+        // Angle slider
+        const angleSlider = document.getElementById('angle-slider');
+        const angleValue = document.getElementById('angle-value');
+        angleSlider.addEventListener('input', (e) => {
+            state.forceAngle = parseFloat(e.target.value);
+            angleValue.textContent = state.forceAngle.toFixed(0) + '°';
+            updateUI();
+        });
+
+        // Angle preset buttons
+        document.querySelectorAll('.preset-btn[data-angle]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const angle = parseFloat(btn.dataset.angle);
+                state.forceAngle = angle;
+                angleSlider.value = angle;
+                angleValue.textContent = angle + '°';
+                updateUI();
+            });
         });
 
         // Animation
@@ -1049,33 +1139,49 @@
             ctx.fillStyle = '#888';
             ctx.fillText('CS (刚度中心)', 35, canvas.height - 26);
 
-            // Force arrow
-            if (Math.abs(state.force) > 0.5) {
+            // Force arrow with direction
+            if (state.force > 0.5) {
                 ctx.save();
                 ctx.translate(centerX, centerY);
 
-                const arrowLen = Math.abs(state.force) * 1.5;
-                const dir = state.force > 0 ? 1 : -1;
-                const startX = -TOTAL_LENGTH * scale / 2 - 40;
+                const angleRad = state.forceAngle * Math.PI / 180;
+                const arrowLen = state.force * 1.5;
 
+                // Arrow start position (outside building)
+                const startDist = TOTAL_LENGTH * scale / 2 + 50;
+                const startX = -startDist * Math.cos(angleRad);
+                const startY = startDist * Math.sin(angleRad); // Note: Y is flipped
+
+                // Arrow end position
+                const endX = startX + arrowLen * Math.cos(angleRad);
+                const endY = startY - arrowLen * Math.sin(angleRad); // Note: Y is flipped
+
+                // Draw arrow line
                 ctx.beginPath();
-                ctx.moveTo(startX, 0);
-                ctx.lineTo(startX + dir * arrowLen, 0);
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
                 ctx.strokeStyle = '#00d4ff';
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 4;
                 ctx.stroke();
 
                 // Arrow head
+                ctx.save();
+                ctx.translate(endX, endY);
+                ctx.rotate(-angleRad);
                 ctx.beginPath();
-                ctx.moveTo(startX + dir * arrowLen, 0);
-                ctx.lineTo(startX + dir * arrowLen - dir * 8, -6);
-                ctx.lineTo(startX + dir * arrowLen - dir * 8, 6);
+                ctx.moveTo(0, 0);
+                ctx.lineTo(-12, -6);
+                ctx.lineTo(-12, 6);
                 ctx.closePath();
                 ctx.fillStyle = '#00d4ff';
                 ctx.fill();
+                ctx.restore();
 
+                // Force label
                 ctx.font = 'bold 11px Inter';
-                ctx.fillText(`F=${state.force.toFixed(0)}kN`, startX - 30, -15);
+                ctx.fillStyle = '#00d4ff';
+                ctx.textAlign = 'center';
+                ctx.fillText(`F=${state.force.toFixed(0)}kN @${state.forceAngle}°`, startX, startY + 20);
 
                 ctx.restore();
             }
