@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刹车失灵 | Loss of Friction Damping</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #0f1928 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .back-link:hover {
+            color: #00d4ff;
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #00d4ff, #7ce4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 25px;
+        }
+
+        @media (max-width: 1000px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Canvas */
+        .viz-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-radius: 10px;
+        }
+
+        .view-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .view-tab {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .view-tab.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+        }
+
+        .view-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section h3::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: linear-gradient(180deg, #00d4ff, #7ce4ff);
+            border-radius: 2px;
+        }
+
+        /* Formula Display */
+        .formula-display {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .formula-main {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .formula-main .var {
+            color: #f472b6;
+        }
+
+        .formula-desc {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Friction Meters */
+        .friction-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .friction-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .friction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .friction-label {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .friction-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .friction-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .friction-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        /* Torsion Indicator */
+        .torsion-display {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .torsion-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .torsion-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: #ff6b6b;
+        }
+
+        .torsion-warning {
+            font-size: 0.75rem;
+            color: #ff6b6b;
+            margin-top: 5px;
+        }
+
+        /* Support Load Sliders */
+        .load-sliders {
+            margin-bottom: 15px;
+        }
+
+        .load-slider-item {
+            margin-bottom: 12px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .slider-name {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .slider-values {
+            display: flex;
+            gap: 15px;
+            font-size: 0.75rem;
+        }
+
+        .slider-n {
+            color: #00d4ff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .slider-f {
+            color: #2ed573;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #00d4ff, #7ce4ff);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Animation Controls */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #7ce4ff);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        /* Displacement Chart */
+        .displacement-chart {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .chart-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            height: 80px;
+            position: relative;
+            border-left: 1px solid #444;
+            border-bottom: 1px solid #444;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #00d4ff;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-card h4 {
+            color: #00d4ff;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            color: #888;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .formula {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #00d4ff;
+            font-size: 0.75rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Insight Box */
+        .insight-box {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .insight-title {
+            color: #00d4ff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .insight-text {
+            font-size: 0.8rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-link">← 返回概览</a>
+            <h1>🛞 刹车失灵</h1>
+            <p class="subtitle">Loss of Friction Damping & Torsional Coupling</p>
+        </header>
+
+        <div class="main-layout">
+            <div class="viz-container">
+                <canvas id="canvas"></canvas>
+                <div class="view-tabs">
+                    <div class="view-tab active" data-view="plan">俯视图 (扭转)</div>
+                    <div class="view-tab" data-view="side">侧视图 (滑动)</div>
+                    <div class="view-tab" data-view="friction">摩擦力图解</div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <!-- Formula -->
+                <div class="formula-display">
+                    <div class="formula-main">
+                        F<sub>f</sub> = <span class="var">μ</span> × <span class="var">N</span>
+                    </div>
+                    <div class="formula-desc">
+                        摩擦力 = 摩擦系数 × 垂直反力<br>
+                        当 N → 0 时，摩擦力（阻尼）消失
+                    </div>
+                </div>
+
+                <!-- Insight -->
+                <div class="insight-box">
+                    <div class="insight-title">💡 "刹车"原理</div>
+                    <div class="insight-text">
+                        摩擦摆(FPS)隔震支座依靠<strong>摩擦力</strong>提供阻尼（刹车）。
+                        但摩擦力与垂直压力成正比。当支座反力很小时，摩擦力消失，
+                        支座变成纯<strong>滑轮</strong>，失去"刹车"功能。
+                    </div>
+                </div>
+
+                <!-- Load Control -->
+                <div class="section">
+                    <h3>支座垂直反力 (N)</h3>
+                    <div class="load-sliders" id="load-sliders">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <!-- Friction Display -->
+                <div class="section">
+                    <h3>摩擦力分布</h3>
+                    <div class="friction-grid" id="friction-grid">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <!-- Torsion Display -->
+                <div class="torsion-display">
+                    <div class="torsion-label">扭转偏心距</div>
+                    <div class="torsion-value" id="torsion-value">0.00 m</div>
+                    <div class="torsion-warning" id="torsion-warning" style="display: none;">
+                        ⚠️ 摩擦力不对称，建筑将发生扭转！
+                    </div>
+                </div>
+
+                <!-- Animation -->
+                <div class="section">
+                    <h3>地震模拟</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btn-simulate">▶ 开始模拟</button>
+                        <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
+                    </div>
+                </div>
+
+                <!-- Displacement -->
+                <div class="section">
+                    <div class="displacement-chart">
+                        <div class="chart-title">水平位移 vs 时间</div>
+                        <canvas id="chart-canvas" height="80"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="info-cards">
+            <div class="info-card">
+                <h4>🔄 扭转耦合</h4>
+                <p>
+                    当一侧支座有"刹车"（高N），另一侧没有（低N），
+                    建筑会<strong>绕重载侧旋转</strong>。边角位移远超中心位移。
+                </p>
+                <div class="formula">θ = (F_left - F_right) × L / (2 × J)</div>
+            </div>
+            <div class="info-card">
+                <h4>📏 位移超限</h4>
+                <p>
+                    总阻尼不足导致建筑滑动距离失控，可能撞上防撞墙或挡土墙，
+                    造成<strong>碰撞破坏(Pounding)</strong>。
+                </p>
+                <div class="formula">Δ > Δ_limit → Pounding</div>
+            </div>
+            <div class="info-card">
+                <h4>🎯 FPS支座特点</h4>
+                <p>
+                    摩擦摆隔震支座通过曲面滑动实现隔震。
+                    <strong>正压力是关键</strong>——没有压力就没有摩擦，没有摩擦就没有隔震。
+                </p>
+                <div class="formula">Friction Pendulum System</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const chartCanvas = document.getElementById('chart-canvas');
+        const chartCtx = chartCanvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width - 40;
+            canvas.height = 500;
+            chartCanvas.width = chartCanvas.parentElement.clientWidth - 30;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', () => { resizeCanvas(); draw(); });
+
+        // Constants
+        const MU = 0.05; // Friction coefficient
+        const NUM_SUPPORTS = 4; // Corner supports
+        const TOTAL_WEIGHT = 6000; // kN
+
+        // State
+        let state = {
+            view: 'plan', // 'plan', 'side', 'friction'
+            supports: [], // { N, F } - normal force and friction force
+            isSimulating: false,
+            time: 0,
+            buildingX: 0,
+            buildingY: 0,
+            buildingRotation: 0,
+            displacementHistory: [],
+            seismicPhase: 0
+        };
+
+        // Initialize supports (4 corners)
+        function initSupports() {
+            const baseLoad = TOTAL_WEIGHT / NUM_SUPPORTS;
+            state.supports = [
+                { name: '左前', N: baseLoad, F: baseLoad * MU, x: -1, y: -1 },
+                { name: '右前', N: baseLoad, F: baseLoad * MU, x: 1, y: -1 },
+                { name: '左后', N: baseLoad, F: baseLoad * MU, x: -1, y: 1 },
+                { name: '右后', N: baseLoad, F: baseLoad * MU, x: 1, y: 1 }
+            ];
+            state.time = 0;
+            state.buildingX = 0;
+            state.buildingY = 0;
+            state.buildingRotation = 0;
+            state.displacementHistory = [];
+        }
+
+        // DOM elements
+        const loadSliders = document.getElementById('load-sliders');
+        const frictionGrid = document.getElementById('friction-grid');
+        const torsionValue = document.getElementById('torsion-value');
+        const torsionWarning = document.getElementById('torsion-warning');
+        const btnSimulate = document.getElementById('btn-simulate');
+        const btnReset = document.getElementById('btn-reset');
+
+        // Create load sliders
+        function createLoadSliders() {
+            loadSliders.innerHTML = '';
+            state.supports.forEach((s, i) => {
+                const item = document.createElement('div');
+                item.className = 'load-slider-item';
+                item.innerHTML = `
+                    <div class="slider-header">
+                        <span class="slider-name">${s.name}</span>
+                        <div class="slider-values">
+                            <span class="slider-n" id="n-${i}">N=${s.N.toFixed(0)} kN</span>
+                            <span class="slider-f" id="f-${i}">F=${s.F.toFixed(1)} kN</span>
+                        </div>
+                    </div>
+                    <input type="range" id="load-slider-${i}" min="0" max="${TOTAL_WEIGHT / 2}" value="${s.N}" step="10">
+                `;
+                loadSliders.appendChild(item);
+
+                document.getElementById(`load-slider-${i}`).addEventListener('input', (e) => {
+                    updateSupportLoad(i, parseFloat(e.target.value));
+                });
+            });
+        }
+
+        // Create friction grid
+        function createFrictionGrid() {
+            frictionGrid.innerHTML = '';
+            state.supports.forEach((s, i) => {
+                const card = document.createElement('div');
+                card.className = 'friction-card';
+                card.id = `friction-card-${i}`;
+                card.innerHTML = `
+                    <div class="friction-header">
+                        <span class="friction-label">${s.name}</span>
+                        <span class="friction-value" id="friction-value-${i}" style="color: #2ed573;">${s.F.toFixed(1)} kN</span>
+                    </div>
+                    <div class="friction-bar">
+                        <div class="friction-fill" id="friction-fill-${i}" style="width: 100%; background: #2ed573;"></div>
+                    </div>
+                `;
+                frictionGrid.appendChild(card);
+            });
+        }
+
+        // Update support load and friction
+        function updateSupportLoad(index, N) {
+            state.supports[index].N = N;
+            state.supports[index].F = N * MU;
+
+            // Update display
+            document.getElementById(`n-${index}`).textContent = `N=${N.toFixed(0)} kN`;
+            document.getElementById(`f-${index}`).textContent = `F=${(N * MU).toFixed(1)} kN`;
+
+            updateFrictionDisplay();
+            calculateTorsion();
+            draw();
+        }
+
+        // Update friction display
+        function updateFrictionDisplay() {
+            const maxF = Math.max(...state.supports.map(s => s.F), 1);
+
+            state.supports.forEach((s, i) => {
+                const valueEl = document.getElementById(`friction-value-${i}`);
+                const fillEl = document.getElementById(`friction-fill-${i}`);
+
+                valueEl.textContent = s.F.toFixed(1) + ' kN';
+                const percent = (s.F / maxF) * 100;
+                fillEl.style.width = percent + '%';
+
+                if (s.F < maxF * 0.2) {
+                    valueEl.style.color = '#ff6b6b';
+                    fillEl.style.background = '#ff6b6b';
+                } else if (s.F < maxF * 0.5) {
+                    valueEl.style.color = '#ffa502';
+                    fillEl.style.background = '#ffa502';
+                } else {
+                    valueEl.style.color = '#2ed573';
+                    fillEl.style.background = '#2ed573';
+                }
+            });
+        }
+
+        // Calculate torsion eccentricity
+        function calculateTorsion() {
+            // Sum of friction forces on left vs right
+            const leftF = state.supports.filter(s => s.x < 0).reduce((sum, s) => sum + s.F, 0);
+            const rightF = state.supports.filter(s => s.x > 0).reduce((sum, s) => sum + s.F, 0);
+
+            const totalF = leftF + rightF;
+            if (totalF === 0) {
+                torsionValue.textContent = '0.00 m';
+                torsionWarning.style.display = 'none';
+                return 0;
+            }
+
+            // Eccentricity: difference in friction creates rotation
+            const eccentricity = (rightF - leftF) / totalF * 10; // Scale for display
+            torsionValue.textContent = Math.abs(eccentricity).toFixed(2) + ' m';
+
+            if (Math.abs(eccentricity) > 0.5) {
+                torsionWarning.style.display = 'block';
+                torsionWarning.textContent = eccentricity > 0 ?
+                    '⚠️ 右侧摩擦力大，建筑将逆时针旋转！' :
+                    '⚠️ 左侧摩擦力大，建筑将顺时针旋转！';
+            } else {
+                torsionWarning.style.display = 'none';
+            }
+
+            return eccentricity;
+        }
+
+        // View tabs
+        document.querySelectorAll('.view-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                state.view = tab.dataset.view;
+                draw();
+            });
+        });
+
+        // Animation
+        function animate() {
+            if (!state.isSimulating) return;
+
+            state.time += 0.02;
+            state.seismicPhase += 0.1;
+
+            // Seismic force (sinusoidal)
+            const seismicForce = Math.sin(state.seismicPhase) * 500;
+
+            // Calculate friction asymmetry
+            const leftF = state.supports.filter(s => s.x < 0).reduce((sum, s) => sum + s.F, 0);
+            const rightF = state.supports.filter(s => s.x > 0).reduce((sum, s) => sum + s.F, 0);
+            const totalF = leftF + rightF;
+
+            // Very low friction = more displacement
+            const dampingFactor = Math.max(0.1, totalF / (TOTAL_WEIGHT * MU));
+
+            // Update building position
+            state.buildingX += seismicForce * 0.0001 / dampingFactor;
+
+            // Torsion based on friction asymmetry
+            const torsionMoment = (rightF - leftF) * seismicForce * 0.00001;
+            state.buildingRotation += torsionMoment;
+
+            // Damping (return toward center)
+            state.buildingX *= 0.98;
+            state.buildingRotation *= 0.98;
+
+            // Record displacement
+            state.displacementHistory.push({
+                t: state.time,
+                x: state.buildingX,
+                rot: state.buildingRotation
+            });
+            if (state.displacementHistory.length > 200) {
+                state.displacementHistory.shift();
+            }
+
+            draw();
+            drawChart();
+            requestAnimationFrame(animate);
+        }
+
+        // Draw main canvas
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (state.view === 'plan') {
+                drawPlanView();
+            } else if (state.view === 'side') {
+                drawSideView();
+            } else {
+                drawFrictionDiagram();
+            }
+        }
+
+        // Plan view (top-down, shows torsion)
+        function drawPlanView() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const buildingW = 200;
+            const buildingH = 150;
+
+            ctx.save();
+            ctx.translate(centerX + state.buildingX * 100, centerY);
+            ctx.rotate(state.buildingRotation);
+
+            // Building outline
+            ctx.fillStyle = 'rgba(61, 90, 128, 0.5)';
+            ctx.fillRect(-buildingW / 2, -buildingH / 2, buildingW, buildingH);
+            ctx.strokeStyle = '#5c7a99';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-buildingW / 2, -buildingH / 2, buildingW, buildingH);
+
+            // Supports at corners
+            const supportR = 20;
+            const maxF = Math.max(...state.supports.map(s => s.F), 1);
+
+            state.supports.forEach((s, i) => {
+                const x = s.x * (buildingW / 2 - 20);
+                const y = s.y * (buildingH / 2 - 20);
+
+                // Support circle size based on friction
+                const sizeRatio = s.F / maxF;
+                const r = 10 + sizeRatio * 15;
+
+                // Color based on friction level
+                let color = '#2ed573';
+                if (sizeRatio < 0.2) color = '#ff6b6b';
+                else if (sizeRatio < 0.5) color = '#ffa502';
+
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Label
+                ctx.font = '10px JetBrains Mono';
+                ctx.fillStyle = '#fff';
+                ctx.fillText(`F=${s.F.toFixed(0)}`, x - 15, y + 4);
+            });
+
+            // Center of mass
+            ctx.beginPath();
+            ctx.arc(0, 0, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffa502';
+            ctx.fill();
+
+            // Direction arrow (shows rotation)
+            if (Math.abs(state.buildingRotation) > 0.001) {
+                const arrowAngle = state.buildingRotation > 0 ? -Math.PI / 4 : Math.PI / 4;
+                ctx.beginPath();
+                ctx.arc(0, 0, 60, arrowAngle - 0.5, arrowAngle + 0.5);
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+
+            ctx.restore();
+
+            // Labels
+            ctx.font = 'bold 14px Inter';
+            ctx.fillStyle = '#888';
+            ctx.fillText('俯视图 - 扭转效应', 20, 30);
+
+            ctx.font = '12px Inter';
+            ctx.fillStyle = '#666';
+            ctx.fillText('圆圈大小 = 摩擦力大小', 20, 50);
+            ctx.fillText('摩擦力不对称 → 建筑旋转', 20, 70);
+
+            // Legend
+            ctx.fillStyle = '#2ed573';
+            ctx.fillRect(20, canvas.height - 40, 12, 12);
+            ctx.fillStyle = '#888';
+            ctx.fillText('高摩擦(有刹车)', 40, canvas.height - 30);
+
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillRect(150, canvas.height - 40, 12, 12);
+            ctx.fillStyle = '#888';
+            ctx.fillText('低摩擦(无刹车)', 170, canvas.height - 30);
+        }
+
+        // Side view (shows sliding)
+        function drawSideView() {
+            const groundY = canvas.height - 100;
+            const centerX = canvas.width / 2;
+            const buildingW = 250;
+            const buildingH = 200;
+
+            // Ground
+            ctx.beginPath();
+            ctx.moveTo(0, groundY);
+            ctx.lineTo(canvas.width, groundY);
+            ctx.strokeStyle = '#444';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Ground hatching
+            ctx.beginPath();
+            for (let x = 0; x < canvas.width; x += 15) {
+                ctx.moveTo(x, groundY);
+                ctx.lineTo(x - 10, groundY + 15);
+            }
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Building offset by displacement
+            const offsetX = state.buildingX * 100;
+
+            ctx.save();
+            ctx.translate(centerX + offsetX, groundY);
+
+            // Supports
+            const supportH = 25;
+            [-buildingW / 2 + 30, buildingW / 2 - 30].forEach((x, i) => {
+                const support = state.supports[i * 2]; // Use left/right pair
+                const friction = support.F;
+                const maxF = (TOTAL_WEIGHT / NUM_SUPPORTS) * MU;
+
+                let color = '#2ed573';
+                if (friction < maxF * 0.2) color = '#ff6b6b';
+                else if (friction < maxF * 0.5) color = '#ffa502';
+
+                // FPS curved support
+                ctx.beginPath();
+                ctx.arc(x, -supportH + 10, 30, Math.PI, 0, false);
+                ctx.strokeStyle = '#666';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Slider
+                ctx.beginPath();
+                ctx.arc(x, -supportH + 10, 10, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Friction arrow
+                if (state.isSimulating && friction > 0) {
+                    const arrowLen = (friction / maxF) * 40;
+                    const dir = state.buildingX > 0 ? -1 : 1;
+                    ctx.beginPath();
+                    ctx.moveTo(x, -supportH);
+                    ctx.lineTo(x + arrowLen * dir, -supportH);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    // Arrow head
+                    ctx.beginPath();
+                    ctx.moveTo(x + arrowLen * dir, -supportH);
+                    ctx.lineTo(x + (arrowLen - 8) * dir, -supportH - 5);
+                    ctx.lineTo(x + (arrowLen - 8) * dir, -supportH + 5);
+                    ctx.closePath();
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                }
+            });
+
+            // Building
+            const buildingGrad = ctx.createLinearGradient(-buildingW / 2, -buildingH, buildingW / 2, 0);
+            buildingGrad.addColorStop(0, '#3d5a80');
+            buildingGrad.addColorStop(1, '#293241');
+
+            ctx.fillStyle = buildingGrad;
+            ctx.fillRect(-buildingW / 2, -supportH - buildingH, buildingW, buildingH);
+            ctx.strokeStyle = '#5c7a99';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-buildingW / 2, -supportH - buildingH, buildingW, buildingH);
+
+            ctx.restore();
+
+            // Seismic force indicator
+            if (state.isSimulating) {
+                const forceDir = Math.sin(state.seismicPhase);
+                const arrowLen = Math.abs(forceDir) * 60;
+                const startX = centerX + offsetX - 180 * Math.sign(forceDir);
+                const comY = groundY - 25 - buildingH / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(startX, comY);
+                ctx.lineTo(startX + forceDir * arrowLen, comY);
+                ctx.strokeStyle = '#00d4ff';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+            }
+
+            // Labels
+            ctx.font = 'bold 14px Inter';
+            ctx.fillStyle = '#888';
+            ctx.fillText('侧视图 - 滑动效应', 20, 30);
+
+            ctx.font = '12px Inter';
+            ctx.fillStyle = '#666';
+            ctx.fillText('摩擦力不足 → 位移过大', 20, 50);
+        }
+
+        // Friction diagram
+        function drawFrictionDiagram() {
+            const startX = 80;
+            const startY = 150;
+            const width = canvas.width - 160;
+            const height = 250;
+
+            // Axes
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(startX, startY + height);
+            ctx.lineTo(startX + width, startY + height);
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Axis labels
+            ctx.font = '12px Inter';
+            ctx.fillStyle = '#888';
+            ctx.fillText('摩擦力 Ff', startX - 60, startY + height / 2);
+            ctx.fillText('垂直反力 N', startX + width / 2, startY + height + 40);
+
+            // Linear relationship line
+            ctx.beginPath();
+            ctx.moveTo(startX, startY + height);
+            ctx.lineTo(startX + width, startY);
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Formula label
+            ctx.font = 'bold 16px JetBrains Mono';
+            ctx.fillStyle = '#00d4ff';
+            ctx.fillText('Ff = μ × N', startX + width - 100, startY + 30);
+
+            // Current points for each support
+            const maxN = TOTAL_WEIGHT / 2;
+            state.supports.forEach((s, i) => {
+                const x = startX + (s.N / maxN) * width;
+                const y = startY + height - (s.F / (maxN * MU)) * height;
+
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+
+                let color = '#2ed573';
+                if (s.F < (maxN * MU) * 0.2) color = '#ff6b6b';
+                else if (s.F < (maxN * MU) * 0.5) color = '#ffa502';
+
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.font = '10px Inter';
+                ctx.fillStyle = '#fff';
+                ctx.fillText(s.name, x - 10, y - 12);
+            });
+
+            // Danger zone
+            ctx.fillStyle = 'rgba(255, 107, 107, 0.2)';
+            ctx.fillRect(startX, startY + height - 50, width * 0.2, 50);
+            ctx.font = '10px Inter';
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillText('危险区', startX + 10, startY + height - 30);
+            ctx.fillText('(无刹车)', startX + 10, startY + height - 15);
+
+            // Title
+            ctx.font = 'bold 14px Inter';
+            ctx.fillStyle = '#888';
+            ctx.fillText('摩擦力与反力关系', 20, 30);
+        }
+
+        // Draw displacement chart
+        function drawChart() {
+            chartCtx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+
+            if (state.displacementHistory.length < 2) return;
+
+            const h = chartCanvas.height;
+            const w = chartCanvas.width;
+            const midY = h / 2;
+
+            // Draw center line
+            chartCtx.beginPath();
+            chartCtx.moveTo(0, midY);
+            chartCtx.lineTo(w, midY);
+            chartCtx.strokeStyle = '#333';
+            chartCtx.lineWidth = 1;
+            chartCtx.stroke();
+
+            // Draw displacement
+            chartCtx.beginPath();
+            const maxDisp = Math.max(0.1, ...state.displacementHistory.map(d => Math.abs(d.x)));
+
+            state.displacementHistory.forEach((d, i) => {
+                const x = (i / state.displacementHistory.length) * w;
+                const y = midY - (d.x / maxDisp) * (h / 2 - 5);
+
+                if (i === 0) chartCtx.moveTo(x, y);
+                else chartCtx.lineTo(x, y);
+            });
+
+            chartCtx.strokeStyle = '#00d4ff';
+            chartCtx.lineWidth = 2;
+            chartCtx.stroke();
+
+            // Draw rotation as secondary line
+            chartCtx.beginPath();
+            const maxRot = Math.max(0.01, ...state.displacementHistory.map(d => Math.abs(d.rot)));
+
+            state.displacementHistory.forEach((d, i) => {
+                const x = (i / state.displacementHistory.length) * w;
+                const y = midY - (d.rot / maxRot) * (h / 2 - 5);
+
+                if (i === 0) chartCtx.moveTo(x, y);
+                else chartCtx.lineTo(x, y);
+            });
+
+            chartCtx.strokeStyle = '#ff6b6b';
+            chartCtx.lineWidth = 1.5;
+            chartCtx.stroke();
+        }
+
+        // Event listeners
+        btnSimulate.addEventListener('click', () => {
+            if (state.isSimulating) {
+                state.isSimulating = false;
+                btnSimulate.textContent = '▶ 继续模拟';
+            } else {
+                state.isSimulating = true;
+                btnSimulate.textContent = '⏸ 暂停';
+                animate();
+            }
+        });
+
+        btnReset.addEventListener('click', () => {
+            state.isSimulating = false;
+            initSupports();
+            createLoadSliders();
+            createFrictionGrid();
+            updateFrictionDisplay();
+            calculateTorsion();
+            btnSimulate.textContent = '▶ 开始模拟';
+            draw();
+            drawChart();
+        });
+
+        // Initialize
+        initSupports();
+        createLoadSliders();
+        createFrictionGrid();
+        updateFrictionDisplay();
+        calculateTorsion();
+        draw();
+    </script>
+</body>
+
+</html>

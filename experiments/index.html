@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隔震支座脱空危害 | Seismic Isolation Uplift Hazards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #0f1928 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #ff6b6b, #ffa502, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Chair Analogy */
+        .analogy-box {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 165, 2, 0.05));
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .analogy-icon {
+            font-size: 4rem;
+            flex-shrink: 0;
+        }
+
+        .analogy-content h3 {
+            color: #ff6b6b;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .analogy-content p {
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        /* Module Cards */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .module-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .module-card.hammer {
+            --accent: #ff6b6b;
+            --accent-light: #ff8e8e;
+        }
+
+        .module-card.domino {
+            --accent: #ffa502;
+            --accent-light: #ffcc00;
+        }
+
+        .module-card.brake {
+            --accent: #00d4ff;
+            --accent-light: #7ce4ff;
+        }
+
+        .module-card.basic {
+            --accent: #7c3aed;
+            --accent-light: #a78bfa;
+        }
+
+        .module-card.combined {
+            --accent: #2ed573;
+            --accent-light: #7bed9f;
+        }
+
+        .module-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.05);
+        }
+
+        .module-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .module-title {
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .module-subtitle {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .module-description {
+            font-size: 0.9rem;
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .module-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: #aaa;
+        }
+
+        /* Key Concepts */
+        .key-concepts {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .key-concepts h2 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .concepts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .concept-item {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border-left: 3px solid var(--border-color);
+        }
+
+        .concept-item.danger {
+            --border-color: #ff6b6b;
+        }
+
+        .concept-item.warning {
+            --border-color: #ffa502;
+        }
+
+        .concept-item.info {
+            --border-color: #00d4ff;
+        }
+
+        .concept-title {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .concept-formula {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .concept-text {
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        /* Flow Diagram */
+        .flow-section {
+            margin-bottom: 40px;
+        }
+
+        .flow-section h2 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+        }
+
+        .flow-step {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .flow-step.danger {
+            border-color: rgba(255, 107, 107, 0.4);
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .flow-step-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .flow-step-text {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 隔震支座脱空危害</h1>
+            <p class="subtitle">
+                支座脱空（Uplift）不仅是局部问题，更是牵一发而动全身的<strong>系统性风险</strong>。
+                通过这一系列交互式可视化，深入理解脱空引发的连锁反应。
+            </p>
+        </header>
+
+        <!-- Analogy -->
+        <div class="analogy-box">
+            <div class="analogy-icon">🪑</div>
+            <div class="analogy-content">
+                <h3>椅子的腿悬空了</h3>
+                <p>
+                    想象一把四条腿的椅子，其中一条腿悬空。平时静止坐着可能没事（依靠结构刚度维持平衡），
+                    但一旦发生地震（剧烈晃动），这个"悬空"的支座就会引发一系列连锁反应，
+                    从局部破坏演变成<strong>全局灾难</strong>。
+                </p>
+            </div>
+        </div>
+
+        <!-- Cascade Flow -->
+        <div class="flow-section">
+            <h2>⚡ 脱空引发的连锁反应</h2>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-step-icon">🌊</div>
+                    <div class="flow-step-text">地震倾覆力矩</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-icon">⬆️</div>
+                    <div class="flow-step-text">支座脱空</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step danger">
+                    <div class="flow-step-icon">🔨</div>
+                    <div class="flow-step-text">锤击冲击</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step danger">
+                    <div class="flow-step-icon">🎯</div>
+                    <div class="flow-step-text">荷载重分配</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step danger">
+                    <div class="flow-step-icon">🔄</div>
+                    <div class="flow-step-text">阻尼丧失</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step danger">
+                    <div class="flow-step-icon">💥</div>
+                    <div class="flow-step-text">连续倒塌</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module Cards -->
+        <div class="modules-grid">
+            <!-- Basic Concept -->
+            <a href="seismic-uplift.html" class="module-card basic">
+                <div class="module-number">0</div>
+                <div class="module-icon">📐</div>
+                <div class="module-title">基础概念</div>
+                <div class="module-subtitle">Overturning vs Resisting Moment</div>
+                <div class="module-description">
+                    理解倾覆力矩与抗倾覆力矩的关系，以及初始预压力分布如何影响脱空风险。
+                </div>
+                <div class="module-tags">
+                    <span class="tag">Mo = F × H</span>
+                    <span class="tag">Mr = W × B/2</span>
+                    <span class="tag">预压力分布</span>
+                </div>
+            </a>
+
+            <!-- Hammer Effect -->
+            <a href="hammer-effect.html" class="module-card hammer">
+                <div class="module-number">1</div>
+                <div class="module-icon">🔨</div>
+                <div class="module-title">锤击效应</div>
+                <div class="module-subtitle">Vertical Pounding / Impact</div>
+                <div class="module-description">
+                    脱空后建筑落回时产生的冲击力是静载的<strong>数倍甚至十几倍</strong>。
+                    这种冲击会压碎支座、敲碎混凝土，并沿柱子向上传导造成二次伤害。
+                </div>
+                <div class="module-tags">
+                    <span class="tag">冲击力放大</span>
+                    <span class="tag">支座压碎</span>
+                    <span class="tag">震动传导</span>
+                </div>
+            </a>
+
+            <!-- Domino Effect -->
+            <a href="domino-effect.html" class="module-card domino">
+                <div class="module-number">2</div>
+                <div class="module-icon">🎯</div>
+                <div class="module-title">多米诺效应</div>
+                <div class="module-subtitle">Load Redistribution / Overloading</div>
+                <div class="module-description">
+                    一个支座失效 → 荷载转移到相邻支座 → 相邻支座超载失效 →
+                    <strong>连续倒塌 (Progressive Collapse)</strong>。
+                </div>
+                <div class="module-tags">
+                    <span class="tag">荷载重分配</span>
+                    <span class="tag">超载失效</span>
+                    <span class="tag">连续倒塌</span>
+                </div>
+            </a>
+
+            <!-- Brake Failure -->
+            <a href="friction-loss.html" class="module-card brake">
+                <div class="module-number">3</div>
+                <div class="module-icon">🛞</div>
+                <div class="module-title">刹车失灵</div>
+                <div class="module-subtitle">Loss of Damping & Stiffness</div>
+                <div class="module-description">
+                    摩擦力 F<sub>f</sub> = μ × N。当支座反力N很小时，摩擦力消失，
+                    支座变成纯滑轮，导致<strong>扭转耦合</strong>和位移失控。
+                </div>
+                <div class="module-tags">
+                    <span class="tag">F = μN</span>
+                    <span class="tag">扭转耦合</span>
+                    <span class="tag">位移超限</span>
+                </div>
+            </a>
+
+            <!-- Combined Demo -->
+            <a href="combined-demo.html" class="module-card combined">
+                <div class="module-number">4</div>
+                <div class="module-icon">🎬</div>
+                <div class="module-title">综合演示</div>
+                <div class="module-subtitle">Complete Earthquake Response</div>
+                <div class="module-description">
+                    完整的地震响应动画，展示从初始晃动到脱空、锤击、荷载重分配、
+                    阻尼丧失直至连续倒塌的全过程。
+                </div>
+                <div class="module-tags">
+                    <span class="tag">地震动画</span>
+                    <span class="tag">时程响应</span>
+                    <span class="tag">破坏过程</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Key Concepts -->
+        <div class="key-concepts">
+            <h2>📚 关键公式与概念</h2>
+            <div class="concepts-grid">
+                <div class="concept-item danger">
+                    <div class="concept-title">倾覆力矩</div>
+                    <div class="concept-formula">Mo = F × H</div>
+                    <div class="concept-text">
+                        地震水平力 × 作用高度。高层建筑的倾覆力矩更大。
+                    </div>
+                </div>
+                <div class="concept-item warning">
+                    <div class="concept-title">抗倾覆力矩</div>
+                    <div class="concept-formula">Mr = W × B/2</div>
+                    <div class="concept-text">
+                        建筑重量 × 底部半宽。矮胖建筑抗倾覆能力更强。
+                    </div>
+                </div>
+                <div class="concept-item info">
+                    <div class="concept-title">摩擦阻尼力</div>
+                    <div class="concept-formula">Ff = μ × N</div>
+                    <div class="concept-text">
+                        摩擦系数 × 垂直反力。N→0 时摩擦力消失，"刹车"失效。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                隔震结构抗震设计可视化系列 |
+                <a href="../index.html">返回主站</a>
+            </p>
+        </footer>
+    </div>
+</body>
+
+</html>

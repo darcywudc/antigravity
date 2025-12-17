@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隔震支座受拉脱空可视化 | Seismic Uplift Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 25px;
+        }
+
+        /* Visualization Canvas */
+        .viz-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 480px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-radius: 10px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .control-section {
+            margin-bottom: 20px;
+        }
+
+        .control-section h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .control-section h3::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: linear-gradient(180deg, #00d4ff, #7c3aed);
+            border-radius: 2px;
+        }
+
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .slider-label span {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .slider-value {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 212, 255, 0.15);
+            padding: 3px 8px;
+            border-radius: 5px;
+            color: #00d4ff;
+            font-size: 0.8rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Support Reaction Distribution */
+        .reaction-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .reaction-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .reaction-card.low-preload {
+            border-color: rgba(255, 165, 0, 0.4);
+            background: rgba(255, 165, 0, 0.1);
+        }
+
+        .reaction-card.uplift {
+            border-color: rgba(255, 107, 107, 0.5);
+            background: rgba(255, 107, 107, 0.15);
+            animation: pulse-danger 1s infinite;
+        }
+
+        @keyframes pulse-danger {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 15px 3px rgba(255, 107, 107, 0.15);
+            }
+        }
+
+        .reaction-label {
+            font-size: 0.7rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .reaction-value {
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .reaction-card.compression .reaction-value {
+            color: #2ed573;
+        }
+
+        .reaction-card.low-preload .reaction-value {
+            color: #ffa502;
+        }
+
+        .reaction-card.uplift .reaction-value {
+            color: #ff6b6b;
+        }
+
+        .reaction-slider {
+            margin-top: 8px;
+        }
+
+        .reaction-slider input {
+            height: 4px;
+        }
+
+        /* Stats Display */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-card.overturn {
+            border-color: rgba(255, 107, 107, 0.3);
+        }
+
+        .stat-card.resist {
+            border-color: rgba(46, 213, 115, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-card.overturn .stat-value {
+            color: #ff6b6b;
+        }
+
+        .stat-card.resist .stat-value {
+            color: #2ed573;
+        }
+
+        .stat-unit {
+            font-size: 0.65rem;
+            color: #666;
+            margin-left: 2px;
+        }
+
+        /* Key Insight Box */
+        .insight-box {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(0, 212, 255, 0.1));
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .insight-title {
+            font-size: 0.8rem;
+            color: #7c3aed;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .insight-content {
+            font-size: 0.85rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .insight-highlight {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        .formula-title {
+            color: #888;
+            font-size: 0.7rem;
+            margin-bottom: 6px;
+        }
+
+        .formula {
+            color: #00d4ff;
+            margin-bottom: 4px;
+        }
+
+        .formula-vars {
+            color: #666;
+            font-size: 0.7rem;
+            line-height: 1.5;
+        }
+
+        .var-highlight {
+            color: #f472b6;
+        }
+
+        /* Preload Presets */
+        .preset-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #aaa;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+        }
+
+        .preset-btn.active {
+            background: rgba(0, 212, 255, 0.25);
+            border-color: rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+        }
+
+        /* Alert Banner */
+        .alert-banner {
+            background: linear-gradient(90deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .alert-banner.show {
+            display: block;
+        }
+
+        .alert-title {
+            color: #ff6b6b;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .alert-text {
+            color: #ccc;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        /* Animation Toggle */
+        .animation-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(124, 58, 237, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            margin-top: 10px;
+        }
+
+        .animation-toggle:hover {
+            background: rgba(124, 58, 237, 0.3);
+        }
+
+        .animation-toggle.active {
+            background: rgba(124, 58, 237, 0.4);
+            border-color: rgba(124, 58, 237, 0.6);
+        }
+
+        .toggle-icon {
+            font-size: 1rem;
+        }
+
+        .toggle-text {
+            font-size: 0.8rem;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-card h4 {
+            font-size: 0.85rem;
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+
+        .info-card p {
+            font-size: 0.8rem;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .info-card .formula {
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            font-size: 0.75rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 隔震支座受拉脱空可视化</h1>
+            <p class="subtitle">Seismic Isolation Bearing Uplift - 考虑初始反力不均匀分布</p>
+        </header>
+
+        <div class="main-layout">
+            <!-- Visualization -->
+            <div class="viz-container">
+                <canvas id="canvas"></canvas>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6b6b;"></div>
+                        <span>倾覆力矩 M<sub>o</sub></span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2ed573;"></div>
+                        <span>抗倾覆力矩 M<sub>r</sub></span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #00d4ff;"></div>
+                        <span>地震力 F</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffa502;"></div>
+                        <span>重力 W</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: linear-gradient(90deg, #ff6b6b, #2ed573);"></div>
+                        <span>支座应力（红=拉/绿=压）</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <!-- Key Insight -->
+                <div class="insight-box">
+                    <div class="insight-title">💡 核心观察点</div>
+                    <div class="insight-content">
+                        <span class="insight-highlight">倾覆力矩</span>由地震力 F 和作用高度 H 决定：M<sub>o</sub> = F × H<br>
+                        <span class="insight-highlight">抗倾覆力矩</span>由建筑重量 W 和宽度 B 决定：M<sub>r</sub> = W × B/2<br>
+                        <strong>初始预压力分布不均会导致某些支座更早脱空！</strong>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>建筑参数</h3>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>高度 H（影响 M<sub>o</sub>）</span>
+                            <span class="slider-value" id="height-value">30 m</span>
+                        </div>
+                        <input type="range" id="height-slider" min="10" max="80" value="30">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>宽度 B（影响 M<sub>r</sub>）</span>
+                            <span class="slider-value" id="width-value">24 m</span>
+                        </div>
+                        <input type="range" id="width-slider" min="12" max="48" value="24">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>总重 W（影响 M<sub>r</sub>）</span>
+                            <span class="slider-value" id="weight-value">6000 kN</span>
+                        </div>
+                        <input type="range" id="weight-slider" min="2000" max="20000" value="6000" step="100">
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>地震作用（影响 M<sub>o</sub>）</h3>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>水平地震力 F</span>
+                            <span class="slider-value" id="force-value">400 kN</span>
+                        </div>
+                        <input type="range" id="force-slider" min="0" max="4000" value="400" step="50">
+                    </div>
+
+                    <div class="animation-toggle" id="animate-toggle">
+                        <span class="toggle-icon">🌊</span>
+                        <span class="toggle-text">模拟地震往复作用</span>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>⭐ 初始支座反力分配（关键！）</h3>
+                    <p style="font-size: 0.75rem; color: #888; margin-bottom: 10px;">
+                        调节各支座的初始预压力占总重的比例。预压力小的支座在地震时更容易脱空。
+                    </p>
+
+                    <div class="preset-buttons">
+                        <button class="preset-btn active" data-preset="uniform">均匀分布</button>
+                        <button class="preset-btn" data-preset="left-heavy">左侧偏重</button>
+                        <button class="preset-btn" data-preset="right-heavy">右侧偏重</button>
+                        <button class="preset-btn" data-preset="center-heavy">中间偏重</button>
+                        <button class="preset-btn" data-preset="edge-heavy">两边偏重</button>
+                    </div>
+
+                    <div class="reaction-grid" id="reaction-grid">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>力矩分析</h3>
+
+                    <div class="stats-row">
+                        <div class="stat-card overturn">
+                            <div class="stat-label">倾覆力矩 M<sub>o</sub></div>
+                            <div class="stat-value" id="overturn-moment">12000<span class="stat-unit">kN·m</span></div>
+                        </div>
+                        <div class="stat-card resist">
+                            <div class="stat-label">抗倾覆力矩 M<sub>r</sub></div>
+                            <div class="stat-value" id="resist-moment">72000<span class="stat-unit">kN·m</span></div>
+                        </div>
+                    </div>
+
+                    <div class="formula-box">
+                        <div class="formula-title">脱空判定条件</div>
+                        <div class="formula">σ<sub>i</sub> = σ<sub>0,i</sub> - ΔM × x<sub>i</sub> / I</div>
+                        <div class="formula-vars">
+                            <span class="var-highlight">σ<sub>0,i</sub></span> = 第i个支座的初始预压力<br>
+                            <span class="var-highlight">ΔM</span> = 附加弯矩（由地震力产生）<br>
+                            当 σ<sub>i</sub>
+                            < 0 时，支座i发生脱空 </div>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>地震时支座应力状态</h3>
+                        <div id="stress-display">
+                            <!-- Generated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="alert-banner" id="alert-banner">
+                        <div class="alert-title">⚠️ 支座脱空警告</div>
+                        <div class="alert-text" id="alert-text">
+                            检测到支座脱空！
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <h4>📐 倾覆力矩 M<sub>o</sub> = F × H</h4>
+                    <p>
+                        地震水平力作用于建筑质心产生的力矩。<br>
+                        <strong>增大因素：</strong>地震力F↑，建筑高度H↑<br>
+                        <strong>结论：</strong>高层建筑倾覆力矩大，更危险
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h4>🛡️ 抗倾覆力矩 M<sub>r</sub> = W × B/2</h4>
+                    <p>
+                        建筑自重产生的抵抗力矩。<br>
+                        <strong>增大因素：</strong>建筑重量W↑，底部宽度B↑<br>
+                        <strong>结论：</strong>矮胖建筑抗倾覆能力强
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h4>⚡ 初始预压力的影响</h4>
+                    <p>
+                        即使总抗倾覆力矩足够，如果某个支座的初始预压力很小，
+                        地震时该支座可能首先进入受拉状态而脱空。<br>
+                        <strong>关键：</strong>均匀的预压力分布更安全
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h4>🔧 工程对策</h4>
+                    <p>
+                        1. 优化结构布置，确保预压力均匀<br>
+                        2. 增加建筑宽度或重量<br>
+                        3. 采用抗拉隔震支座<br>
+                        4. 设置抗拉装置（抗拉螺栓等）
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Canvas setup
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width - 40;
+                canvas.height = 480;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', () => { resizeCanvas(); draw(); });
+
+            // Number of supports
+            const NUM_SUPPORTS = 6;
+
+            // State
+            let state = {
+                height: 30,
+                width: 24,
+                weight: 6000,
+                force: 400,
+                // Initial reaction distribution (as fractions, should sum to 1)
+                reactions: new Array(NUM_SUPPORTS).fill(1 / NUM_SUPPORTS)
+            };
+
+            // DOM Elements
+            const heightSlider = document.getElementById('height-slider');
+            const widthSlider = document.getElementById('width-slider');
+            const weightSlider = document.getElementById('weight-slider');
+            const forceSlider = document.getElementById('force-slider');
+
+            const heightValue = document.getElementById('height-value');
+            const widthValue = document.getElementById('width-value');
+            const weightValue = document.getElementById('weight-value');
+            const forceValue = document.getElementById('force-value');
+
+            const overturnMoment = document.getElementById('overturn-moment');
+            const resistMoment = document.getElementById('resist-moment');
+
+            const reactionGrid = document.getElementById('reaction-grid');
+            const stressDisplay = document.getElementById('stress-display');
+            const alertBanner = document.getElementById('alert-banner');
+            const alertText = document.getElementById('alert-text');
+            const animateToggle = document.getElementById('animate-toggle');
+
+            let isAnimating = false;
+            let animationPhase = 0;
+            let forceDirection = 1; // 1 = right, -1 = left
+
+            // Preset distributions
+            const presets = {
+                'uniform': () => new Array(NUM_SUPPORTS).fill(1 / NUM_SUPPORTS),
+                'left-heavy': () => {
+                    const arr = [];
+                    for (let i = 0; i < NUM_SUPPORTS; i++) {
+                        arr.push((NUM_SUPPORTS - i) / ((NUM_SUPPORTS + 1) * NUM_SUPPORTS / 2));
+                    }
+                    return arr;
+                },
+                'right-heavy': () => {
+                    const arr = [];
+                    for (let i = 0; i < NUM_SUPPORTS; i++) {
+                        arr.push((i + 1) / ((NUM_SUPPORTS + 1) * NUM_SUPPORTS / 2));
+                    }
+                    return arr;
+                },
+                'center-heavy': () => {
+                    const arr = [];
+                    const mid = (NUM_SUPPORTS - 1) / 2;
+                    let sum = 0;
+                    for (let i = 0; i < NUM_SUPPORTS; i++) {
+                        arr.push(1 / (1 + Math.abs(i - mid)));
+                        sum += arr[i];
+                    }
+                    return arr.map(v => v / sum);
+                },
+                'edge-heavy': () => {
+                    const arr = [];
+                    const mid = (NUM_SUPPORTS - 1) / 2;
+                    let sum = 0;
+                    for (let i = 0; i < NUM_SUPPORTS; i++) {
+                        arr.push(1 + Math.abs(i - mid));
+                        sum += arr[i];
+                    }
+                    return arr.map(v => v / sum);
+                }
+            };
+
+            // Generate reaction sliders
+            function createReactionGrid() {
+                reactionGrid.innerHTML = '';
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'reaction-card compression';
+                    card.id = `reaction-card-${i}`;
+                    card.innerHTML = `
+                    <div class="reaction-label">支座 ${i + 1}</div>
+                    <div class="reaction-value" id="reaction-value-${i}">${(state.reactions[i] * 100).toFixed(1)}%</div>
+                    <div class="reaction-slider">
+                        <input type="range" id="reaction-slider-${i}" min="0" max="50" value="${state.reactions[i] * 100}" step="0.5">
+                    </div>
+                `;
+                    reactionGrid.appendChild(card);
+
+                    // Add event listener
+                    document.getElementById(`reaction-slider-${i}`).addEventListener('input', (e) => {
+                        updateReaction(i, parseFloat(e.target.value) / 100);
+                    });
+                }
+            }
+
+            function updateReaction(index, value) {
+                // Update the specific reaction
+                state.reactions[index] = value;
+
+                // Normalize to ensure sum = 1
+                const sum = state.reactions.reduce((a, b) => a + b, 0);
+                if (sum > 0) {
+                    state.reactions = state.reactions.map(r => r / sum);
+                }
+
+                // Update all displays
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    document.getElementById(`reaction-value-${i}`).textContent = `${(state.reactions[i] * 100).toFixed(1)}%`;
+                    document.getElementById(`reaction-slider-${i}`).value = state.reactions[i] * 100;
+                }
+
+                draw();
+            }
+
+            // Create stress display
+            function createStressDisplay() {
+                stressDisplay.innerHTML = '';
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    const row = document.createElement('div');
+                    row.className = 'reaction-card compression';
+                    row.id = `stress-card-${i}`;
+                    row.style.padding = '8px';
+                    row.style.marginBottom = '6px';
+                    row.style.display = 'flex';
+                    row.style.justifyContent = 'space-between';
+                    row.style.alignItems = 'center';
+                    row.innerHTML = `
+                    <span style="font-size: 0.75rem; color: #aaa;">支座 ${i + 1}</span>
+                    <span class="reaction-value" id="stress-value-${i}" style="font-size: 0.9rem;">+100 kPa</span>
+                `;
+                    stressDisplay.appendChild(row);
+                }
+            }
+
+            // Preset buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const preset = btn.dataset.preset;
+                    state.reactions = presets[preset]();
+                    for (let i = 0; i < NUM_SUPPORTS; i++) {
+                        document.getElementById(`reaction-value-${i}`).textContent = `${(state.reactions[i] * 100).toFixed(1)}%`;
+                        document.getElementById(`reaction-slider-${i}`).value = state.reactions[i] * 100;
+                    }
+                    draw();
+                });
+            });
+
+            // Calculate stresses
+            function calculateStresses() {
+                const Mo = state.force * state.height * forceDirection; // Overturning moment (positive = clockwise)
+                const Mr = state.weight * state.width / 2; // Resisting moment
+
+                // Support positions (from left to right)
+                const supportSpacing = state.width / (NUM_SUPPORTS - 1);
+                const supportPositions = [];
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    supportPositions.push(-state.width / 2 + i * supportSpacing);
+                }
+
+                // Initial pre-compression forces
+                const initialForces = state.reactions.map(r => r * state.weight);
+
+                // Calculate moment of inertia of support system (simplified)
+                // I = Σ(A_i * x_i²), assuming unit area for each support
+                let I = 0;
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    I += Math.pow(supportPositions[i], 2);
+                }
+
+                // Stress change due to overturning
+                const stresses = [];
+                let hasUplift = false;
+                const upliftSupports = [];
+
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    // Initial stress (using fraction as proxy)
+                    const sigma0 = initialForces[i] / (state.width / NUM_SUPPORTS); // Simplified stress
+
+                    // Change due to moment:
+                    // Force to RIGHT (forceDirection=1) -> LEFT side (x<0) loses compression (tension)
+                    // Force to LEFT (forceDirection=-1) -> RIGHT side (x>0) loses compression (tension)
+                    // deltaSigma should be NEGATIVE on the tension side
+                    const deltaSigma = -(Mo * supportPositions[i]) / I * 0.1; // Scaling factor
+
+                    const sigma = sigma0 + deltaSigma;
+                    stresses.push(sigma);
+
+                    if (sigma < 0) {
+                        hasUplift = true;
+                        upliftSupports.push(i + 1);
+                    }
+                }
+
+                return { Mo, Mr, stresses, hasUplift, upliftSupports, supportPositions, initialForces };
+            }
+
+            // Update displays
+            function updateDisplays() {
+                const calc = calculateStresses();
+
+                // Update moments
+                overturnMoment.innerHTML = `${Math.abs(calc.Mo).toFixed(0)}<span class="stat-unit">kN·m</span>`;
+                resistMoment.innerHTML = `${calc.Mr.toFixed(0)}<span class="stat-unit">kN·m</span>`;
+
+                // Update stress cards
+                const maxStress = Math.max(...calc.stresses.map(Math.abs), 1);
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    const sigma = calc.stresses[i];
+                    const card = document.getElementById(`stress-card-${i}`);
+                    const valueEl = document.getElementById(`stress-value-${i}`);
+
+                    valueEl.textContent = `${sigma >= 0 ? '+' : ''}${sigma.toFixed(1)} kPa`;
+
+                    if (sigma < 0) {
+                        card.className = 'reaction-card uplift';
+                        valueEl.style.color = '#ff6b6b';
+                    } else if (sigma < maxStress * 0.2) {
+                        card.className = 'reaction-card low-preload';
+                        valueEl.style.color = '#ffa502';
+                    } else {
+                        card.className = 'reaction-card compression';
+                        valueEl.style.color = '#2ed573';
+                    }
+                }
+
+                // Update reaction cards (show initial preload status)
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    const card = document.getElementById(`reaction-card-${i}`);
+                    const reaction = state.reactions[i];
+                    if (reaction < 0.1 / NUM_SUPPORTS) {
+                        card.className = 'reaction-card low-preload';
+                    } else {
+                        card.className = 'reaction-card compression';
+                    }
+                }
+
+                // Alert banner
+                if (calc.hasUplift) {
+                    alertBanner.classList.add('show');
+                    alertText.innerHTML = `支座 ${calc.upliftSupports.join(', ')} 出现拉应力（脱空）！<br>
+                    <span style="font-size: 0.75rem;">这些支座的初始预压力较小，在地震作用下首先进入受拉状态。</span>`;
+                } else {
+                    alertBanner.classList.remove('show');
+                }
+
+                return calc;
+            }
+
+            // Draw visualization
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const calc = updateDisplays();
+
+                // Drawing parameters
+                const groundY = canvas.height - 100;
+                const centerX = canvas.width / 2;
+
+                const scaleH = 280 / 80;
+                const scaleW = 350 / 48;
+
+                const buildingH = state.height * scaleH;
+                const buildingW = state.width * scaleW;
+
+                // Tilt effect
+                const maxTilt = 0.08;
+                const tiltFactor = Math.min(1, Math.abs(calc.Mo) / calc.Mr);
+                const tilt = state.force > 0 ? tiltFactor * maxTilt * forceDirection : 0;
+
+                // Draw ground
+                ctx.beginPath();
+                ctx.moveTo(0, groundY);
+                ctx.lineTo(canvas.width, groundY);
+                ctx.strokeStyle = '#444';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Ground hatching
+                ctx.beginPath();
+                for (let x = 0; x < canvas.width; x += 15) {
+                    ctx.moveTo(x, groundY);
+                    ctx.lineTo(x - 10, groundY + 12);
+                }
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Save for rotation
+                // Force to RIGHT -> building tilts RIGHT (clockwise from top view = positive rotation)
+                ctx.save();
+                ctx.translate(centerX, groundY);
+                ctx.rotate(tilt * forceDirection);
+
+                // Draw supports
+                const supportSpacing = buildingW / (NUM_SUPPORTS - 1);
+                const supportWidth = 22;
+                const supportHeight = 14;
+                const maxStress = Math.max(...calc.stresses.map(Math.abs), 1);
+
+                for (let i = 0; i < NUM_SUPPORTS; i++) {
+                    const x = -buildingW / 2 + i * supportSpacing;
+                    const sigma = calc.stresses[i];
+
+                    // Color based on stress
+                    let color;
+                    if (sigma < 0) {
+                        color = '#ff6b6b'; // Tension/Uplift
+                    } else if (sigma < maxStress * 0.2) {
+                        color = '#ffa502'; // Low compression
+                    } else {
+                        color = '#2ed573'; // Good compression
+                    }
+
+                    // Draw support with size proportional to initial preload
+                    const sizeScale = 0.6 + state.reactions[i] * NUM_SUPPORTS * 0.4;
+                    const sw = supportWidth * sizeScale;
+                    const sh = supportHeight * sizeScale;
+
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x - sw / 2, -sh, sw, sh);
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x - sw / 2, -sh, sw, sh);
+
+                    // Show stress bar below support
+                    const barHeight = Math.abs(sigma) / maxStress * 30;
+                    ctx.fillStyle = sigma >= 0 ? 'rgba(46, 213, 115, 0.5)' : 'rgba(255, 107, 107, 0.5)';
+                    if (sigma >= 0) {
+                        ctx.fillRect(x - 4, 10, 8, barHeight);
+                    } else {
+                        ctx.fillRect(x - 4, 10 - barHeight, 8, barHeight);
+                    }
+                }
+
+                // Draw building
+                const buildingGrad = ctx.createLinearGradient(-buildingW / 2, -buildingH, buildingW / 2, 0);
+                buildingGrad.addColorStop(0, '#3d5a80');
+                buildingGrad.addColorStop(1, '#293241');
+
+                ctx.fillStyle = buildingGrad;
+                ctx.fillRect(-buildingW / 2, -supportHeight - buildingH, buildingW, buildingH);
+                ctx.strokeStyle = '#5c7a99';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(-buildingW / 2, -supportHeight - buildingH, buildingW, buildingH);
+
+                // Draw floors
+                const numFloors = Math.floor(state.height / 3);
+                const floorHeight = buildingH / numFloors;
+                ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+                ctx.lineWidth = 1;
+                for (let i = 1; i < numFloors; i++) {
+                    const y = -supportHeight - i * floorHeight;
+                    ctx.beginPath();
+                    ctx.moveTo(-buildingW / 2, y);
+                    ctx.lineTo(buildingW / 2, y);
+                    ctx.stroke();
+                }
+
+                // Center of mass
+                const comY = -supportHeight - buildingH * 0.5;
+                ctx.beginPath();
+                ctx.arc(0, comY, 7, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffa502';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Weight arrow
+                ctx.beginPath();
+                ctx.moveTo(0, comY);
+                ctx.lineTo(0, comY + 45);
+                ctx.strokeStyle = '#ffa502';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0, comY + 45);
+                ctx.lineTo(-7, comY + 36);
+                ctx.lineTo(7, comY + 36);
+                ctx.closePath();
+                ctx.fillStyle = '#ffa502';
+                ctx.fill();
+
+                ctx.font = 'bold 12px Inter';
+                ctx.fillStyle = '#ffa502';
+                ctx.fillText('W', 12, comY + 30);
+
+                // Seismic force - arrow points in the direction of force (forceDirection: 1=right, -1=left)
+                if (state.force > 0) {
+                    const forceScale = Math.min(80, state.force / 30);
+                    const arrowDir = forceDirection; // 1 = force pushing RIGHT, -1 = force pushing LEFT
+
+                    // Arrow starts from outside the building, points INTO the building (direction of push)
+                    // If forceDir > 0 (push right): arrow starts on LEFT, points RIGHT
+                    // If forceDir < 0 (push left): arrow starts on RIGHT, points LEFT
+                    const arrowTipX = arrowDir > 0 ? -buildingW / 2 - 5 : buildingW / 2 + 5; // Tip touches building
+                    const arrowTailX = arrowTipX - forceScale * arrowDir; // Tail extends away from building
+
+                    ctx.beginPath();
+                    ctx.moveTo(arrowTailX, comY);
+                    ctx.lineTo(arrowTipX, comY);
+                    ctx.strokeStyle = '#00d4ff';
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+
+                    // Arrow head points toward the building (in direction of force)
+                    ctx.beginPath();
+                    ctx.moveTo(arrowTipX, comY);
+                    ctx.lineTo(arrowTipX - 12 * arrowDir, comY - 8);
+                    ctx.lineTo(arrowTipX - 12 * arrowDir, comY + 8);
+                    ctx.closePath();
+                    ctx.fillStyle = '#00d4ff';
+                    ctx.fill();
+
+                    ctx.font = 'bold 12px Inter';
+                    ctx.fillStyle = '#00d4ff';
+                    ctx.fillText('F →', arrowTailX - 30, comY + 4);
+
+                    // Moment arcs
+                    const pivotX = arrowDir > 0 ? buildingW / 2 : -buildingW / 2;
+
+                    // Overturning moment
+                    ctx.beginPath();
+                    if (arrowDir > 0) {
+                        ctx.arc(pivotX, 0, 35, -Math.PI / 2, Math.PI / 2, false);
+                    } else {
+                        ctx.arc(pivotX, 0, 35, Math.PI / 2, -Math.PI / 2, false);
+                    }
+                    ctx.strokeStyle = 'rgba(255, 107, 107, 0.6)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    ctx.font = 'bold 11px Inter';
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.fillText('Mo', pivotX + 45 * arrowDir, 5);
+
+                    // Resisting moment
+                    ctx.beginPath();
+                    if (arrowDir > 0) {
+                        ctx.arc(pivotX, 0, 50, Math.PI / 2, -Math.PI / 2, false);
+                    } else {
+                        ctx.arc(pivotX, 0, 50, -Math.PI / 2, Math.PI / 2, false);
+                    }
+                    ctx.strokeStyle = 'rgba(46, 213, 115, 0.6)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#2ed573';
+                    ctx.fillText('Mr', pivotX + 60 * arrowDir, -20);
+                }
+
+                ctx.restore();
+
+                // Dimension labels
+                ctx.font = '11px Inter';
+                ctx.fillStyle = '#666';
+                ctx.fillText(`H = ${state.height}m`, centerX + buildingW / 2 + 40, groundY - buildingH / 2);
+                ctx.fillText(`B = ${state.width}m`, centerX - 25, groundY + 65);
+
+                // Aspect ratio
+                const aspectRatio = state.height / state.width;
+                ctx.font = 'bold 13px Inter';
+                ctx.fillStyle = aspectRatio > 3 ? '#ff6b6b' : aspectRatio > 2 ? '#ffa502' : '#2ed573';
+                ctx.fillText(`高宽比 H/B = ${aspectRatio.toFixed(2)}`, 20, 25);
+
+                // Legend for initial preload
+                ctx.font = '10px Inter';
+                ctx.fillStyle = '#888';
+                ctx.fillText('支座大小 ∝ 初始预压力', 20, 45);
+            }
+
+            // Event listeners for sliders
+            heightSlider.addEventListener('input', (e) => {
+                state.height = parseInt(e.target.value);
+                heightValue.textContent = `${state.height} m`;
+                draw();
+            });
+
+            widthSlider.addEventListener('input', (e) => {
+                state.width = parseInt(e.target.value);
+                widthValue.textContent = `${state.width} m`;
+                draw();
+            });
+
+            weightSlider.addEventListener('input', (e) => {
+                state.weight = parseInt(e.target.value);
+                weightValue.textContent = `${state.weight} kN`;
+                draw();
+            });
+
+            forceSlider.addEventListener('input', (e) => {
+                state.force = parseInt(e.target.value);
+                forceValue.textContent = `${state.force} kN`;
+                draw();
+            });
+
+            // Animation
+            animateToggle.addEventListener('click', () => {
+                isAnimating = !isAnimating;
+                animateToggle.classList.toggle('active', isAnimating);
+                if (isAnimating) animate();
+            });
+
+            function animate() {
+                if (!isAnimating) return;
+
+                animationPhase += 0.025;
+                const oscillation = Math.sin(animationPhase);
+                state.force = Math.abs(oscillation) * 2000;
+                forceDirection = oscillation >= 0 ? 1 : -1;
+                forceSlider.value = state.force;
+                forceValue.textContent = `${Math.round(state.force)} kN`;
+
+                draw();
+                requestAnimationFrame(animate);
+            }
+
+            // Initialize
+            createReactionGrid();
+            createStressDisplay();
+            draw();
+        </script>
+</body>
+
+</html>

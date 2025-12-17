@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>综合演示 | Complete Earthquake Response</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #0f1928 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .back-link:hover {
+            color: #00d4ff;
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #2ed573, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+
+        @media (max-width: 1100px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Canvas Area */
+        .viz-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 450px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-radius: 10px;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .timeline-title {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .timeline-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: #00d4ff;
+        }
+
+        .timeline-track {
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            position: relative;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #2ed573 0%, #ffa502 30%, #ff6b6b 60%, #7c3aed 100%);
+            border-radius: 8px;
+            transition: width 0.1s;
+        }
+
+        .timeline-phases {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+        }
+
+        .timeline-phase {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timeline-phase:last-child {
+            border-right: none;
+        }
+
+        .timeline-phase.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline-phase:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .phase-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section h3::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: linear-gradient(180deg, #2ed573, #00d4ff);
+            border-radius: 2px;
+        }
+
+        /* Current Phase Display */
+        .phase-display {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2ed573;
+            transition: border-color 0.3s;
+        }
+
+        .phase-display.warning {
+            border-left-color: #ffa502;
+        }
+
+        .phase-display.danger {
+            border-left-color: #ff6b6b;
+        }
+
+        .phase-display.critical {
+            border-left-color: #7c3aed;
+        }
+
+        .phase-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .phase-desc {
+            font-size: 0.8rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-value.good {
+            color: #2ed573;
+        }
+
+        .stat-value.warning {
+            color: #ffa502;
+        }
+
+        .stat-value.danger {
+            color: #ff6b6b;
+        }
+
+        /* Controls */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2ed573, #7bed9f);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Scenario Selector */
+        .scenario-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .scenario-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .scenario-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .scenario-card.active {
+            border-color: #2ed573;
+            background: rgba(46, 213, 115, 0.1);
+        }
+
+        .scenario-name {
+            font-size: 0.85rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .scenario-desc {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        /* Event Log */
+        .event-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            font-size: 0.75rem;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .log-entry.info {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .log-entry.warning {
+            background: rgba(255, 165, 2, 0.1);
+        }
+
+        .log-entry.danger {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .log-time {
+            color: #666;
+        }
+
+        .log-msg {
+            color: #ccc;
+        }
+
+        /* Damage Indicator */
+        .damage-meter {
+            margin-top: 15px;
+        }
+
+        .damage-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .damage-label {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .damage-value {
+            font-size: 0.85rem;
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .damage-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .damage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ed573, #ffa502, #ff6b6b);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-link">← 返回概览</a>
+            <h1>🎬 综合演示</h1>
+            <p class="subtitle">Complete Earthquake Response - 从脱空到连续倒塌的全过程</p>
+        </header>
+
+        <div class="main-layout">
+            <!-- Visualization -->
+            <div class="viz-container">
+                <canvas id="canvas"></canvas>
+
+                <!-- Timeline -->
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <span class="timeline-title">破坏过程时间线</span>
+                        <span class="timeline-time" id="time-display">0.0 s</span>
+                    </div>
+                    <div class="timeline-track">
+                        <div class="timeline-progress" id="timeline-progress" style="width: 0%;"></div>
+                        <div class="timeline-phases">
+                            <div class="timeline-phase active" data-phase="0">初始</div>
+                            <div class="timeline-phase" data-phase="1">倾覆</div>
+                            <div class="timeline-phase" data-phase="2">脱空</div>
+                            <div class="timeline-phase" data-phase="3">锤击</div>
+                            <div class="timeline-phase" data-phase="4">重分配</div>
+                            <div class="timeline-phase" data-phase="5">扭转</div>
+                            <div class="timeline-phase" data-phase="6">倒塌</div>
+                        </div>
+                    </div>
+                    <div class="phase-labels">
+                        <span>0s</span>
+                        <span>2s</span>
+                        <span>4s</span>
+                        <span>6s</span>
+                        <span>8s</span>
+                        <span>10s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <!-- Current Phase -->
+                <div class="phase-display" id="phase-display">
+                    <div class="phase-name" id="phase-name">准备就绪</div>
+                    <div class="phase-desc" id="phase-desc">
+                        选择一个场景，点击"开始模拟"观看完整的地震响应过程。
+                    </div>
+                </div>
+
+                <!-- Scenario Selection -->
+                <div class="section">
+                    <h3>场景选择</h3>
+                    <div class="scenario-cards">
+                        <div class="scenario-card active" data-scenario="mild">
+                            <div class="scenario-name">🟢 轻度不均匀</div>
+                            <div class="scenario-desc">初始反力略有差异，可能脱空但不至于倒塌</div>
+                        </div>
+                        <div class="scenario-card" data-scenario="moderate">
+                            <div class="scenario-name">🟡 中度风险</div>
+                            <div class="scenario-desc">一侧支座预压力明显偏小，会发生锤击和扭转</div>
+                        </div>
+                        <div class="scenario-card" data-scenario="severe">
+                            <div class="scenario-name">🔴 高度危险</div>
+                            <div class="scenario-desc">严重不均匀，触发完整的连续倒塌过程</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="section">
+                    <h3>控制</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btn-start">▶ 开始模拟</button>
+                        <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="section">
+                    <h3>实时监测</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">最大位移</div>
+                            <div class="stat-value good" id="stat-disp">0 mm</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">扭转角</div>
+                            <div class="stat-value good" id="stat-rot">0.0°</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">冲击次数</div>
+                            <div class="stat-value good" id="stat-impact">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">失效支座</div>
+                            <div class="stat-value good" id="stat-failed">0/6</div>
+                        </div>
+                    </div>
+
+                    <div class="damage-meter">
+                        <div class="damage-header">
+                            <span class="damage-label">累积损伤</span>
+                            <span class="damage-value" id="damage-value">0%</span>
+                        </div>
+                        <div class="damage-bar">
+                            <div class="damage-fill" id="damage-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Log -->
+                <div class="section">
+                    <h3>事件记录</h3>
+                    <div class="event-log" id="event-log">
+                        <div class="log-entry info">
+                            <span class="log-time">0.0s</span>
+                            <span class="log-msg">系统就绪</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width - 40;
+            canvas.height = 450;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', () => { resizeCanvas(); draw(); });
+
+        const NUM_SUPPORTS = 6;
+        const TOTAL_WEIGHT = 6000;
+
+        // Phase definitions
+        const PHASES = [
+            { name: '初始状态', desc: '结构完好，所有支座正常工作。', class: '' },
+            { name: '🌊 地震倾覆', desc: '地震水平力产生倾覆力矩，一侧支座开始减压。', class: '' },
+            { name: '⬆️ 支座脱空', desc: '支座反力降为零，与基础分离。隔震失效！', class: 'warning' },
+            { name: '🔨 锤击冲击', desc: '建筑落回产生巨大冲击力，支座损伤、混凝土开裂。', class: 'danger' },
+            { name: '🎯 荷载重分配', desc: '失效支座的荷载转移到相邻支座，可能超载。', class: 'danger' },
+            { name: '🔄 扭转失控', desc: '摩擦力不对称导致扭转耦合，位移超限。', class: 'critical' },
+            { name: '💥 连续倒塌', desc: '多个支座连续失效，结构整体失稳！', class: 'critical' }
+        ];
+
+        // Scenarios
+        const SCENARIOS = {
+            mild: {
+                reactions: [0.18, 0.17, 0.17, 0.16, 0.16, 0.16],
+                seismicIntensity: 0.6,
+                maxPhase: 3
+            },
+            moderate: {
+                reactions: [0.25, 0.20, 0.15, 0.15, 0.13, 0.12],
+                seismicIntensity: 0.8,
+                maxPhase: 5
+            },
+            severe: {
+                reactions: [0.30, 0.25, 0.18, 0.12, 0.10, 0.05],
+                seismicIntensity: 1.0,
+                maxPhase: 6
+            }
+        };
+
+        // State
+        let state = {
+            scenario: 'mild',
+            isRunning: false,
+            time: 0,
+            phase: 0,
+            supports: [],
+            buildingTilt: 0,
+            buildingX: 0,
+            buildingRotation: 0,
+            impactCount: 0,
+            damage: 0,
+            events: [],
+            shakeIntensity: 0,
+            upliftHeights: new Array(NUM_SUPPORTS).fill(0)
+        };
+
+        // Initialize
+        function initState() {
+            const scenario = SCENARIOS[state.scenario];
+            state.supports = scenario.reactions.map((r, i) => ({
+                reaction: r,
+                load: r * TOTAL_WEIGHT,
+                capacity: (TOTAL_WEIGHT / NUM_SUPPORTS) * 1.5,
+                status: 'normal',
+                friction: r * TOTAL_WEIGHT * 0.05
+            }));
+            state.time = 0;
+            state.phase = 0;
+            state.buildingTilt = 0;
+            state.buildingX = 0;
+            state.buildingRotation = 0;
+            state.impactCount = 0;
+            state.damage = 0;
+            state.events = [{ time: 0, type: 'info', msg: '模拟开始' }];
+            state.shakeIntensity = 0;
+            state.upliftHeights = new Array(NUM_SUPPORTS).fill(0);
+            updatePhaseDisplay();
+            updateStats();
+            updateEventLog();
+        }
+
+        // DOM elements
+        const phaseDisplay = document.getElementById('phase-display');
+        const phaseName = document.getElementById('phase-name');
+        const phaseDesc = document.getElementById('phase-desc');
+        const timeDisplay = document.getElementById('time-display');
+        const timelineProgress = document.getElementById('timeline-progress');
+        const eventLog = document.getElementById('event-log');
+        const btnStart = document.getElementById('btn-start');
+        const btnReset = document.getElementById('btn-reset');
+
+        // Scenario selection
+        document.querySelectorAll('.scenario-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (state.isRunning) return;
+                document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                state.scenario = card.dataset.scenario;
+                initState();
+                draw();
+            });
+        });
+
+        // Phase click
+        document.querySelectorAll('.timeline-phase').forEach(phase => {
+            phase.addEventListener('click', () => {
+                if (state.isRunning) return;
+                const targetPhase = parseInt(phase.dataset.phase);
+                // Jump to phase start time
+                state.time = targetPhase * 1.5;
+                state.phase = targetPhase;
+                updatePhaseDisplay();
+                draw();
+            });
+        });
+
+        // Update phase display
+        function updatePhaseDisplay() {
+            const phase = PHASES[state.phase];
+            phaseName.textContent = phase.name;
+            phaseDesc.textContent = phase.desc;
+            phaseDisplay.className = 'phase-display ' + phase.class;
+
+            // Update timeline
+            document.querySelectorAll('.timeline-phase').forEach((el, i) => {
+                el.classList.toggle('active', i === state.phase);
+            });
+
+            timeDisplay.textContent = state.time.toFixed(1) + ' s';
+            timelineProgress.style.width = Math.min(100, (state.time / 10) * 100) + '%';
+        }
+
+        // Add event
+        function addEvent(type, msg) {
+            state.events.unshift({ time: state.time, type, msg });
+            updateEventLog();
+        }
+
+        // Update event log
+        function updateEventLog() {
+            eventLog.innerHTML = '';
+            state.events.slice(0, 15).forEach(e => {
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${e.type}`;
+                entry.innerHTML = `
+                    <span class="log-time">${e.time.toFixed(1)}s</span>
+                    <span class="log-msg">${e.msg}</span>
+                `;
+                eventLog.appendChild(entry);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            const disp = Math.abs(state.buildingX * 1000);
+            const rot = Math.abs(state.buildingRotation * 180 / Math.PI);
+            const failedCount = state.supports.filter(s => s.status === 'failed').length;
+
+            document.getElementById('stat-disp').textContent = disp.toFixed(0) + ' mm';
+            document.getElementById('stat-disp').className = 'stat-value ' +
+                (disp > 200 ? 'danger' : disp > 100 ? 'warning' : 'good');
+
+            document.getElementById('stat-rot').textContent = rot.toFixed(1) + '°';
+            document.getElementById('stat-rot').className = 'stat-value ' +
+                (rot > 2 ? 'danger' : rot > 1 ? 'warning' : 'good');
+
+            document.getElementById('stat-impact').textContent = state.impactCount;
+            document.getElementById('stat-impact').className = 'stat-value ' +
+                (state.impactCount > 3 ? 'danger' : state.impactCount > 0 ? 'warning' : 'good');
+
+            document.getElementById('stat-failed').textContent = `${failedCount}/${NUM_SUPPORTS}`;
+            document.getElementById('stat-failed').className = 'stat-value ' +
+                (failedCount > 2 ? 'danger' : failedCount > 0 ? 'warning' : 'good');
+
+            document.getElementById('damage-value').textContent = Math.round(state.damage) + '%';
+            document.getElementById('damage-fill').style.width = state.damage + '%';
+        }
+
+        // Animation
+        function animate() {
+            if (!state.isRunning) return;
+
+            const dt = 0.033;
+            state.time += dt;
+
+            const scenario = SCENARIOS[state.scenario];
+            const seismicForce = Math.sin(state.time * 3) * scenario.seismicIntensity;
+
+            // Phase logic based on time
+            const newPhase = Math.min(scenario.maxPhase, Math.floor(state.time / 1.5));
+
+            if (newPhase > state.phase) {
+                state.phase = newPhase;
+                addEvent(PHASES[state.phase].class === 'danger' ? 'danger' : 'warning',
+                    PHASES[state.phase].name);
+                updatePhaseDisplay();
+            }
+
+            // Update building state based on phase
+            if (state.phase >= 1) {
+                // Tilting
+                state.buildingTilt = seismicForce * 0.1;
+            }
+
+            if (state.phase >= 2) {
+                // Uplift - leftmost supports
+                for (let i = 0; i < 2; i++) {
+                    if (seismicForce > 0.3) {
+                        state.upliftHeights[i] = Math.min(50, state.upliftHeights[i] + 2);
+                        state.supports[i].status = 'uplift';
+                    } else {
+                        state.upliftHeights[i] = Math.max(0, state.upliftHeights[i] - 5);
+                        if (state.upliftHeights[i] === 0 && state.supports[i].status === 'uplift') {
+                            // Impact!
+                            state.impactCount++;
+                            state.damage += 10;
+                            state.shakeIntensity = 1;
+                            addEvent('danger', `支座 ${i + 1} 锤击! 冲击力 ${(3 + Math.random() * 5).toFixed(1)}×`);
+                        }
+                    }
+                }
+            }
+
+            if (state.phase >= 3) {
+                // Hammer damage
+                state.shakeIntensity *= 0.95;
+                state.damage = Math.min(100, state.damage + 0.1);
+            }
+
+            if (state.phase >= 4) {
+                // Load redistribution - some supports overload and fail
+                state.supports.forEach((s, i) => {
+                    if (s.status === 'uplift' && state.upliftHeights[i] === 0) {
+                        s.status = 'failed';
+                        s.load = 0;
+                    }
+                });
+
+                // Redistribute
+                const failedLoad = state.supports.filter(s => s.status === 'failed')
+                    .reduce((sum, s) => sum + (TOTAL_WEIGHT / NUM_SUPPORTS), 0);
+                const activeSupports = state.supports.filter(s => s.status === 'normal');
+                if (activeSupports.length > 0) {
+                    const extraLoad = failedLoad / activeSupports.length;
+                    activeSupports.forEach(s => s.load += extraLoad * 0.01);
+                }
+            }
+
+            if (state.phase >= 5) {
+                // Torsional coupling
+                const leftFriction = state.supports.slice(0, 3).reduce((sum, s) =>
+                    sum + (s.status === 'normal' ? s.friction : 0), 0);
+                const rightFriction = state.supports.slice(3).reduce((sum, s) =>
+                    sum + (s.status === 'normal' ? s.friction : 0), 0);
+
+                state.buildingRotation += (rightFriction - leftFriction) * seismicForce * 0.0001;
+                state.buildingX += seismicForce * 0.01 / Math.max(0.1, leftFriction + rightFriction);
+
+                state.buildingRotation *= 0.99;
+                state.buildingX *= 0.99;
+            }
+
+            if (state.phase >= 6) {
+                // Progressive collapse
+                state.damage = Math.min(100, state.damage + 0.5);
+                if (state.damage >= 100) {
+                    state.isRunning = false;
+                    addEvent('danger', '⚠️ 结构完全失效!');
+                    btnStart.textContent = '▶ 重新开始';
+                }
+            }
+
+            // Stop at max time
+            if (state.time >= 10) {
+                state.isRunning = false;
+                btnStart.textContent = '▶ 重新开始';
+                addEvent('info', '模拟结束');
+            }
+
+            updateStats();
+            draw();
+
+            if (state.isRunning) {
+                requestAnimationFrame(animate);
+            }
+        }
+
+        // Draw
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const groundY = canvas.height - 80;
+            const centerX = canvas.width / 2;
+            const buildingW = 350;
+            const buildingH = 220;
+
+            // Shake offset
+            const shakeX = state.shakeIntensity * (Math.random() - 0.5) * 15;
+            const shakeY = state.shakeIntensity * (Math.random() - 0.5) * 8;
+
+            // Ground
+            ctx.beginPath();
+            ctx.moveTo(0, groundY);
+            ctx.lineTo(canvas.width, groundY);
+            ctx.strokeStyle = '#444';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Ground hatching
+            ctx.beginPath();
+            for (let x = 0; x < canvas.width; x += 15) {
+                ctx.moveTo(x, groundY);
+                ctx.lineTo(x - 10, groundY + 15);
+            }
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.save();
+            ctx.translate(centerX + state.buildingX * 50 + shakeX, groundY + shakeY);
+            ctx.rotate(state.buildingTilt + state.buildingRotation);
+
+            // Draw supports
+            const supportSpacing = buildingW / (NUM_SUPPORTS - 1);
+            const supportW = 30;
+            const supportH = 18;
+
+            state.supports.forEach((s, i) => {
+                const x = -buildingW / 2 + i * supportSpacing;
+                const uplift = state.upliftHeights[i] || 0;
+
+                let color = '#2ed573';
+                if (s.status === 'failed') color = '#ff6b6b';
+                else if (s.status === 'uplift') color = '#666';
+                else if (s.load > s.capacity * 0.9) color = '#ff6b6b';
+                else if (s.load > s.capacity * 0.7) color = '#ffa502';
+
+                // Support position (with uplift)
+                const supportY = -supportH - uplift;
+
+                if (s.status === 'failed') {
+                    // Broken
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.fillRect(x - supportW / 2, supportY + supportH / 2, supportW, supportH / 2);
+                    // Cracks
+                    ctx.beginPath();
+                    ctx.moveTo(x - 5, supportY + supportH / 2);
+                    ctx.lineTo(x + 3, supportY + supportH);
+                    ctx.strokeStyle = '#ff4757';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else if (uplift > 5) {
+                    // Uplifted - show gap
+                    ctx.fillStyle = 'rgba(100, 100, 100, 0.3)';
+                    ctx.fillRect(x - supportW / 2, supportY, supportW, supportH);
+                    ctx.strokeStyle = '#666';
+                    ctx.setLineDash([3, 3]);
+                    ctx.strokeRect(x - supportW / 2, supportY, supportW, supportH);
+                    ctx.setLineDash([]);
+
+                    // Gap indicator
+                    ctx.fillStyle = 'rgba(255, 107, 107, 0.3)';
+                    ctx.fillRect(x - supportW / 2, -supportH, supportW, uplift);
+                } else {
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x - supportW / 2, supportY, supportW, supportH);
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x - supportW / 2, supportY, supportW, supportH);
+                }
+
+                // Load indicator
+                if (s.status === 'normal') {
+                    const loadRatio = s.load / (TOTAL_WEIGHT / NUM_SUPPORTS);
+                    const barH = loadRatio * 25;
+                    ctx.fillStyle = `rgba(${loadRatio > 1.2 ? 255 : 46}, ${loadRatio > 1.2 ? 107 : 213}, ${loadRatio > 1.2 ? 107 : 115}, 0.5)`;
+                    ctx.fillRect(x - 3, supportY - barH - 5, 6, barH);
+                }
+            });
+
+            // Building
+            const buildingGrad = ctx.createLinearGradient(-buildingW / 2, -buildingH - supportH, buildingW / 2, -supportH);
+            buildingGrad.addColorStop(0, '#3d5a80');
+            buildingGrad.addColorStop(1, '#293241');
+
+            ctx.fillStyle = buildingGrad;
+            ctx.fillRect(-buildingW / 2, -supportH - buildingH, buildingW, buildingH);
+
+            // Damage cracks
+            if (state.damage > 20) {
+                ctx.strokeStyle = `rgba(255, 107, 107, ${state.damage / 100})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-buildingW / 2 + 20, -supportH - buildingH);
+                ctx.lineTo(-buildingW / 2 + 50, -supportH - buildingH + 60);
+                ctx.lineTo(-buildingW / 2 + 30, -supportH - buildingH + 100);
+                ctx.stroke();
+
+                if (state.damage > 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(buildingW / 2 - 30, -supportH - buildingH + 20);
+                    ctx.lineTo(buildingW / 2 - 60, -supportH - buildingH + 80);
+                    ctx.stroke();
+                }
+            }
+
+            ctx.strokeStyle = '#5c7a99';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-buildingW / 2, -supportH - buildingH, buildingW, buildingH);
+
+            // Floors
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 6; i++) {
+                const y = -supportH - i * (buildingH / 6);
+                ctx.beginPath();
+                ctx.moveTo(-buildingW / 2, y);
+                ctx.lineTo(buildingW / 2, y);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+
+            // Labels
+            ctx.font = 'bold 16px Inter';
+            ctx.fillStyle = '#888';
+            ctx.fillText('综合演示 - ' + PHASES[state.phase].name, 20, 30);
+
+            // Phase indicator
+            const phaseColors = ['#2ed573', '#2ed573', '#ffa502', '#ff6b6b', '#ff6b6b', '#7c3aed', '#7c3aed'];
+            ctx.fillStyle = phaseColors[state.phase];
+            ctx.fillRect(20, 40, 12, 12);
+            ctx.fillStyle = '#888';
+            ctx.font = '12px Inter';
+            ctx.fillText(PHASES[state.phase].name, 40, 50);
+        }
+
+        // Event listeners
+        btnStart.addEventListener('click', () => {
+            if (state.isRunning) {
+                state.isRunning = false;
+                btnStart.textContent = '▶ 继续';
+            } else {
+                if (state.time >= 10 || state.damage >= 100) {
+                    initState();
+                }
+                state.isRunning = true;
+                btnStart.textContent = '⏸ 暂停';
+                animate();
+            }
+        });
+
+        btnReset.addEventListener('click', () => {
+            state.isRunning = false;
+            initState();
+            btnStart.textContent = '▶ 开始模拟';
+            draw();
+        });
+
+        // Initialize
+        initState();
+        draw();
+    </script>
+</body>
+
+</html>

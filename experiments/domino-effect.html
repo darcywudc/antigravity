@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多米诺效应 | Load Redistribution & Progressive Collapse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #0f1928 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .back-link:hover {
+            color: #00d4ff;
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #ffa502, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        @media (max-width: 1000px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Canvas */
+        .viz-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 550px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-radius: 10px;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section h3::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: linear-gradient(180deg, #ffa502, #ffcc00);
+            border-radius: 2px;
+        }
+
+        /* Support Status Grid */
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .support-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .support-card.normal {
+            border-color: rgba(46, 213, 115, 0.3);
+        }
+
+        .support-card.overload {
+            border-color: rgba(255, 165, 2, 0.5);
+            background: rgba(255, 165, 2, 0.1);
+        }
+
+        .support-card.failed {
+            border-color: rgba(255, 107, 107, 0.5);
+            background: rgba(255, 107, 107, 0.15);
+        }
+
+        .support-card.uplift {
+            border-color: rgba(100, 100, 100, 0.5);
+            background: rgba(100, 100, 100, 0.1);
+        }
+
+        .support-name {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .support-load {
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .support-card.normal .support-load {
+            color: #2ed573;
+        }
+
+        .support-card.overload .support-load {
+            color: #ffa502;
+        }
+
+        .support-card.failed .support-load {
+            color: #ff6b6b;
+        }
+
+        .support-card.uplift .support-load {
+            color: #888;
+        }
+
+        .support-status {
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        /* Capacity Bar */
+        .capacity-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* Timeline */
+        .timeline {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .timeline-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .timeline-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .timeline-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #2ed573, #ffa502, #ff6b6b);
+            border-radius: 4px;
+            transition: width 0.1s;
+        }
+
+        .timeline-markers {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        /* Event Log */
+        .event-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .event-entry {
+            font-size: 0.8rem;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .event-entry.info {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 3px solid #00d4ff;
+        }
+
+        .event-entry.warning {
+            background: rgba(255, 165, 2, 0.1);
+            border-left: 3px solid #ffa502;
+        }
+
+        .event-entry.danger {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .event-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .event-msg {
+            color: #ccc;
+        }
+
+        /* Controls */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffa502, #ffcc00);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .slider-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: #ffa502;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #ffa502, #ffcc00);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Key Insight */
+        .insight-box {
+            background: linear-gradient(135deg, rgba(255, 165, 2, 0.15), rgba(255, 165, 2, 0.05));
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .insight-title {
+            color: #ffa502;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .insight-text {
+            font-size: 0.8rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-card h4 {
+            color: #ffa502;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            color: #888;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .formula {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #00d4ff;
+            font-size: 0.75rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-link">← 返回概览</a>
+            <h1>🎯 多米诺效应</h1>
+            <p class="subtitle">Load Redistribution & Progressive Collapse</p>
+        </header>
+
+        <div class="main-layout">
+            <div class="viz-container">
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="control-panel">
+                <!-- Key Insight -->
+                <div class="insight-box">
+                    <div class="insight-title">💡 核心原理</div>
+                    <div class="insight-text">
+                        结构总重量不变。当一个支座失效，它的荷载会<strong>全部转移</strong>到相邻支座，
+                        可能导致连锁失效 —— 这就是<strong>多米诺效应</strong>。
+                    </div>
+                </div>
+
+                <!-- Support Status -->
+                <div class="section">
+                    <h3>支座状态监测</h3>
+                    <div class="support-grid" id="support-grid">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="section">
+                    <div class="timeline">
+                        <div class="timeline-title">模拟进度</div>
+                        <div class="timeline-track">
+                            <div class="timeline-progress" id="timeline-progress" style="width: 0%;"></div>
+                        </div>
+                        <div class="timeline-markers">
+                            <span>开始</span>
+                            <span>首个脱空</span>
+                            <span>荷载重分配</span>
+                            <span>连续倒塌</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="section">
+                    <h3>控制</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btn-start">▶ 开始模拟</button>
+                        <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>支座承载力</span>
+                            <span class="slider-value" id="capacity-value">150%</span>
+                        </div>
+                        <input type="range" id="capacity-slider" min="100" max="200" value="150">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>初始失效支座</span>
+                            <span class="slider-value" id="fail-value">支座 1</span>
+                        </div>
+                        <input type="range" id="fail-slider" min="0" max="5" value="0">
+                    </div>
+                </div>
+
+                <!-- Event Log -->
+                <div class="section">
+                    <div class="event-log">
+                        <div class="log-title">事件记录</div>
+                        <div id="event-log">
+                            <div class="event-entry info">
+                                <span class="event-time">00:00</span>
+                                <span class="event-msg">系统就绪，等待开始</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="info-cards">
+            <div class="info-card">
+                <h4>📊 荷载重分配</h4>
+                <p>
+                    当一个支座失效（反力=0），其荷载按距离反比分配给相邻支座。
+                    距离越近，承担的额外荷载越多。
+                </p>
+                <div class="formula">ΔR_i = R_failed × (1/d_i) / Σ(1/d_j)</div>
+            </div>
+            <div class="info-card">
+                <h4>⚠️ 超载失效</h4>
+                <p>
+                    每个支座都有极限承载力。当实际荷载超过极限时，
+                    支座失效（变形过大或结构破坏）。
+                </p>
+                <div class="formula">R_actual > R_capacity → 失效</div>
+            </div>
+            <div class="info-card">
+                <h4>💥 连续倒塌</h4>
+                <p>
+                    失效→重分配→邻居超载→邻居失效→再重分配...
+                    这个<strong>恶性循环</strong>就是连续倒塌。
+                </p>
+                <div class="formula">Progressive Collapse</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width - 40;
+            canvas.height = 550;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', () => { resizeCanvas(); draw(); });
+
+        const NUM_SUPPORTS = 6;
+        const TOTAL_WEIGHT = 6000; // kN
+
+        // State
+        let state = {
+            supports: [], // { load, capacity, status: 'normal'|'overload'|'failed'|'uplift' }
+            isRunning: false,
+            time: 0,
+            phase: 0,
+            initialFailIndex: 0,
+            capacityRatio: 1.5,
+            events: []
+        };
+
+        // Initialize supports
+        function initSupports() {
+            state.supports = [];
+            const baseLoad = TOTAL_WEIGHT / NUM_SUPPORTS;
+            for (let i = 0; i < NUM_SUPPORTS; i++) {
+                state.supports.push({
+                    load: baseLoad,
+                    capacity: baseLoad * state.capacityRatio,
+                    status: 'normal',
+                    x: 0,
+                    y: 0
+                });
+            }
+            state.time = 0;
+            state.phase = 0;
+            state.events = [{ time: 0, type: 'info', msg: '系统就绪，所有支座正常' }];
+        }
+
+        // DOM elements
+        const supportGrid = document.getElementById('support-grid');
+        const eventLog = document.getElementById('event-log');
+        const timelineProgress = document.getElementById('timeline-progress');
+        const btnStart = document.getElementById('btn-start');
+        const btnReset = document.getElementById('btn-reset');
+        const capacitySlider = document.getElementById('capacity-slider');
+        const failSlider = document.getElementById('fail-slider');
+
+        // Create support cards
+        function createSupportCards() {
+            supportGrid.innerHTML = '';
+            for (let i = 0; i < NUM_SUPPORTS; i++) {
+                const card = document.createElement('div');
+                card.className = 'support-card normal';
+                card.id = `support-card-${i}`;
+                card.innerHTML = `
+                    <div class="support-name">支座 ${i + 1}</div>
+                    <div class="support-load" id="load-${i}">${(TOTAL_WEIGHT / NUM_SUPPORTS).toFixed(0)} kN</div>
+                    <div class="support-status" id="status-${i}">正常</div>
+                    <div class="capacity-bar">
+                        <div class="capacity-fill" id="capacity-fill-${i}" style="width: 66%; background: #2ed573;"></div>
+                    </div>
+                `;
+                supportGrid.appendChild(card);
+            }
+        }
+
+        // Update support display
+        function updateSupportDisplay() {
+            for (let i = 0; i < NUM_SUPPORTS; i++) {
+                const support = state.supports[i];
+                const card = document.getElementById(`support-card-${i}`);
+                const loadEl = document.getElementById(`load-${i}`);
+                const statusEl = document.getElementById(`status-${i}`);
+                const fillEl = document.getElementById(`capacity-fill-${i}`);
+
+                loadEl.textContent = support.load.toFixed(0) + ' kN';
+
+                const loadRatio = support.load / support.capacity;
+                fillEl.style.width = Math.min(100, loadRatio * 100) + '%';
+
+                if (support.status === 'failed') {
+                    card.className = 'support-card failed';
+                    statusEl.textContent = '已失效';
+                    fillEl.style.background = '#ff6b6b';
+                } else if (support.status === 'uplift') {
+                    card.className = 'support-card uplift';
+                    statusEl.textContent = '脱空';
+                    fillEl.style.background = '#666';
+                } else if (loadRatio > 0.9) {
+                    card.className = 'support-card overload';
+                    statusEl.textContent = '超载危险';
+                    fillEl.style.background = '#ff6b6b';
+                } else if (loadRatio > 0.7) {
+                    card.className = 'support-card overload';
+                    statusEl.textContent = '接近极限';
+                    fillEl.style.background = '#ffa502';
+                } else {
+                    card.className = 'support-card normal';
+                    statusEl.textContent = '正常';
+                    fillEl.style.background = '#2ed573';
+                }
+            }
+        }
+
+        // Add event
+        function addEvent(type, msg) {
+            const time = state.time.toFixed(1);
+            state.events.unshift({ time: parseFloat(time), type, msg });
+            updateEventLog();
+        }
+
+        // Update event log
+        function updateEventLog() {
+            eventLog.innerHTML = '';
+            state.events.slice(0, 10).forEach(e => {
+                const entry = document.createElement('div');
+                entry.className = `event-entry ${e.type}`;
+                entry.innerHTML = `
+                    <span class="event-time">${e.time.toFixed(1)}s</span>
+                    <span class="event-msg">${e.msg}</span>
+                `;
+                eventLog.appendChild(entry);
+            });
+        }
+
+        // Redistribute load
+        function redistributeLoad(failedIndex) {
+            const failedLoad = state.supports[failedIndex].load;
+            state.supports[failedIndex].load = 0;
+            state.supports[failedIndex].status = 'failed';
+
+            // Calculate distances and redistribution
+            let totalWeight = 0;
+            const distances = [];
+
+            for (let i = 0; i < NUM_SUPPORTS; i++) {
+                if (i !== failedIndex && state.supports[i].status !== 'failed') {
+                    const dist = Math.abs(i - failedIndex);
+                    distances.push({ index: i, dist, weight: 1 / dist });
+                    totalWeight += 1 / dist;
+                }
+            }
+
+            // Distribute load
+            distances.forEach(d => {
+                const addedLoad = failedLoad * (d.weight / totalWeight);
+                state.supports[d.index].load += addedLoad;
+            });
+
+            addEvent('warning', `支座 ${failedIndex + 1} 失效，荷载重分配`);
+        }
+
+        // Check for overloaded supports
+        function checkOverload() {
+            for (let i = 0; i < NUM_SUPPORTS; i++) {
+                const support = state.supports[i];
+                if (support.status !== 'failed' && support.load > support.capacity) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // Count active supports
+        function countActiveSupports() {
+            return state.supports.filter(s => s.status !== 'failed').length;
+        }
+
+        // Animation
+        let animationId = null;
+
+        function animate() {
+            if (!state.isRunning) return;
+
+            state.time += 0.05;
+            timelineProgress.style.width = Math.min(100, state.time * 10) + '%';
+
+            // Phase logic
+            if (state.phase === 0 && state.time > 0.5) {
+                // Initial failure
+                state.supports[state.initialFailIndex].status = 'uplift';
+                state.supports[state.initialFailIndex].load = 0;
+                addEvent('danger', `地震导致支座 ${state.initialFailIndex + 1} 脱空!`);
+                state.phase = 1;
+            } else if (state.phase === 1 && state.time > 1.5) {
+                // First redistribution
+                redistributeLoad(state.initialFailIndex);
+                state.phase = 2;
+            } else if (state.phase >= 2 && state.time > state.phase) {
+                // Check for cascade failures
+                const overloadIndex = checkOverload();
+                if (overloadIndex >= 0) {
+                    addEvent('danger', `支座 ${overloadIndex + 1} 超载失效!`);
+                    setTimeout(() => redistributeLoad(overloadIndex), 500);
+                    state.phase++;
+                } else if (countActiveSupports() <= 2) {
+                    addEvent('danger', '⚠️ 连续倒塌! 结构失稳!');
+                    state.isRunning = false;
+                    btnStart.textContent = '▶ 重新开始';
+                }
+            }
+
+            updateSupportDisplay();
+            draw();
+
+            if (state.isRunning) {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        // Draw
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const groundY = canvas.height - 100;
+            const centerX = canvas.width / 2;
+            const buildingW = 450;
+            const buildingH = 200;
+            const supportSpacing = buildingW / (NUM_SUPPORTS - 1);
+
+            // Ground
+            ctx.beginPath();
+            ctx.moveTo(0, groundY);
+            ctx.lineTo(canvas.width, groundY);
+            ctx.strokeStyle = '#444';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Ground hatching
+            ctx.beginPath();
+            for (let x = 0; x < canvas.width; x += 15) {
+                ctx.moveTo(x, groundY);
+                ctx.lineTo(x - 10, groundY + 15);
+            }
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Calculate building tilt based on failed supports
+            let tilt = 0;
+            let failedLeft = 0, failedRight = 0;
+            for (let i = 0; i < NUM_SUPPORTS; i++) {
+                if (state.supports[i].status === 'failed' || state.supports[i].status === 'uplift') {
+                    if (i < NUM_SUPPORTS / 2) failedLeft++;
+                    else failedRight++;
+                }
+            }
+            tilt = (failedLeft - failedRight) * 0.03;
+
+            ctx.save();
+            ctx.translate(centerX, groundY);
+            ctx.rotate(tilt);
+
+            // Draw supports
+            for (let i = 0; i < NUM_SUPPORTS; i++) {
+                const support = state.supports[i];
+                const x = -buildingW / 2 + i * supportSpacing;
+                const supportW = 35;
+                const supportH = 25;
+
+                // Store position for load arrows
+                support.x = x;
+                support.y = -supportH;
+
+                // Support color
+                let color = '#2ed573';
+                if (support.status === 'failed') color = '#ff6b6b';
+                else if (support.status === 'uplift') color = '#666';
+                else if (support.load > support.capacity * 0.9) color = '#ff6b6b';
+                else if (support.load > support.capacity * 0.7) color = '#ffa502';
+
+                // Draw support
+                if (support.status === 'failed') {
+                    // Broken support
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.fillRect(x - supportW / 2, -supportH / 2, supportW, supportH / 2);
+                    // Crack pattern
+                    ctx.beginPath();
+                    ctx.moveTo(x - supportW / 4, -supportH / 2);
+                    ctx.lineTo(x, -supportH / 4);
+                    ctx.lineTo(x + supportW / 4, -supportH / 2);
+                    ctx.strokeStyle = '#ff4757';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else if (support.status === 'uplift') {
+                    // Uplifted - show gap
+                    ctx.fillStyle = 'rgba(100, 100, 100, 0.3)';
+                    ctx.fillRect(x - supportW / 2, -supportH - 15, supportW, supportH);
+                    ctx.strokeStyle = '#666';
+                    ctx.setLineDash([4, 4]);
+                    ctx.strokeRect(x - supportW / 2, -supportH - 15, supportW, supportH);
+                    ctx.setLineDash([]);
+
+                    // Gap indicator
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.font = '10px JetBrains Mono';
+                    ctx.fillText('脱空', x - 12, -supportH - 20);
+                } else {
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x - supportW / 2, -supportH, supportW, supportH);
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x - supportW / 2, -supportH, supportW, supportH);
+
+                    // Load arrow
+                    const loadRatio = support.load / (TOTAL_WEIGHT / NUM_SUPPORTS);
+                    const arrowHeight = 20 + loadRatio * 30;
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, -supportH - 10);
+                    ctx.lineTo(x, -supportH - 10 - arrowHeight);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = Math.max(2, loadRatio * 4);
+                    ctx.stroke();
+
+                    // Arrow head
+                    ctx.beginPath();
+                    ctx.moveTo(x, -supportH - 10);
+                    ctx.lineTo(x - 6, -supportH - 20);
+                    ctx.lineTo(x + 6, -supportH - 20);
+                    ctx.closePath();
+                    ctx.fillStyle = color;
+                    ctx.fill();
+
+                    // Load value
+                    ctx.font = '11px JetBrains Mono';
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(`${support.load.toFixed(0)}`, x - 15, -supportH - arrowHeight - 5);
+                }
+            }
+
+            // Building
+            const buildingGrad = ctx.createLinearGradient(-buildingW / 2, -buildingH - 25, buildingW / 2, -25);
+            buildingGrad.addColorStop(0, '#3d5a80');
+            buildingGrad.addColorStop(1, '#293241');
+
+            ctx.fillStyle = buildingGrad;
+            ctx.fillRect(-buildingW / 2, -25 - buildingH, buildingW, buildingH);
+            ctx.strokeStyle = '#5c7a99';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-buildingW / 2, -25 - buildingH, buildingW, buildingH);
+
+            // Building floors
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 5; i++) {
+                const y = -25 - i * (buildingH / 5);
+                ctx.beginPath();
+                ctx.moveTo(-buildingW / 2, y);
+                ctx.lineTo(buildingW / 2, y);
+                ctx.stroke();
+            }
+
+            // Total weight indicator
+            ctx.font = 'bold 14px Inter';
+            ctx.fillStyle = '#ffa502';
+            ctx.fillText(`总重: ${TOTAL_WEIGHT} kN`, -buildingW / 2 + 10, -buildingH + 10);
+
+            ctx.restore();
+
+            // Title and status
+            ctx.font = 'bold 16px Inter';
+            ctx.fillStyle = '#888';
+            ctx.fillText('多米诺效应演示', 20, 30);
+
+            const activeCount = countActiveSupports();
+            ctx.fillStyle = activeCount <= 2 ? '#ff6b6b' : activeCount < NUM_SUPPORTS ? '#ffa502' : '#2ed573';
+            ctx.fillText(`活跃支座: ${activeCount}/${NUM_SUPPORTS}`, 20, 55);
+
+            // Legend
+            ctx.font = '12px Inter';
+            const legendY = canvas.height - 30;
+
+            ctx.fillStyle = '#2ed573';
+            ctx.fillRect(20, legendY - 10, 12, 12);
+            ctx.fillStyle = '#888';
+            ctx.fillText('正常', 38, legendY);
+
+            ctx.fillStyle = '#ffa502';
+            ctx.fillRect(90, legendY - 10, 12, 12);
+            ctx.fillStyle = '#888';
+            ctx.fillText('超载', 108, legendY);
+
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillRect(160, legendY - 10, 12, 12);
+            ctx.fillStyle = '#888';
+            ctx.fillText('失效', 178, legendY);
+
+            ctx.fillStyle = '#666';
+            ctx.fillRect(230, legendY - 10, 12, 12);
+            ctx.fillStyle = '#888';
+            ctx.fillText('脱空', 248, legendY);
+        }
+
+        // Event listeners
+        btnStart.addEventListener('click', () => {
+            if (!state.isRunning) {
+                if (state.phase > 0) {
+                    initSupports();
+                    updateSupportDisplay();
+                }
+                state.isRunning = true;
+                btnStart.textContent = '⏸ 暂停';
+                animate();
+            } else {
+                state.isRunning = false;
+                btnStart.textContent = '▶ 继续';
+                cancelAnimationFrame(animationId);
+            }
+        });
+
+        btnReset.addEventListener('click', () => {
+            state.isRunning = false;
+            cancelAnimationFrame(animationId);
+            initSupports();
+            createSupportCards();
+            updateSupportDisplay();
+            updateEventLog();
+            timelineProgress.style.width = '0%';
+            btnStart.textContent = '▶ 开始模拟';
+            draw();
+        });
+
+        capacitySlider.addEventListener('input', (e) => {
+            state.capacityRatio = parseInt(e.target.value) / 100;
+            document.getElementById('capacity-value').textContent = e.target.value + '%';
+            // Update capacity
+            const baseLoad = TOTAL_WEIGHT / NUM_SUPPORTS;
+            state.supports.forEach(s => s.capacity = baseLoad * state.capacityRatio);
+            updateSupportDisplay();
+        });
+
+        failSlider.addEventListener('input', (e) => {
+            state.initialFailIndex = parseInt(e.target.value);
+            document.getElementById('fail-value').textContent = `支座 ${state.initialFailIndex + 1}`;
+        });
+
+        // Initialize
+        initSupports();
+        createSupportCards();
+        updateSupportDisplay();
+        updateEventLog();
+        draw();
+    </script>
+</body>
+
+</html>
