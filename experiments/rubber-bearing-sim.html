@@ -509,7 +509,7 @@
                 <canvas id="canvas"></canvas>
                 <div class="view-tabs">
                     <div class="view-tab active" data-view="plan">俯视图</div>
-                    <div class="view-tab" data-view="elevation">立面图</div>
+                    <div class="view-tab" data-view="trajectory">轨迹图</div>
                     <div class="view-tab" data-view="stiffness">刚度分析</div>
                 </div>
             </div>
@@ -681,22 +681,50 @@
                     </div>
                     <div class="slider-group">
                         <div class="slider-label">
-                            <span>力方向 θ</span>
-                            <span class="slider-value" id="angle-value">0°</span>
+                            <span>Y/X幅度比</span>
+                            <span class="slider-value" id="ratio-value">1.0</span>
                         </div>
-                        <input type="range" id="angle-slider" min="0" max="360" value="0">
+                        <input type="range" id="ratio-slider" min="0" max="2" value="1" step="0.1">
+                    </div>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Y相位差 Δφ</span>
+                            <span class="slider-value" id="phase-value">0°</span>
+                        </div>
+                        <input type="range" id="phase-slider" min="0" max="180" value="0">
                     </div>
                     <div class="preset-btns" style="margin-top: 8px;">
-                        <div class="preset-btn" data-angle="0">X向 (0°)</div>
-                        <div class="preset-btn" data-angle="90">Y向 (90°)</div>
-                        <div class="preset-btn" data-angle="45">45°</div>
+                        <div class="preset-btn" data-wave="line-x">X向直线</div>
+                        <div class="preset-btn" data-wave="line-y">Y向直线</div>
+                        <div class="preset-btn" data-wave="circle">圆形</div>
+                        <div class="preset-btn" data-wave="ellipse">椭圆</div>
+                    </div>
+                </div>
+
+                <!-- Motion Response -->
+                <div class="eccentricity-display"
+                    style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3);">
+                    <div class="ecc-title" style="color: #00d4ff;">📍 运动响应</div>
+                    <div class="ecc-values">
+                        <div class="ecc-item">
+                            <div class="ecc-label">u<sub>x</sub></div>
+                            <div class="ecc-value" id="disp-x" style="color: #2ed573;">0.0 mm</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">u<sub>y</sub></div>
+                            <div class="ecc-value" id="disp-y" style="color: #2ed573;">0.0 mm</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">φ</div>
+                            <div class="ecc-value" id="rotation-angle" style="color: #f472b6;">0.00°</div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Torsion Result -->
                 <div class="eccentricity-display"
                     style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3);">
-                    <div class="ecc-title" style="color: #ff6b6b;">⚠️ 扭转力矩 M<sub>T</sub> = F × e</div>
+                    <div class="ecc-title" style="color: #ff6b6b;">⚠️ 扭转力矩</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
                             <div class="ecc-label">M<sub>T</sub></div>
@@ -849,11 +877,20 @@
             view: 'plan',
             heights: { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 }, // mm
             supports: {},
+            // 双向地震输入参数
             force: 0,           // 力大小 (kN)
-            forceAngle: 0,      // 力方向 (度)
+            yxRatio: 1.0,       // Y/X幅度比
+            phaseDiff: 0,       // Y相位差 (度)
+            // 运动响应
+            displacement: 0,
+            rotation: 0,
+            // 动画状态
             buildingDisp: { x: 0, y: 0, rot: 0 },
             isAnimating: false,
-            animPhase: 0
+            animTime: 0,
+            // 轨迹记录
+            trajectory: [],
+            maxTrajectoryPoints: 200
         };
 
         // ============================================================
@@ -970,16 +1007,17 @@
             document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
             document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
 
-            // Calculate force components
-            const angleRad = state.forceAngle * Math.PI / 180;
-            const Fx = state.force * Math.cos(angleRad);
-            const Fy = state.force * Math.sin(angleRad);
+            // Calculate force components (for static display, use max values)
+            const Fx = state.force;
+            const Fy = state.force * state.yxRatio;
 
             // Calculate torsion moment: MT = Fx * ey - Fy * ex (cross product)
             const torsionMoment = Fx * cs.ey - Fy * cs.ex;
 
             // Calculate displacement: u = F / ΣKh
-            const displacement = cs.totalK > 0 ? state.force / cs.totalK : 0;
+            const totalForce = Math.sqrt(Fx * Fx + Fy * Fy);
+            const ux = cs.totalK > 0 ? Fx / cs.totalK : 0;
+            const uy = cs.totalK > 0 ? Fy / cs.totalK : 0;
 
             // Calculate torsional stiffness: J = Σ(Kh × r²)
             let J = 0;
@@ -997,13 +1035,20 @@
             document.getElementById('force-y').textContent = Fy.toFixed(1) + ' kN';
             document.getElementById('torsion-moment').textContent = torsionMoment.toFixed(3) + ' kN·m';
 
+            // Update displacement display
+            document.getElementById('disp-x').textContent = (ux * 1000).toFixed(1) + ' mm';
+            document.getElementById('disp-y').textContent = (uy * 1000).toFixed(1) + ' mm';
+            document.getElementById('rotation-angle').textContent = (rotation * 180 / Math.PI).toFixed(2) + '°';
+
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
             document.getElementById('bearing-diameter').textContent = params.diameter.toFixed(0) + ' mm';
 
             // Store for animation
-            state.displacement = displacement;
+            state.displacement = Math.sqrt(ux * ux + uy * uy);
             state.rotation = rotation;
+            state.J = J;
+            state.cs = cs;
 
             draw();
         }
@@ -1097,22 +1142,50 @@
             updateUI();
         });
 
-        // Angle slider
-        const angleSlider = document.getElementById('angle-slider');
-        const angleValue = document.getElementById('angle-value');
-        angleSlider.addEventListener('input', (e) => {
-            state.forceAngle = parseFloat(e.target.value);
-            angleValue.textContent = state.forceAngle.toFixed(0) + '°';
+        // Y/X Ratio slider
+        const ratioSlider = document.getElementById('ratio-slider');
+        const ratioValue = document.getElementById('ratio-value');
+        ratioSlider.addEventListener('input', (e) => {
+            state.yxRatio = parseFloat(e.target.value);
+            ratioValue.textContent = state.yxRatio.toFixed(1);
             updateUI();
         });
 
-        // Angle preset buttons
-        document.querySelectorAll('.preset-btn[data-angle]').forEach(btn => {
+        // Phase difference slider
+        const phaseSlider = document.getElementById('phase-slider');
+        const phaseValue = document.getElementById('phase-value');
+        phaseSlider.addEventListener('input', (e) => {
+            state.phaseDiff = parseFloat(e.target.value);
+            phaseValue.textContent = state.phaseDiff.toFixed(0) + '°';
+            updateUI();
+        });
+
+        // Wave preset buttons
+        document.querySelectorAll('.preset-btn[data-wave]').forEach(btn => {
             btn.addEventListener('click', () => {
-                const angle = parseFloat(btn.dataset.angle);
-                state.forceAngle = angle;
-                angleSlider.value = angle;
-                angleValue.textContent = angle + '°';
+                const wave = btn.dataset.wave;
+                switch (wave) {
+                    case 'line-x':
+                        state.yxRatio = 0;
+                        state.phaseDiff = 0;
+                        break;
+                    case 'line-y':
+                        state.yxRatio = 1000; // Very large = Y only
+                        state.phaseDiff = 0;
+                        break;
+                    case 'circle':
+                        state.yxRatio = 1;
+                        state.phaseDiff = 90;
+                        break;
+                    case 'ellipse':
+                        state.yxRatio = 0.5;
+                        state.phaseDiff = 90;
+                        break;
+                }
+                ratioSlider.value = Math.min(2, state.yxRatio);
+                ratioValue.textContent = state.yxRatio.toFixed(1);
+                phaseSlider.value = state.phaseDiff;
+                phaseValue.textContent = state.phaseDiff.toFixed(0) + '°';
                 updateUI();
             });
         });
@@ -1138,35 +1211,66 @@
             state.isAnimating = false;
             cancelAnimationFrame(animationId);
             state.buildingDisp = { x: 0, y: 0, rot: 0 };
-            state.animPhase = 0;
+            state.animTime = 0;
+            state.trajectory = [];
             state.force = 0;
             forceSlider.value = 0;
             forceValue.textContent = '0 kN';
             btnAnimate.textContent = '▶ 地震模拟';
-            draw();
+            updateUI();
         });
 
         function animate() {
             if (!state.isAnimating) return;
 
-            state.animPhase += 0.06;
-            state.force = Math.sin(state.animPhase) * 40;
-            forceSlider.value = state.force;
-            forceValue.textContent = state.force.toFixed(0) + ' kN';
+            // Time-based animation (2Hz frequency)
+            state.animTime += 0.04;
+            const omega = 2 * Math.PI * 2; // 2Hz
+            const t = state.animTime;
 
-            const cs = calculateStiffnessCenter();
+            // X force: sin(ωt)
+            const Fx_t = Math.sin(omega * t) * 40;
+            // Y force: sin(ωt + φ) × ratio
+            const phaseRad = state.phaseDiff * Math.PI / 180;
+            const Fy_t = Math.sin(omega * t + phaseRad) * 40 * state.yxRatio;
 
-            // Building response
-            const disp = state.force / cs.totalK;
-            const torsionMoment = state.force * cs.e_mag;
-            const J = SUPPORT_IDS.reduce((sum, id) => {
-                const s = state.supports[id];
-                return sum + s.Kh * (s.x * s.x + s.y * s.y);
-            }, 0);
+            // Update force slider display with X component amplitude
+            state.force = 40;
+            forceSlider.value = 40;
+            forceValue.textContent = '40 kN';
+
+            const cs = state.cs || calculateStiffnessCenter();
+            const J = state.J || 0.1;
+
+            // Calculate displacement: u = F / ΣK
+            const ux = cs.totalK > 0 ? Fx_t / cs.totalK : 0;
+            const uy = cs.totalK > 0 ? Fy_t / cs.totalK : 0;
+
+            // Calculate torsion moment and rotation
+            const torsionMoment = Fx_t * cs.ey - Fy_t * cs.ex;
             const rotation = J > 0 ? torsionMoment / J : 0;
 
-            state.buildingDisp.x = state.buildingDisp.x * 0.85 + disp * 0.15;
-            state.buildingDisp.rot = state.buildingDisp.rot * 0.85 + rotation * 0.15;
+            // Smooth building response
+            state.buildingDisp.x = state.buildingDisp.x * 0.8 + ux * 0.2;
+            state.buildingDisp.y = state.buildingDisp.y * 0.8 + uy * 0.2;
+            state.buildingDisp.rot = state.buildingDisp.rot * 0.8 + rotation * 0.2;
+
+            // Record trajectory
+            state.trajectory.push({
+                x: state.buildingDisp.x * 1000, // mm
+                y: state.buildingDisp.y * 1000, // mm
+                rot: state.buildingDisp.rot
+            });
+
+            // Limit trajectory length
+            if (state.trajectory.length > state.maxTrajectoryPoints) {
+                state.trajectory.shift();
+            }
+
+            // Update displacement display
+            document.getElementById('disp-x').textContent = (state.buildingDisp.x * 1000).toFixed(1) + ' mm';
+            document.getElementById('disp-y').textContent = (state.buildingDisp.y * 1000).toFixed(1) + ' mm';
+            document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
 
             draw();
             animationId = requestAnimationFrame(animate);
@@ -1181,8 +1285,8 @@
 
             if (state.view === 'plan') {
                 drawPlanView();
-            } else if (state.view === 'elevation') {
-                drawElevationView();
+            } else if (state.view === 'trajectory') {
+                drawTrajectoryView();
             } else {
                 drawStiffnessView();
             }
@@ -1366,84 +1470,121 @@
             }
         }
 
-        function drawElevationView() {
+        function drawTrajectoryView() {
             const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2 + 50;
-            const scale = 200;
+            const centerY = canvas.height / 2;
+            const scale = 8; // pixels per mm of displacement
 
             ctx.font = '12px Inter';
             ctx.fillStyle = '#888';
             ctx.textAlign = 'left';
-            ctx.fillText('立面图 (X-Z视图)', 20, 30);
+            ctx.fillText('轨迹图 - 质心运动轨迹 (mm)', 20, 30);
 
-            // Ground line
-            ctx.beginPath();
-            ctx.moveTo(centerX - TOTAL_LENGTH * scale / 2 - 50, centerY + 80);
-            ctx.lineTo(centerX + TOTAL_LENGTH * scale / 2 + 50, centerY + 80);
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = -5; i <= 5; i++) {
+                // Vertical lines
+                ctx.beginPath();
+                ctx.moveTo(centerX + i * 30, centerY - 150);
+                ctx.lineTo(centerX + i * 30, centerY + 150);
+                ctx.stroke();
+                // Horizontal lines
+                ctx.beginPath();
+                ctx.moveTo(centerX - 150, centerY + i * 30);
+                ctx.lineTo(centerX + 150, centerY + i * 30);
+                ctx.stroke();
+            }
+
+            // Draw axes
             ctx.strokeStyle = '#555';
             ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 160, centerY);
+            ctx.lineTo(centerX + 160, centerY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - 160);
+            ctx.lineTo(centerX, centerY + 160);
             ctx.stroke();
 
-            // Draw supports and heights
-            const topRow = ['8', '11', '25'];
+            // Axis labels
+            ctx.font = 'bold 12px Inter';
+            ctx.fillStyle = '#00d4ff';
+            ctx.textAlign = 'center';
+            ctx.fillText('X (mm)', centerX + 140, centerY + 20);
+            ctx.fillText('Y (mm)', centerX + 20, centerY - 145);
 
-            topRow.forEach(id => {
-                const s = state.supports[id];
-                const px = centerX + s.x * scale;
-                const baseY = centerY + 80;
-                const topY = baseY - 60 - s.h * 3; // Scale height difference
+            // Draw trajectory if we have points
+            if (state.trajectory.length > 1) {
+                // Gradient from old (fade) to new (bright)
+                for (let i = 1; i < state.trajectory.length; i++) {
+                    const p0 = state.trajectory[i - 1];
+                    const p1 = state.trajectory[i];
+                    const alpha = i / state.trajectory.length;
 
-                // Support body
-                ctx.fillStyle = s.stiffnessRatio > 0.9 ? '#2ed573' :
-                    s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
-                ctx.fillRect(px - 15, topY, 30, baseY - topY);
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + p0.x * scale, centerY - p0.y * scale);
+                    ctx.lineTo(centerX + p1.x * scale, centerY - p1.y * scale);
+                    ctx.strokeStyle = `rgba(46, 213, 115, ${alpha})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+
+                // Current position
+                const current = state.trajectory[state.trajectory.length - 1];
+                ctx.beginPath();
+                ctx.arc(centerX + current.x * scale, centerY - current.y * scale, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#2ed573';
+                ctx.fill();
                 ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(px - 15, topY, 30, baseY - topY);
+                ctx.lineWidth = 2;
+                ctx.stroke();
 
-                // Height label
-                ctx.font = '10px JetBrains Mono';
-                ctx.fillStyle = '#00d4ff';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${s.h.toFixed(1)}mm`, px, topY - 8);
+                // Show rotation with a line from center
+                const rotLen = 25;
+                const rot = current.rot;
+                ctx.beginPath();
+                ctx.moveTo(centerX + current.x * scale, centerY - current.y * scale);
+                ctx.lineTo(
+                    centerX + current.x * scale + rotLen * Math.cos(-rot),
+                    centerY - current.y * scale + rotLen * Math.sin(-rot)
+                );
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
 
-                // ID label
-                ctx.font = 'bold 11px Inter';
-                ctx.fillStyle = '#fff';
-                ctx.fillText(id, px, baseY - 30);
-            });
-
-            // Building floor (connecting tops)
-            const leftS = state.supports['8'];
-            const midS = state.supports['11'];
-            const rightS = state.supports['25'];
-
-            const leftX = centerX + leftS.x * scale;
-            const midX = centerX + midS.x * scale;
-            const rightX = centerX + rightS.x * scale;
-
-            const leftY = centerY + 80 - 60 - leftS.h * 3;
-            const midY = centerY + 80 - 60 - midS.h * 3;
-            const rightY = centerY + 80 - 60 - rightS.h * 3;
-
+            // Origin marker
             ctx.beginPath();
-            ctx.moveTo(leftX - 20, leftY);
-            ctx.lineTo(midX, midY);
-            ctx.lineTo(rightX + 20, rightY);
-            ctx.strokeStyle = '#5c7a99';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-
-            // Floor fill
-            ctx.fillStyle = 'rgba(61, 90, 128, 0.5)';
-            ctx.beginPath();
-            ctx.moveTo(leftX - 20, leftY);
-            ctx.lineTo(midX, midY);
-            ctx.lineTo(rightX + 20, rightY);
-            ctx.lineTo(rightX + 20, rightY - 30);
-            ctx.lineTo(leftX - 20, leftY - 30);
-            ctx.closePath();
+            ctx.arc(centerX, centerY, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffa502';
             ctx.fill();
+
+            // Legend
+            ctx.font = '10px Inter';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#2ed573';
+            ctx.fillRect(20, canvas.height - 50, 10, 10);
+            ctx.fillStyle = '#888';
+            ctx.fillText('质心轨迹', 35, canvas.height - 41);
+
+            ctx.fillStyle = '#f472b6';
+            ctx.fillRect(20, canvas.height - 35, 10, 10);
+            ctx.fillStyle = '#888';
+            ctx.fillText('扭转方向', 35, canvas.height - 26);
+
+            // Info text
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillStyle = '#00d4ff';
+            ctx.textAlign = 'right';
+            if (state.trajectory.length > 0) {
+                const latest = state.trajectory[state.trajectory.length - 1];
+                ctx.fillText(`ux: ${latest.x.toFixed(1)}mm`, canvas.width - 20, canvas.height - 50);
+                ctx.fillText(`uy: ${latest.y.toFixed(1)}mm`, canvas.width - 20, canvas.height - 35);
+                ctx.fillStyle = '#f472b6';
+                ctx.fillText(`φ: ${(latest.rot * 180 / Math.PI).toFixed(2)}°`, canvas.width - 20, canvas.height - 20);
+            }
         }
 
         function drawStiffnessView() {
