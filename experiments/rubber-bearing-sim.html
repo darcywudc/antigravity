@@ -839,6 +839,29 @@
                     </div>
                 </div>
 
+                <!-- Torsion Hazard -->
+                <div class="eccentricity-display"
+                    style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3);">
+                    <div class="ecc-title" style="color: #ff6b6b;">🚨 扭转危害</div>
+                    <div class="ecc-values">
+                        <div class="ecc-item">
+                            <div class="ecc-label">角8位移</div>
+                            <div class="ecc-value" id="corner-8-disp" style="color: #2ed573;">0 mm</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">角30位移</div>
+                            <div class="ecc-value" id="corner-30-disp" style="color: #ff6b6b;">0 mm</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">甩尾比</div>
+                            <div class="ecc-value" id="whip-ratio" style="color: #ffa502;">1.00</div>
+                        </div>
+                    </div>
+                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                        甩尾比 = 角30/角8 (扭转导致一侧位移更大)
+                    </div>
+                </div>
+
                 <!-- Animation -->
                 <div class="btn-group">
                     <button class="btn btn-primary" id="btn-animate">▶ 地震模拟</button>
@@ -1566,6 +1589,37 @@
                 ampEl.style.color = '#ffa502';
             } else {
                 ampEl.style.color = '#2ed573';
+            }
+
+            // 计算角支座位移 (角8和角30是对角)
+            // 角8在(-0.6, 0.2)，角30在(0.6, -0.2)
+            const theta = state.buildingDisp.rot;
+            const s8 = state.supports['8'];
+            const s30 = state.supports['30'];
+
+            // 角支座位移 = 质心位移 + 扭转引起的切向位移
+            // u_i = u_cm + θ × r_i (r_i是到扭转中心的距离向量)
+            const r8 = Math.sqrt(s8.x * s8.x + s8.y * s8.y);
+            const r30 = Math.sqrt(s30.x * s30.x + s30.y * s30.y);
+            const corner8Disp = currentDisp + theta * r8;
+            const corner30Disp = currentDisp - theta * r30; // 相反方向
+
+            // 甩尾比 = 两端位移之比
+            const whipRatio = Math.abs(corner8Disp) > 0.0001 ?
+                Math.abs(corner30Disp / corner8Disp) : 1.0;
+
+            document.getElementById('corner-8-disp').textContent = (Math.abs(corner8Disp) * 1000).toFixed(1) + ' mm';
+            document.getElementById('corner-30-disp').textContent = (Math.abs(corner30Disp) * 1000).toFixed(1) + ' mm';
+            document.getElementById('whip-ratio').textContent = whipRatio.toFixed(2);
+
+            // 甩尾比颜色
+            const whipEl = document.getElementById('whip-ratio');
+            if (Math.abs(whipRatio - 1) > 0.3) {
+                whipEl.style.color = '#ff6b6b';
+            } else if (Math.abs(whipRatio - 1) > 0.1) {
+                whipEl.style.color = '#ffa502';
+            } else {
+                whipEl.style.color = '#2ed573';
             }
 
             // 更新剪应变
