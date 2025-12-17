@@ -698,24 +698,12 @@
                     </div>
                 </div>
 
-                <!-- Seismic Input -->
+                <!-- Seismic Design Parameters -->
                 <div class="section">
-                    <h3>🌊 地震波输入</h3>
-                    <div class="param-item" style="margin-bottom: 8px;">
-                        <label>选择地震波</label>
-                        <select id="wave-select"
-                            style="width: 100%; padding: 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: #fff;">
-                            <option value="sine">简谐波 (正弦)</option>
-                            <option value="cape-mendocino">SCB1: Cape Mendocino</option>
-                            <option value="northridge">SCB2: Northridge</option>
-                            <option value="th3tg045">SCB3: TH3TG045 (人工波)</option>
-                            <option value="coalinga">SCB4: Coalinga</option>
-                            <option value="chi-chi">SCB5: Chi-Chi 台湾</option>
-                        </select>
-                    </div>
+                    <h3>🌊 抗震设计参数</h3>
                     <div class="slider-group">
                         <div class="slider-label">
-                            <span>PGA (g)</span>
+                            <span>设防PGA (g)</span>
                             <span class="slider-value" id="pga-value">0.4</span>
                         </div>
                         <input type="range" id="pga-slider" min="0.1" max="1.0" value="0.4" step="0.05">
@@ -727,25 +715,35 @@
                         </div>
                         <input type="range" id="damping-slider" min="0.05" max="0.20" value="0.10" step="0.01">
                     </div>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>隔震沟宽度 (mm)</span>
+                            <span class="slider-value" id="gap-value">50</span>
+                        </div>
+                        <input type="range" id="gap-slider" min="20" max="100" value="50" step="5">
+                    </div>
                 </div>
 
-                <!-- Relative Displacement -->
+                <!-- Spectral Displacement (Static Calculation) -->
                 <div class="eccentricity-display"
                     style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3);">
-                    <div class="ecc-title" style="color: #00d4ff;">📍 相对位移 (支座变形)</div>
+                    <div class="ecc-title" style="color: #00d4ff;">📐 位移需求 (反应谱法)</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
-                            <div class="ecc-label">u<sub>x</sub></div>
-                            <div class="ecc-value" id="disp-x" style="color: #2ed573;">0.0 mm</div>
+                            <div class="ecc-label">质心 Sd</div>
+                            <div class="ecc-value" id="spectral-disp" style="color: #2ed573;">0 mm</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">u<sub>y</sub></div>
-                            <div class="ecc-value" id="disp-y" style="color: #2ed573;">0.0 mm</div>
+                            <div class="ecc-label">角最大</div>
+                            <div class="ecc-value" id="corner-max-disp" style="color: #ffa502;">0 mm</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">γ</div>
-                            <div class="ecc-value" id="shear-strain" style="color: #ffa502;">0%</div>
+                            <div class="ecc-label">限值</div>
+                            <div class="ecc-value" id="gap-limit" style="color: #888;">50 mm</div>
                         </div>
+                    </div>
+                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                        Sd = Sa(T,ξ) × (T/2π)² (反应谱位移)
                     </div>
                 </div>
 
@@ -1044,39 +1042,29 @@
             view: 'plan',
             heights: { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 }, // mm
             supports: {},
-            // 地震波输入参数
-            selectedWave: 'sine',   // 选择的地震波
-            pga: 0.4,               // 峰值加速度 (g)
+            // 抗震设计参数
+            pga: 0.4,               // 设防峰值加速度 (g)
             damping: 0.10,          // 阻尼比
+            gapWidth: 50,           // 隔震沟宽度 (mm)
             // 系统参数（计算得到）
             totalKh: 0,             // 总水平刚度 (kN/m)
             mass: TOTAL_WEIGHT / 9.81,  // 质量 (t)
-            period: 0,              // 周期 (s)
+            period: 0,              // 平动周期 (s)
+            periodTorsion: 0,       // 扭转周期 (s)
             omega: 0,               // 圆频率 (rad/s)
-            // 运动响应 - 相对量
-            displacement: 0,        // 相对位移
-            velocity: 0,            // 相对速度
-            acceleration: 0,        // 相对加速度
-            rotation: 0,
-            // 运动响应 - 绝对量
-            absAcceleration: 0,     // 绝对加速度 (m/s²)
-            inputAcceleration: 0,   // 输入加速度 (m/s²)
-            isolationRate: 0,       // 隔震率
-            // 最大值记录
-            maxDisp: 0,
-            maxEdgeDisp: 0,  // 边缘支座最大位移
-            maxAbsAcc: 0,
-            rMax: 0,         // 最远支座到中心的距离
-            // 动画状态
+            J: 0,                   // 扭转刚度
+            cs: null,               // 刚度中心
+            rMax: 0,                // 最远支座到中心的距离
+            // 反应谱计算结果（静态）
+            spectralDisp: 0,        // 反应谱位移 - 质心 (m)
+            cornerMaxDisp: 0,       // 角最大位移 (m)
+            torsionAmplify: 1.0,    // 扭转放大系数
+            // 动画状态 (保留用于可视化)
             buildingDisp: { x: 0, y: 0, rot: 0 },
-            buildingVel: { x: 0, y: 0 },
-            buildingAcc: { x: 0, y: 0 },
             isAnimating: false,
             animTime: 0,
-            // 轨迹记录 - 增加到1000点保留更长历史
             trajectory: [],
-            maxTrajectoryPoints: 1000,
-            keepTrajectory: true  // 停止时保留轨迹
+            maxTrajectoryPoints: 500
         };
 
         // ============================================================
@@ -1234,7 +1222,7 @@
             document.getElementById('period').textContent = state.period.toFixed(2) + ' s';
             document.getElementById('period-torsion').textContent = Tr.toFixed(2) + ' s';
             document.getElementById('period-ratio').textContent = periodRatio.toFixed(2);
-            document.getElementById('total-kh').textContent = state.totalKh.toFixed(0) + ' kN/m';
+            state.periodTorsion = Tr;
 
             // 周期比颜色指示
             const ratioEl = document.getElementById('period-ratio');
@@ -1246,59 +1234,111 @@
                 ratioEl.style.color = '#2ed573';
             }
 
-            // 在控制台输出便于调试
-            console.log('刚度更新: ΣKh=' + state.totalKh.toFixed(1) + ' kN/m, Tx=' + state.period.toFixed(3) + 's, Tθ=' + Tr.toFixed(3) + 's, Tθ/Tx=' + periodRatio.toFixed(2) + ', e=' + (cs.e_mag * 1000).toFixed(1) + 'mm');
-
-            document.getElementById('ecc-disp').textContent = (cs.e_mag * 1000).toFixed(1) + ' mm';
-
-            // Update shear strain display (based on current displacement)
-            const currentDisp = Math.sqrt(state.buildingDisp.x * state.buildingDisp.x + state.buildingDisp.y * state.buildingDisp.y);
-            const shearStrain = (currentDisp / avgTr) * 100;
-            document.getElementById('shear-strain').textContent = shearStrain.toFixed(0) + '%';
-
-            // Color code shear strain
-            const strainEl = document.getElementById('shear-strain');
-            if (shearStrain > 200) {
-                strainEl.style.color = '#ff6b6b';
-            } else if (shearStrain > 150) {
-                strainEl.style.color = '#ffa502';
+            // ============================================================
+            // 反应谱位移计算 (静态方法)
+            // ============================================================
+            // 设计反应谱: Sa(T) = PGA × β(T,ξ)
+            // 简化的放大系数: β ≈ 2.5 (平台段) 或 2.5×(Tg/T)^0.9 (下降段)
+            const Tg = 0.4; // 特征周期 (s)
+            const T = state.period;
+            let beta;
+            if (T < 0.1) {
+                beta = 1 + (2.5 - 1) * (T / 0.1);
+            } else if (T < Tg) {
+                beta = 2.5;
             } else {
-                strainEl.style.color = '#2ed573';
+                beta = 2.5 * Math.pow(Tg / T, 0.9);
             }
 
-            // 计算边缘支座最大位移 u_edge = u_cm + θ × r_max
-            // r_max是最远角支座到刚度中心的距离
+            // 阻尼修正系数
+            const dampingCorrection = Math.sqrt(0.05 / state.damping);
+            beta *= dampingCorrection;
+
+            // 反应谱加速度 Sa (m/s²)
+            const Sa = state.pga * 9.81 * beta;
+
+            // 反应谱位移 Sd = Sa × (T/2π)² (m)
+            const Sd = Sa * Math.pow(T / (2 * Math.PI), 2);
+            state.spectralDisp = Sd;
+
+            // ============================================================
+            // 扭转放大计算
+            // ============================================================
+            // r_max是最远角支座到质心的距离
             let rMax = 0;
             SUPPORT_IDS.forEach(id => {
                 const s = state.supports[id];
                 const r = Math.sqrt(s.x * s.x + s.y * s.y);
                 if (r > rMax) rMax = r;
             });
-
-            const edgeDisp = currentDisp + Math.abs(state.buildingDisp.rot) * rMax;
-            const amplifyFactor = currentDisp > 0.0001 ? edgeDisp / currentDisp : 1.0;
-
-            // 存储用于动画更新
             state.rMax = rMax;
 
-            // Update displacement display
-            document.getElementById('disp-x').textContent = (state.buildingDisp.x * 1000).toFixed(1) + ' mm';
-            document.getElementById('disp-y').textContent = (state.buildingDisp.y * 1000).toFixed(1) + ' mm';
-            document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
-            document.getElementById('max-disp').textContent = (state.maxDisp * 1000).toFixed(1) + ' mm';
-            document.getElementById('max-edge-disp').textContent = (state.maxEdgeDisp * 1000 || 0).toFixed(1) + ' mm';
-            document.getElementById('torsion-amplify').textContent = amplifyFactor.toFixed(2);
-            document.getElementById('torsion-moment').textContent = '0 kN·m';
+            // 扭转放大系数 (简化估算)
+            // 偏心越大，扭转效应越显著
+            // 公式: 放大系数 ≈ 1 + (e × r_max) / (ρ²)
+            // 其中 ρ² = J / (K × r²) 是扭转半径
+            const eccRatio = cs.e_mag / (TOTAL_LENGTH / 2); // 相对偏心率
+            const torsionAmplify = 1 + eccRatio * 2; // 简化放大系数
+            state.torsionAmplify = torsionAmplify;
+
+            // 角最大位移 = 质心位移 × 扭转放大系数
+            const cornerMaxDisp = Sd * torsionAmplify;
+            state.cornerMaxDisp = cornerMaxDisp;
+
+            // ============================================================
+            // 更新显示
+            // ============================================================
+            const gapWidth = state.gapWidth / 1000; // mm -> m
+
+            // 位移需求显示
+            document.getElementById('spectral-disp').textContent = (Sd * 1000).toFixed(1) + ' mm';
+            document.getElementById('corner-max-disp').textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm';
+            document.getElementById('gap-limit').textContent = state.gapWidth + ' mm';
+
+            // 质心位移颜色 (与隔震沟比较)
+            const sdEl = document.getElementById('spectral-disp');
+            if (Sd > gapWidth) {
+                sdEl.style.color = '#ff6b6b';
+            } else if (Sd > gapWidth * 0.8) {
+                sdEl.style.color = '#ffa502';
+            } else {
+                sdEl.style.color = '#2ed573';
+            }
+
+            // 角最大位移颜色 (与隔震沟比较) - 关键检查！
+            const cornerEl = document.getElementById('corner-max-disp');
+            if (cornerMaxDisp > gapWidth) {
+                cornerEl.style.color = '#ff6b6b';
+                cornerEl.textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm ⚠️超限!';
+            } else if (cornerMaxDisp > gapWidth * 0.8) {
+                cornerEl.style.color = '#ffa502';
+            } else {
+                cornerEl.style.color = '#2ed573';
+            }
+
+            // 偏心和扭转显示
+            document.getElementById('ecc-disp').textContent = (cs.e_mag * 1000).toFixed(1) + ' mm';
+            document.getElementById('rotation-angle').textContent = '扭转放大 ×' + torsionAmplify.toFixed(2);
+            document.getElementById('torsion-moment').textContent = '偏心率 ' + (eccRatio * 100).toFixed(1) + '%';
+
+            // 位移响应显示
+            document.getElementById('max-disp').textContent = (Sd * 1000).toFixed(1) + ' mm';
+            document.getElementById('max-edge-disp').textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm';
+            document.getElementById('torsion-amplify').textContent = torsionAmplify.toFixed(2);
 
             // 放大系数颜色
             const ampEl = document.getElementById('torsion-amplify');
-            if (amplifyFactor > 1.3) {
+            if (torsionAmplify > 1.3) {
                 ampEl.style.color = '#ff6b6b';
-            } else if (amplifyFactor > 1.1) {
+            } else if (torsionAmplify > 1.1) {
                 ampEl.style.color = '#ffa502';
             } else {
                 ampEl.style.color = '#2ed573';
             }
+
+            // 在控制台输出便于调试
+            console.log('反应谱计算: PGA=' + state.pga + 'g, T=' + T.toFixed(2) + 's, β=' + beta.toFixed(2) +
+                ', Sd=' + (Sd * 1000).toFixed(1) + 'mm, 角位移=' + (cornerMaxDisp * 1000).toFixed(1) + 'mm, 限值=' + state.gapWidth + 'mm');
 
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
@@ -1411,11 +1451,13 @@
             updateUI();
         });
 
-        // Wave select
-        const waveSelect = document.getElementById('wave-select');
-        waveSelect.addEventListener('change', (e) => {
-            state.selectedWave = e.target.value;
-            console.log('Selected wave:', state.selectedWave);
+        // Gap width slider (隔震沟宽度)
+        const gapSlider = document.getElementById('gap-slider');
+        const gapValue = document.getElementById('gap-value');
+        gapSlider.addEventListener('input', (e) => {
+            state.gapWidth = parseFloat(e.target.value);
+            gapValue.textContent = state.gapWidth.toFixed(0);
+            updateUI();
         });
 
         // Animation
