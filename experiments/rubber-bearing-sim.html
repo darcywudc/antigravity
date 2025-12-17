@@ -1090,25 +1090,34 @@
         }
 
         // ============================================================
-        // 根据支座高差计算反力重分配 (正确的协调变形模型)
+        // 根据支座高差计算反力重分配 (协调变形模型 + EI修正)
         // 
-        // 力学模型: 刚性板 + 弹性支座
+        // 力学模型: 弹性梁/板 + 弹性支座
         // 
-        // 设刚体位移: δ0 (竖向), θx (绕X轴), θy (绕Y轴)
-        // 支座变形: δi = δ0 + θx × yi + θy × xi - hi (hi是强迫位移)
-        // 支座反力: Ni = Kvi × δi
+        // 修正方法：使用α系数近似考虑上部结构弯曲刚度EI
+        // α = 1 / (1 + Kv × L³ / (3 × EI))
+        // - α→1: 刚性板（高EI）
+        // - α→0: 柔性梁（低EI，反力变化减小）
         // 
-        // 平衡方程 (3个方程3个未知数):
-        //   ΣNi = W
-        //   Σ(Ni × xi) = 0
-        //   Σ(Ni × yi) = 0
+        // 有效刚度: Keff = Kv × α
+        // 
+        // 几何布置:
+        //    8 -------- 11 -------- 25     y = +0.2m
+        //    |   L=0.6m  |   L=0.6m  |
+        //    4 -------- 16 -------- 30     y = -0.2m
+        //   x=-0.6m    x=0        x=+0.6m
         // ============================================================
         function calculateReactions() {
-            // 获取各支座的竖向刚度
-            const Kv = {};
+            // 获取各支座的有效竖向刚度（考虑α修正）
+            const Keff = {};
+            const alpha = calc.alpha; // 反力重分配系数
+
+            console.log('刚度计算: α=' + alpha.toFixed(4) + ', EI=' + params.EI + ' kN·m²');
+
             SUPPORT_IDS.forEach(id => {
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                Kv[id] = bearingParams.Kv; // kN/m
+                // 使用α修正的有效刚度
+                Keff[id] = bearingParams.Kv * alpha;
             });
 
             // 构建系数矩阵 A 和右侧向量 b
@@ -1127,7 +1136,7 @@
                 const x = SUPPORT_POSITIONS[id].x;
                 const y = SUPPORT_POSITIONS[id].y;
                 const h = state.heights[id] / 1000; // mm -> m
-                const k = Kv[id];
+                const k = Keff[id]; // 使用α修正后的有效刚度
 
                 // 方程1: ΣNi = W
                 A11 += k;           // δ0的系数
@@ -1188,7 +1197,7 @@
                 const x = SUPPORT_POSITIONS[id].x;
                 const y = SUPPORT_POSITIONS[id].y;
                 const h = state.heights[id] / 1000; // mm -> m
-                const k = Kv[id];
+                const k = Keff[id]; // 使用α修正后的有效刚度
 
                 // 支座变形
                 const delta_i = delta0 + thetaX * y + thetaY * x - h;
