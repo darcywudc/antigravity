@@ -799,39 +799,42 @@
                 <!-- Max Response -->
                 <div class="eccentricity-display"
                     style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.2);">
-                    <div class="ecc-title" style="color: #ff6b6b;">📈 最大响应</div>
+                    <div class="ecc-title" style="color: #ff6b6b;">📈 位移响应</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
-                            <div class="ecc-label">max u</div>
-                            <div class="ecc-value" id="max-disp" style="color: #ff6b6b;">0 mm</div>
+                            <div class="ecc-label">质心 u<sub>cm</sub></div>
+                            <div class="ecc-value" id="max-disp" style="color: #2ed573;">0 mm</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">max a</div>
-                            <div class="ecc-value" id="max-acc" style="color: #ff6b6b;">0.00 g</div>
+                            <div class="ecc-label">边缘 u<sub>edge</sub></div>
+                            <div class="ecc-value" id="max-edge-disp" style="color: #ff6b6b;">0 mm</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">ΣK<sub>h</sub></div>
-                            <div class="ecc-value" id="total-kh" style="color: #2ed573;">0 kN/m</div>
+                            <div class="ecc-label">放大系数</div>
+                            <div class="ecc-value" id="torsion-amplify" style="color: #ffa502;">1.00</div>
                         </div>
+                    </div>
+                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                        u<sub>edge</sub> = u<sub>cm</sub> + θ × r (偏心越大放大越多)
                     </div>
                 </div>
 
                 <!-- Torsion Result -->
                 <div class="eccentricity-display"
-                    style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3);">
-                    <div class="ecc-title" style="color: #ff6b6b;">⚠️ 扭转效应</div>
+                    style="background: rgba(244, 114, 182, 0.1); border-color: rgba(244, 114, 182, 0.3);">
+                    <div class="ecc-title" style="color: #f472b6;">⚠️ 扭转效应</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
-                            <div class="ecc-label">φ</div>
+                            <div class="ecc-label">偏心 |e|</div>
+                            <div class="ecc-value" id="ecc-disp" style="color: #ffa502;">0 mm</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">扭转角 φ</div>
                             <div class="ecc-value" id="rotation-angle" style="color: #f472b6;">0.00°</div>
                         </div>
                         <div class="ecc-item">
                             <div class="ecc-label">M<sub>T</sub></div>
                             <div class="ecc-value" id="torsion-moment" style="color: #ff6b6b;">0 kN·m</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">|e|</div>
-                            <div class="ecc-value" id="ecc-disp" style="color: #ffa502;">0 mm</div>
                         </div>
                     </div>
                 </div>
@@ -1038,7 +1041,9 @@
             isolationRate: 0,       // 隔震率
             // 最大值记录
             maxDisp: 0,
+            maxEdgeDisp: 0,  // 边缘支座最大位移
             maxAbsAcc: 0,
+            rMax: 0,         // 最远支座到中心的距离
             // 动画状态
             buildingDisp: { x: 0, y: 0, rot: 0 },
             buildingVel: { x: 0, y: 0 },
@@ -1238,12 +1243,39 @@
                 strainEl.style.color = '#2ed573';
             }
 
+            // 计算边缘支座最大位移 u_edge = u_cm + θ × r_max
+            // r_max是最远角支座到刚度中心的距离
+            let rMax = 0;
+            SUPPORT_IDS.forEach(id => {
+                const s = state.supports[id];
+                const r = Math.sqrt(s.x * s.x + s.y * s.y);
+                if (r > rMax) rMax = r;
+            });
+
+            const edgeDisp = currentDisp + Math.abs(state.buildingDisp.rot) * rMax;
+            const amplifyFactor = currentDisp > 0.0001 ? edgeDisp / currentDisp : 1.0;
+
+            // 存储用于动画更新
+            state.rMax = rMax;
+
             // Update displacement display
             document.getElementById('disp-x').textContent = (state.buildingDisp.x * 1000).toFixed(1) + ' mm';
             document.getElementById('disp-y').textContent = (state.buildingDisp.y * 1000).toFixed(1) + ' mm';
             document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
             document.getElementById('max-disp').textContent = (state.maxDisp * 1000).toFixed(1) + ' mm';
+            document.getElementById('max-edge-disp').textContent = (state.maxEdgeDisp * 1000 || 0).toFixed(1) + ' mm';
+            document.getElementById('torsion-amplify').textContent = amplifyFactor.toFixed(2);
             document.getElementById('torsion-moment').textContent = '0 kN·m';
+
+            // 放大系数颜色
+            const ampEl = document.getElementById('torsion-amplify');
+            if (amplifyFactor > 1.3) {
+                ampEl.style.color = '#ff6b6b';
+            } else if (amplifyFactor > 1.1) {
+                ampEl.style.color = '#ffa502';
+            } else {
+                ampEl.style.color = '#2ed573';
+            }
 
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
@@ -1389,6 +1421,7 @@
             state.animTime = 0;
             state.trajectory = [];
             state.maxDisp = 0;
+            state.maxEdgeDisp = 0;
             state.maxAbsAcc = 0;
             btnAnimate.textContent = '▶ 地震模拟';
             updateUI();
@@ -1461,6 +1494,13 @@
                 state.maxDisp = currentDisp;
             }
 
+            // 计算边缘支座位移 u_edge = u_cm + θ × r_max
+            const rMax = state.rMax || 0.6; // 默认值
+            const edgeDisp = currentDisp + Math.abs(state.buildingDisp.rot) * rMax;
+            if (edgeDisp > state.maxEdgeDisp) {
+                state.maxEdgeDisp = edgeDisp;
+            }
+
             // 记录轨迹
             state.trajectory.push({
                 x: state.buildingDisp.x * 1000, // mm
@@ -1512,6 +1552,21 @@
             // 更新显示 - 扭转
             document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
             document.getElementById('torsion-moment').textContent = torsionMoment.toFixed(2) + ' kN·m';
+
+            // 更新边缘位移和放大系数
+            const amplifyFactor = currentDisp > 0.0001 ? edgeDisp / currentDisp : 1.0;
+            document.getElementById('max-edge-disp').textContent = (state.maxEdgeDisp * 1000).toFixed(1) + ' mm';
+            document.getElementById('torsion-amplify').textContent = amplifyFactor.toFixed(2);
+
+            // 放大系数颜色
+            const ampEl = document.getElementById('torsion-amplify');
+            if (amplifyFactor > 1.3) {
+                ampEl.style.color = '#ff6b6b';
+            } else if (amplifyFactor > 1.1) {
+                ampEl.style.color = '#ffa502';
+            } else {
+                ampEl.style.color = '#2ed573';
+            }
 
             // 更新剪应变
             const avgTr = (calc.edge.totalRubberT + calc.mid.totalRubberT) / 2;
