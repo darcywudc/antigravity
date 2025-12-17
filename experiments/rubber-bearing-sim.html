@@ -415,6 +415,70 @@
             cursor: pointer;
         }
 
+        /* Parameter Grid */
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .param-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .param-item label {
+            display: block;
+            font-size: 0.65rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .param-item input[type="number"] {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 6px 8px;
+            color: #00d4ff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .param-item input[type="number"]:focus {
+            border-color: #2ed573;
+        }
+
+        /* Calculated Results */
+        .calc-results {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.7rem;
+        }
+
+        .calc-row:last-child {
+            border-bottom: none;
+        }
+
+        .calc-row span:first-child {
+            color: #888;
+        }
+
+        .calc-row span:last-child {
+            color: #2ed573;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
         /* Info Text */
         .info-text {
             background: rgba(0, 212, 255, 0.1);
@@ -453,13 +517,68 @@
             <div class="control-panel">
                 <!-- Core Formula -->
                 <div class="formula-card">
-                    <div class="formula-title">⚡ 刚度中心计算</div>
+                    <div class="formula-title">⚡ 核心公式</div>
                     <div class="formula-main">
-                        C<sub>S</sub> = Σ(K<sub>h,i</sub> × x<sub>i</sub>) / Σ(K<sub>h,i</sub>)
+                        K<sub>h</sub> = K<sub>0</sub> × (1 - (σ/σ<sub>cr</sub>)²)
                     </div>
                     <div class="formula-desc">
-                        K<sub>h</sub> = K<sub>0</sub> × (1 - (P/P<sub>cr</sub>)²) | 支座高差 → 反力重分配 → K<sub>h</sub>变化 →
-                        C<sub>S</sub>偏移
+                        位移: u = F/ΣK<sub>h</sub> | 扭转: φ = M<sub>T</sub>/J
+                    </div>
+                </div>
+
+                <!-- Bearing Parameters (Configurable) -->
+                <div class="section">
+                    <h3>🔧 支座参数配置</h3>
+                    <div class="param-grid">
+                        <div class="param-item">
+                            <label>直径 D (mm)</label>
+                            <input type="number" id="param-diameter" value="44" min="20" max="100" step="1">
+                        </div>
+                        <div class="param-item">
+                            <label>橡胶层厚 t<sub>r</sub> (mm)</label>
+                            <input type="number" id="param-rubber-t" value="2" min="1" max="10" step="0.5">
+                        </div>
+                        <div class="param-item">
+                            <label>橡胶层数 n</label>
+                            <input type="number" id="param-layers" value="10" min="3" max="30" step="1">
+                        </div>
+                        <div class="param-item">
+                            <label>剪切模量 G (MPa)</label>
+                            <input type="number" id="param-shear-g" value="0.4" min="0.2" max="1.0" step="0.05">
+                        </div>
+                        <div class="param-item">
+                            <label>屈服面压 σ<sub>cr</sub> (MPa)</label>
+                            <input type="number" id="param-yield-pressure" value="30" min="15" max="50" step="1">
+                        </div>
+                    </div>
+                    <button class="btn btn-small btn-secondary" id="btn-apply-params"
+                        style="margin-top: 8px; width: 100%;">应用参数</button>
+                </div>
+
+                <!-- Calculated Values (Read-only) -->
+                <div class="section">
+                    <h3>📊 计算结果</h3>
+                    <div class="calc-results">
+                        <div class="calc-row">
+                            <span>面积 A</span>
+                            <span id="calc-area">1520 mm²</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>形状系数 S</span>
+                            <span id="calc-shape">5.5</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>总橡胶厚 T<sub>r</sub></span>
+                            <span id="calc-total-rubber">20 mm</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>基准水平刚度 K<sub>h0</sub></span>
+                            <span id="calc-kh0">30.4 kN/m</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>竖向刚度 K<sub>v</sub></span>
+                            <span id="calc-kv">548 kN/m</span>
+                        </div>
                     </div>
                 </div>
 
@@ -663,40 +782,65 @@
         const TOTAL_WEIGHT = Object.values(INITIAL_REACTIONS).reduce((a, b) => a + b, 0); // 85.58 kN
 
         // ============================================================
-        // 支座参数设计
+        // 可配置参数系统
         // ============================================================
 
-        // 屈服面压 (临界面压) - 用户定义
-        const YIELD_PRESSURE = 30; // MPa (σ_cr)
+        // 可配置参数 (用户可调)
+        let params = {
+            diameter: 44,       // mm - 支座直径
+            rubberLayerT: 2,    // mm - 橡胶层厚度
+            numLayers: 10,      // 层数
+            shearModulus: 0.4,  // MPa - 剪切模量
+            yieldPressure: 30   // MPa - 屈服面压
+        };
 
-        // 设计面压 - 根据中间支座（最大反力）设计
-        // 中间支座反力约22.7kN，希望面压约15MPa，这样有足够余量
-        const MAX_REACTION = Math.max(...Object.values(INITIAL_REACTIONS)); // 22.77 kN
-        const DESIGN_PRESSURE = 15; // MPa (设计面压，相对于屈服面压有余量)
+        // 计算结果 (基于params计算)
+        let calc = {
+            diameter_m: 0,      // m
+            area: 0,            // m²
+            area_mm2: 0,        // mm²
+            totalRubberT: 0,    // m
+            shapeFactor: 0,
+            Kh0: 0,             // kN/m - 基准水平刚度
+            Kv: 0,              // kN/m - 竖向刚度
+            Ec: 0               // MPa - 压缩模量
+        };
 
-        // 根据最大反力和设计面压计算支座直径
-        const BEARING_AREA = (MAX_REACTION * 1000) / (DESIGN_PRESSURE * 1e6); // m²
-        const BEARING_DIAMETER = Math.sqrt(4 * BEARING_AREA / Math.PI); // m
-        const BEARING_D_MM = BEARING_DIAMETER * 1000; // mm ≈ 44mm
+        // 根据params重新计算所有派生值
+        function recalculateParams() {
+            calc.diameter_m = params.diameter / 1000; // m
+            calc.area = Math.PI * Math.pow(calc.diameter_m / 2, 2); // m²
+            calc.area_mm2 = calc.area * 1e6; // mm²
+            calc.totalRubberT = (params.rubberLayerT * params.numLayers) / 1000; // m
+            calc.shapeFactor = calc.diameter_m / (4 * params.rubberLayerT / 1000);
 
-        // 橡胶支座参数
-        const SHEAR_MODULUS = 0.4; // MPa (G)
-        const RUBBER_LAYER_T = 2; // mm per layer
-        const NUM_LAYERS = 10;
-        const TOTAL_RUBBER_T = (RUBBER_LAYER_T * NUM_LAYERS) / 1000; // m = 0.02m
-        const SHAPE_FACTOR = BEARING_DIAMETER / (4 * RUBBER_LAYER_T / 1000);
+            // 刚度计算
+            calc.Kh0 = params.shearModulus * 1000 * calc.area / calc.totalRubberT; // kN/m
+            calc.Ec = 6 * params.shearModulus * calc.shapeFactor * calc.shapeFactor; // MPa
+            calc.Kv = calc.Ec * 1000 * calc.area / calc.totalRubberT; // kN/m
 
-        // 基准刚度计算
-        const Kh0 = SHEAR_MODULUS * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m (基准水平刚度)
-        const Ec = 6 * SHEAR_MODULUS * SHAPE_FACTOR * SHAPE_FACTOR; // MPa (压缩模量)
-        const Kv = Ec * 1000 * BEARING_AREA / TOTAL_RUBBER_T; // kN/m (竖向刚度)
+            // 更新UI显示
+            updateCalcDisplay();
 
-        console.log('支座参数:');
-        console.log('  直径 D =', BEARING_D_MM.toFixed(1), 'mm');
-        console.log('  面积 A =', (BEARING_AREA * 1e6).toFixed(1), 'mm²');
-        console.log('  基准水平刚度 Kh0 =', Kh0.toFixed(1), 'kN/m');
-        console.log('  竖向刚度 Kv =', Kv.toFixed(1), 'kN/m');
-        console.log('  屈服面压 σ_cr =', YIELD_PRESSURE, 'MPa');
+            console.log('参数更新:');
+            console.log('  直径 D =', params.diameter, 'mm');
+            console.log('  面积 A =', calc.area_mm2.toFixed(1), 'mm²');
+            console.log('  形状系数 S =', calc.shapeFactor.toFixed(2));
+            console.log('  基准水平刚度 Kh0 =', calc.Kh0.toFixed(1), 'kN/m');
+            console.log('  竖向刚度 Kv =', calc.Kv.toFixed(1), 'kN/m');
+        }
+
+        // 更新计算结果显示
+        function updateCalcDisplay() {
+            document.getElementById('calc-area').textContent = calc.area_mm2.toFixed(0) + ' mm²';
+            document.getElementById('calc-shape').textContent = calc.shapeFactor.toFixed(2);
+            document.getElementById('calc-total-rubber').textContent = (calc.totalRubberT * 1000).toFixed(0) + ' mm';
+            document.getElementById('calc-kh0').textContent = calc.Kh0.toFixed(1) + ' kN/m';
+            document.getElementById('calc-kv').textContent = calc.Kv.toFixed(0) + ' kN/m';
+        }
+
+        // 初始化计算
+        recalculateParams();
 
         // ============================================================
         // STATE
@@ -719,8 +863,8 @@
         // 计算有效水平刚度
         // Kh = Kh0 × (1 - (σ/σ_cr)²)
         function calcEffectiveKh(pressure) {
-            const ratio = pressure / YIELD_PRESSURE;
-            return Kh0 * Math.max(0, 1 - ratio * ratio);
+            const ratio = pressure / params.yieldPressure;
+            return calc.Kh0 * Math.max(0, 1 - ratio * ratio);
         }
 
         // 根据支座高差计算反力重分配
@@ -733,7 +877,7 @@
 
             SUPPORT_IDS.forEach(id => {
                 const h = state.heights[id] / 1000; // mm -> m
-                deltaN[id] = Kv * h; // 高度增加 → 反力增加
+                deltaN[id] = calc.Kv * h; // 高度增加 → 反力增加
                 totalDeltaN += deltaN[id];
             });
 
@@ -746,12 +890,12 @@
                 const newN = Math.max(0.1, baseN + adjustedDelta);
 
                 // 计算面压 (MPa)
-                const pressure = (newN * 1000) / (BEARING_AREA * 1e6);
+                const pressure = (newN * 1000) / (calc.area * 1e6);
 
                 // 计算有效水平刚度
                 const Kh = calcEffectiveKh(pressure);
-                const stiffnessRatio = Kh / Kh0;
-                const pressureRatio = pressure / YIELD_PRESSURE;
+                const stiffnessRatio = Kh / calc.Kh0;
+                const pressureRatio = pressure / params.yieldPressure;
 
                 state.supports[id] = {
                     x: SUPPORT_POSITIONS[id].x,
@@ -832,8 +976,21 @@
             const Fy = state.force * Math.sin(angleRad);
 
             // Calculate torsion moment: MT = Fx * ey - Fy * ex (cross product)
-            // Or simplified: MT = F * e * sin(angle between force and eccentricity)
-            const torsionMoment = Math.abs(Fx * cs.ey - Fy * cs.ex);
+            const torsionMoment = Fx * cs.ey - Fy * cs.ex;
+
+            // Calculate displacement: u = F / ΣKh
+            const displacement = cs.totalK > 0 ? state.force / cs.totalK : 0;
+
+            // Calculate torsional stiffness: J = Σ(Kh × r²)
+            let J = 0;
+            SUPPORT_IDS.forEach(id => {
+                const s = state.supports[id];
+                const r2 = s.x * s.x + s.y * s.y;
+                J += s.Kh * r2;
+            });
+
+            // Calculate rotation: φ = MT / J
+            const rotation = J > 0 ? torsionMoment / J : 0;
 
             // Update force and torsion display
             document.getElementById('force-x').textContent = Fx.toFixed(1) + ' kN';
@@ -842,7 +999,11 @@
 
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
-            document.getElementById('bearing-diameter').textContent = BEARING_D_MM.toFixed(0) + ' mm';
+            document.getElementById('bearing-diameter').textContent = params.diameter.toFixed(0) + ' mm';
+
+            // Store for animation
+            state.displacement = displacement;
+            state.rotation = rotation;
 
             draw();
         }
@@ -864,9 +1025,9 @@
         });
 
         // Preset configurations
-        document.querySelectorAll('.preset-btn').forEach(btn => {
+        document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.preset-btn[data-preset]').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
                 const preset = btn.dataset.preset;
@@ -897,6 +1058,24 @@
 
                 updateUI();
             });
+        });
+
+        // Parameter apply button
+        document.getElementById('btn-apply-params').addEventListener('click', () => {
+            // Read values from inputs
+            params.diameter = parseFloat(document.getElementById('param-diameter').value);
+            params.rubberLayerT = parseFloat(document.getElementById('param-rubber-t').value);
+            params.numLayers = parseInt(document.getElementById('param-layers').value);
+            params.shearModulus = parseFloat(document.getElementById('param-shear-g').value);
+            params.yieldPressure = parseFloat(document.getElementById('param-yield-pressure').value);
+
+            // Recalculate derived values
+            recalculateParams();
+
+            // Update all displays
+            updateUI();
+
+            console.log('参数已应用！');
         });
 
         // View tabs
