@@ -1090,142 +1090,116 @@
         }
 
         // ============================================================
-        // 有限元求解器：连续梁 + 弹性支座 + 强迫位移
+        // 刚性板 + 弹性支座模型
         // 
-        // 这是解决超静定结构支座沉降问题的标准方法。
+        // 这是正确的力学模型！
         // 
-        // 模型：两跨连续梁（3节点，每节点2自由度：v和θ）
-        //       每个节点下有弹性支座（刚度Kv）
-        //       支座底部有强迫位移h
+        // 板有3个刚体自由度：
+        //   z0 - 竖向平移
+        //   θx - 绕X轴转角 (Y方向倾斜)
+        //   θy - 绕Y轴转角 (X方向倾斜)
         // 
-        // 方程：[K_beam + K_spring] × {d} = [K_spring] × {h}
-        // 反力：R_i = Kv_i × (h_i - d_i)
+        // 板在支座i处的位移: di = z0 + θx×yi + θy×xi
+        // 支座反力: Ni = Kvi × (di - hi)
+        // 
+        // 平衡方程:
+        //   Σ Ni = W
+        //   Σ Ni×yi = 0
+        //   Σ Ni×xi = 0
+        // 
+        // 整理成矩阵形式 [K]{d} = {F}
         // ============================================================
 
-        // 高斯消元法求解线性方程组
-        function solveLinearSystem(A, b) {
-            const n = A.length;
-            const M = A.map(row => [...row]);
-            const x = [...b];
+        function calculateReactions() {
+            // 组装3x3刚度矩阵
+            // K = Σ Kv × [1, yi, xi; yi, yi², xi×yi; xi, xi×yi, xi²]
+            let K = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+            let F = [0, 0, 0];
 
-            for (let k = 0; k < n; k++) {
-                let maxRow = k;
-                for (let i = k + 1; i < n; i++) {
-                    if (Math.abs(M[i][k]) > Math.abs(M[maxRow][k])) maxRow = i;
-                }
-                [M[k], M[maxRow]] = [M[maxRow], M[k]];
-                [x[k], x[maxRow]] = [x[maxRow], x[k]];
-
-                if (Math.abs(M[k][k]) < 1e-12) continue;
-
-                for (let i = k + 1; i < n; i++) {
-                    const factor = M[i][k] / M[k][k];
-                    x[i] -= factor * x[k];
-                    for (let j = k; j < n; j++) M[i][j] -= factor * M[k][j];
-                }
-            }
-
-            const sol = Array(n).fill(0);
-            for (let i = n - 1; i >= 0; i--) {
-                if (Math.abs(M[i][i]) < 1e-12) continue;
-                let sum = 0;
-                for (let j = i + 1; j < n; j++) sum += M[i][j] * sol[j];
-                sol[i] = (x[i] - sum) / M[i][i];
-            }
-            return sol;
-        }
-
-        // 求解单根两跨梁的反力变化
-        function solveBeamReactions(nodeIds, L, EI) {
-            // 3节点，6自由度: [v0, θ0, v1, θ1, v2, θ2]
-            const n = 6;
-            const K = Array(n).fill(0).map(() => Array(n).fill(0));
-            const F = Array(n).fill(0);
-
-            // 梁单元刚度矩阵 (4x4)
-            const c = EI / (L * L * L);
-            const L2 = L * L;
-            const ke = [
-                [12 * c, 6 * L * c, -12 * c, 6 * L * c],
-                [6 * L * c, 4 * L2 * c, -6 * L * c, 2 * L2 * c],
-                [-12 * c, -6 * L * c, 12 * c, -6 * L * c],
-                [6 * L * c, 2 * L2 * c, -6 * L * c, 4 * L2 * c]
-            ];
-
-            // 组装两个单元到总刚度矩阵
-            // 单元1: 节点0-1 (DOF 0-3)
-            // 单元2: 节点1-2 (DOF 2-5)
-            for (let e = 0; e < 2; e++) {
-                const offset = e * 2;
-                for (let i = 0; i < 4; i++) {
-                    for (let j = 0; j < 4; j++) {
-                        K[offset + i][offset + j] += ke[i][j];
-                    }
-                }
-            }
-
-            // 添加支座弹簧刚度并计算等效荷载
-            const Kv_arr = [];
-            const h_arr = [];
-
-            nodeIds.forEach((id, idx) => {
+            SUPPORT_IDS.forEach(id => {
+                const x = SUPPORT_POSITIONS[id].x;
+                const y = SUPPORT_POSITIONS[id].y;
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
                 const kv = bearingParams.Kv;
                 const h = state.heights[id] / 1000; // mm -> m
 
-                Kv_arr.push(kv);
-                h_arr.push(h);
+                // 刚度矩阵贡献
+                K[0][0] += kv;
+                K[0][1] += kv * y;
+                K[0][2] += kv * x;
+                K[1][0] += kv * y;
+                K[1][1] += kv * y * y;
+                K[1][2] += kv * x * y;
+                K[2][0] += kv * x;
+                K[2][1] += kv * x * y;
+                K[2][2] += kv * x * x;
 
-                // 在v自由度(偶数索引)上添加弹簧刚度
-                K[idx * 2][idx * 2] += kv;
-
-                // 等效荷载 = Kv × h
-                F[idx * 2] = kv * h;
+                // 荷载向量: F = [W + Σ(Kv×h), Σ(Kv×h×y), Σ(Kv×h×x)]
+                F[0] += kv * h;
+                F[1] += kv * h * y;
+                F[2] += kv * h * x;
             });
 
-            // 求解位移
-            const d = solveLinearSystem(K, F);
+            // 加上重力
+            F[0] += TOTAL_WEIGHT;
 
-            // 计算反力变化
-            const results = {};
-            nodeIds.forEach((id, idx) => {
-                const kv = Kv_arr[idx];
-                const h = h_arr[idx];
-                const v = d[idx * 2];
+            // 求解 3x3 线性方程组 (克莱默法则)
+            const detK = K[0][0] * (K[1][1] * K[2][2] - K[1][2] * K[2][1])
+                - K[0][1] * (K[1][0] * K[2][2] - K[1][2] * K[2][0])
+                + K[0][2] * (K[1][0] * K[2][1] - K[1][1] * K[2][0]);
 
-                // 反力变化 = Kv × (h - v)
-                // 物理意义：支座抬高h，梁随之抬高v，支座被多压缩(h-v)
-                results[id] = kv * (h - v);
-            });
+            if (Math.abs(detK) < 1e-10) {
+                console.error('刚度矩阵奇异');
+                return;
+            }
 
-            return results;
-        }
+            // z0
+            const detK1 = F[0] * (K[1][1] * K[2][2] - K[1][2] * K[2][1])
+                - K[0][1] * (F[1] * K[2][2] - K[1][2] * F[2])
+                + K[0][2] * (F[1] * K[2][1] - K[1][1] * F[2]);
+            const z0 = detK1 / detK;
 
-        function calculateReactions() {
-            const L = SPAN_X;
-            const EI = params.EI;
+            // θx
+            const detK2 = K[0][0] * (F[1] * K[2][2] - K[1][2] * F[2])
+                - F[0] * (K[1][0] * K[2][2] - K[1][2] * K[2][0])
+                + K[0][2] * (K[1][0] * F[2] - F[1] * K[2][0]);
+            const theta_x = detK2 / detK;
 
-            // 分别求解两根梁
-            const topResults = solveBeamReactions(['8', '11', '25'], L, EI);
-            const botResults = solveBeamReactions(['4', '16', '30'], L, EI);
+            // θy
+            const detK3 = K[0][0] * (K[1][1] * F[2] - F[1] * K[2][1])
+                - K[0][1] * (K[1][0] * F[2] - F[1] * K[2][0])
+                + F[0] * (K[1][0] * K[2][1] - K[1][1] * K[2][0]);
+            const theta_y = detK3 / detK;
 
-            console.log('FEM求解完成, EI=' + EI + ' kN·m²');
-            console.log('上排反力变化:', Object.entries(topResults).map(([k, v]) => k + ':' + v.toFixed(2)).join(', '));
-            console.log('下排反力变化:', Object.entries(botResults).map(([k, v]) => k + ':' + v.toFixed(2)).join(', '));
+            console.log(`刚性板求解: z0=${(z0 * 1000).toFixed(3)}mm, θx=${(theta_x * 1000).toFixed(3)}mrad, θy=${(theta_y * 1000).toFixed(3)}mrad`);
 
+            // 计算各支座反力
             let totalN = 0;
+            let reactionLog = '反力变化: ';
 
             SUPPORT_IDS.forEach(id => {
-                const baseN = INITIAL_REACTIONS[id];
-                const deltaN = (topResults[id] !== undefined) ? topResults[id] : botResults[id];
-                const newN = Math.max(0.1, baseN + deltaN);
-
-                totalN += newN;
-
                 const x = SUPPORT_POSITIONS[id].x;
                 const y = SUPPORT_POSITIONS[id].y;
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const pressure = Math.max(0, (newN * 1000) / (bearingParams.area * 1e6));
+                const kv = bearingParams.Kv;
+                const h = state.heights[id] / 1000;
+
+                // 板在该点的位移
+                const d = z0 + theta_x * y + theta_y * x;
+
+                // 支座反力 = Kv × (板位移 - 地基位移)
+                const N = kv * (d - h);
+
+                totalN += N;
+
+                const baseN = INITIAL_REACTIONS[id];
+                const deltaN = N - baseN;
+                reactionLog += `${id}:${deltaN >= 0 ? '+' : ''}${deltaN.toFixed(1)} `;
+
+                // 处理提离情况
+                const newN = Math.max(0, N);
+
+                const pressure = (newN * 1000) / (bearingParams.area * 1e6);
                 const Kh = newN > 0 ? calcEffectiveKh(pressure, bearingParams) : 0;
                 const stiffnessRatio = newN > 0 ? Kh / bearingParams.Kh0 : 0;
                 const pressureRatio = pressure / params.yieldPressure;
@@ -1242,17 +1216,12 @@
                     diameter: isEdgeSupport(id) ? params.edgeDiameter : params.midDiameter,
                     pressureRatio: pressureRatio,
                     stiffnessRatio: stiffnessRatio,
-                    isUplift: newN <= 0
+                    isUplift: N <= 0
                 };
             });
 
-            console.log('总反力: ' + totalN.toFixed(2) + ' kN (目标: ' + TOTAL_WEIGHT.toFixed(2) + ' kN)');
-
-            let reactionLog = '各支座反力: ';
-            SUPPORT_IDS.forEach(id => {
-                reactionLog += id + '=' + state.supports[id].N.toFixed(1) + 'kN ';
-            });
             console.log(reactionLog);
+            console.log(`总反力: ${totalN.toFixed(2)} kN (目标: ${TOTAL_WEIGHT.toFixed(2)} kN)`);
         }
 
         // 计算刚度中心
