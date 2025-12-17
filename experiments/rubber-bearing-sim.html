@@ -653,8 +653,8 @@
                     <h3>预设配置</h3>
                     <div class="preset-btns">
                         <div class="preset-btn active" data-preset="level">水平</div>
+                        <div class="preset-btn" data-preset="mid-settle">中间沉降</div>
                         <div class="preset-btn" data-preset="tilt-x">X向倾斜</div>
-                        <div class="preset-btn" data-preset="tilt-y">Y向倾斜</div>
                         <div class="preset-btn" data-preset="twist">扭转</div>
                     </div>
                 </div>
@@ -1533,6 +1533,11 @@
                     case 'tilt-y':
                         // Y向倾斜：上侧高
                         state.heights = { '8': 3, '11': 3, '25': 3, '4': -3, '16': -3, '30': -3 };
+                        break;
+                    case 'mid-settle':
+                        // 中间沉降：中间支座下沉3mm，两边不动
+                        // 这会强迫梁弯曲，产生明显的反力变化
+                        state.heights = { '8': 0, '11': -3, '25': 0, '4': 0, '16': -3, '30': 0 };
                         break;
                     case 'twist':
                         // 扭转：对角高
