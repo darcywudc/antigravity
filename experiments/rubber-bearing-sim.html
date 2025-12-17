@@ -573,813 +573,873 @@
                         </div>
                         <div class="param-item">
                             <label>上部结构EI (kN·m²)</label>
-                            <input type="number" id="param-ei" value="5000" min="100" max="100000" step="100">
+                            <input type="number" id="param-ei" value="1000" step="100">
+                            <span class="unit">kN·m²</span>
                         </div>
+                        <button class="btn btn-small btn-secondary" id="btn-apply-params"
+                            style="margin-top: 8px; width: 100%;">应用参数</button>
                     </div>
-                    <button class="btn btn-small btn-secondary" id="btn-apply-params"
-                        style="margin-top: 8px; width: 100%;">应用参数</button>
-                </div>
 
-                <!-- Calculated Values (Read-only) -->
-                <div class="section">
-                    <h3>📊 计算结果</h3>
-                    <div class="calc-results">
-                        <div class="calc-row">
-                            <span>边缘支座 Kh0</span>
-                            <span id="calc-kh0-edge">30 kN/m</span>
+                    <!-- Calculated Values (Read-only) -->
+                    <div class="section">
+                        <h3>📊 计算结果</h3>
+                        <div class="calc-results">
+                            <div class="calc-row">
+                                <span>边缘支座 Kh0</span>
+                                <span id="calc-kh0-edge">30 kN/m</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>中间支座 Kh0</span>
+                                <span id="calc-kh0-mid">45 kN/m</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>边缘支座 Kv</span>
+                                <span id="calc-kv-edge">500 kN/m</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>中间支座 Kv</span>
+                                <span id="calc-kv-mid">800 kN/m</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>反力重分配系数 α</span>
+                                <span id="calc-alpha">0.85</span>
+                            </div>
                         </div>
-                        <div class="calc-row">
-                            <span>中间支座 Kh0</span>
-                            <span id="calc-kh0-mid">45 kN/m</span>
-                        </div>
-                        <div class="calc-row">
-                            <span>边缘支座 Kv</span>
-                            <span id="calc-kv-edge">500 kN/m</span>
-                        </div>
-                        <div class="calc-row">
-                            <span>中间支座 Kv</span>
-                            <span id="calc-kv-mid">800 kN/m</span>
-                        </div>
-                        <div class="calc-row">
-                            <span>反力重分配系数 α</span>
-                            <span id="calc-alpha">0.85</span>
+                        <div class="info-text" style="margin-top: 8px; font-size: 0.6rem;">
+                            ΔN = Kv × Δh × α<br>
+                            α = 1 / (1 + Kv×L³/(3×EI))
                         </div>
                     </div>
-                    <div class="info-text" style="margin-top: 8px; font-size: 0.6rem;">
-                        ΔN = Kv × Δh × α<br>
-                        α = 1 / (1 + Kv×L³/(3×EI))
-                    </div>
-                </div>
 
-                <!-- Support Heights -->
-                <div class="section">
-                    <h3>支座高度调节 (mm)</h3>
-                    <div class="height-controls">
-                        <div class="height-control">
-                            <div class="height-control-label">支座 8</div>
-                            <div class="height-control-value" id="h8-value">0</div>
-                            <input type="range" class="height-slider" id="h8" min="-10" max="10" value="0" step="0.5">
-                        </div>
-                        <div class="height-control">
-                            <div class="height-control-label">支座 11</div>
-                            <div class="height-control-value" id="h11-value">0</div>
-                            <input type="range" class="height-slider" id="h11" min="-10" max="10" value="0" step="0.5">
-                        </div>
-                        <div class="height-control">
-                            <div class="height-control-label">支座 25</div>
-                            <div class="height-control-value" id="h25-value">0</div>
-                            <input type="range" class="height-slider" id="h25" min="-10" max="10" value="0" step="0.5">
-                        </div>
-                        <div class="height-control">
-                            <div class="height-control-label">支座 4</div>
-                            <div class="height-control-value" id="h4-value">0</div>
-                            <input type="range" class="height-slider" id="h4" min="-10" max="10" value="0" step="0.5">
-                        </div>
-                        <div class="height-control">
-                            <div class="height-control-label">支座 16</div>
-                            <div class="height-control-value" id="h16-value">0</div>
-                            <input type="range" class="height-slider" id="h16" min="-10" max="10" value="0" step="0.5">
-                        </div>
-                        <div class="height-control">
-                            <div class="height-control-label">支座 30</div>
-                            <div class="height-control-value" id="h30-value">0</div>
-                            <input type="range" class="height-slider" id="h30" min="-10" max="10" value="0" step="0.5">
+                    <!-- Support Heights -->
+                    <div class="section">
+                        <h3>支座高度调节 (mm)</h3>
+                        <div class="height-controls">
+                            <div class="height-control">
+                                <div class="height-control-label">支座 8</div>
+                                <div class="height-control-value" id="h8-value">0</div>
+                                <input type="range" class="height-slider" id="h8" min="-10" max="10" value="0"
+                                    step="0.5">
+                            </div>
+                            <div class="height-control">
+                                <div class="height-control-label">支座 11</div>
+                                <div class="height-control-value" id="h11-value">0</div>
+                                <input type="range" class="height-slider" id="h11" min="-10" max="10" value="0"
+                                    step="0.5">
+                            </div>
+                            <div class="height-control">
+                                <div class="height-control-label">支座 25</div>
+                                <div class="height-control-value" id="h25-value">0</div>
+                                <input type="range" class="height-slider" id="h25" min="-10" max="10" value="0"
+                                    step="0.5">
+                            </div>
+                            <div class="height-control">
+                                <div class="height-control-label">支座 4</div>
+                                <div class="height-control-value" id="h4-value">0</div>
+                                <input type="range" class="height-slider" id="h4" min="-10" max="10" value="0"
+                                    step="0.5">
+                            </div>
+                            <div class="height-control">
+                                <div class="height-control-label">支座 16</div>
+                                <div class="height-control-value" id="h16-value">0</div>
+                                <input type="range" class="height-slider" id="h16" min="-10" max="10" value="0"
+                                    step="0.5">
+                            </div>
+                            <div class="height-control">
+                                <div class="height-control-label">支座 30</div>
+                                <div class="height-control-value" id="h30-value">0</div>
+                                <input type="range" class="height-slider" id="h30" min="-10" max="10" value="0"
+                                    step="0.5">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Preset Configurations -->
-                <div class="section">
-                    <h3>预设配置</h3>
-                    <div class="preset-btns">
-                        <div class="preset-btn active" data-preset="level">水平</div>
-                        <div class="preset-btn" data-preset="tilt-x">X向倾斜</div>
-                        <div class="preset-btn" data-preset="tilt-y">Y向倾斜</div>
-                        <div class="preset-btn" data-preset="twist">扭转</div>
+                    <!-- Preset Configurations -->
+                    <div class="section">
+                        <h3>预设配置</h3>
+                        <div class="preset-btns">
+                            <div class="preset-btn active" data-preset="level">水平</div>
+                            <div class="preset-btn" data-preset="tilt-x">X向倾斜</div>
+                            <div class="preset-btn" data-preset="tilt-y">Y向倾斜</div>
+                            <div class="preset-btn" data-preset="twist">扭转</div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Support Info -->
-                <div class="section">
-                    <h3>支座状态 (反力/面压/刚度)</h3>
-                    <div class="support-info-grid" id="support-info-grid">
-                        <!-- Generated by JS -->
+                    <!-- Support Info -->
+                    <div class="section">
+                        <h3>支座状态 (反力/面压/刚度)</h3>
+                        <div class="support-info-grid" id="support-info-grid">
+                            <!-- Generated by JS -->
+                        </div>
                     </div>
-                </div>
 
-                <!-- Summary Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">总重 W</div>
-                        <div class="stat-value" id="total-weight" style="color: #ffa502;">85.58 kN</div>
+                    <!-- Summary Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">总重 W</div>
+                            <div class="stat-value" id="total-weight" style="color: #ffa502;">85.58 kN</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">边缘/中间直径</div>
+                            <div class="stat-value" id="bearing-diameter" style="color: #2ed573;">44/55 mm</div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">边缘/中间直径</div>
-                        <div class="stat-value" id="bearing-diameter" style="color: #2ed573;">44/55 mm</div>
-                    </div>
-                </div>
 
-                <!-- Eccentricity Display -->
-                <div class="eccentricity-display">
-                    <div class="ecc-title">刚度中心偏移 e = C<sub>S</sub> - C<sub>M</sub></div>
-                    <div class="ecc-values">
-                        <div class="ecc-item">
-                            <div class="ecc-label">e<sub>x</sub></div>
-                            <div class="ecc-value" id="ecc-x">0.000 m</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">e<sub>y</sub></div>
-                            <div class="ecc-value" id="ecc-y">0.000 m</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">|e|</div>
-                            <div class="ecc-value" id="ecc-mag">0.000 m</div>
+                    <!-- Eccentricity Display -->
+                    <div class="eccentricity-display">
+                        <div class="ecc-title">刚度中心偏移 e = C<sub>S</sub> - C<sub>M</sub></div>
+                        <div class="ecc-values">
+                            <div class="ecc-item">
+                                <div class="ecc-label">e<sub>x</sub></div>
+                                <div class="ecc-value" id="ecc-x">0.000 m</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">e<sub>y</sub></div>
+                                <div class="ecc-value" id="ecc-y">0.000 m</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">|e|</div>
+                                <div class="ecc-value" id="ecc-mag">0.000 m</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Seismic Design Parameters -->
-                <div class="section">
-                    <h3>🌊 地震输入参数</h3>
-                    <div class="slider-group">
-                        <div class="slider-label">
-                            <span>PGA 峰值加速度 (g)</span>
-                            <span class="slider-value" id="pga-value">0.4</span>
+                    <!-- Seismic Design Parameters -->
+                    <div class="section">
+                        <h3>🌊 地震输入参数</h3>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>PGA 峰值加速度 (g)</span>
+                                <span class="slider-value" id="pga-value">0.4</span>
+                            </div>
+                            <input type="range" id="pga-slider" min="0.05" max="0.6" value="0.2" step="0.05">
                         </div>
-                        <input type="range" id="pga-slider" min="0.05" max="0.6" value="0.2" step="0.05">
-                    </div>
-                    <div class="slider-group">
-                        <div class="slider-label">
-                            <span>阻尼比 ξ</span>
-                            <span class="slider-value" id="damping-value">0.10</span>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>阻尼比 ξ</span>
+                                <span class="slider-value" id="damping-value">0.10</span>
+                            </div>
+                            <input type="range" id="damping-slider" min="0.05" max="0.20" value="0.10" step="0.01">
                         </div>
-                        <input type="range" id="damping-slider" min="0.05" max="0.20" value="0.10" step="0.01">
-                    </div>
-                    <div class="slider-group">
-                        <div class="slider-label">
-                            <span>隔震沟宽度 (mm)</span>
-                            <span class="slider-value" id="gap-value">100</span>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>隔震沟宽度 (mm)</span>
+                                <span class="slider-value" id="gap-value">100</span>
+                            </div>
+                            <input type="range" id="gap-slider" min="30" max="200" value="100" step="10">
                         </div>
-                        <input type="range" id="gap-slider" min="30" max="200" value="100" step="10">
                     </div>
-                </div>
 
-                <!-- Spectral Displacement (Static Calculation) -->
-                <div class="eccentricity-display"
-                    style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3);">
-                    <div class="ecc-title" style="color: #00d4ff;">📐 位移需求 (反应谱法)</div>
-                    <div class="ecc-values">
-                        <div class="ecc-item">
-                            <div class="ecc-label">质心 Sd</div>
-                            <div class="ecc-value" id="spectral-disp" style="color: #2ed573;">0 mm</div>
+                    <!-- Spectral Displacement (Static Calculation) -->
+                    <div class="eccentricity-display"
+                        style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3);">
+                        <div class="ecc-title" style="color: #00d4ff;">📐 位移需求 (反应谱法)</div>
+                        <div class="ecc-values">
+                            <div class="ecc-item">
+                                <div class="ecc-label">质心 Sd</div>
+                                <div class="ecc-value" id="spectral-disp" style="color: #2ed573;">0 mm</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">角最大</div>
+                                <div class="ecc-value" id="corner-max-disp" style="color: #ffa502;">0 mm</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">限值</div>
+                                <div class="ecc-value" id="gap-limit" style="color: #888;">50 mm</div>
+                            </div>
                         </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">角最大</div>
-                            <div class="ecc-value" id="corner-max-disp" style="color: #ffa502;">0 mm</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">限值</div>
-                            <div class="ecc-value" id="gap-limit" style="color: #888;">50 mm</div>
+                        <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                            Sd = Sa(T,ξ) × (T/2π)² (反应谱位移)
                         </div>
                     </div>
-                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
-                        Sd = Sa(T,ξ) × (T/2π)² (反应谱位移)
-                    </div>
-                </div>
 
-                <!-- Shear Strain Limit Check -->
-                <div class="eccentricity-display"
-                    style="background: rgba(255, 165, 2, 0.1); border-color: rgba(255, 165, 2, 0.3);">
-                    <div class="ecc-title" style="color: #ffa502;">📏 剪应变检查</div>
-                    <div class="ecc-values">
-                        <div class="ecc-item">
-                            <div class="ecc-label">γ<sub>cm</sub></div>
-                            <div class="ecc-value" id="strain-cm" style="color: #2ed573;">0%</div>
+                    <!-- Shear Strain Limit Check -->
+                    <div class="eccentricity-display"
+                        style="background: rgba(255, 165, 2, 0.1); border-color: rgba(255, 165, 2, 0.3);">
+                        <div class="ecc-title" style="color: #ffa502;">📏 剪应变检查</div>
+                        <div class="ecc-values">
+                            <div class="ecc-item">
+                                <div class="ecc-label">γ<sub>cm</sub></div>
+                                <div class="ecc-value" id="strain-cm" style="color: #2ed573;">0%</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">γ<sub>角</sub></div>
+                                <div class="ecc-value" id="strain-corner" style="color: #ffa502;">0%</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">限值</div>
+                                <div class="ecc-value" style="color: #888;">200%</div>
+                            </div>
                         </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">γ<sub>角</sub></div>
-                            <div class="ecc-value" id="strain-corner" style="color: #ffa502;">0%</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">限值</div>
-                            <div class="ecc-value" style="color: #888;">200%</div>
+                        <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                            γ = 位移 / 橡胶总厚度 (Tr=20mm)
                         </div>
                     </div>
-                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
-                        γ = 位移 / 橡胶总厚度 (Tr=20mm)
-                    </div>
-                </div>
 
-                <!-- System Properties -->
-                <div class="eccentricity-display"
-                    style="background: rgba(46, 213, 115, 0.1); border-color: rgba(46, 213, 115, 0.3);">
-                    <div class="ecc-title" style="color: #2ed573;">📊 系统周期</div>
-                    <div class="ecc-values">
-                        <div class="ecc-item">
-                            <div class="ecc-label">T<sub>x</sub> (平动)</div>
-                            <div class="ecc-value" id="period" style="color: #2ed573;">1.0 s</div>
+                    <!-- System Properties -->
+                    <div class="eccentricity-display"
+                        style="background: rgba(46, 213, 115, 0.1); border-color: rgba(46, 213, 115, 0.3);">
+                        <div class="ecc-title" style="color: #2ed573;">📊 系统周期</div>
+                        <div class="ecc-values">
+                            <div class="ecc-item">
+                                <div class="ecc-label">T<sub>x</sub> (平动)</div>
+                                <div class="ecc-value" id="period" style="color: #2ed573;">1.0 s</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">T<sub>θ</sub> (扭转)</div>
+                                <div class="ecc-value" id="period-torsion" style="color: #f472b6;">1.0 s</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">T<sub>θ</sub>/T<sub>x</sub></div>
+                                <div class="ecc-value" id="period-ratio" style="color: #ffa502;">1.00</div>
+                            </div>
                         </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">T<sub>θ</sub> (扭转)</div>
-                            <div class="ecc-value" id="period-torsion" style="color: #f472b6;">1.0 s</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">T<sub>θ</sub>/T<sub>x</sub></div>
-                            <div class="ecc-value" id="period-ratio" style="color: #ffa502;">1.00</div>
+                        <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                            Tθ/Tx: 扭转周期与平动周期之比<br>
+                            &lt;0.9 → 扭转响应可能被放大
                         </div>
                     </div>
-                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
-                        Tθ/Tx: 扭转周期与平动周期之比<br>
-                        &lt;0.9 → 扭转响应可能被放大
-                    </div>
-                </div>
 
-                <!-- Max Response -->
-                <div class="eccentricity-display"
-                    style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.2);">
-                    <div class="ecc-title" style="color: #ff6b6b;">📈 位移响应</div>
-                    <div class="ecc-values">
-                        <div class="ecc-item">
-                            <div class="ecc-label">质心 u<sub>cm</sub></div>
-                            <div class="ecc-value" id="max-disp" style="color: #2ed573;">0 mm</div>
+                    <!-- Max Response -->
+                    <div class="eccentricity-display"
+                        style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.2);">
+                        <div class="ecc-title" style="color: #ff6b6b;">📈 位移响应</div>
+                        <div class="ecc-values">
+                            <div class="ecc-item">
+                                <div class="ecc-label">质心 u<sub>cm</sub></div>
+                                <div class="ecc-value" id="max-disp" style="color: #2ed573;">0 mm</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">边缘 u<sub>edge</sub></div>
+                                <div class="ecc-value" id="max-edge-disp" style="color: #ff6b6b;">0 mm</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">放大系数</div>
+                                <div class="ecc-value" id="torsion-amplify" style="color: #ffa502;">1.00</div>
+                            </div>
                         </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">边缘 u<sub>edge</sub></div>
-                            <div class="ecc-value" id="max-edge-disp" style="color: #ff6b6b;">0 mm</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">放大系数</div>
-                            <div class="ecc-value" id="torsion-amplify" style="color: #ffa502;">1.00</div>
+                        <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                            u<sub>edge</sub> = u<sub>cm</sub> + θ × r (偏心越大放大越多)
                         </div>
                     </div>
-                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
-                        u<sub>edge</sub> = u<sub>cm</sub> + θ × r (偏心越大放大越多)
-                    </div>
-                </div>
 
-                <!-- Torsion Result -->
-                <div class="eccentricity-display"
-                    style="background: rgba(244, 114, 182, 0.1); border-color: rgba(244, 114, 182, 0.3);">
-                    <div class="ecc-title" style="color: #f472b6;">⚠️ 扭转效应</div>
-                    <div class="ecc-values">
-                        <div class="ecc-item">
-                            <div class="ecc-label">偏心 |e|</div>
-                            <div class="ecc-value" id="ecc-disp" style="color: #ffa502;">0 mm</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">扭转角 φ</div>
-                            <div class="ecc-value" id="rotation-angle" style="color: #f472b6;">0.00°</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">M<sub>T</sub></div>
-                            <div class="ecc-value" id="torsion-moment" style="color: #ff6b6b;">0 kN·m</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Torsion Hazard -->
-                <div class="eccentricity-display"
-                    style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3);">
-                    <div class="ecc-title" style="color: #ff6b6b;">🚨 扭转危害</div>
-                    <div class="ecc-values">
-                        <div class="ecc-item">
-                            <div class="ecc-label">角8位移</div>
-                            <div class="ecc-value" id="corner-8-disp" style="color: #2ed573;">0 mm</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">角30位移</div>
-                            <div class="ecc-value" id="corner-30-disp" style="color: #ff6b6b;">0 mm</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">甩尾比</div>
-                            <div class="ecc-value" id="whip-ratio" style="color: #ffa502;">1.00</div>
+                    <!-- Torsion Result -->
+                    <div class="eccentricity-display"
+                        style="background: rgba(244, 114, 182, 0.1); border-color: rgba(244, 114, 182, 0.3);">
+                        <div class="ecc-title" style="color: #f472b6;">⚠️ 扭转效应</div>
+                        <div class="ecc-values">
+                            <div class="ecc-item">
+                                <div class="ecc-label">偏心 |e|</div>
+                                <div class="ecc-value" id="ecc-disp" style="color: #ffa502;">0 mm</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">扭转角 φ</div>
+                                <div class="ecc-value" id="rotation-angle" style="color: #f472b6;">0.00°</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">M<sub>T</sub></div>
+                                <div class="ecc-value" id="torsion-moment" style="color: #ff6b6b;">0 kN·m</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
-                        甩尾比 = 角30/角8 (扭转导致一侧位移更大)
+
+                    <!-- Torsion Hazard -->
+                    <div class="eccentricity-display"
+                        style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3);">
+                        <div class="ecc-title" style="color: #ff6b6b;">🚨 扭转危害</div>
+                        <div class="ecc-values">
+                            <div class="ecc-item">
+                                <div class="ecc-label">角8位移</div>
+                                <div class="ecc-value" id="corner-8-disp" style="color: #2ed573;">0 mm</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">角30位移</div>
+                                <div class="ecc-value" id="corner-30-disp" style="color: #ff6b6b;">0 mm</div>
+                            </div>
+                            <div class="ecc-item">
+                                <div class="ecc-label">甩尾比</div>
+                                <div class="ecc-value" id="whip-ratio" style="color: #ffa502;">1.00</div>
+                            </div>
+                        </div>
+                        <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                            甩尾比 = 角30/角8 (扭转导致一侧位移更大)
+                        </div>
                     </div>
-                </div>
 
-                <!-- Animation for Visualization -->
-                <div class="btn-group">
-                    <button class="btn btn-primary" id="btn-animate">▶ 动画演示</button>
-                    <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
-                </div>
+                    <!-- Animation for Visualization -->
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btn-animate">▶ 动画演示</button>
+                        <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
+                    </div>
 
-                <!-- Info -->
-                <div class="info-text">
-                    <strong>📋 操作说明：</strong><br>
-                    1. 调节支座高度 → 刚度中心偏移 → 产生偏心<br>
-                    2. 点击"动画演示" → 观察轨迹<br>
-                    3. 轨迹图显示: 质心 + 角支座<br>
-                    <br>
-                    <strong>⚠️ 位移限值：</strong><br>
-                    • 隔震沟: 避免碰撞<br>
-                    • 支座剪应变: ≤200%
+                    <!-- Info -->
+                    <div class="info-text">
+                        <strong>📋 操作说明：</strong><br>
+                        1. 调节支座高度 → 刚度中心偏移 → 产生偏心<br>
+                        2. 点击"动画演示" → 观察轨迹<br>
+                        3. 轨迹图显示: 质心 + 角支座<br>
+                        <br>
+                        <strong>⚠️ 位移限值：</strong><br>
+                        • 隔震沟: 避免碰撞<br>
+                        • 支座剪应变: ≤200%
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        // ============================================================
-        // CANVAS SETUP
-        // ============================================================
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        <script>
+            // ============================================================
+            // CANVAS SETUP
+            // ============================================================
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth - 30;
-            canvas.height = 450;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', () => { resizeCanvas(); draw(); });
-
-        // ============================================================
-        // MODEL PARAMETERS - 振动台缩尺模型
-        // ============================================================
-
-        // 建筑布局: 2行 × 3列，两跨
-        //    8 -------- 11 -------- 25
-        //    |    跨1   |    跨2    |
-        //    4 -------- 16 -------- 30
-
-        const SPAN_X = 0.6; // m (每跨X方向长度)
-        const SPAN_Y = 0.4; // m (Y方向宽度)
-        const TOTAL_LENGTH = SPAN_X * 2; // 1.2m
-        const TOTAL_WIDTH = SPAN_Y; // 0.4m
-
-        // 支座初始反力 (kN) - 来自表格数据
-        const INITIAL_REACTIONS = {
-            '8': 10.0075,   // 左上
-            '11': 22.7747,  // 中上
-            '25': 10.0053,  // 右上
-            '4': 10.0727,   // 左下
-            '16': 22.6419,  // 中下
-            '30': 10.0744   // 右下
-        };
-
-        // 支座位置 (以质心为原点)
-        const SUPPORT_POSITIONS = {
-            '8': { x: -SPAN_X, y: SPAN_Y / 2 },
-            '11': { x: 0, y: SPAN_Y / 2 },
-            '25': { x: SPAN_X, y: SPAN_Y / 2 },
-            '4': { x: -SPAN_X, y: -SPAN_Y / 2 },
-            '16': { x: 0, y: -SPAN_Y / 2 },
-            '30': { x: SPAN_X, y: -SPAN_Y / 2 }
-        };
-
-        const SUPPORT_IDS = ['8', '11', '25', '4', '16', '30'];
-        const TOTAL_WEIGHT = Object.values(INITIAL_REACTIONS).reduce((a, b) => a + b, 0); // 85.58 kN
-
-        // ============================================================
-        // 可配置参数系统 - 支持边缘支座和中间支座分别配置
-        // ============================================================
-
-        // 可配置参数 (用户可调)
-        let params = {
-            // 边缘支座 (4, 8, 25, 30)
-            edgeDiameter: 44,       // mm
-            edgeLayers: 10,         // 层数
-            // 中间支座 (11, 16)
-            midDiameter: 55,        // mm
-            midLayers: 10,          // 层数
-            // 共用材料参数
-            rubberLayerT: 2,        // mm - 橡胶层厚度
-            shearModulus: 0.4,      // MPa - 剪切模量
-            yieldPressure: 30,      // MPa - 屈服面压
-            // 上部结构参数
-            EI: 5000                // kN·m² - 弯曲刚度
-        };
-
-        // 边缘支座 IDs
-        const EDGE_IDS = ['4', '8', '25', '30'];
-        // 中间支座 IDs
-        const MID_IDS = ['11', '16'];
-
-        // 计算结果 (基于params计算)
-        let calc = {
-            // 边缘支座参数
-            edge: {
-                diameter_m: 0,
-                area: 0,
-                area_mm2: 0,
-                totalRubberT: 0,
-                shapeFactor: 0,
-                Kh0: 0,
-                Kv: 0
-            },
-            // 中间支座参数
-            mid: {
-                diameter_m: 0,
-                area: 0,
-                area_mm2: 0,
-                totalRubberT: 0,
-                shapeFactor: 0,
-                Kh0: 0,
-                Kv: 0
-            },
-            // 反力重分配系数
-            alpha: 0
-        };
-
-        // 计算单个支座组的参数
-        function calcBearingParams(diameter_mm, numLayers) {
-            const diameter_m = diameter_mm / 1000;
-            const area = Math.PI * Math.pow(diameter_m / 2, 2);
-            const totalRubberT = (params.rubberLayerT * numLayers) / 1000;
-            const shapeFactor = diameter_m / (4 * params.rubberLayerT / 1000);
-
-            const Kh0 = params.shearModulus * 1000 * area / totalRubberT;
-            const Ec = 6 * params.shearModulus * shapeFactor * shapeFactor;
-            const Kv = Ec * 1000 * area / totalRubberT;
-
-            return {
-                diameter_m,
-                area,
-                area_mm2: area * 1e6,
-                totalRubberT,
-                shapeFactor,
-                Kh0,
-                Kv
-            };
-        }
-
-        // 根据params重新计算所有派生值
-        function recalculateParams() {
-            // 计算边缘支座参数
-            calc.edge = calcBearingParams(params.edgeDiameter, params.edgeLayers);
-            // 计算中间支座参数
-            calc.mid = calcBearingParams(params.midDiameter, params.midLayers);
-
-            // 计算反力重分配系数 α = 1 / (1 + Kv × L³ / (3 × EI))
-            // 使用平均Kv和跨度L = 0.6m
-            const avgKv = (calc.edge.Kv * 4 + calc.mid.Kv * 2) / 6;
-            const L = SPAN_X; // 0.6m
-            calc.alpha = 1 / (1 + avgKv * Math.pow(L, 3) / (3 * params.EI));
-
-            // 更新UI显示
-            updateCalcDisplay();
-
-            console.log('参数更新:');
-            console.log('  边缘支座: D=' + params.edgeDiameter + 'mm, Kh0=' + calc.edge.Kh0.toFixed(1) + ' kN/m, Kv=' + calc.edge.Kv.toFixed(0) + ' kN/m');
-            console.log('  中间支座: D=' + params.midDiameter + 'mm, Kh0=' + calc.mid.Kh0.toFixed(1) + ' kN/m, Kv=' + calc.mid.Kv.toFixed(0) + ' kN/m');
-            console.log('  上部结构 EI=' + params.EI + ' kN·m², α=' + calc.alpha.toFixed(3));
-        }
-
-        // 更新计算结果显示
-        function updateCalcDisplay() {
-            document.getElementById('calc-kh0-edge').textContent = calc.edge.Kh0.toFixed(1) + ' kN/m';
-            document.getElementById('calc-kh0-mid').textContent = calc.mid.Kh0.toFixed(1) + ' kN/m';
-            document.getElementById('calc-kv-edge').textContent = calc.edge.Kv.toFixed(0) + ' kN/m';
-            document.getElementById('calc-kv-mid').textContent = calc.mid.Kv.toFixed(0) + ' kN/m';
-            document.getElementById('calc-alpha').textContent = calc.alpha.toFixed(3);
-        }
-
-        // 初始化计算
-        recalculateParams();
-
-        // ============================================================
-        // STATE
-        // ============================================================
-        let state = {
-            view: 'plan',
-            heights: { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 }, // mm
-            supports: {},
-            // 地震输入参数
-            pga: 0.2,               // 峰值加速度 (g) - 默认0.2g较合理
-            damping: 0.10,          // 阻尼比
-            gapWidth: 100,          // 隔震沟宽度 (mm)
-            // 系统参数（计算得到）
-            totalKh: 0,             // 总水平刚度 (kN/m)
-            mass: TOTAL_WEIGHT / 9.81,  // 质量 (t)
-            period: 0,              // 平动周期 (s)
-            periodTorsion: 0,       // 扭转周期 (s)
-            omega: 0,               // 圆频率 (rad/s)
-            J: 0,                   // 扭转刚度
-            cs: null,               // 刚度中心
-            rMax: 0,                // 最远支座到中心的距离
-            // 反应谱计算结果（静态）
-            spectralDisp: 0,        // 反应谱位移 - 质心 (m)
-            cornerMaxDisp: 0,       // 角最大位移 (m)
-            torsionAmplify: 1.0,    // 扭转放大系数
-            // 动画状态 (保留用于可视化)
-            buildingDisp: { x: 0, y: 0, rot: 0 },
-            isAnimating: false,
-            animTime: 0,
-            trajectory: [],           // 质心轨迹
-            corner8Trajectory: [],    // 角8轨迹
-            corner30Trajectory: [],   // 角30轨迹
-            maxTrajectoryPoints: 500
-        };
-
-        // ============================================================
-        // CALCULATIONS
-        // ============================================================
-
-        // 获取支座属于哪一组
-        function isEdgeSupport(id) {
-            return EDGE_IDS.includes(id);
-        }
-
-        // 计算有效水平刚度
-        // Kh = Kh0 × (1 - (σ/σ_cr)²)
-        function calcEffectiveKh(pressure, bearingParams) {
-            const ratio = pressure / params.yieldPressure;
-            return bearingParams.Kh0 * Math.max(0.1, 1 - ratio * ratio);
-        }
-
-        // ============================================================
-        // 核心力学求解器：直接刚度法 (Direct Stiffness Method)
-        // 
-        // 这是一个微型的有限元求解器(FEM)，专门解决"连续梁+弹性支座+强迫沉降"问题。
-        // 这才是解决超静定结构协调变形的唯一正确途径。
-        // ============================================================
-
-        // 简单的矩阵运算工具
-        const Matrix = {
-            // 创建 n x m 零矩阵
-            zeros: (n, m) => Array(n).fill(0).map(() => Array(m).fill(0)),
-
-            // 矩阵乘向量
-            multiplyVector: (A, v) => {
-                const n = A.length;
-                const m = A[0].length;
-                const res = Array(n).fill(0);
-                for (let i = 0; i < n; i++) {
-                    for (let j = 0; j < m; j++) {
-                        res[i] += A[i][j] * v[j];
-                    }
-                }
-                return res;
-            },
-
-            // 高斯消元法求解线性方程组 Ax = b
-            solve: (A, b) => {
-                const n = A.length;
-                // 深拷贝以防修改原矩阵
-                const M = A.map(row => [...row]);
-                const x = [...b];
-
-                // 前向消元
-                for (let k = 0; k < n; k++) {
-                    // 选主元
-                    let maxRow = k;
-                    for (let i = k + 1; i < n; i++) {
-                        if (Math.abs(M[i][k]) > Math.abs(M[maxRow][k])) maxRow = i;
-                    }
-
-                    // 交换行
-                    [M[k], M[maxRow]] = [M[maxRow], M[k]];
-                    [x[k], x[maxRow]] = [x[maxRow], x[k]];
-
-                    // 消元
-                    for (let i = k + 1; i < n; i++) {
-                        const factor = M[i][k] / M[k][k];
-                        x[i] -= factor * x[k];
-                        for (let j = k; j < n; j++) M[i][j] -= factor * M[k][j];
-                    }
-                }
-
-                // 回代
-                const sol = Array(n).fill(0);
-                for (let i = n - 1; i >= 0; i--) {
-                    let sum = 0;
-                    for (let j = i + 1; j < n; j++) sum += M[i][j] * sol[j];
-                    sol[i] = (x[i] - sum) / M[i][i];
-                }
-
-                return sol;
+            function resizeCanvas() {
+                canvas.width = canvas.parentElement.clientWidth - 30;
+                canvas.height = 450;
             }
-        };
+            resizeCanvas();
+            window.addEventListener('resize', () => { resizeCanvas(); draw(); });
 
-        // 求解连续梁系统
-        // nodes: 支座ID列表 ['8', '11', '25']
-        // L: 跨度 (m)
-        // EI: 弯曲刚度 (kN·m²)
-        function solveContinuousBeam(nodeIds, L, EI) {
-            // 节点数 n=3. 自由度 per node = 2 (v, theta). 总自由度 dof = 6.
-            // DOFs: [v1, θ1, v2, θ2, v3, θ3]
-            const nNodes = nodeIds.length;
-            const dof = nNodes * 2;
-            const K_global = Matrix.zeros(dof, dof);
-            const F_load = Array(dof).fill(0);
+            // ============================================================
+            // MODEL PARAMETERS - 振动台缩尺模型
+            // ============================================================
 
-            // 1. 组装梁单元刚度矩阵
-            // 单元刚度矩阵 (4x4)
-            // |  12   6L  -12   6L |
-            // |  6L  4L^2 -6L  2L^2| * EI/L^3
-            // | -12  -6L   12  -6L |
-            // |  6L  2L^2 -6L  4L^2|
+            // 建筑布局: 2行 × 3列，两跨
+            //    8 -------- 11 -------- 25
+            //    |    跨1   |    跨2    |
+            //    4 -------- 16 -------- 30
 
-            const k_coef = EI / Math.pow(L, 3);
-            const k_beam = [
-                [12, 6 * L, -12, 6 * L],
-                [6 * L, 4 * L * L, -6 * L, 2 * L * L],
-                [-12, -6 * L, 12, -6 * L],
-                [6 * L, 2 * L * L, -6 * L, 4 * L * L]
-            ];
+            const SPAN_X = 0.6; // m (每跨X方向长度)
+            const SPAN_Y = 0.4; // m (Y方向宽度)
+            const TOTAL_LENGTH = SPAN_X * 2; // 1.2m
+            const TOTAL_WIDTH = SPAN_Y; // 0.4m
 
-            // 两个单元: Node1-2, Node2-3
-            for (let el = 0; el < nNodes - 1; el++) {
-                const idx = el * 2; // 起始自由度索引
-                for (let i = 0; i < 4; i++) {
-                    for (let j = 0; j < 4; j++) {
-                        K_global[idx + i][idx + j] += k_beam[i][j] * k_coef;
-                    }
-                }
+            // 支座初始反力 (kN) - 来自表格数据
+            const INITIAL_REACTIONS = {
+                '8': 10.0075,   // 左上
+                '11': 22.7747,  // 中上
+                '25': 10.0053,  // 右上
+                '4': 10.0727,   // 左下
+                '16': 22.6419,  // 中下
+                '30': 10.0744   // 右下
+            };
+
+            // 支座位置 (以质心为原点)
+            const SUPPORT_POSITIONS = {
+                '8': { x: -SPAN_X, y: SPAN_Y / 2 },
+                '11': { x: 0, y: SPAN_Y / 2 },
+                '25': { x: SPAN_X, y: SPAN_Y / 2 },
+                '4': { x: -SPAN_X, y: -SPAN_Y / 2 },
+                '16': { x: 0, y: -SPAN_Y / 2 },
+                '30': { x: SPAN_X, y: -SPAN_Y / 2 }
+            };
+
+            const SUPPORT_IDS = ['8', '11', '25', '4', '16', '30'];
+            const TOTAL_WEIGHT = Object.values(INITIAL_REACTIONS).reduce((a, b) => a + b, 0); // 85.58 kN
+
+            // ============================================================
+            // 可配置参数系统 - 支持边缘支座和中间支座分别配置
+            // ============================================================
+
+            // 可配置参数 (用户可调)
+            let params = {
+                // 边缘支座 (4, 8, 25, 30)
+                edgeDiameter: 44,       // mm
+                edgeLayers: 10,         // 层数
+                // 中间支座 (11, 16)
+                midDiameter: 55,        // mm
+                midLayers: 10,          // 层数
+                // 共用材料参数
+                rubberLayerT: 2,        // mm - 橡胶层厚度
+                shearModulus: 0.4,      // MPa - 剪切模量
+                yieldPressure: 15, // MPa
+                // 上部结构参数
+                EI: 1000,          // kN·m² (上部结构弯曲刚度)
+            };
+
+            // 边缘支座 IDs
+            const EDGE_IDS = ['4', '8', '25', '30'];
+            // 中间支座 IDs
+            const MID_IDS = ['11', '16'];
+
+            // 计算结果 (基于params计算)
+            let calc = {
+                // 边缘支座参数
+                edge: {
+                    diameter_m: 0,
+                    area: 0,
+                    area_mm2: 0,
+                    totalRubberT: 0,
+                    shapeFactor: 0,
+                    Kh0: 0,
+                    Kv: 0
+                },
+                // 中间支座参数
+                mid: {
+                    diameter_m: 0,
+                    area: 0,
+                    area_mm2: 0,
+                    totalRubberT: 0,
+                    shapeFactor: 0,
+                    Kh0: 0,
+                    Kv: 0
+                },
+                // 反力重分配系数
+                alpha: 0
+            };
+
+            // 计算单个支座组的参数
+            function calcBearingParams(diameter_mm, numLayers) {
+                const diameter_m = diameter_mm / 1000;
+                const area = Math.PI * Math.pow(diameter_m / 2, 2);
+                const totalRubberT = (params.rubberLayerT * numLayers) / 1000;
+                const shapeFactor = diameter_m / (4 * params.rubberLayerT / 1000);
+
+                const Kh0 = params.shearModulus * 1000 * area / totalRubberT;
+                const Ec = 6 * params.shearModulus * shapeFactor * shapeFactor;
+                const Kv = Ec * 1000 * area / totalRubberT;
+
+                return {
+                    diameter_m,
+                    area,
+                    area_mm2: area * 1e6,
+                    totalRubberT,
+                    shapeFactor,
+                    Kh0,
+                    Kv
+                };
             }
 
-            // 2. 组装支座刚度 (仅影响竖向自由度 v)
-            // 并处理强迫位移的影响: K_bearing * h
-            // P_eff = P_load + K_bearing * h
-            const h_vector = Array(dof).fill(0);
+            // 根据params重新计算所有派生值
+            function recalculateParams() {
+                // 计算边缘支座参数
+                calc.edge = calcBearingParams(params.edgeDiameter, params.edgeLayers);
+                // 计算中间支座参数
+                calc.mid = calcBearingParams(params.midDiameter, params.midLayers);
 
-            nodeIds.forEach((id, index) => {
-                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const kv = bearingParams.Kv; // 支座竖向刚度
-                const hi = state.heights[id] / 1000; // mm -> m
+                // 计算反力重分配系数 α = 1 / (1 + Kv × L³ / (3 × EI))
+                // 使用平均Kv和跨度L = 0.6m
+                const avgKv = (calc.edge.Kv * 4 + calc.mid.Kv * 2) / 6;
+                const L = SPAN_X; // 0.6m
+                calc.alpha = 1 / (1 + avgKv * Math.pow(L, 3) / (3 * params.EI));
 
-                const dxf_idx = index * 2; // v 自由度索引
+                // 更新UI显示
+                updateCalcDisplay();
 
-                // 对角线增加支座刚度
-                K_global[dxf_idx][dxf_idx] += kv;
+                console.log('参数更新:');
+                console.log('  边缘支座: D=' + params.edgeDiameter + 'mm, Kh0=' + calc.edge.Kh0.toFixed(1) + ' kN/m, Kv=' + calc.edge.Kv.toFixed(0) + ' kN/m');
+                console.log('  中间支座: D=' + params.midDiameter + 'mm, Kh0=' + calc.mid.Kh0.toFixed(1) + ' kN/m, Kv=' + calc.mid.Kv.toFixed(0) + ' kN/m');
+                console.log('  上部结构 EI=' + params.EI + ' kN·m², α=' + calc.alpha.toFixed(3));
+            }
 
-                // 载荷向量: 假设初始重力均匀分配 (实际应按反力分配，这里简化为INITIAL_REACTIONS)
-                // 注意：这里的F_load是外部节点力。对于支座初始反力平衡状态，
-                // 我们可以认为外部重力载荷 = INITIAL_REACTIONS.
-                F_load[dxf_idx] += INITIAL_REACTIONS[id];
+            // 更新计算结果显示
+            function updateCalcDisplay() {
+                document.getElementById('calc-kh0-edge').textContent = calc.edge.Kh0.toFixed(1) + ' kN/m';
+                document.getElementById('calc-kh0-mid').textContent = calc.mid.Kh0.toFixed(1) + ' kN/m';
+                document.getElementById('calc-kv-edge').textContent = calc.edge.Kv.toFixed(0) + ' kN/m';
+                document.getElementById('calc-kv-mid').textContent = calc.mid.Kv.toFixed(0) + ' kN/m';
+                document.getElementById('calc-alpha').textContent = calc.alpha.toFixed(3);
+            }
 
-                // 强迫位移产生的等效节点力: Kv * h
-                // 因为方程是 (K_beam + K_spring) * d = F_ext + K_spring * h
-                F_load[dxf_idx] += kv * hi;
+            // 初始化计算
+            recalculateParams();
 
-                h_vector[dxf_idx] = hi;
-            });
-
-            // 3. 求解位移 d
-            const d = Matrix.solve(K_global, F_load);
-
-            // 4. 计算反力 R = Kv * (v - h)
-            const results = {};
-            nodeIds.forEach((id, index) => {
-                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const kv = bearingParams.Kv;
-
-                const v = d[index * 2];     // 梁的竖向位移
-                const h = h_vector[index * 2]; // 支座底座位移
-
-                // 支座变形 = 梁位移 - 底座位移
-                const delta = v - h;
-
-                // 支座反力
-                // 注意方向：如果梁位移v向下(正?) -> 实际上这里没定义坐标方向
-                // 让我们定义：向上为正。
-                // 载荷W向下，所以F_load应该是负的? 
-                // 不，我们用的是Total Reaction作为正值。
-                // 所以我们计算的是压力。
-                // 压力 P = Kv * (h_beam_compression)
-                // 让我们简单点：
-                // 如果只考虑变化量：
-                // [K] {delta_d} = {Kv * h}
-                // {delta_R} = K_spring * (delta_h - delta_d) 
-                // 等等，如果是"抬高"支座(h>0)，支座受压增大。
-                // Eq: K_beam * d + K_spr * (d - h) = 0 (无外力变化)
-                // => (K_b + K_s) * d = K_s * h
-                // 解出 d (梁的受迫位移).
-                // 支座压缩增量 = h - d (因为支座抬高h，梁只抬高d，d<h，所以由于h支座被多压缩了 h-d)
-                // 反力增量 = Kv * (h - d)
-            });
-
-            // 重新求解增量
-            const F_incr = Array(dof).fill(0);
-            nodeIds.forEach((id, index) => {
-                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const kv = bearingParams.Kv;
-                const hi = state.heights[id] / 1000;
-                // 增量载荷向量 = Kv * h
-                F_incr[index * 2] += kv * hi;
-            });
-
-            const delta_d = Matrix.solve(K_global, F_incr);
-
-            // 计算结果
-            nodeIds.forEach((id, index) => {
-                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const kv = bearingParams.Kv;
-                const hi = state.heights[id] / 1000;
-                const di = delta_d[index * 2]; // 梁的位移增量
-
-                // 反力增量：支座被强迫抬高h，梁随之抬高d。
-                // 相对压缩量 = h - d
-                // 物理检查：如果EI=0(软绳)，梁完全随支座动，d=h，反力不变。正确。
-                // 如果EI=inf(刚板)，且两边不动中间抬高，d=0.5h(假设)。
-                const delta_R = kv * (hi - di);
-
-                // 检查：如果中间支座下沉(h<0, e.g. -3mm). 梁下沉 di (e.g. -1mm).
-                // 相对压缩 = -3 - (-1) = -2mm (变松了).
-                // delta_R < 0. 反力减小。 CORRECT!
-
-                results[id] = {
-                    deltaN: delta_R,
-                    disp: di
-                };
-            });
-
-            return results;
-        }
-
-        function calculateReactions() {
-            // 参数准备
-            const L = SPAN_X; // 0.6m
-            const EI = params.EI; // kN·m²
-
-            console.log(`FEM求解: EI=${EI}, L=${L}`);
-
-            // 分别求解两根梁
-            const topResults = solveContinuousBeam(['8', '11', '25'], L, EI);
-            const botResults = solveContinuousBeam(['4', '16', '30'], L, EI);
-            const allResults = { ...topResults, ...botResults };
-
-            let totalN = 0;
-
-            SUPPORT_IDS.forEach(id => {
-                const baseN = INITIAL_REACTIONS[id];
-                const res = allResults[id];
-                const newN = Math.max(0, baseN + res.deltaN);
-
-                totalN += newN;
-
-                const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const pressure = (newN * 1000) / (bearingParams.area * 1e6);
-
-                const Kh = newN > 0 ? calcEffectiveKh(pressure, bearingParams) : 0;
-                const stiffnessRatio = newN > 0 ? Kh / bearingParams.Kh0 : 0;
-                const pressureRatio = pressure / params.yieldPressure;
-
-                state.supports[id] = {
-                    x: SUPPORT_POSITIONS[id].x,
-                    y: SUPPORT_POSITIONS[id].y,
-                    h: state.heights[id],
-                    N: newN,
-                    pressure: pressure,
-                    Kh: Kh,
-                    Kh0: bearingParams.Kh0,
-                    Kv: bearingParams.Kv,
-                    diameter: isEdgeSupport(id) ? params.edgeDiameter : params.midDiameter,
-                    pressureRatio: pressureRatio,
-                    stiffnessRatio: stiffnessRatio,
-                    isUplift: newN <= 0
-                };
-            });
-
-            console.log('Total Reaction: ' + totalN.toFixed(2) + ' kN (Should be close to ' + TOTAL_WEIGHT.toFixed(2) + ')');
-        }
-
-        // 计算刚度中心
-        function calculateStiffnessCenter() {
-            let sumKx = 0, sumKy = 0, sumK = 0;
-
-            SUPPORT_IDS.forEach(id => {
-                const s = state.supports[id];
-                sumKx += s.Kh * s.x;
-                sumKy += s.Kh * s.y;
-                sumK += s.Kh;
-            });
-
-            const Cs_x = sumK > 0 ? sumKx / sumK : 0;
-            const Cs_y = sumK > 0 ? sumKy / sumK : 0;
-
-            return {
-                x: Cs_x,
-                y: Cs_y,
-                ex: Cs_x, // 质心在原点
-                ey: Cs_y,
-                e_mag: Math.sqrt(Cs_x * Cs_x + Cs_y * Cs_y),
-                totalK: sumK
+            // ============================================================
+            // STATE
+            // ============================================================
+            let state = {
+                view: 'plan',
+                heights: { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 }, // mm
+                supports: {},
+                // 地震输入参数
+                pga: 0.2,               // 峰值加速度 (g) - 默认0.2g较合理
+                damping: 0.10,          // 阻尼比
+                gapWidth: 100,          // 隔震沟宽度 (mm)
+                // 系统参数（计算得到）
+                totalKh: 0,             // 总水平刚度 (kN/m)
+                mass: TOTAL_WEIGHT / 9.81,  // 质量 (t)
+                period: 0,              // 平动周期 (s)
+                periodTorsion: 0,       // 扭转周期 (s)
+                omega: 0,               // 圆频率 (rad/s)
+                J: 0,                   // 扭转刚度
+                cs: null,               // 刚度中心
+                rMax: 0,                // 最远支座到中心的距离
+                // 反应谱计算结果（静态）
+                spectralDisp: 0,        // 反应谱位移 - 质心 (m)
+                cornerMaxDisp: 0,       // 角最大位移 (m)
+                torsionAmplify: 1.0,    // 扭转放大系数
+                // 动画状态 (保留用于可视化)
+                buildingDisp: { x: 0, y: 0, rot: 0 },
+                isAnimating: false,
+                animTime: 0,
+                trajectory: [],           // 质心轨迹
+                corner8Trajectory: [],    // 角8轨迹
+                corner30Trajectory: [],   // 角30轨迹
+                maxTrajectoryPoints: 500
             };
-        }
 
-        // ============================================================
-        // UI UPDATES
-        // ============================================================
+            // ============================================================
+            // CALCULATIONS
+            // ============================================================
 
-        function updateUI() {
-            calculateReactions();
-            const cs = calculateStiffnessCenter();
+            // 获取支座属于哪一组
+            function isEdgeSupport(id) {
+                return EDGE_IDS.includes(id);
+            }
 
-            // Update support info grid
-            const grid = document.getElementById('support-info-grid');
-            grid.innerHTML = '';
+            // 计算有效水平刚度
+            // Kh = Kh0 × (1 - (σ/σ_cr)²)
+            function calcEffectiveKh(pressure, bearingParams) {
+                const ratio = pressure / params.yieldPressure;
+                return bearingParams.Kh0 * Math.max(0.1, 1 - ratio * ratio);
+            }
 
-            SUPPORT_IDS.forEach(id => {
-                const s = state.supports[id];
-                const statusColor = s.stiffnessRatio > 0.9 ? '#2ed573' :
-                    s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
+            // ============================================================
+            // 核心力学求解器：直接刚度法 (Direct Stiffness Method)
+            // 
+            // 这是一个微型的有限元求解器(FEM)，专门解决"连续梁+弹性支座+强迫沉降"问题。
+            // 这才是解决超静定结构协调变形的唯一正确途径。
+            // ============================================================
 
-                const div = document.createElement('div');
-                div.className = 'support-info';
-                div.innerHTML = `
+            // 简单的矩阵运算工具
+            const Matrix = {
+                // 创建 n x m 零矩阵
+                zeros: (n, m) => Array(n).fill(0).map(() => Array(m).fill(0)),
+
+                // 矩阵乘向量
+                multiplyVector: (A, v) => {
+                    const n = A.length;
+                    const m = A[0].length;
+                    const res = Array(n).fill(0);
+                    for (let i = 0; i < n; i++) {
+                        for (let j = 0; j < m; j++) {
+                            res[i] += A[i][j] * v[j];
+                        }
+                    }
+                    return res;
+                },
+
+                // 高斯消元法求解线性方程组 Ax = b
+                solve: (A, b) => {
+                    const n = A.length;
+                    // 深拷贝以防修改原矩阵
+                    const M = A.map(row => [...row]);
+                    const x = [...b];
+
+                    // 前向消元
+                    for (let k = 0; k < n; k++) {
+                        // 选主元
+                        let maxRow = k;
+                        for (let i = k + 1; i < n; i++) {
+                            if (Math.abs(M[i][k]) > Math.abs(M[maxRow][k])) maxRow = i;
+                        }
+
+                        // 交换行
+                        [M[k], M[maxRow]] = [M[maxRow], M[k]];
+                        [x[k], x[maxRow]] = [x[maxRow], x[k]];
+
+                        // 消元
+                        for (let i = k + 1; i < n; i++) {
+                            const factor = M[i][k] / M[k][k];
+                            x[i] -= factor * x[k];
+                            for (let j = k; j < n; j++) M[i][j] -= factor * M[k][j];
+                        }
+                    }
+
+                    // 回代
+                    const sol = Array(n).fill(0);
+                    for (let i = n - 1; i >= 0; i--) {
+                        let sum = 0;
+                        for (let j = i + 1; j < n; j++) sum += M[i][j] * sol[j];
+                        sol[i] = (x[i] - sum) / M[i][i];
+                    }
+
+                    return sol;
+                }
+            };
+
+            // 求解连续梁系统
+            // nodes: 支座ID列表 ['8', '11', '25']
+            // L: 跨度 (m)
+            // EI: 弯曲刚度 (kN·m²)
+            function solveContinuousBeam(nodeIds, L, EI) {
+                // 节点数 n=3. 自由度 per node = 2 (v, theta). 总自由度 dof = 6.
+                // DOFs: [v1, θ1, v2, θ2, v3, θ3]
+                const nNodes = nodeIds.length;
+                const dof = nNodes * 2;
+                const K_global = Matrix.zeros(dof, dof);
+                const F_load = Array(dof).fill(0);
+
+                // 1. 组装梁单元刚度矩阵
+                // 单元刚度矩阵 (4x4)
+                // |  12   6L  -12   6L |
+                // |  6L  4L^2 -6L  2L^2| * EI/L^3
+                // | -12  -6L   12  -6L |
+                // |  6L  2L^2 -6L  4L^2|
+
+                const k_coef = EI / Math.pow(L, 3);
+                const k_beam = [
+                    [12, 6 * L, -12, 6 * L],
+                    [6 * L, 4 * L * L, -6 * L, 2 * L * L],
+                    [-12, -6 * L, 12, -6 * L],
+                    [6 * L, 2 * L * L, -6 * L, 4 * L * L]
+                ];
+
+                // 两个单元: Node1-2, Node2-3
+                for (let el = 0; el < nNodes - 1; el++) {
+                    const idx = el * 2; // 起始自由度索引
+                    for (let i = 0; i < 4; i++) {
+                        for (let j = 0; j < 4; j++) {
+                            K_global[idx + i][idx + j] += k_beam[i][j] * k_coef;
+                        }
+                    }
+                }
+
+                // 2. 组装支座刚度 (仅影响竖向自由度 v)
+                // 并处理强迫位移的影响: K_bearing * h
+                // P_eff = P_load + K_bearing * h
+                const h_vector = Array(dof).fill(0);
+
+                nodeIds.forEach((id, index) => {
+                    const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                    const kv = bearingParams.Kv; // 支座竖向刚度
+                    const hi = state.heights[id] / 1000; // mm -> m
+
+                    const dxf_idx = index * 2; // v 自由度索引
+
+                    // 对角线增加支座刚度
+                    K_global[dxf_idx][dxf_idx] += kv;
+
+                    // 载荷向量: 假设初始重力均匀分配 (实际应按反力分配，这里简化为INITIAL_REACTIONS)
+                    // 注意：这里的F_load是外部节点力。对于支座初始反力平衡状态，
+                    // 我们可以认为外部重力载荷 = INITIAL_REACTIONS.
+                    F_load[dxf_idx] += INITIAL_REACTIONS[id];
+
+                    // 强迫位移产生的等效节点力: Kv * h
+                    // 因为方程是 (K_beam + K_spring) * d = F_ext + K_spring * h
+                    F_load[dxf_idx] += kv * hi;
+
+                    h_vector[dxf_idx] = hi;
+                });
+
+                // 3. 求解位移 d
+                const d = Matrix.solve(K_global, F_load);
+
+                // 4. 计算反力 R = Kv * (v - h)
+                const results = {};
+                nodeIds.forEach((id, index) => {
+                    const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                    const kv = bearingParams.Kv;
+
+                    const v = d[index * 2];     // 梁的竖向位移
+                    const h = h_vector[index * 2]; // 支座底座位移
+
+                    // 支座变形 = 梁位移 - 底座位移
+                    const delta = v - h;
+
+                    // 支座反力
+                    // 注意方向：如果梁位移v向下(正?) -> 实际上这里没定义坐标方向
+                    // 让我们定义：向上为正。
+                    // 载荷W向下，所以F_load应该是负的? 
+                    // 不，我们用的是Total Reaction作为正值。
+                    // 所以我们计算的是压力。
+                    // 压力 P = Kv * (h_beam_compression)
+                    // 让我们简单点：
+                    // 如果只考虑变化量：
+                    // [K] {delta_d} = {Kv * h}
+                    // {delta_R} = K_spring * (delta_h - delta_d) 
+                    // 等等，如果是"抬高"支座(h>0)，支座受压增大。
+                    // Eq: K_beam * d + K_spr * (d - h) = 0 (无外力变化)
+                    // => (K_b + K_s) * d = K_s * h
+                    // 解出 d (梁的受迫位移).
+                    // 支座压缩增量 = h - d (因为支座抬高h，梁只抬高d，d<h，所以由于h支座被多压缩了 h-d)
+                    // 反力增量 = Kv * (h - d)
+                });
+
+                // 重新求解增量
+                const F_incr = Array(dof).fill(0);
+                nodeIds.forEach((id, index) => {
+                    const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                    const kv = bearingParams.Kv;
+                    const hi = state.heights[id] / 1000;
+                    // 增量载荷向量 = Kv * h
+                    F_incr[index * 2] += kv * hi;
+                });
+
+                const delta_d = Matrix.solve(K_global, F_incr);
+
+                // 计算结果
+                nodeIds.forEach((id, index) => {
+                    const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                    const kv = bearingParams.Kv;
+                    const hi = state.heights[id] / 1000;
+                    const di = delta_d[index * 2]; // 梁的位移增量
+
+                    // 反力增量：支座被强迫抬高h，梁随之抬高d。
+                    // 相对压缩量 = h - d
+                    // 物理检查：如果EI=0(软绳)，梁完全随支座动，d=h，反力不变。正确。
+                    // 如果EI=inf(刚板)，且两边不动中间抬高，d=0.5h(假设)。
+                    const delta_R = kv * (hi - di);
+
+                    // 检查：如果中间支座下沉(h<0, e.g. -3mm). 梁下沉 di (e.g. -1mm).
+                    // 相对压缩 = -3 - (-1) = -2mm (变松了).
+                    // delta_R < 0. 反力减小。 CORRECT!
+
+                    results[id] = {
+                        deltaN: delta_R,
+                        disp: di
+                    };
+                });
+
+                return results;
+            }
+
+            // 计算刚度中心
+            function calculateStiffnessCenter() {
+                // 参数准备
+                const L = SPAN_X; // 0.6m
+                const EI = params.EI; // kN·m²
+
+                console.log(`FEM求解: EI=${EI}, L=${L}`);
+
+                // 1. FEM弹性求解 (计算因变形产生的内力)
+                const topResults = solveContinuousBeam(['8', '11', '25'], L, EI);
+                const botResults = solveContinuousBeam(['4', '16', '30'], L, EI);
+                const allResults = { ...topResults, ...botResults };
+
+                // 2. P-Delta重力求解 (计算因重心偏移产生的附加力)
+                // 计算整体倾角
+                let h_right = (state.heights['25'] + state.heights['30']) / 2;
+                let h_left = (state.heights['8'] + state.heights['4']) / 2;
+                let theta_y = (h_right - h_left) / 1000 / (TOTAL_LENGTH);
+
+                let h_top = (state.heights['8'] + state.heights['11'] + state.heights['25']) / 3;
+                let h_bottom = (state.heights['4'] + state.heights['16'] + state.heights['30']) / 3;
+                let theta_x = (h_top - h_bottom) / 1000 / TOTAL_WIDTH;
+
+                // 假设重心高度
+                const H_cg = 0.5; // m
+
+                // 重心偏移产生的倾覆力矩
+                // 结构左倾(theta_y > 0) -> 重心左移 -> M_y < 0 (压左边)
+                // M_target = W * ex
+                const ex_g = -theta_y * H_cg;
+                const ey_g = -theta_x * H_cg;
+
+                const My_gravity = TOTAL_WEIGHT * ex_g;
+                const Mx_gravity = TOTAL_WEIGHT * ey_g;
+
+                // 计算用于平衡重力矩的附加反力
+                // Minuit (Moment of Inertia of Unit forces?): Sum(K*x^2), Sum(K*y^2)
+                // 假设各支座分担能力与刚度成正比
+                let sumKx2 = 0, sumKy2 = 0;
+                SUPPORT_IDS.forEach(id => {
+                    const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                    const kv = bearingParams.Kv;
+                    const x = SUPPORT_POSITIONS[id].x;
+                    const y = SUPPORT_POSITIONS[id].y;
+                    sumKx2 += kv * x * x;
+                    sumKy2 += kv * y * y;
+                });
+
+                // 力矩平衡系数 C = M / Sum(K*x^2)
+                // F_gravity = Kv * (Cy * x + Cx * y)
+                const Cy = sumKx2 > 0 ? My_gravity / sumKx2 : 0;
+                const Cx = sumKy2 > 0 ? Mx_gravity / sumKy2 : 0;
+
+                // 3. 合并计算总反力
+                let totalN = 0;
+
+                SUPPORT_IDS.forEach(id => {
+                    const baseN = INITIAL_REACTIONS[id];
+                    const femRes = allResults[id];
+
+                    // P-Delta附加力
+                    const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
+                    const kv = bearingParams.Kv;
+                    const x = SUPPORT_POSITIONS[id].x;
+                    const y = SUPPORT_POSITIONS[id].y;
+
+                    // 注意方向：
+                    // My_gravity < 0 (向左压). x < 0 (左边). 
+                    // Cy < 0. Cy * x > 0. 左边反力增加. 正确.
+                    const deltaN_gravity = kv * (Cy * x + Cx * y);
+
+                    // 总反力 = 初始 + 弹性(不均匀沉降) + 重力(P-Delta)
+                    const newN = Math.max(0, baseN + femRes.deltaN + deltaN_gravity);
+
+                    totalN += newN;
+
+                    const pressure = (newN * 1000) / (bearingParams.area * 1e6);
+                    const Kh = newN > 0 ? calcEffectiveKh(pressure, bearingParams) : 0;
+                    const stiffnessRatio = newN > 0 ? Kh / bearingParams.Kh0 : 0;
+                    const pressureRatio = pressure / params.yieldPressure;
+
+                    state.supports[id] = {
+                        x: x,
+                        y: y,
+                        h: state.heights[id],
+                        N: newN,
+                        pressure: pressure,
+                        Kh: Kh,
+                        Kh0: bearingParams.Kh0,
+                        Kv: bearingParams.Kv,
+                        diameter: isEdgeSupport(id) ? params.edgeDiameter : params.midDiameter,
+                        pressureRatio: pressureRatio,
+                        stiffnessRatio: stiffnessRatio,
+                        isUplift: newN <= 0
+                    };
+                });
+
+                console.log(`反力计算完毕: FEM弹性力(Max) ≈ ${Math.max(...Object.values(allResults).map(r => Math.abs(r.deltaN))).toFixed(2)} kN, P-Delta效应(Max) ≈ ${Math.max(...Object.values(state.supports).map(s => Math.abs(s.N - INITIAL_REACTIONS[s.x > 100 ? 25 : 8]))).toFixed(2)} kN`);
+                console.log('Total Reaction: ' + totalN.toFixed(2) + ' kN (Target: ' + TOTAL_WEIGHT.toFixed(2) + ')');
+            }
+
+            // 计算刚度中心
+            function calculateStiffnessCenter() {
+                let sumKx = 0, sumKy = 0, sumK = 0;
+
+                SUPPORT_IDS.forEach(id => {
+                    const s = state.supports[id];
+                    sumKx += s.Kh * s.x;
+                    sumKy += s.Kh * s.y;
+                    sumK += s.Kh;
+                });
+
+                const Cs_x = sumK > 0 ? sumKx / sumK : 0;
+                const Cs_y = sumK > 0 ? sumKy / sumK : 0;
+
+                return {
+                    x: Cs_x,
+                    y: Cs_y,
+                    ex: Cs_x, // 质心在原点
+                    ey: Cs_y,
+                    e_mag: Math.sqrt(Cs_x * Cs_x + Cs_y * Cs_y),
+                    totalK: sumK
+                };
+            }
+
+            // ============================================================
+            // UI UPDATES
+            // ============================================================
+
+            function updateUI() {
+                calculateReactions();
+                const cs = calculateStiffnessCenter();
+
+                // Update support info grid
+                const grid = document.getElementById('support-info-grid');
+                grid.innerHTML = '';
+
+                SUPPORT_IDS.forEach(id => {
+                    const s = state.supports[id];
+                    const statusColor = s.stiffnessRatio > 0.9 ? '#2ed573' :
+                        s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
+
+                    const div = document.createElement('div');
+                    div.className = 'support-info';
+                    div.innerHTML = `
                     <div class="support-info-label">支座 ${id}</div>
                     <div class="support-info-value" style="color: ${statusColor}">
                         ${s.N.toFixed(1)}kN / ${s.pressure.toFixed(1)}MPa
@@ -1388,1006 +1448,1006 @@
                         Kh=${(s.stiffnessRatio * 100).toFixed(0)}%
                     </div>
                 `;
-                grid.appendChild(div);
-            });
-
-            // Update eccentricity display
-            document.getElementById('ecc-x').textContent = cs.ex.toFixed(4) + ' m';
-            document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
-            document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
-
-            // Calculate system parameters
-            state.totalKh = cs.totalK;
-            state.omega = Math.sqrt(state.totalKh / state.mass); // rad/s
-            state.period = 2 * Math.PI / state.omega; // s
-
-            // Calculate torsional stiffness: J = Σ(Kh × r²)
-            let J = 0;
-            SUPPORT_IDS.forEach(id => {
-                const s = state.supports[id];
-                const r2 = s.x * s.x + s.y * s.y;
-                J += s.Kh * r2;
-            });
-            state.J = J;
-            state.cs = cs;
-
-            // Calculate torsional period
-            const Jm = state.mass * (TOTAL_LENGTH * TOTAL_LENGTH + TOTAL_WIDTH * TOTAL_WIDTH) / 12;
-            const Tr = J > 0 ? 2 * Math.PI * Math.sqrt(Jm / J) : 0;
-            const periodRatio = state.period > 0 ? Tr / state.period : 0;
-
-            // Calculate average rubber thickness for shear strain
-            const avgTr = (calc.edge.totalRubberT + calc.mid.totalRubberT) / 2;
-
-            // Update system parameters display
-            document.getElementById('period').textContent = state.period.toFixed(2) + ' s';
-            document.getElementById('period-torsion').textContent = Tr.toFixed(2) + ' s';
-            document.getElementById('period-ratio').textContent = periodRatio.toFixed(2);
-            state.periodTorsion = Tr;
-
-            // 周期比颜色指示
-            const ratioEl = document.getElementById('period-ratio');
-            if (periodRatio < 0.9) {
-                ratioEl.style.color = '#ff6b6b';
-            } else if (periodRatio < 1.0) {
-                ratioEl.style.color = '#ffa502';
-            } else {
-                ratioEl.style.color = '#2ed573';
-            }
-
-            // ============================================================
-            // 反应谱位移计算 (静态方法)
-            // ============================================================
-            // 设计反应谱: Sa(T) = PGA × β(T,ξ)
-            // 简化的放大系数: β ≈ 2.5 (平台段) 或 2.5×(Tg/T)^0.9 (下降段)
-            const Tg = 0.4; // 特征周期 (s)
-            const T = state.period;
-            let beta;
-            if (T < 0.1) {
-                beta = 1 + (2.5 - 1) * (T / 0.1);
-            } else if (T < Tg) {
-                beta = 2.5;
-            } else {
-                beta = 2.5 * Math.pow(Tg / T, 0.9);
-            }
-
-            // 阻尼修正系数
-            const dampingCorrection = Math.sqrt(0.05 / state.damping);
-            beta *= dampingCorrection;
-
-            // 反应谱加速度 Sa (m/s²)
-            const Sa = state.pga * 9.81 * beta;
-
-            // 反应谱位移 Sd = Sa × (T/2π)² (m)
-            const Sd = Sa * Math.pow(T / (2 * Math.PI), 2);
-            state.spectralDisp = Sd;
-
-            // ============================================================
-            // 扭转放大计算
-            // ============================================================
-            // r_max是最远角支座到质心的距离
-            let rMax = 0;
-            SUPPORT_IDS.forEach(id => {
-                const s = state.supports[id];
-                const r = Math.sqrt(s.x * s.x + s.y * s.y);
-                if (r > rMax) rMax = r;
-            });
-            state.rMax = rMax;
-
-            // 扭转放大系数 (简化估算)
-            // 偏心越大，扭转效应越显著
-            // 公式: 放大系数 ≈ 1 + (e × r_max) / (ρ²)
-            // 其中 ρ² = J / (K × r²) 是扭转半径
-            const eccRatio = cs.e_mag / (TOTAL_LENGTH / 2); // 相对偏心率
-            const torsionAmplify = 1 + eccRatio * 2; // 简化放大系数
-            state.torsionAmplify = torsionAmplify;
-
-            // 角最大位移 = 质心位移 × 扭转放大系数
-            const cornerMaxDisp = Sd * torsionAmplify;
-            state.cornerMaxDisp = cornerMaxDisp;
-
-            // ============================================================
-            // 更新显示
-            // ============================================================
-            const gapWidth = state.gapWidth / 1000; // mm -> m
-
-            // 位移需求显示
-            document.getElementById('spectral-disp').textContent = (Sd * 1000).toFixed(1) + ' mm';
-            document.getElementById('corner-max-disp').textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm';
-            document.getElementById('gap-limit').textContent = state.gapWidth + ' mm';
-
-            // 质心位移颜色 (与隔震沟比较)
-            const sdEl = document.getElementById('spectral-disp');
-            if (Sd > gapWidth) {
-                sdEl.style.color = '#ff6b6b';
-            } else if (Sd > gapWidth * 0.8) {
-                sdEl.style.color = '#ffa502';
-            } else {
-                sdEl.style.color = '#2ed573';
-            }
-
-            // 角最大位移颜色 (与隔震沟比较) - 关键检查！
-            const cornerEl = document.getElementById('corner-max-disp');
-            if (cornerMaxDisp > gapWidth) {
-                cornerEl.style.color = '#ff6b6b';
-                cornerEl.textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm ⚠️超限!';
-            } else if (cornerMaxDisp > gapWidth * 0.8) {
-                cornerEl.style.color = '#ffa502';
-            } else {
-                cornerEl.style.color = '#2ed573';
-            }
-
-            // ============================================================
-            // 剪应变检查 (两个限值都要检查！)
-            // ============================================================
-            // avgTr 是橡胶总厚度 (m)，已在上面计算
-            const strainCm = (Sd / avgTr) * 100; // %
-            const strainCorner = (cornerMaxDisp / avgTr) * 100; // %
-            const strainLimit = 200; // 通常限值200%
-
-            document.getElementById('strain-cm').textContent = strainCm.toFixed(0) + '%';
-            document.getElementById('strain-corner').textContent = strainCorner.toFixed(0) + '%';
-
-            // 剪应变颜色
-            const strainCmEl = document.getElementById('strain-cm');
-            if (strainCm > strainLimit) {
-                strainCmEl.style.color = '#ff6b6b';
-                strainCmEl.textContent = strainCm.toFixed(0) + '% ⚠️';
-            } else if (strainCm > strainLimit * 0.8) {
-                strainCmEl.style.color = '#ffa502';
-            } else {
-                strainCmEl.style.color = '#2ed573';
-            }
-
-            const strainCornerEl = document.getElementById('strain-corner');
-            if (strainCorner > strainLimit) {
-                strainCornerEl.style.color = '#ff6b6b';
-                strainCornerEl.textContent = strainCorner.toFixed(0) + '% ⚠️超限!';
-            } else if (strainCorner > strainLimit * 0.8) {
-                strainCornerEl.style.color = '#ffa502';
-            } else {
-                strainCornerEl.style.color = '#2ed573';
-            }
-
-            // 偏心和扭转显示
-            document.getElementById('ecc-disp').textContent = (cs.e_mag * 1000).toFixed(1) + ' mm';
-            document.getElementById('rotation-angle').textContent = '放大 ×' + torsionAmplify.toFixed(2);
-            document.getElementById('torsion-moment').textContent = '偏心 ' + (eccRatio * 100).toFixed(1) + '%';
-
-            // 位移响应显示
-            document.getElementById('max-disp').textContent = (Sd * 1000).toFixed(1) + ' mm';
-            document.getElementById('max-edge-disp').textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm';
-            document.getElementById('torsion-amplify').textContent = torsionAmplify.toFixed(2);
-
-            // 放大系数颜色
-            const ampEl = document.getElementById('torsion-amplify');
-            if (torsionAmplify > 1.3) {
-                ampEl.style.color = '#ff6b6b';
-            } else if (torsionAmplify > 1.1) {
-                ampEl.style.color = '#ffa502';
-            } else {
-                ampEl.style.color = '#2ed573';
-            }
-
-            // 在控制台输出便于调试
-            console.log('反应谱计算: PGA=' + state.pga + 'g, T=' + T.toFixed(2) + 's, Sd=' + (Sd * 1000).toFixed(1) + 'mm, γcm=' + strainCm.toFixed(0) + '%, γ角=' + strainCorner.toFixed(0) + '%');
-
-            // Update stats
-            document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
-            document.getElementById('bearing-diameter').textContent = params.edgeDiameter + '/' + params.midDiameter + ' mm';
-
-            draw();
-        }
-
-        // ============================================================
-        // HEIGHT SLIDER HANDLERS
-        // ============================================================
-
-        SUPPORT_IDS.forEach(id => {
-            const slider = document.getElementById('h' + id);
-            const valueEl = document.getElementById('h' + id + '-value');
-
-            slider.addEventListener('input', (e) => {
-                const val = parseFloat(e.target.value);
-                state.heights[id] = val;
-                valueEl.textContent = val.toFixed(1);
-                updateUI();
-            });
-        });
-
-        // Preset configurations
-        document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.preset-btn[data-preset]').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                const preset = btn.dataset.preset;
-
-                switch (preset) {
-                    case 'level':
-                        state.heights = { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 };
-                        break;
-                    case 'tilt-x':
-                        // X向倾斜：右侧高
-                        state.heights = { '8': -3, '11': 0, '25': 3, '4': -3, '16': 0, '30': 3 };
-                        break;
-                    case 'tilt-y':
-                        // Y向倾斜：上侧高
-                        state.heights = { '8': 3, '11': 3, '25': 3, '4': -3, '16': -3, '30': -3 };
-                        break;
-                    case 'twist':
-                        // 扭转：对角高
-                        state.heights = { '8': 5, '11': 0, '25': -5, '4': -5, '16': 0, '30': 5 };
-                        break;
-                }
-
-                // Update sliders
-                SUPPORT_IDS.forEach(id => {
-                    document.getElementById('h' + id).value = state.heights[id];
-                    document.getElementById('h' + id + '-value').textContent = state.heights[id].toFixed(1);
+                    grid.appendChild(div);
                 });
 
+                // Update eccentricity display
+                document.getElementById('ecc-x').textContent = cs.ex.toFixed(4) + ' m';
+                document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
+                document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
+
+                // Calculate system parameters
+                state.totalKh = cs.totalK;
+                state.omega = Math.sqrt(state.totalKh / state.mass); // rad/s
+                state.period = 2 * Math.PI / state.omega; // s
+
+                // Calculate torsional stiffness: J = Σ(Kh × r²)
+                let J = 0;
+                SUPPORT_IDS.forEach(id => {
+                    const s = state.supports[id];
+                    const r2 = s.x * s.x + s.y * s.y;
+                    J += s.Kh * r2;
+                });
+                state.J = J;
+                state.cs = cs;
+
+                // Calculate torsional period
+                const Jm = state.mass * (TOTAL_LENGTH * TOTAL_LENGTH + TOTAL_WIDTH * TOTAL_WIDTH) / 12;
+                const Tr = J > 0 ? 2 * Math.PI * Math.sqrt(Jm / J) : 0;
+                const periodRatio = state.period > 0 ? Tr / state.period : 0;
+
+                // Calculate average rubber thickness for shear strain
+                const avgTr = (calc.edge.totalRubberT + calc.mid.totalRubberT) / 2;
+
+                // Update system parameters display
+                document.getElementById('period').textContent = state.period.toFixed(2) + ' s';
+                document.getElementById('period-torsion').textContent = Tr.toFixed(2) + ' s';
+                document.getElementById('period-ratio').textContent = periodRatio.toFixed(2);
+                state.periodTorsion = Tr;
+
+                // 周期比颜色指示
+                const ratioEl = document.getElementById('period-ratio');
+                if (periodRatio < 0.9) {
+                    ratioEl.style.color = '#ff6b6b';
+                } else if (periodRatio < 1.0) {
+                    ratioEl.style.color = '#ffa502';
+                } else {
+                    ratioEl.style.color = '#2ed573';
+                }
+
+                // ============================================================
+                // 反应谱位移计算 (静态方法)
+                // ============================================================
+                // 设计反应谱: Sa(T) = PGA × β(T,ξ)
+                // 简化的放大系数: β ≈ 2.5 (平台段) 或 2.5×(Tg/T)^0.9 (下降段)
+                const Tg = 0.4; // 特征周期 (s)
+                const T = state.period;
+                let beta;
+                if (T < 0.1) {
+                    beta = 1 + (2.5 - 1) * (T / 0.1);
+                } else if (T < Tg) {
+                    beta = 2.5;
+                } else {
+                    beta = 2.5 * Math.pow(Tg / T, 0.9);
+                }
+
+                // 阻尼修正系数
+                const dampingCorrection = Math.sqrt(0.05 / state.damping);
+                beta *= dampingCorrection;
+
+                // 反应谱加速度 Sa (m/s²)
+                const Sa = state.pga * 9.81 * beta;
+
+                // 反应谱位移 Sd = Sa × (T/2π)² (m)
+                const Sd = Sa * Math.pow(T / (2 * Math.PI), 2);
+                state.spectralDisp = Sd;
+
+                // ============================================================
+                // 扭转放大计算
+                // ============================================================
+                // r_max是最远角支座到质心的距离
+                let rMax = 0;
+                SUPPORT_IDS.forEach(id => {
+                    const s = state.supports[id];
+                    const r = Math.sqrt(s.x * s.x + s.y * s.y);
+                    if (r > rMax) rMax = r;
+                });
+                state.rMax = rMax;
+
+                // 扭转放大系数 (简化估算)
+                // 偏心越大，扭转效应越显著
+                // 公式: 放大系数 ≈ 1 + (e × r_max) / (ρ²)
+                // 其中 ρ² = J / (K × r²) 是扭转半径
+                const eccRatio = cs.e_mag / (TOTAL_LENGTH / 2); // 相对偏心率
+                const torsionAmplify = 1 + eccRatio * 2; // 简化放大系数
+                state.torsionAmplify = torsionAmplify;
+
+                // 角最大位移 = 质心位移 × 扭转放大系数
+                const cornerMaxDisp = Sd * torsionAmplify;
+                state.cornerMaxDisp = cornerMaxDisp;
+
+                // ============================================================
+                // 更新显示
+                // ============================================================
+                const gapWidth = state.gapWidth / 1000; // mm -> m
+
+                // 位移需求显示
+                document.getElementById('spectral-disp').textContent = (Sd * 1000).toFixed(1) + ' mm';
+                document.getElementById('corner-max-disp').textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm';
+                document.getElementById('gap-limit').textContent = state.gapWidth + ' mm';
+
+                // 质心位移颜色 (与隔震沟比较)
+                const sdEl = document.getElementById('spectral-disp');
+                if (Sd > gapWidth) {
+                    sdEl.style.color = '#ff6b6b';
+                } else if (Sd > gapWidth * 0.8) {
+                    sdEl.style.color = '#ffa502';
+                } else {
+                    sdEl.style.color = '#2ed573';
+                }
+
+                // 角最大位移颜色 (与隔震沟比较) - 关键检查！
+                const cornerEl = document.getElementById('corner-max-disp');
+                if (cornerMaxDisp > gapWidth) {
+                    cornerEl.style.color = '#ff6b6b';
+                    cornerEl.textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm ⚠️超限!';
+                } else if (cornerMaxDisp > gapWidth * 0.8) {
+                    cornerEl.style.color = '#ffa502';
+                } else {
+                    cornerEl.style.color = '#2ed573';
+                }
+
+                // ============================================================
+                // 剪应变检查 (两个限值都要检查！)
+                // ============================================================
+                // avgTr 是橡胶总厚度 (m)，已在上面计算
+                const strainCm = (Sd / avgTr) * 100; // %
+                const strainCorner = (cornerMaxDisp / avgTr) * 100; // %
+                const strainLimit = 200; // 通常限值200%
+
+                document.getElementById('strain-cm').textContent = strainCm.toFixed(0) + '%';
+                document.getElementById('strain-corner').textContent = strainCorner.toFixed(0) + '%';
+
+                // 剪应变颜色
+                const strainCmEl = document.getElementById('strain-cm');
+                if (strainCm > strainLimit) {
+                    strainCmEl.style.color = '#ff6b6b';
+                    strainCmEl.textContent = strainCm.toFixed(0) + '% ⚠️';
+                } else if (strainCm > strainLimit * 0.8) {
+                    strainCmEl.style.color = '#ffa502';
+                } else {
+                    strainCmEl.style.color = '#2ed573';
+                }
+
+                const strainCornerEl = document.getElementById('strain-corner');
+                if (strainCorner > strainLimit) {
+                    strainCornerEl.style.color = '#ff6b6b';
+                    strainCornerEl.textContent = strainCorner.toFixed(0) + '% ⚠️超限!';
+                } else if (strainCorner > strainLimit * 0.8) {
+                    strainCornerEl.style.color = '#ffa502';
+                } else {
+                    strainCornerEl.style.color = '#2ed573';
+                }
+
+                // 偏心和扭转显示
+                document.getElementById('ecc-disp').textContent = (cs.e_mag * 1000).toFixed(1) + ' mm';
+                document.getElementById('rotation-angle').textContent = '放大 ×' + torsionAmplify.toFixed(2);
+                document.getElementById('torsion-moment').textContent = '偏心 ' + (eccRatio * 100).toFixed(1) + '%';
+
+                // 位移响应显示
+                document.getElementById('max-disp').textContent = (Sd * 1000).toFixed(1) + ' mm';
+                document.getElementById('max-edge-disp').textContent = (cornerMaxDisp * 1000).toFixed(1) + ' mm';
+                document.getElementById('torsion-amplify').textContent = torsionAmplify.toFixed(2);
+
+                // 放大系数颜色
+                const ampEl = document.getElementById('torsion-amplify');
+                if (torsionAmplify > 1.3) {
+                    ampEl.style.color = '#ff6b6b';
+                } else if (torsionAmplify > 1.1) {
+                    ampEl.style.color = '#ffa502';
+                } else {
+                    ampEl.style.color = '#2ed573';
+                }
+
+                // 在控制台输出便于调试
+                console.log('反应谱计算: PGA=' + state.pga + 'g, T=' + T.toFixed(2) + 's, Sd=' + (Sd * 1000).toFixed(1) + 'mm, γcm=' + strainCm.toFixed(0) + '%, γ角=' + strainCorner.toFixed(0) + '%');
+
+                // Update stats
+                document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
+                document.getElementById('bearing-diameter').textContent = params.edgeDiameter + '/' + params.midDiameter + ' mm';
+
+                draw();
+            }
+
+            // ============================================================
+            // HEIGHT SLIDER HANDLERS
+            // ============================================================
+
+            SUPPORT_IDS.forEach(id => {
+                const slider = document.getElementById('h' + id);
+                const valueEl = document.getElementById('h' + id + '-value');
+
+                slider.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    state.heights[id] = val;
+                    valueEl.textContent = val.toFixed(1);
+                    updateUI();
+                });
+            });
+
+            // Preset configurations
+            document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.preset-btn[data-preset]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const preset = btn.dataset.preset;
+
+                    switch (preset) {
+                        case 'level':
+                            state.heights = { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 };
+                            break;
+                        case 'tilt-x':
+                            // X向倾斜：右侧高
+                            state.heights = { '8': -3, '11': 0, '25': 3, '4': -3, '16': 0, '30': 3 };
+                            break;
+                        case 'tilt-y':
+                            // Y向倾斜：上侧高
+                            state.heights = { '8': 3, '11': 3, '25': 3, '4': -3, '16': -3, '30': -3 };
+                            break;
+                        case 'twist':
+                            // 扭转：对角高
+                            state.heights = { '8': 5, '11': 0, '25': -5, '4': -5, '16': 0, '30': 5 };
+                            break;
+                    }
+
+                    // Update sliders
+                    SUPPORT_IDS.forEach(id => {
+                        document.getElementById('h' + id).value = state.heights[id];
+                        document.getElementById('h' + id + '-value').textContent = state.heights[id].toFixed(1);
+                    });
+
+                    updateUI();
+                });
+            });
+
+            // Parameter apply button
+            document.getElementById('btn-apply-params').addEventListener('click', () => {
+                // Read values from inputs - 边缘支座
+                params.edgeDiameter = parseFloat(document.getElementById('param-edge-diameter').value);
+                params.edgeLayers = parseInt(document.getElementById('param-edge-layers').value);
+                // 中间支座
+                params.midDiameter = parseFloat(document.getElementById('param-mid-diameter').value);
+                params.midLayers = parseInt(document.getElementById('param-mid-layers').value);
+                // 共用材料参数
+                params.rubberLayerT = parseFloat(document.getElementById('param-rubber-t').value);
+                params.shearModulus = parseFloat(document.getElementById('param-shear-g').value);
+                params.yieldPressure = parseFloat(document.getElementById('param-yield-pressure').value);
+                // 上部结构参数
+                params.EI = parseFloat(document.getElementById('param-ei').value);
+
+                // Recalculate derived values
+                recalculateParams();
+
+                // Update all displays
+                updateUI();
+
+                console.log('参数已应用！');
+            });
+
+            // View tabs
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    state.view = tab.dataset.view;
+                    draw();
+                });
+            });
+
+            // PGA slider
+            const pgaSlider = document.getElementById('pga-slider');
+            const pgaValue = document.getElementById('pga-value');
+            pgaSlider.addEventListener('input', (e) => {
+                state.pga = parseFloat(e.target.value);
+                pgaValue.textContent = state.pga.toFixed(2);
                 updateUI();
             });
-        });
 
-        // Parameter apply button
-        document.getElementById('btn-apply-params').addEventListener('click', () => {
-            // Read values from inputs - 边缘支座
-            params.edgeDiameter = parseFloat(document.getElementById('param-edge-diameter').value);
-            params.edgeLayers = parseInt(document.getElementById('param-edge-layers').value);
-            // 中间支座
-            params.midDiameter = parseFloat(document.getElementById('param-mid-diameter').value);
-            params.midLayers = parseInt(document.getElementById('param-mid-layers').value);
-            // 共用材料参数
-            params.rubberLayerT = parseFloat(document.getElementById('param-rubber-t').value);
-            params.shearModulus = parseFloat(document.getElementById('param-shear-g').value);
-            params.yieldPressure = parseFloat(document.getElementById('param-yield-pressure').value);
-            // 上部结构参数
-            params.EI = parseFloat(document.getElementById('param-ei').value);
-
-            // Recalculate derived values
-            recalculateParams();
-
-            // Update all displays
-            updateUI();
-
-            console.log('参数已应用！');
-        });
-
-        // View tabs
-        document.querySelectorAll('.view-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                state.view = tab.dataset.view;
-                draw();
-            });
-        });
-
-        // PGA slider
-        const pgaSlider = document.getElementById('pga-slider');
-        const pgaValue = document.getElementById('pga-value');
-        pgaSlider.addEventListener('input', (e) => {
-            state.pga = parseFloat(e.target.value);
-            pgaValue.textContent = state.pga.toFixed(2);
-            updateUI();
-        });
-
-        // Damping slider
-        const dampingSlider = document.getElementById('damping-slider');
-        const dampingValue = document.getElementById('damping-value');
-        dampingSlider.addEventListener('input', (e) => {
-            state.damping = parseFloat(e.target.value);
-            dampingValue.textContent = state.damping.toFixed(2);
-            updateUI();
-        });
-
-        // Gap width slider (隔震沟宽度)
-        const gapSlider = document.getElementById('gap-slider');
-        const gapValue = document.getElementById('gap-value');
-        gapSlider.addEventListener('input', (e) => {
-            state.gapWidth = parseFloat(e.target.value);
-            gapValue.textContent = state.gapWidth.toFixed(0);
-            updateUI();
-        });
-
-        // ============================================================
-        // ANIMATION (for visualization only)
-        // ============================================================
-        let animationId = null;
-        const btnAnimate = document.getElementById('btn-animate');
-        const btnReset = document.getElementById('btn-reset');
-
-        btnAnimate.addEventListener('click', () => {
-            if (!state.isAnimating) {
-                state.isAnimating = true;
-                btnAnimate.textContent = '⏸ 暂停';
-                animate();
-            } else {
-                state.isAnimating = false;
-                btnAnimate.textContent = '▶ 继续';
-                cancelAnimationFrame(animationId);
-            }
-        });
-
-        btnReset.addEventListener('click', () => {
-            state.isAnimating = false;
-            cancelAnimationFrame(animationId);
-            state.buildingDisp = { x: 0, y: 0, rot: 0 };
-            state.animTime = 0;
-            state.trajectory = [];
-            state.corner8Trajectory = [];  // 角8轨迹
-            state.corner30Trajectory = []; // 角30轨迹
-            btnAnimate.textContent = '▶ 动画演示';
-            updateUI();
-        });
-
-        function animate() {
-            if (!state.isAnimating) return;
-
-            const dt = 0.02;
-            state.animTime += dt;
-            const t = state.animTime;
-
-            // 简谐波输入
-            const omega_e = 2 * Math.PI / state.period * 0.8;
-            const amplitude = state.spectralDisp; // 使用反应谱位移
-
-            // 质心位移 (带有阻尼衰减)
-            const decay = Math.exp(-state.damping * omega_e * t * 0.5);
-            state.buildingDisp.x = amplitude * Math.sin(omega_e * t) * decay;
-            state.buildingDisp.y = amplitude * Math.sin(omega_e * t + Math.PI / 4) * decay * 0.5;
-
-            // 扭转响应 (偏心导致)
-            const cs = state.cs;
-            if (cs && cs.e_mag > 0.0001) {
-                const torsionAmplitude = amplitude * (cs.e_mag / 0.6) * 0.1;
-                state.buildingDisp.rot = torsionAmplitude * Math.sin(omega_e * t * 1.2) * decay;
-            } else {
-                state.buildingDisp.rot = 0;
-            }
-
-            // 记录质心轨迹
-            state.trajectory.push({
-                x: state.buildingDisp.x * 1000,
-                y: state.buildingDisp.y * 1000
+            // Damping slider
+            const dampingSlider = document.getElementById('damping-slider');
+            const dampingValue = document.getElementById('damping-value');
+            dampingSlider.addEventListener('input', (e) => {
+                state.damping = parseFloat(e.target.value);
+                dampingValue.textContent = state.damping.toFixed(2);
+                updateUI();
             });
 
-            // 计算并记录角8和角30的轨迹
-            const s8 = state.supports['8'];
-            const s30 = state.supports['30'];
-            const theta = state.buildingDisp.rot;
+            // Gap width slider (隔震沟宽度)
+            const gapSlider = document.getElementById('gap-slider');
+            const gapValue = document.getElementById('gap-value');
+            gapSlider.addEventListener('input', (e) => {
+                state.gapWidth = parseFloat(e.target.value);
+                gapValue.textContent = state.gapWidth.toFixed(0);
+                updateUI();
+            });
 
-            // 角支座位移 = 质心位移 + 扭转引起的切向位移
-            const r8 = Math.sqrt(s8.x * s8.x + s8.y * s8.y);
-            const r30 = Math.sqrt(s30.x * s30.x + s30.y * s30.y);
+            // ============================================================
+            // ANIMATION (for visualization only)
+            // ============================================================
+            let animationId = null;
+            const btnAnimate = document.getElementById('btn-animate');
+            const btnReset = document.getElementById('btn-reset');
 
-            const corner8X = (state.buildingDisp.x + theta * s8.y) * 1000;
-            const corner8Y = (state.buildingDisp.y - theta * s8.x) * 1000;
-            const corner30X = (state.buildingDisp.x + theta * s30.y) * 1000;
-            const corner30Y = (state.buildingDisp.y - theta * s30.x) * 1000;
-
-            if (!state.corner8Trajectory) state.corner8Trajectory = [];
-            if (!state.corner30Trajectory) state.corner30Trajectory = [];
-
-            state.corner8Trajectory.push({ x: corner8X, y: corner8Y });
-            state.corner30Trajectory.push({ x: corner30X, y: corner30Y });
-
-            // 限制轨迹长度
-            if (state.trajectory.length > state.maxTrajectoryPoints) {
-                state.trajectory.shift();
-                state.corner8Trajectory.shift();
-                state.corner30Trajectory.shift();
-            }
-
-            draw();
-            animationId = requestAnimationFrame(animate);
-        }
-
-        // ============================================================
-        // DRAWING
-        // ============================================================
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (state.view === 'plan') {
-                drawPlanView();
-            } else if (state.view === 'trajectory') {
-                drawTrajectoryView();
-            } else if (state.view === 'spectrum') {
-                drawSpectrumView();
-            } else {
-                drawStiffnessView();
-            }
-        }
-
-        function drawPlanView() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const scale = 280; // pixels per meter
-
-            // 位移放大倍数 - 让位移可见但不要超出边界
-            const dispScale = 100; // 1mm -> 100px (可见但受限)
-            const dispX = Math.max(-100, Math.min(100, state.buildingDisp.x * 1000 * dispScale / 1000));
-            const dispY = Math.max(-100, Math.min(100, state.buildingDisp.y * 1000 * dispScale / 1000));
-            const rotScale = 5; // 扭转放大
-
-            ctx.save();
-            ctx.translate(centerX + dispX, centerY - dispY);
-            ctx.rotate(state.buildingDisp.rot * rotScale);
-
-            // Building outline
-            const w = TOTAL_LENGTH * scale;
-            const d = TOTAL_WIDTH * scale;
-
-            ctx.fillStyle = 'rgba(61, 90, 128, 0.3)';
-            ctx.fillRect(-w / 2, -d / 2, w, d);
-            ctx.strokeStyle = '#5c7a99';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(-w / 2, -d / 2, w, d);
-
-            // Span divider
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            ctx.moveTo(0, -d / 2);
-            ctx.lineTo(0, d / 2);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Labels
-            ctx.font = '11px Inter';
-            ctx.fillStyle = '#666';
-            ctx.textAlign = 'center';
-            ctx.fillText('跨1', -w / 4, 0);
-            ctx.fillText('跨2', w / 4, 0);
-
-            // Draw supports
-            SUPPORT_IDS.forEach(id => {
-                const s = state.supports[id];
-                const px = s.x * scale;
-                const py = -s.y * scale;
-
-                const size = 18;
-
-                // Color based on stiffness ratio
-                let color;
-                if (s.stiffnessRatio > 0.9) {
-                    color = '#2ed573';
-                } else if (s.stiffnessRatio > 0.7) {
-                    color = '#ffa502';
+            btnAnimate.addEventListener('click', () => {
+                if (!state.isAnimating) {
+                    state.isAnimating = true;
+                    btnAnimate.textContent = '⏸ 暂停';
+                    animate();
                 } else {
-                    color = '#ff6b6b';
+                    state.isAnimating = false;
+                    btnAnimate.textContent = '▶ 继续';
+                    cancelAnimationFrame(animationId);
                 }
-
-                // Draw bearing
-                ctx.beginPath();
-                ctx.arc(px, py, size, 0, Math.PI * 2);
-                ctx.fillStyle = color;
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // Height indicator
-                if (s.h !== 0) {
-                    ctx.font = '9px JetBrains Mono';
-                    ctx.fillStyle = s.h > 0 ? '#00d4ff' : '#f472b6';
-                    ctx.textAlign = 'center';
-                    ctx.fillText((s.h > 0 ? '+' : '') + s.h.toFixed(1), px, py + size + 12);
-                }
-
-                // Label
-                ctx.font = 'bold 11px Inter';
-                ctx.fillStyle = '#fff';
-                ctx.textAlign = 'center';
-                ctx.fillText(id, px, py + 4);
             });
 
-            // Center of Mass (CM)
-            ctx.beginPath();
-            ctx.arc(0, 0, 6, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffa502';
-            ctx.fill();
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
+            btnReset.addEventListener('click', () => {
+                state.isAnimating = false;
+                cancelAnimationFrame(animationId);
+                state.buildingDisp = { x: 0, y: 0, rot: 0 };
+                state.animTime = 0;
+                state.trajectory = [];
+                state.corner8Trajectory = [];  // 角8轨迹
+                state.corner30Trajectory = []; // 角30轨迹
+                btnAnimate.textContent = '▶ 动画演示';
+                updateUI();
+            });
 
-            // Center of Stiffness (CS)
-            const cs = calculateStiffnessCenter();
-            const csX = cs.x * scale;
-            const csY = -cs.y * scale;
+            function animate() {
+                if (!state.isAnimating) return;
 
-            ctx.beginPath();
-            ctx.arc(csX, csY, 6, 0, Math.PI * 2);
-            ctx.fillStyle = '#f472b6';
-            ctx.fill();
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
+                const dt = 0.02;
+                state.animTime += dt;
+                const t = state.animTime;
 
-            // Eccentricity line
-            if (cs.e_mag > 0.001) {
-                ctx.beginPath();
-                ctx.setLineDash([4, 4]);
-                ctx.moveTo(0, 0);
-                ctx.lineTo(csX, csY);
-                ctx.strokeStyle = '#f472b6';
+                // 简谐波输入
+                const omega_e = 2 * Math.PI / state.period * 0.8;
+                const amplitude = state.spectralDisp; // 使用反应谱位移
+
+                // 质心位移 (带有阻尼衰减)
+                const decay = Math.exp(-state.damping * omega_e * t * 0.5);
+                state.buildingDisp.x = amplitude * Math.sin(omega_e * t) * decay;
+                state.buildingDisp.y = amplitude * Math.sin(omega_e * t + Math.PI / 4) * decay * 0.5;
+
+                // 扭转响应 (偏心导致)
+                const cs = state.cs;
+                if (cs && cs.e_mag > 0.0001) {
+                    const torsionAmplitude = amplitude * (cs.e_mag / 0.6) * 0.1;
+                    state.buildingDisp.rot = torsionAmplitude * Math.sin(omega_e * t * 1.2) * decay;
+                } else {
+                    state.buildingDisp.rot = 0;
+                }
+
+                // 记录质心轨迹
+                state.trajectory.push({
+                    x: state.buildingDisp.x * 1000,
+                    y: state.buildingDisp.y * 1000
+                });
+
+                // 计算并记录角8和角30的轨迹
+                const s8 = state.supports['8'];
+                const s30 = state.supports['30'];
+                const theta = state.buildingDisp.rot;
+
+                // 角支座位移 = 质心位移 + 扭转引起的切向位移
+                const r8 = Math.sqrt(s8.x * s8.x + s8.y * s8.y);
+                const r30 = Math.sqrt(s30.x * s30.x + s30.y * s30.y);
+
+                const corner8X = (state.buildingDisp.x + theta * s8.y) * 1000;
+                const corner8Y = (state.buildingDisp.y - theta * s8.x) * 1000;
+                const corner30X = (state.buildingDisp.x + theta * s30.y) * 1000;
+                const corner30Y = (state.buildingDisp.y - theta * s30.x) * 1000;
+
+                if (!state.corner8Trajectory) state.corner8Trajectory = [];
+                if (!state.corner30Trajectory) state.corner30Trajectory = [];
+
+                state.corner8Trajectory.push({ x: corner8X, y: corner8Y });
+                state.corner30Trajectory.push({ x: corner30X, y: corner30Y });
+
+                // 限制轨迹长度
+                if (state.trajectory.length > state.maxTrajectoryPoints) {
+                    state.trajectory.shift();
+                    state.corner8Trajectory.shift();
+                    state.corner30Trajectory.shift();
+                }
+
+                draw();
+                animationId = requestAnimationFrame(animate);
+            }
+
+            // ============================================================
+            // DRAWING
+            // ============================================================
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (state.view === 'plan') {
+                    drawPlanView();
+                } else if (state.view === 'trajectory') {
+                    drawTrajectoryView();
+                } else if (state.view === 'spectrum') {
+                    drawSpectrumView();
+                } else {
+                    drawStiffnessView();
+                }
+            }
+
+            function drawPlanView() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const scale = 280; // pixels per meter
+
+                // 位移放大倍数 - 让位移可见但不要超出边界
+                const dispScale = 100; // 1mm -> 100px (可见但受限)
+                const dispX = Math.max(-100, Math.min(100, state.buildingDisp.x * 1000 * dispScale / 1000));
+                const dispY = Math.max(-100, Math.min(100, state.buildingDisp.y * 1000 * dispScale / 1000));
+                const rotScale = 5; // 扭转放大
+
+                ctx.save();
+                ctx.translate(centerX + dispX, centerY - dispY);
+                ctx.rotate(state.buildingDisp.rot * rotScale);
+
+                // Building outline
+                const w = TOTAL_LENGTH * scale;
+                const d = TOTAL_WIDTH * scale;
+
+                ctx.fillStyle = 'rgba(61, 90, 128, 0.3)';
+                ctx.fillRect(-w / 2, -d / 2, w, d);
+                ctx.strokeStyle = '#5c7a99';
                 ctx.lineWidth = 2;
+                ctx.strokeRect(-w / 2, -d / 2, w, d);
+
+                // Span divider
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(0, -d / 2);
+                ctx.lineTo(0, d / 2);
                 ctx.stroke();
                 ctx.setLineDash([]);
 
-                ctx.font = '10px JetBrains Mono';
-                ctx.fillStyle = '#f472b6';
-                ctx.fillText(`e=${(cs.e_mag * 1000).toFixed(1)}mm`, csX / 2 + 20, csY / 2);
-            }
-
-            // Legend
-            ctx.restore();
-            ctx.font = '10px Inter';
-            ctx.textAlign = 'left';
-
-            ctx.fillStyle = '#ffa502';
-            ctx.fillRect(20, canvas.height - 50, 10, 10);
-            ctx.fillStyle = '#888';
-            ctx.fillText('CM (质心)', 35, canvas.height - 41);
-
-            ctx.fillStyle = '#f472b6';
-            ctx.fillRect(20, canvas.height - 35, 10, 10);
-            ctx.fillStyle = '#888';
-            ctx.fillText('CS (刚度中心)', 35, canvas.height - 26);
-
-            // 显示地震波方向和当前位移
-            if (state.isAnimating) {
-                // 地震波方向指示 (X和Y都有)
-                const arrowLen = 40;
-                const baseX = canvas.width - 80;
-                const baseY = 60;
-
-                // 坐标轴
-                ctx.strokeStyle = '#555';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(baseX - 30, baseY);
-                ctx.lineTo(baseX + 30, baseY);
-                ctx.moveTo(baseX, baseY + 30);
-                ctx.lineTo(baseX, baseY - 30);
-                ctx.stroke();
-
-                ctx.font = '9px Inter';
+                // Labels
+                ctx.font = '11px Inter';
                 ctx.fillStyle = '#666';
                 ctx.textAlign = 'center';
-                ctx.fillText('X', baseX + 35, baseY + 4);
-                ctx.fillText('Y', baseX, baseY - 35);
+                ctx.fillText('跨1', -w / 4, 0);
+                ctx.fillText('跨2', w / 4, 0);
 
-                // 当前加速度方向
-                const dispScale = 1;
-                const ax = state.buildingDisp.x * 1000 * dispScale;
-                const ay = -state.buildingDisp.y * 1000 * dispScale;
+                // Draw supports
+                SUPPORT_IDS.forEach(id => {
+                    const s = state.supports[id];
+                    const px = s.x * scale;
+                    const py = -s.y * scale;
 
-                ctx.beginPath();
-                ctx.moveTo(baseX, baseY);
-                ctx.lineTo(baseX + ax, baseY + ay);
-                ctx.strokeStyle = '#00d4ff';
-                ctx.lineWidth = 3;
-                ctx.stroke();
+                    const size = 18;
 
-                // 箭头
-                ctx.beginPath();
-                ctx.arc(baseX + ax, baseY + ay, 4, 0, Math.PI * 2);
-                ctx.fillStyle = '#00d4ff';
-                ctx.fill();
-
-                ctx.font = 'bold 10px Inter';
-                ctx.fillStyle = '#00d4ff';
-                ctx.textAlign = 'left';
-                ctx.fillText('位移方向', baseX - 30, baseY + 50);
-            }
-
-            // 在中心绘制轨迹预览
-            if (state.trajectory.length > 1) {
-                ctx.save();
-                ctx.translate(centerX, centerY);
-
-                // 绘制最近的轨迹点
-                const trajScale = scale * 5;
-                ctx.beginPath();
-                for (let i = Math.max(0, state.trajectory.length - 50); i < state.trajectory.length; i++) {
-                    const p = state.trajectory[i];
-                    const x = p.x / 1000 * trajScale; // mm -> m -> pixels
-                    const y = -p.y / 1000 * trajScale;
-                    const alpha = (i - state.trajectory.length + 50) / 50;
-
-                    if (i === Math.max(0, state.trajectory.length - 50)) {
-                        ctx.moveTo(x, y);
+                    // Color based on stiffness ratio
+                    let color;
+                    if (s.stiffnessRatio > 0.9) {
+                        color = '#2ed573';
+                    } else if (s.stiffnessRatio > 0.7) {
+                        color = '#ffa502';
                     } else {
-                        ctx.lineTo(x, y);
+                        color = '#ff6b6b';
                     }
+
+                    // Draw bearing
+                    ctx.beginPath();
+                    ctx.arc(px, py, size, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Height indicator
+                    if (s.h !== 0) {
+                        ctx.font = '9px JetBrains Mono';
+                        ctx.fillStyle = s.h > 0 ? '#00d4ff' : '#f472b6';
+                        ctx.textAlign = 'center';
+                        ctx.fillText((s.h > 0 ? '+' : '') + s.h.toFixed(1), px, py + size + 12);
+                    }
+
+                    // Label
+                    ctx.font = 'bold 11px Inter';
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(id, px, py + 4);
+                });
+
+                // Center of Mass (CM)
+                ctx.beginPath();
+                ctx.arc(0, 0, 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffa502';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Center of Stiffness (CS)
+                const cs = calculateStiffnessCenter();
+                const csX = cs.x * scale;
+                const csY = -cs.y * scale;
+
+                ctx.beginPath();
+                ctx.arc(csX, csY, 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#f472b6';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Eccentricity line
+                if (cs.e_mag > 0.001) {
+                    ctx.beginPath();
+                    ctx.setLineDash([4, 4]);
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(csX, csY);
+                    ctx.strokeStyle = '#f472b6';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    ctx.font = '10px JetBrains Mono';
+                    ctx.fillStyle = '#f472b6';
+                    ctx.fillText(`e=${(cs.e_mag * 1000).toFixed(1)}mm`, csX / 2 + 20, csY / 2);
                 }
-                ctx.strokeStyle = 'rgba(46, 213, 115, 0.5)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
 
+                // Legend
                 ctx.restore();
-            }
-        }
+                ctx.font = '10px Inter';
+                ctx.textAlign = 'left';
 
-        function drawTrajectoryView() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const scale = 3; // pixels per mm of displacement
+                ctx.fillStyle = '#ffa502';
+                ctx.fillRect(20, canvas.height - 50, 10, 10);
+                ctx.fillStyle = '#888';
+                ctx.fillText('CM (质心)', 35, canvas.height - 41);
 
-            ctx.font = '12px Inter';
-            ctx.fillStyle = '#888';
-            ctx.textAlign = 'left';
-            ctx.fillText('轨迹图 - 质心 + 角支座 (mm)', 20, 30);
+                ctx.fillStyle = '#f472b6';
+                ctx.fillRect(20, canvas.height - 35, 10, 10);
+                ctx.fillStyle = '#888';
+                ctx.fillText('CS (刚度中心)', 35, canvas.height - 26);
 
-            // Draw grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 1;
-            for (let i = -5; i <= 5; i++) {
-                ctx.beginPath();
-                ctx.moveTo(centerX + i * 40, centerY - 180);
-                ctx.lineTo(centerX + i * 40, centerY + 180);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(centerX - 200, centerY + i * 40);
-                ctx.lineTo(centerX + 200, centerY + i * 40);
-                ctx.stroke();
-            }
+                // 显示地震波方向和当前位移
+                if (state.isAnimating) {
+                    // 地震波方向指示 (X和Y都有)
+                    const arrowLen = 40;
+                    const baseX = canvas.width - 80;
+                    const baseY = 60;
 
-            // Draw axes
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(centerX - 200, centerY);
-            ctx.lineTo(centerX + 200, centerY);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY - 180);
-            ctx.lineTo(centerX, centerY + 180);
-            ctx.stroke();
+                    // 坐标轴
+                    ctx.strokeStyle = '#555';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(baseX - 30, baseY);
+                    ctx.lineTo(baseX + 30, baseY);
+                    ctx.moveTo(baseX, baseY + 30);
+                    ctx.lineTo(baseX, baseY - 30);
+                    ctx.stroke();
 
-            // Axis labels
-            ctx.font = 'bold 12px Inter';
-            ctx.fillStyle = '#00d4ff';
-            ctx.textAlign = 'center';
-            ctx.fillText('X (mm)', centerX + 180, centerY + 20);
-            ctx.fillText('Y (mm)', centerX + 20, centerY - 165);
+                    ctx.font = '9px Inter';
+                    ctx.fillStyle = '#666';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('X', baseX + 35, baseY + 4);
+                    ctx.fillText('Y', baseX, baseY - 35);
 
-            // Helper function to draw a trajectory
-            function drawTraj(traj, color, label) {
-                if (!traj || traj.length < 2) return;
-
-                for (let i = 1; i < traj.length; i++) {
-                    const p0 = traj[i - 1];
-                    const p1 = traj[i];
-                    const alpha = 0.3 + 0.7 * (i / traj.length);
+                    // 当前加速度方向
+                    const dispScale = 1;
+                    const ax = state.buildingDisp.x * 1000 * dispScale;
+                    const ay = -state.buildingDisp.y * 1000 * dispScale;
 
                     ctx.beginPath();
-                    ctx.moveTo(centerX + p0.x * scale, centerY - p0.y * scale);
-                    ctx.lineTo(centerX + p1.x * scale, centerY - p1.y * scale);
-                    ctx.strokeStyle = color.replace('1)', alpha + ')');
+                    ctx.moveTo(baseX, baseY);
+                    ctx.lineTo(baseX + ax, baseY + ay);
+                    ctx.strokeStyle = '#00d4ff';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    // 箭头
+                    ctx.beginPath();
+                    ctx.arc(baseX + ax, baseY + ay, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#00d4ff';
+                    ctx.fill();
+
+                    ctx.font = 'bold 10px Inter';
+                    ctx.fillStyle = '#00d4ff';
+                    ctx.textAlign = 'left';
+                    ctx.fillText('位移方向', baseX - 30, baseY + 50);
+                }
+
+                // 在中心绘制轨迹预览
+                if (state.trajectory.length > 1) {
+                    ctx.save();
+                    ctx.translate(centerX, centerY);
+
+                    // 绘制最近的轨迹点
+                    const trajScale = scale * 5;
+                    ctx.beginPath();
+                    for (let i = Math.max(0, state.trajectory.length - 50); i < state.trajectory.length; i++) {
+                        const p = state.trajectory[i];
+                        const x = p.x / 1000 * trajScale; // mm -> m -> pixels
+                        const y = -p.y / 1000 * trajScale;
+                        const alpha = (i - state.trajectory.length + 50) / 50;
+
+                        if (i === Math.max(0, state.trajectory.length - 50)) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.strokeStyle = 'rgba(46, 213, 115, 0.5)';
                     ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.restore();
+                }
+            }
+
+            function drawTrajectoryView() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const scale = 3; // pixels per mm of displacement
+
+                ctx.font = '12px Inter';
+                ctx.fillStyle = '#888';
+                ctx.textAlign = 'left';
+                ctx.fillText('轨迹图 - 质心 + 角支座 (mm)', 20, 30);
+
+                // Draw grid
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                for (let i = -5; i <= 5; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + i * 40, centerY - 180);
+                    ctx.lineTo(centerX + i * 40, centerY + 180);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - 200, centerY + i * 40);
+                    ctx.lineTo(centerX + 200, centerY + i * 40);
                     ctx.stroke();
                 }
 
-                // Current position
-                const current = traj[traj.length - 1];
+                // Draw axes
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.arc(centerX + current.x * scale, centerY - current.y * scale, 6, 0, Math.PI * 2);
-                ctx.fillStyle = color;
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 1;
+                ctx.moveTo(centerX - 200, centerY);
+                ctx.lineTo(centerX + 200, centerY);
                 ctx.stroke();
-            }
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY - 180);
+                ctx.lineTo(centerX, centerY + 180);
+                ctx.stroke();
 
-            // Draw corner 8 trajectory (blue)
-            drawTraj(state.corner8Trajectory, 'rgba(0, 212, 255, 1)', '角8');
+                // Axis labels
+                ctx.font = 'bold 12px Inter';
+                ctx.fillStyle = '#00d4ff';
+                ctx.textAlign = 'center';
+                ctx.fillText('X (mm)', centerX + 180, centerY + 20);
+                ctx.fillText('Y (mm)', centerX + 20, centerY - 165);
 
-            // Draw corner 30 trajectory (pink)
-            drawTraj(state.corner30Trajectory, 'rgba(244, 114, 182, 1)', '角30');
+                // Helper function to draw a trajectory
+                function drawTraj(traj, color, label) {
+                    if (!traj || traj.length < 2) return;
 
-            // Draw center of mass trajectory (green) - on top
-            drawTraj(state.trajectory, 'rgba(46, 213, 115, 1)', '质心');
+                    for (let i = 1; i < traj.length; i++) {
+                        const p0 = traj[i - 1];
+                        const p1 = traj[i];
+                        const alpha = 0.3 + 0.7 * (i / traj.length);
 
-            // Origin marker
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, 4, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffa502';
-            ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(centerX + p0.x * scale, centerY - p0.y * scale);
+                        ctx.lineTo(centerX + p1.x * scale, centerY - p1.y * scale);
+                        ctx.strokeStyle = color.replace('1)', alpha + ')');
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
 
-            // Legend
-            ctx.font = '10px Inter';
-            ctx.textAlign = 'left';
+                    // Current position
+                    const current = traj[traj.length - 1];
+                    ctx.beginPath();
+                    ctx.arc(centerX + current.x * scale, centerY - current.y * scale, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
 
-            ctx.fillStyle = '#2ed573';
-            ctx.fillRect(20, canvas.height - 65, 10, 10);
-            ctx.fillStyle = '#888';
-            ctx.fillText('质心', 35, canvas.height - 56);
+                // Draw corner 8 trajectory (blue)
+                drawTraj(state.corner8Trajectory, 'rgba(0, 212, 255, 1)', '角8');
 
-            ctx.fillStyle = '#00d4ff';
-            ctx.fillRect(20, canvas.height - 50, 10, 10);
-            ctx.fillStyle = '#888';
-            ctx.fillText('角8 (左上)', 35, canvas.height - 41);
+                // Draw corner 30 trajectory (pink)
+                drawTraj(state.corner30Trajectory, 'rgba(244, 114, 182, 1)', '角30');
 
-            ctx.fillStyle = '#f472b6';
-            ctx.fillRect(20, canvas.height - 35, 10, 10);
-            ctx.fillStyle = '#888';
-            ctx.fillText('角30 (右下)', 35, canvas.height - 26);
+                // Draw center of mass trajectory (green) - on top
+                drawTraj(state.trajectory, 'rgba(46, 213, 115, 1)', '质心');
 
-            // Info text - show max displacements
-            ctx.font = '10px JetBrains Mono';
-            ctx.textAlign = 'right';
+                // Origin marker
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffa502';
+                ctx.fill();
 
-            if (state.trajectory.length > 0) {
-                const cmLatest = state.trajectory[state.trajectory.length - 1];
-                const cmMax = Math.sqrt(cmLatest.x * cmLatest.x + cmLatest.y * cmLatest.y);
+                // Legend
+                ctx.font = '10px Inter';
+                ctx.textAlign = 'left';
 
                 ctx.fillStyle = '#2ed573';
-                ctx.fillText(`质心: ${cmMax.toFixed(1)}mm`, canvas.width - 20, canvas.height - 65);
+                ctx.fillRect(20, canvas.height - 65, 10, 10);
+                ctx.fillStyle = '#888';
+                ctx.fillText('质心', 35, canvas.height - 56);
 
-                if (state.corner8Trajectory && state.corner8Trajectory.length > 0) {
-                    const c8 = state.corner8Trajectory[state.corner8Trajectory.length - 1];
-                    const c8Max = Math.sqrt(c8.x * c8.x + c8.y * c8.y);
-                    ctx.fillStyle = '#00d4ff';
-                    ctx.fillText(`角8: ${c8Max.toFixed(1)}mm`, canvas.width - 20, canvas.height - 50);
+                ctx.fillStyle = '#00d4ff';
+                ctx.fillRect(20, canvas.height - 50, 10, 10);
+                ctx.fillStyle = '#888';
+                ctx.fillText('角8 (左上)', 35, canvas.height - 41);
+
+                ctx.fillStyle = '#f472b6';
+                ctx.fillRect(20, canvas.height - 35, 10, 10);
+                ctx.fillStyle = '#888';
+                ctx.fillText('角30 (右下)', 35, canvas.height - 26);
+
+                // Info text - show max displacements
+                ctx.font = '10px JetBrains Mono';
+                ctx.textAlign = 'right';
+
+                if (state.trajectory.length > 0) {
+                    const cmLatest = state.trajectory[state.trajectory.length - 1];
+                    const cmMax = Math.sqrt(cmLatest.x * cmLatest.x + cmLatest.y * cmLatest.y);
+
+                    ctx.fillStyle = '#2ed573';
+                    ctx.fillText(`质心: ${cmMax.toFixed(1)}mm`, canvas.width - 20, canvas.height - 65);
+
+                    if (state.corner8Trajectory && state.corner8Trajectory.length > 0) {
+                        const c8 = state.corner8Trajectory[state.corner8Trajectory.length - 1];
+                        const c8Max = Math.sqrt(c8.x * c8.x + c8.y * c8.y);
+                        ctx.fillStyle = '#00d4ff';
+                        ctx.fillText(`角8: ${c8Max.toFixed(1)}mm`, canvas.width - 20, canvas.height - 50);
+                    }
+
+                    if (state.corner30Trajectory && state.corner30Trajectory.length > 0) {
+                        const c30 = state.corner30Trajectory[state.corner30Trajectory.length - 1];
+                        const c30Max = Math.sqrt(c30.x * c30.x + c30.y * c30.y);
+                        ctx.fillStyle = '#f472b6';
+                        ctx.fillText(`角30: ${c30Max.toFixed(1)}mm`, canvas.width - 20, canvas.height - 35);
+                    }
                 }
 
-                if (state.corner30Trajectory && state.corner30Trajectory.length > 0) {
-                    const c30 = state.corner30Trajectory[state.corner30Trajectory.length - 1];
-                    const c30Max = Math.sqrt(c30.x * c30.x + c30.y * c30.y);
-                    ctx.fillStyle = '#f472b6';
-                    ctx.fillText(`角30: ${c30Max.toFixed(1)}mm`, canvas.width - 20, canvas.height - 35);
+                // Hint if no trajectory
+                if (state.trajectory.length === 0) {
+                    ctx.font = '14px Inter';
+                    ctx.fillStyle = '#666';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('点击"动画演示"查看轨迹', centerX, centerY);
                 }
             }
 
-            // Hint if no trajectory
-            if (state.trajectory.length === 0) {
-                ctx.font = '14px Inter';
-                ctx.fillStyle = '#666';
+            // 反应谱视图 - 显示周期与响应的关系
+            function drawSpectrumView() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const marginLeft = 60;
+                const marginBottom = 50;
+                const marginTop = 40;
+                const marginRight = 30;
+                const plotW = canvas.width - marginLeft - marginRight;
+                const plotH = canvas.height - marginTop - marginBottom;
+
+                ctx.font = '12px Inter';
+                ctx.fillStyle = '#888';
+                ctx.textAlign = 'left';
+                ctx.fillText('反应谱 - 周期与响应关系', 20, 25);
+
+                // 绘制坐标轴
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(marginLeft, marginTop);
+                ctx.lineTo(marginLeft, canvas.height - marginBottom);
+                ctx.lineTo(canvas.width - marginRight, canvas.height - marginBottom);
+                ctx.stroke();
+
+                // 轴标签
+                ctx.font = 'bold 11px Inter';
+                ctx.fillStyle = '#00d4ff';
                 ctx.textAlign = 'center';
-                ctx.fillText('点击"动画演示"查看轨迹', centerX, centerY);
-            }
-        }
+                ctx.fillText('周期 T (s)', centerX, canvas.height - 10);
 
-        // 反应谱视图 - 显示周期与响应的关系
-        function drawSpectrumView() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const marginLeft = 60;
-            const marginBottom = 50;
-            const marginTop = 40;
-            const marginRight = 30;
-            const plotW = canvas.width - marginLeft - marginRight;
-            const plotH = canvas.height - marginTop - marginBottom;
+                ctx.save();
+                ctx.translate(15, centerY);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('加速度响应 Sa (g)', 0, 0);
+                ctx.restore();
 
-            ctx.font = '12px Inter';
-            ctx.fillStyle = '#888';
-            ctx.textAlign = 'left';
-            ctx.fillText('反应谱 - 周期与响应关系', 20, 25);
+                // 计算平动周期和扭转周期
+                const Tx = state.period;
+                const Jm = state.mass * (TOTAL_LENGTH * TOTAL_LENGTH + TOTAL_WIDTH * TOTAL_WIDTH) / 12; // 质量惯性矩
+                const Jk = state.J || 0.1; // 扭转刚度
+                const Tr = 2 * Math.PI * Math.sqrt(Jm / Jk); // 扭转周期
 
-            // 绘制坐标轴
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(marginLeft, marginTop);
-            ctx.lineTo(marginLeft, canvas.height - marginBottom);
-            ctx.lineTo(canvas.width - marginRight, canvas.height - marginBottom);
-            ctx.stroke();
+                // 绘制设计反应谱 (简化的抗震规范谱)
+                const periods = [];
+                const accels = [];
+                const Tg = 0.4; // 特征周期
+                const maxSa = state.pga * 2.5; // 平台段放大系数约2.5
 
-            // 轴标签
-            ctx.font = 'bold 11px Inter';
-            ctx.fillStyle = '#00d4ff';
-            ctx.textAlign = 'center';
-            ctx.fillText('周期 T (s)', centerX, canvas.height - 10);
-
-            ctx.save();
-            ctx.translate(15, centerY);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('加速度响应 Sa (g)', 0, 0);
-            ctx.restore();
-
-            // 计算平动周期和扭转周期
-            const Tx = state.period;
-            const Jm = state.mass * (TOTAL_LENGTH * TOTAL_LENGTH + TOTAL_WIDTH * TOTAL_WIDTH) / 12; // 质量惯性矩
-            const Jk = state.J || 0.1; // 扭转刚度
-            const Tr = 2 * Math.PI * Math.sqrt(Jm / Jk); // 扭转周期
-
-            // 绘制设计反应谱 (简化的抗震规范谱)
-            const periods = [];
-            const accels = [];
-            const Tg = 0.4; // 特征周期
-            const maxSa = state.pga * 2.5; // 平台段放大系数约2.5
-
-            for (let T = 0.05; T <= 4; T += 0.05) {
-                periods.push(T);
-                let Sa;
-                if (T < 0.1) {
-                    Sa = state.pga + (maxSa - state.pga) * (T / 0.1);
-                } else if (T < Tg) {
-                    Sa = maxSa;
-                } else {
-                    Sa = maxSa * Math.pow(Tg / T, 0.9);
+                for (let T = 0.05; T <= 4; T += 0.05) {
+                    periods.push(T);
+                    let Sa;
+                    if (T < 0.1) {
+                        Sa = state.pga + (maxSa - state.pga) * (T / 0.1);
+                    } else if (T < Tg) {
+                        Sa = maxSa;
+                    } else {
+                        Sa = maxSa * Math.pow(Tg / T, 0.9);
+                    }
+                    accels.push(Sa);
                 }
-                accels.push(Sa);
-            }
 
-            // 绘制谱曲线
-            const maxT = 4;
-            const maxA = maxSa * 1.2;
+                // 绘制谱曲线
+                const maxT = 4;
+                const maxA = maxSa * 1.2;
 
-            ctx.beginPath();
-            ctx.strokeStyle = '#2ed573';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < periods.length; i++) {
-                const x = marginLeft + (periods[i] / maxT) * plotW;
-                const y = canvas.height - marginBottom - (accels[i] / maxA) * plotH;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.stroke();
+                ctx.beginPath();
+                ctx.strokeStyle = '#2ed573';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < periods.length; i++) {
+                    const x = marginLeft + (periods[i] / maxT) * plotW;
+                    const y = canvas.height - marginBottom - (accels[i] / maxA) * plotH;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
 
-            // 绘制平动周期标记
-            const Tx_x = marginLeft + (Tx / maxT) * plotW;
-            const Tx_Sa = Tx < 0.1 ? state.pga + (maxSa - state.pga) * (Tx / 0.1) :
-                Tx < Tg ? maxSa : maxSa * Math.pow(Tg / Tx, 0.9);
-            const Tx_y = canvas.height - marginBottom - (Tx_Sa / maxA) * plotH;
-
-            ctx.beginPath();
-            ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = '#00d4ff';
-            ctx.moveTo(Tx_x, canvas.height - marginBottom);
-            ctx.lineTo(Tx_x, Tx_y);
-            ctx.lineTo(marginLeft, Tx_y);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            ctx.beginPath();
-            ctx.arc(Tx_x, Tx_y, 8, 0, Math.PI * 2);
-            ctx.fillStyle = '#00d4ff';
-            ctx.fill();
-
-            // 绘制扭转周期标记
-            if (Tr > 0 && Tr < maxT) {
-                const Tr_x = marginLeft + (Tr / maxT) * plotW;
-                const Tr_Sa = Tr < 0.1 ? state.pga + (maxSa - state.pga) * (Tr / 0.1) :
-                    Tr < Tg ? maxSa : maxSa * Math.pow(Tg / Tr, 0.9);
-                const Tr_y = canvas.height - marginBottom - (Tr_Sa / maxA) * plotH;
+                // 绘制平动周期标记
+                const Tx_x = marginLeft + (Tx / maxT) * plotW;
+                const Tx_Sa = Tx < 0.1 ? state.pga + (maxSa - state.pga) * (Tx / 0.1) :
+                    Tx < Tg ? maxSa : maxSa * Math.pow(Tg / Tx, 0.9);
+                const Tx_y = canvas.height - marginBottom - (Tx_Sa / maxA) * plotH;
 
                 ctx.beginPath();
                 ctx.setLineDash([5, 5]);
-                ctx.strokeStyle = '#f472b6';
-                ctx.moveTo(Tr_x, canvas.height - marginBottom);
-                ctx.lineTo(Tr_x, Tr_y);
+                ctx.strokeStyle = '#00d4ff';
+                ctx.moveTo(Tx_x, canvas.height - marginBottom);
+                ctx.lineTo(Tx_x, Tx_y);
+                ctx.lineTo(marginLeft, Tx_y);
                 ctx.stroke();
                 ctx.setLineDash([]);
 
                 ctx.beginPath();
-                ctx.arc(Tr_x, Tr_y, 6, 0, Math.PI * 2);
+                ctx.arc(Tx_x, Tx_y, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#00d4ff';
+                ctx.fill();
+
+                // 绘制扭转周期标记
+                if (Tr > 0 && Tr < maxT) {
+                    const Tr_x = marginLeft + (Tr / maxT) * plotW;
+                    const Tr_Sa = Tr < 0.1 ? state.pga + (maxSa - state.pga) * (Tr / 0.1) :
+                        Tr < Tg ? maxSa : maxSa * Math.pow(Tg / Tr, 0.9);
+                    const Tr_y = canvas.height - marginBottom - (Tr_Sa / maxA) * plotH;
+
+                    ctx.beginPath();
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeStyle = '#f472b6';
+                    ctx.moveTo(Tr_x, canvas.height - marginBottom);
+                    ctx.lineTo(Tr_x, Tr_y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    ctx.beginPath();
+                    ctx.arc(Tr_x, Tr_y, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f472b6';
+                    ctx.fill();
+                }
+
+                // 图例
+                ctx.font = '10px Inter';
+                ctx.textAlign = 'left';
+
+                ctx.fillStyle = '#2ed573';
+                ctx.fillRect(marginLeft + 10, marginTop + 10, 20, 3);
+                ctx.fillStyle = '#888';
+                ctx.fillText('设计反应谱', marginLeft + 35, marginTop + 15);
+
+                ctx.beginPath();
+                ctx.arc(marginLeft + 20, marginTop + 35, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#00d4ff';
+                ctx.fill();
+                ctx.fillStyle = '#888';
+                ctx.fillText(`平动周期 Tx = ${Tx.toFixed(2)} s`, marginLeft + 35, marginTop + 38);
+
+                ctx.beginPath();
+                ctx.arc(marginLeft + 20, marginTop + 55, 4, 0, Math.PI * 2);
                 ctx.fillStyle = '#f472b6';
                 ctx.fill();
-            }
-
-            // 图例
-            ctx.font = '10px Inter';
-            ctx.textAlign = 'left';
-
-            ctx.fillStyle = '#2ed573';
-            ctx.fillRect(marginLeft + 10, marginTop + 10, 20, 3);
-            ctx.fillStyle = '#888';
-            ctx.fillText('设计反应谱', marginLeft + 35, marginTop + 15);
-
-            ctx.beginPath();
-            ctx.arc(marginLeft + 20, marginTop + 35, 5, 0, Math.PI * 2);
-            ctx.fillStyle = '#00d4ff';
-            ctx.fill();
-            ctx.fillStyle = '#888';
-            ctx.fillText(`平动周期 Tx = ${Tx.toFixed(2)} s`, marginLeft + 35, marginTop + 38);
-
-            ctx.beginPath();
-            ctx.arc(marginLeft + 20, marginTop + 55, 4, 0, Math.PI * 2);
-            ctx.fillStyle = '#f472b6';
-            ctx.fill();
-            ctx.fillStyle = '#888';
-            ctx.fillText(`扭转周期 Tθ = ${Tr.toFixed(2)} s`, marginLeft + 35, marginTop + 58);
-
-            // X轴刻度
-            ctx.font = '9px JetBrains Mono';
-            ctx.fillStyle = '#666';
-            ctx.textAlign = 'center';
-            for (let t = 0; t <= 4; t += 0.5) {
-                const x = marginLeft + (t / maxT) * plotW;
-                ctx.fillText(t.toFixed(1), x, canvas.height - marginBottom + 15);
-            }
-
-            // Y轴刻度
-            ctx.textAlign = 'right';
-            for (let a = 0; a <= maxA; a += 0.2) {
-                const y = canvas.height - marginBottom - (a / maxA) * plotH;
-                ctx.fillText(a.toFixed(1), marginLeft - 5, y + 3);
-            }
-
-            // 显示周期比
-            ctx.font = 'bold 11px Inter';
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#ffa502';
-            ctx.fillText(`Tθ/Tx = ${(Tr / Tx).toFixed(2)}`, canvas.width - 20, marginTop + 20);
-
-            if (Tr / Tx < 0.9) {
-                ctx.fillStyle = '#ff6b6b';
-                ctx.fillText('⚠️ 扭转效应显著', canvas.width - 20, marginTop + 40);
-            }
-        }
-
-        function drawStiffnessView() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2 + 30;
-
-            ctx.font = '12px Inter';
-            ctx.fillStyle = '#888';
-            ctx.textAlign = 'left';
-            ctx.fillText('刚度分析 - Kh = K0 × (1 - (P/Pcr)²)', 20, 30);
-
-            // Bar chart
-            const barWidth = 50;
-            const maxHeight = 180;
-            const startX = centerX - (SUPPORT_IDS.length * (barWidth + 20)) / 2;
-
-            SUPPORT_IDS.forEach((id, i) => {
-                const s = state.supports[id];
-                const x = startX + i * (barWidth + 20);
-                const barHeight = s.stiffnessRatio * maxHeight;
-
-                // Reference bar (100%)
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-                ctx.fillRect(x, centerY - maxHeight, barWidth, maxHeight);
-
-                // Actual stiffness bar
-                const color = s.stiffnessRatio > 0.9 ? '#2ed573' :
-                    s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
-                ctx.fillStyle = color;
-                ctx.fillRect(x, centerY - barHeight, barWidth, barHeight);
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(x, centerY - barHeight, barWidth, barHeight);
-
-                // Value
-                ctx.font = 'bold 11px JetBrains Mono';
-                ctx.fillStyle = '#fff';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${(s.stiffnessRatio * 100).toFixed(0)}%`, x + barWidth / 2, centerY - barHeight - 8);
-
-                // Label
-                ctx.font = '11px Inter';
                 ctx.fillStyle = '#888';
-                ctx.fillText(id, x + barWidth / 2, centerY + 20);
+                ctx.fillText(`扭转周期 Tθ = ${Tr.toFixed(2)} s`, marginLeft + 35, marginTop + 58);
 
-                // Reaction force
+                // X轴刻度
                 ctx.font = '9px JetBrains Mono';
                 ctx.fillStyle = '#666';
-                ctx.fillText(`${s.N.toFixed(1)}kN`, x + barWidth / 2, centerY + 35);
-            });
+                ctx.textAlign = 'center';
+                for (let t = 0; t <= 4; t += 0.5) {
+                    const x = marginLeft + (t / maxT) * plotW;
+                    ctx.fillText(t.toFixed(1), x, canvas.height - marginBottom + 15);
+                }
 
-            // Baseline
-            ctx.beginPath();
-            ctx.moveTo(startX - 20, centerY);
-            ctx.lineTo(startX + SUPPORT_IDS.length * (barWidth + 20), centerY);
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
+                // Y轴刻度
+                ctx.textAlign = 'right';
+                for (let a = 0; a <= maxA; a += 0.2) {
+                    const y = canvas.height - marginBottom - (a / maxA) * plotH;
+                    ctx.fillText(a.toFixed(1), marginLeft - 5, y + 3);
+                }
 
-        // ============================================================
-        // INITIALIZATION
-        // ============================================================
+                // 显示周期比
+                ctx.font = 'bold 11px Inter';
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#ffa502';
+                ctx.fillText(`Tθ/Tx = ${(Tr / Tx).toFixed(2)}`, canvas.width - 20, marginTop + 20);
 
-        calculateReactions();
-        updateUI();
-    </script>
+                if (Tr / Tx < 0.9) {
+                    ctx.fillStyle = '#ff6b6b';
+                    ctx.fillText('⚠️ 扭转效应显著', canvas.width - 20, marginTop + 40);
+                }
+            }
+
+            function drawStiffnessView() {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2 + 30;
+
+                ctx.font = '12px Inter';
+                ctx.fillStyle = '#888';
+                ctx.textAlign = 'left';
+                ctx.fillText('刚度分析 - Kh = K0 × (1 - (P/Pcr)²)', 20, 30);
+
+                // Bar chart
+                const barWidth = 50;
+                const maxHeight = 180;
+                const startX = centerX - (SUPPORT_IDS.length * (barWidth + 20)) / 2;
+
+                SUPPORT_IDS.forEach((id, i) => {
+                    const s = state.supports[id];
+                    const x = startX + i * (barWidth + 20);
+                    const barHeight = s.stiffnessRatio * maxHeight;
+
+                    // Reference bar (100%)
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                    ctx.fillRect(x, centerY - maxHeight, barWidth, maxHeight);
+
+                    // Actual stiffness bar
+                    const color = s.stiffnessRatio > 0.9 ? '#2ed573' :
+                        s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x, centerY - barHeight, barWidth, barHeight);
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, centerY - barHeight, barWidth, barHeight);
+
+                    // Value
+                    ctx.font = 'bold 11px JetBrains Mono';
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${(s.stiffnessRatio * 100).toFixed(0)}%`, x + barWidth / 2, centerY - barHeight - 8);
+
+                    // Label
+                    ctx.font = '11px Inter';
+                    ctx.fillStyle = '#888';
+                    ctx.fillText(id, x + barWidth / 2, centerY + 20);
+
+                    // Reaction force
+                    ctx.font = '9px JetBrains Mono';
+                    ctx.fillStyle = '#666';
+                    ctx.fillText(`${s.N.toFixed(1)}kN`, x + barWidth / 2, centerY + 35);
+                });
+
+                // Baseline
+                ctx.beginPath();
+                ctx.moveTo(startX - 20, centerY);
+                ctx.lineTo(startX + SUPPORT_IDS.length * (barWidth + 20), centerY);
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // ============================================================
+            // INITIALIZATION
+            // ============================================================
+
+            calculateReactions();
+            updateUI();
+        </script>
 </body>
 
 </html>
