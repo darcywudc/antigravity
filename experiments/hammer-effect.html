@@ -60,7 +60,7 @@
 
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 380px;
+            grid-template-columns: 1fr 360px;
             gap: 25px;
         }
 
@@ -70,7 +70,6 @@
             }
         }
 
-        /* Canvas Area */
         .viz-container {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
@@ -83,9 +82,9 @@
             height: 500px;
             background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
             border-radius: 10px;
+            display: block;
         }
 
-        /* Control Panel */
         .control-panel {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
@@ -94,7 +93,7 @@
         }
 
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .section h3 {
@@ -103,112 +102,107 @@
             letter-spacing: 1px;
             color: #888;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .section h3::before {
-            content: '';
-            width: 3px;
-            height: 14px;
-            background: linear-gradient(180deg, #ff6b6b, #ff8e8e);
-            border-radius: 2px;
-        }
-
-        /* Phase Indicator */
-        .phase-indicator {
+        .phase-steps {
             display: flex;
+            flex-direction: column;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .phase-step {
-            flex: 1;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 8px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: #666;
-            border: 1px solid transparent;
+            border-left: 3px solid transparent;
             transition: all 0.3s;
         }
 
         .phase-step.active {
-            background: rgba(255, 107, 107, 0.2);
-            border-color: rgba(255, 107, 107, 0.4);
-            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.15);
+            border-left-color: #ff6b6b;
         }
 
-        .phase-step.completed {
-            background: rgba(46, 213, 115, 0.15);
-            border-color: rgba(46, 213, 115, 0.3);
-            color: #2ed573;
+        .phase-step.done {
+            background: rgba(46, 213, 115, 0.1);
+            border-left-color: #2ed573;
         }
 
         .phase-icon {
             font-size: 1.2rem;
-            margin-bottom: 3px;
         }
 
-        .phase-label {
+        .phase-info {
+            flex: 1;
+        }
+
+        .phase-name {
+            font-size: 0.85rem;
+            color: #fff;
+        }
+
+        .phase-desc {
             font-size: 0.7rem;
+            color: #888;
         }
 
-        /* Force Meter */
-        .force-meter {
-            background: rgba(0, 0, 0, 0.3);
+        .force-display {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.05));
+            border: 1px solid rgba(255, 107, 107, 0.3);
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
+            text-align: center;
+            margin-bottom: 15px;
         }
 
-        .meter-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .meter-label {
+        .force-label {
+            font-size: 0.75rem;
             color: #888;
-            font-size: 0.85rem;
+            margin-bottom: 5px;
         }
 
-        .meter-value {
-            font-size: 2rem;
+        .force-value {
+            font-size: 3rem;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
-        }
-
-        .meter-value.normal {
             color: #2ed573;
+            transition: color 0.3s;
         }
 
-        .meter-value.warning {
+        .force-value.warning {
             color: #ffa502;
         }
 
-        .meter-value.danger {
+        .force-value.danger {
             color: #ff6b6b;
         }
 
-        .meter-bar {
+        .force-unit {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .force-bar {
             height: 12px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 6px;
+            margin-top: 10px;
             overflow: hidden;
             position: relative;
         }
 
-        .meter-fill {
+        .force-bar-fill {
             height: 100%;
             border-radius: 6px;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            background: linear-gradient(90deg, #2ed573, #ffa502, #ff6b6b);
         }
 
-        .meter-threshold {
+        .force-bar-marker {
             position: absolute;
             top: 0;
             bottom: 0;
@@ -216,37 +210,6 @@
             background: #fff;
         }
 
-        .meter-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            font-size: 0.7rem;
-            color: #666;
-        }
-
-        /* Explanation Box */
-        .explanation {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid rgba(255, 107, 107, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .explanation-title {
-            color: #ff6b6b;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .explanation-text {
-            font-size: 0.8rem;
-            color: #ccc;
-            line-height: 1.6;
-        }
-
-        /* Controls */
         .btn-group {
             display: flex;
             gap: 10px;
@@ -255,16 +218,13 @@
 
         .btn {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
         }
 
         .btn-primary {
@@ -274,6 +234,7 @@
 
         .btn-primary:hover {
             transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
         }
 
         .btn-secondary {
@@ -285,12 +246,6 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Slider */
         .slider-group {
             margin-bottom: 15px;
         }
@@ -305,12 +260,12 @@
 
         .slider-value {
             font-family: 'JetBrains Mono', monospace;
-            color: #00d4ff;
+            color: #ff6b6b;
         }
 
         input[type="range"] {
             width: 100%;
-            height: 5px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
             outline: none;
@@ -319,49 +274,33 @@
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
             border-radius: 50%;
             cursor: pointer;
         }
 
-        /* Impact Log */
-        .impact-log {
+        .explanation {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 15px;
-            max-height: 150px;
-            overflow-y: auto;
+            margin-bottom: 15px;
         }
 
-        .log-title {
-            font-size: 0.75rem;
-            color: #666;
+        .exp-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #ff6b6b;
             margin-bottom: 8px;
         }
 
-        .log-entry {
+        .exp-text {
             font-size: 0.8rem;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-between;
+            color: #ccc;
+            line-height: 1.6;
         }
 
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-
-        .log-time {
-            color: #666;
-        }
-
-        .log-message {
-            color: #ff6b6b;
-        }
-
-        /* Info Section */
         .info-cards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -369,17 +308,23 @@
             margin-top: 25px;
         }
 
+        @media (max-width: 900px) {
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .info-card {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .info-card h4 {
             color: #ff6b6b;
             font-size: 0.9rem;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .info-card p {
@@ -415,77 +360,72 @@
             </div>
 
             <div class="control-panel">
-                <!-- Phase Indicator -->
                 <div class="section">
                     <h3>动画阶段</h3>
-                    <div class="phase-indicator">
-                        <div class="phase-step active" id="phase-1">
-                            <div class="phase-icon">🌊</div>
-                            <div class="phase-label">倾斜</div>
+                    <div class="phase-steps">
+                        <div class="phase-step active" id="phase-0">
+                            <span class="phase-icon">🌊</span>
+                            <div class="phase-info">
+                                <div class="phase-name">1. 地震摇摆</div>
+                                <div class="phase-desc">水平力使建筑倾斜</div>
+                            </div>
+                        </div>
+                        <div class="phase-step" id="phase-1">
+                            <span class="phase-icon">⬆️</span>
+                            <div class="phase-info">
+                                <div class="phase-name">2. 支座脱空</div>
+                                <div class="phase-desc">一侧支座离开地面</div>
+                            </div>
                         </div>
                         <div class="phase-step" id="phase-2">
-                            <div class="phase-icon">⬆️</div>
-                            <div class="phase-label">脱空</div>
+                            <span class="phase-icon">⬇️</span>
+                            <div class="phase-info">
+                                <div class="phase-name">3. 落回</div>
+                                <div class="phase-desc">重力加速下落</div>
+                            </div>
                         </div>
                         <div class="phase-step" id="phase-3">
-                            <div class="phase-icon">⬇️</div>
-                            <div class="phase-label">落回</div>
-                        </div>
-                        <div class="phase-step" id="phase-4">
-                            <div class="phase-icon">💥</div>
-                            <div class="phase-label">冲击</div>
+                            <span class="phase-icon">💥</span>
+                            <div class="phase-info">
+                                <div class="phase-name">4. 冲击！</div>
+                                <div class="phase-desc">产生巨大冲击力</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Force Meter -->
                 <div class="section">
                     <h3>冲击力监测</h3>
-                    <div class="force-meter">
-                        <div class="meter-header">
-                            <span class="meter-label">当前支座反力</span>
-                            <span class="meter-value normal" id="force-value">1.0×</span>
+                    <div class="force-display">
+                        <div class="force-label">当前支座反力 / 静载</div>
+                        <div class="force-value" id="force-value">1.0<span class="force-unit">×</span></div>
+                        <div class="force-bar">
+                            <div class="force-bar-fill" id="force-fill" style="width: 10%;"></div>
+                            <div class="force-bar-marker" style="left: 10%;"></div>
                         </div>
-                        <div class="meter-bar">
-                            <div class="meter-fill" id="force-fill" style="width: 10%; background: #2ed573;"></div>
-                            <div class="meter-threshold" style="left: 10%;"></div>
-                        </div>
-                        <div class="meter-labels">
+                        <div
+                            style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.7rem; color: #666;">
                             <span>0</span>
-                            <span>静载 (1×)</span>
-                            <span>极限 (10×)</span>
+                            <span>静载(1×)</span>
+                            <span>10×</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Explanation -->
                 <div class="section">
-                    <div class="explanation" id="explanation-box">
-                        <div class="explanation-title" id="exp-title">阶段 1: 地震摇摆</div>
-                        <div class="explanation-text" id="exp-text">
-                            地震产生的水平力使建筑产生倾覆力矩，一侧支座开始减压...
+                    <div class="explanation">
+                        <div class="exp-title" id="exp-title">准备就绪</div>
+                        <div class="exp-text" id="exp-text">
+                            点击"播放动画"观看锤击效应的完整过程。调节脱空高度可以改变冲击力大小。
                         </div>
                     </div>
                 </div>
 
-                <!-- Controls -->
                 <div class="section">
                     <h3>控制</h3>
                     <div class="btn-group">
-                        <button class="btn btn-primary" id="btn-play">
-                            <span>▶</span> 播放动画
-                        </button>
-                        <button class="btn btn-secondary" id="btn-reset">
-                            <span>↺</span> 重置
-                        </button>
-                    </div>
-
-                    <div class="slider-group">
-                        <div class="slider-label">
-                            <span>动画速度</span>
-                            <span class="slider-value" id="speed-value">1.0×</span>
-                        </div>
-                        <input type="range" id="speed-slider" min="0.5" max="3" value="1" step="0.1">
+                        <button class="btn btn-primary" id="btn-play">▶ 播放动画</button>
+                        <button class="btn btn-secondary" id="btn-reset">↺ 重置</button>
                     </div>
 
                     <div class="slider-group">
@@ -495,52 +435,46 @@
                         </div>
                         <input type="range" id="uplift-slider" min="10" max="150" value="50">
                     </div>
-                </div>
 
-                <!-- Impact Log -->
-                <div class="section">
-                    <div class="impact-log">
-                        <div class="log-title">冲击记录</div>
-                        <div id="log-entries">
-                            <div class="log-entry">
-                                <span class="log-time">--:--</span>
-                                <span class="log-message">等待动画开始...</span>
-                            </div>
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>动画速度</span>
+                            <span class="slider-value" id="speed-value">1.0×</span>
                         </div>
+                        <input type="range" id="speed-slider" min="0.3" max="2" value="1" step="0.1">
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Info Cards -->
         <div class="info-cards">
             <div class="info-card">
                 <h4>⚡ 冲击力放大</h4>
                 <p>
-                    当建筑从脱空状态落回时，产生的冲击力通常是静载的<strong>3-15倍</strong>。
-                    这取决于脱空高度、落下速度和支座刚度。
+                    从高度h自由落下时，冲击力 = 静载 × (1 + √(1 + 2h/δ))，
+                    其中δ是冲击变形。通常冲击力是静载的<strong>3-15倍</strong>！
                 </p>
-                <div class="formula">F_impact = m × v² / (2 × δ)</div>
+                <div class="formula">F_imp = W × (1 + √(1 + 2h/δ))</div>
             </div>
             <div class="info-card">
                 <h4>🔧 支座破坏</h4>
                 <p>
-                    巨大的冲击力会瞬间压碎支座内部构件：滑板变形、密封圈破裂、
-                    橡胶层撕裂。支座一旦损坏，隔震功能完全丧失。
+                    冲击力会瞬间压碎支座：滑板变形、密封圈破裂、橡胶层撕裂。
+                    支座一旦损坏，隔震功能完全丧失。
                 </p>
             </div>
             <div class="info-card">
                 <h4>📈 震动传导</h4>
                 <p>
-                    冲击产生的高频震动会沿柱子向上传导，对上部结构和非结构构件
-                    （如设备、管道、吊顶）造成严重的<strong>二次损害</strong>。
+                    冲击产生的高频震动沿柱子向上传导，对上部结构和非结构构件
+                    （设备、管道、吊顶）造成严重的<strong>二次损害</strong>。
                 </p>
             </div>
             <div class="info-card">
                 <h4>🔄 循环破坏</h4>
                 <p>
-                    地震中这种脱空-锤击过程会<strong>反复发生</strong>（往复运动），
-                    每次冲击都累积损伤，最终导致支座彻底失效。
+                    地震中脱空-锤击过程<strong>反复发生</strong>（往复运动），
+                    每次冲击累积损伤，最终导致支座彻底失效。
                 </p>
             </div>
         </div>
@@ -551,8 +485,8 @@
         const ctx = canvas.getContext('2d');
 
         function resizeCanvas() {
-            const rect = canvas.parentElement.getBoundingClientRect();
-            canvas.width = rect.width - 40;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
             canvas.height = 500;
         }
         resizeCanvas();
@@ -560,173 +494,159 @@
 
         // State
         let state = {
-            phase: 0, // 0: idle, 1: tilting, 2: uplift, 3: falling, 4: impact
+            phase: -1, // -1: idle, 0: tilting, 1: uplift, 2: falling, 3: impact
             time: 0,
             tilt: 0,
             upliftHeight: 0,
+            targetUplift: 50,
             impactForce: 1,
             speed: 1,
-            maxUplift: 50, // mm
             isPlaying: false,
             shakeIntensity: 0,
-            damageLevel: 0
+            damageLevel: 0,
+            seismicPhase: 0
         };
 
-        const phaseExplanations = {
-            0: { title: "准备就绪", text: "点击"播放动画"观看锤击效应的完整过程。" },
-            1: { title: "阶段 1: 地震摇摆", text: "地震产生的水平力使建筑产生倾覆力矩，一侧支座开始减压，压力逐渐降低..." },
-            2: { title: "阶段 2: 支座脱空", text: "当支座反力降为零时，支座与基础分离（脱空）。此时建筑依靠另一侧支座支撑旋转向上抬起。" },
-            3: { title: "阶段 3: 落回", text: "地震力反向或减弱，建筑开始加速落回。重力势能转化为动能，速度越来越快！" },
-            4: { title: "阶段 4: 冲击！", text: "建筑重重砸向支座，产生巨大冲击力。冲击力是静载的数倍！这会压碎支座、敲裂混凝土..." }
-        };
+        const phases = [
+            { title: '阶段 1: 地震摇摆', text: '地震产生的水平力使建筑产生倾覆力矩。左侧支座压力逐渐减小...' },
+            { title: '阶段 2: 支座脱空', text: '左侧支座反力降为零，与基础分离！建筑绕右侧旋转，左侧抬起。' },
+            { title: '阶段 3: 落回', text: '地震力减弱或反向，重力使建筑加速落回。速度越来越快！' },
+            { title: '阶段 4: 冲击！', text: '数千吨的重量重重砸向支座！冲击力是静载的数倍！支座损坏、混凝土开裂...' }
+        ];
 
-        // DOM elements
+        // DOM
         const btnPlay = document.getElementById('btn-play');
         const btnReset = document.getElementById('btn-reset');
-        const speedSlider = document.getElementById('speed-slider');
-        const upliftSlider = document.getElementById('uplift-slider');
         const forceValue = document.getElementById('force-value');
         const forceFill = document.getElementById('force-fill');
         const expTitle = document.getElementById('exp-title');
         const expText = document.getElementById('exp-text');
-        const logEntries = document.getElementById('log-entries');
+        const upliftSlider = document.getElementById('uplift-slider');
+        const speedSlider = document.getElementById('speed-slider');
 
-        // Update phase indicators
-        function updatePhase(phase) {
-            for (let i = 1; i <= 4; i++) {
+        function updatePhaseDisplay(phase) {
+            for (let i = 0; i < 4; i++) {
                 const el = document.getElementById(`phase-${i}`);
-                el.classList.remove('active', 'completed');
-                if (i < phase) el.classList.add('completed');
+                el.classList.remove('active', 'done');
+                if (i < phase) el.classList.add('done');
                 if (i === phase) el.classList.add('active');
             }
 
-            const exp = phaseExplanations[phase] || phaseExplanations[0];
-            expTitle.textContent = exp.title;
-            expText.textContent = exp.text;
+            if (phase >= 0 && phase < 4) {
+                expTitle.textContent = phases[phase].title;
+                expText.textContent = phases[phase].text;
+            }
         }
 
-        // Update force meter
-        function updateForceMeter(force) {
-            forceValue.textContent = force.toFixed(1) + '×';
-            const percent = Math.min(100, (force / 10) * 100);
+        function updateForceDisplay(force) {
+            forceValue.innerHTML = `${force.toFixed(1)}<span class="force-unit">×</span>`;
+            const percent = Math.min(100, force * 10);
             forceFill.style.width = percent + '%';
 
+            forceValue.className = 'force-value';
             if (force > 5) {
-                forceValue.className = 'meter-value danger';
+                forceValue.classList.add('danger');
                 forceFill.style.background = 'linear-gradient(90deg, #ff6b6b, #ff4757)';
             } else if (force > 2) {
-                forceValue.className = 'meter-value warning';
+                forceValue.classList.add('warning');
                 forceFill.style.background = 'linear-gradient(90deg, #ffa502, #ffcc00)';
             } else {
-                forceValue.className = 'meter-value normal';
                 forceFill.style.background = '#2ed573';
             }
         }
 
-        // Add log entry
-        function addLog(message) {
-            const now = new Date();
-            const time = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.innerHTML = `
-                <span class="log-time">${time}</span>
-                <span class="log-message">${message}</span>
-            `;
-            logEntries.insertBefore(entry, logEntries.firstChild);
-            if (logEntries.children.length > 10) {
-                logEntries.removeChild(logEntries.lastChild);
-            }
-        }
-
-        // Animation
         function animate() {
             if (!state.isPlaying) return;
 
-            state.time += 0.016 * state.speed;
+            const dt = 0.016 * state.speed;
+            state.time += dt;
 
-            // Phase transitions
-            if (state.phase === 1) {
-                // Tilting phase
-                state.tilt = Math.sin(state.time * 2) * 0.15;
+            if (state.phase === 0) {
+                // Tilting phase - oscillate then increase tilt
+                state.seismicPhase += dt * 3;
+                state.tilt = Math.sin(state.seismicPhase) * 0.05 + state.time * 0.03;
+
                 if (state.time > 1.5) {
+                    state.phase = 1;
+                    state.time = 0;
+                    updatePhaseDisplay(1);
+                }
+            } else if (state.phase === 1) {
+                // Uplift phase
+                state.tilt = 0.12;
+                state.upliftHeight = Math.min(state.targetUplift, state.time * state.targetUplift * 0.8);
+
+                if (state.upliftHeight >= state.targetUplift * 0.95) {
                     state.phase = 2;
-                    updatePhase(2);
-                    addLog('支座脱空！');
+                    state.time = 0;
+                    updatePhaseDisplay(2);
                 }
             } else if (state.phase === 2) {
-                // Uplift phase
-                state.tilt = 0.15;
-                state.upliftHeight = Math.min(state.maxUplift, (state.time - 1.5) * state.maxUplift * 1.5);
-                if (state.upliftHeight >= state.maxUplift) {
-                    state.phase = 3;
-                    updatePhase(3);
-                    addLog('开始落回...');
-                }
-            } else if (state.phase === 3) {
-                // Falling phase
-                const fallProgress = (state.time - 2.5) * 2;
-                state.upliftHeight = state.maxUplift * (1 - fallProgress * fallProgress);
-                state.tilt = 0.15 * (1 - fallProgress);
+                // Falling phase - accelerating fall
+                const fallProgress = state.time * 1.5;
+                state.upliftHeight = state.targetUplift * Math.max(0, 1 - fallProgress * fallProgress);
+                state.tilt = 0.12 * (1 - fallProgress);
 
                 if (state.upliftHeight <= 0) {
                     state.upliftHeight = 0;
-                    state.phase = 4;
-                    updatePhase(4);
+                    state.phase = 3;
+                    state.time = 0;
 
-                    // Calculate impact force based on fall height
-                    const impactMultiplier = 3 + (state.maxUplift / 50) * 8;
-                    state.impactForce = impactMultiplier;
+                    // Calculate impact force
+                    state.impactForce = 3 + (state.targetUplift / 50) * 7;
                     state.shakeIntensity = 1;
                     state.damageLevel = Math.min(1, state.impactForce / 12);
 
-                    addLog(`冲击! 力 = ${state.impactForce.toFixed(1)}× 静载`);
+                    updatePhaseDisplay(3);
                 }
-            } else if (state.phase === 4) {
-                // Impact phase
-                state.shakeIntensity *= 0.9;
+            } else if (state.phase === 3) {
+                // Impact phase - decay
+                state.shakeIntensity *= 0.92;
                 state.impactForce = 1 + (state.impactForce - 1) * 0.95;
 
                 if (state.shakeIntensity < 0.01) {
                     state.isPlaying = false;
-                    btnPlay.innerHTML = '<span>▶</span> 重新播放';
-                    addLog('动画结束');
+                    btnPlay.textContent = '▶ 重新播放';
+                    expTitle.textContent = '动画完成';
+                    expText.textContent = `冲击力达到静载的 ${(3 + state.targetUplift / 50 * 7).toFixed(1)} 倍！这足以压碎支座、敲裂混凝土。`;
                 }
             }
 
-            updateForceMeter(state.phase === 4 ? state.impactForce : (state.phase >= 2 ? 0 : 1));
+            updateForceDisplay(state.phase === 3 ? state.impactForce : (state.phase >= 1 ? 0 : 1));
             draw();
             requestAnimationFrame(animate);
         }
 
-        // Draw
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const groundY = canvas.height - 80;
+            const groundY = canvas.height - 100;
             const centerX = canvas.width / 2;
-            const buildingW = 200;
+            const buildingW = 220;
             const buildingH = 280;
-            const supportW = 30;
-            const supportH = 20;
+            const supportW = 35;
+            const supportH = 22;
 
-            // Shake offset for impact
-            const shakeX = state.shakeIntensity * (Math.random() - 0.5) * 20;
-            const shakeY = state.shakeIntensity * (Math.random() - 0.5) * 10;
+            // Shake
+            const shakeX = state.shakeIntensity * (Math.random() - 0.5) * 25;
+            const shakeY = state.shakeIntensity * (Math.random() - 0.5) * 12;
 
             // Ground
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+
             ctx.beginPath();
             ctx.moveTo(0, groundY);
             ctx.lineTo(canvas.width, groundY);
-            ctx.strokeStyle = '#444';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 3;
             ctx.stroke();
 
             // Ground hatching
             ctx.beginPath();
-            for (let x = 0; x < canvas.width; x += 15) {
+            for (let x = 0; x < canvas.width; x += 20) {
                 ctx.moveTo(x, groundY);
-                ctx.lineTo(x - 10, groundY + 15);
+                ctx.lineTo(x - 12, groundY + 18);
             }
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 1;
@@ -735,50 +655,63 @@
             ctx.save();
             ctx.translate(centerX + shakeX, groundY + shakeY);
 
-            // Calculate building position with tilt and uplift
-            const pivotX = buildingW / 2; // Right side pivot
-            const upliftPixels = state.upliftHeight * 1.5; // Scale for visibility
+            // Pivot at right side for tilt
+            const pivotX = buildingW / 2;
+            const upliftPixels = state.upliftHeight * 2;
 
             ctx.save();
             ctx.translate(pivotX, 0);
             ctx.rotate(-state.tilt);
-            ctx.translate(-pivotX, -upliftPixels * (1 - Math.cos(state.tilt)));
+            ctx.translate(-pivotX, 0);
 
             // Left support (may be uplifted)
-            const leftSupportY = state.phase >= 2 && state.phase < 4 ? -upliftPixels : 0;
+            const leftY = state.phase >= 1 && state.phase < 3 ? -upliftPixels : 0;
 
-            // Draw supports
-            // Left support
-            ctx.fillStyle = state.phase >= 2 && state.phase < 4 ? '#ff6b6b' :
+            // Draw left support
+            const leftColor = (state.phase >= 1 && state.phase < 3) ? '#ff6b6b' :
                 state.damageLevel > 0.5 ? '#ff6b6b' : '#2ed573';
-            ctx.fillRect(-buildingW / 2 - supportW / 2, leftSupportY - supportH, supportW, supportH);
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(-buildingW / 2 - supportW / 2, leftSupportY - supportH, supportW, supportH);
 
-            // Gap indicator when uplifted
-            if (state.phase >= 2 && state.phase < 4 && upliftPixels > 5) {
-                ctx.fillStyle = 'rgba(255, 107, 107, 0.3)';
-                ctx.fillRect(-buildingW / 2 - supportW / 2, -supportH, supportW, supportH + leftSupportY);
+            ctx.fillStyle = leftColor;
+            ctx.fillRect(-buildingW / 2 - supportW / 2, leftY - supportH, supportW, supportH);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-buildingW / 2 - supportW / 2, leftY - supportH, supportW, supportH);
+
+            // Gap indicator
+            if (state.phase >= 1 && state.phase < 3 && upliftPixels > 5) {
+                // Gap area
+                ctx.fillStyle = 'rgba(255, 107, 107, 0.2)';
+                ctx.fillRect(-buildingW / 2 - supportW / 2, -supportH, supportW, upliftPixels);
+
+                // Dimension line
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(-buildingW / 2 + supportW, 0);
+                ctx.lineTo(-buildingW / 2 + supportW, leftY - supportH);
+                ctx.stroke();
+                ctx.setLineDash([]);
 
                 // Gap label
-                ctx.font = '12px JetBrains Mono';
+                ctx.font = 'bold 14px JetBrains Mono';
                 ctx.fillStyle = '#ff6b6b';
-                ctx.fillText(`${state.upliftHeight.toFixed(0)}mm`, -buildingW / 2 + supportW, -supportH / 2);
+                ctx.fillText(`${state.upliftHeight.toFixed(0)} mm`, -buildingW / 2 + supportW + 8, leftY - supportH / 2);
             }
 
             // Right support
-            ctx.fillStyle = state.damageLevel > 0.5 ? '#ffa502' : '#2ed573';
+            ctx.fillStyle = state.damageLevel > 0.3 ? '#ffa502' : '#2ed573';
             ctx.fillRect(buildingW / 2 - supportW / 2, -supportH, supportW, supportH);
             ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
             ctx.strokeRect(buildingW / 2 - supportW / 2, -supportH, supportW, supportH);
 
             // Building
-            const buildingGrad = ctx.createLinearGradient(-buildingW / 2, -buildingH, buildingW / 2, 0);
-            buildingGrad.addColorStop(0, '#3d5a80');
-            buildingGrad.addColorStop(1, '#293241');
+            const grad = ctx.createLinearGradient(-buildingW / 2, -buildingH - supportH, buildingW / 2, -supportH);
+            grad.addColorStop(0, '#3d5a80');
+            grad.addColorStop(1, '#293241');
 
-            ctx.fillStyle = buildingGrad;
+            ctx.fillStyle = grad;
             ctx.fillRect(-buildingW / 2, -supportH - buildingH, buildingW, buildingH);
             ctx.strokeStyle = '#5c7a99';
             ctx.lineWidth = 2;
@@ -795,119 +728,150 @@
                 ctx.stroke();
             }
 
-            // Damage cracks after impact
+            // Damage cracks
             if (state.damageLevel > 0.3) {
                 ctx.strokeStyle = `rgba(255, 107, 107, ${state.damageLevel})`;
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 2 + state.damageLevel * 2;
                 ctx.beginPath();
-                ctx.moveTo(-buildingW / 2 + 10, -supportH);
-                ctx.lineTo(-buildingW / 2 + 30, -supportH - 40);
-                ctx.lineTo(-buildingW / 2 + 15, -supportH - 60);
+                ctx.moveTo(-buildingW / 2 + 15, -supportH);
+                ctx.lineTo(-buildingW / 2 + 40, -supportH - 50);
+                ctx.lineTo(-buildingW / 2 + 25, -supportH - 80);
                 ctx.stroke();
+
+                if (state.damageLevel > 0.6) {
+                    ctx.beginPath();
+                    ctx.moveTo(-buildingW / 2 + 5, -supportH - 20);
+                    ctx.lineTo(-buildingW / 2 + 20, -supportH - 45);
+                    ctx.stroke();
+                }
             }
 
             ctx.restore();
 
-            // Impact effect
-            if (state.phase === 4 && state.shakeIntensity > 0.1) {
+            // Impact effects
+            if (state.phase === 3 && state.shakeIntensity > 0.05) {
                 // Impact waves
-                const waveRadius = (1 - state.shakeIntensity) * 100;
-                ctx.beginPath();
-                ctx.arc(-buildingW / 2, 0, waveRadius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(255, 107, 107, ${state.shakeIntensity})`;
-                ctx.lineWidth = 3;
-                ctx.stroke();
+                for (let i = 0; i < 3; i++) {
+                    const waveRadius = (1 - state.shakeIntensity) * (80 + i * 40);
+                    ctx.beginPath();
+                    ctx.arc(-buildingW / 2, 0, waveRadius, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(255, 107, 107, ${state.shakeIntensity * (1 - i * 0.3)})`;
+                    ctx.lineWidth = 3 - i;
+                    ctx.stroke();
+                }
 
                 // Impact force arrow
-                const arrowHeight = state.impactForce * 15;
+                const arrowH = Math.min(150, state.impactForce * 15);
                 ctx.beginPath();
-                ctx.moveTo(-buildingW / 2, -supportH - 20);
-                ctx.lineTo(-buildingW / 2, -supportH - 20 - arrowHeight);
+                ctx.moveTo(-buildingW / 2, -supportH - 30);
+                ctx.lineTo(-buildingW / 2, -supportH - 30 - arrowH);
                 ctx.strokeStyle = '#ff6b6b';
-                ctx.lineWidth = 4;
+                ctx.lineWidth = 5;
                 ctx.stroke();
 
                 ctx.beginPath();
-                ctx.moveTo(-buildingW / 2, -supportH - 20);
-                ctx.lineTo(-buildingW / 2 - 8, -supportH - 35);
-                ctx.lineTo(-buildingW / 2 + 8, -supportH - 35);
+                ctx.moveTo(-buildingW / 2, -supportH - 30);
+                ctx.lineTo(-buildingW / 2 - 10, -supportH - 50);
+                ctx.lineTo(-buildingW / 2 + 10, -supportH - 50);
                 ctx.closePath();
                 ctx.fillStyle = '#ff6b6b';
                 ctx.fill();
+
+                // Force label
+                ctx.font = 'bold 16px JetBrains Mono';
+                ctx.fillStyle = '#ff6b6b';
+                ctx.fillText(`${state.impactForce.toFixed(1)}× 静载`, -buildingW / 2 + 20, -supportH - arrowH / 2);
             }
 
-            // Seismic force indicator
-            if (state.phase === 1) {
-                const forceX = Math.sin(state.time * 4) * 60;
+            // Seismic force indicator during tilting
+            if (state.phase === 0) {
+                const forceX = Math.sin(state.seismicPhase) * 50;
+                const arrowY = -buildingH / 2 - supportH;
+
                 ctx.beginPath();
-                ctx.moveTo(-buildingW / 2 - 60, -buildingH / 2 - supportH);
-                ctx.lineTo(-buildingW / 2 - 60 - forceX, -buildingH / 2 - supportH);
+                ctx.moveTo(-buildingW / 2 - 60, arrowY);
+                ctx.lineTo(-buildingW / 2 - 60 + forceX, arrowY);
                 ctx.strokeStyle = '#00d4ff';
                 ctx.lineWidth = 4;
                 ctx.stroke();
 
-                // Arrow head
+                const dir = forceX > 0 ? 1 : -1;
                 ctx.beginPath();
-                const dir = forceX > 0 ? -1 : 1;
-                ctx.moveTo(-buildingW / 2 - 60, -buildingH / 2 - supportH);
-                ctx.lineTo(-buildingW / 2 - 60 + 12 * dir, -buildingH / 2 - supportH - 8);
-                ctx.lineTo(-buildingW / 2 - 60 + 12 * dir, -buildingH / 2 - supportH + 8);
+                ctx.moveTo(-buildingW / 2 - 60 + forceX, arrowY);
+                ctx.lineTo(-buildingW / 2 - 60 + forceX - 12 * dir, arrowY - 8);
+                ctx.lineTo(-buildingW / 2 - 60 + forceX - 12 * dir, arrowY + 8);
                 ctx.closePath();
                 ctx.fillStyle = '#00d4ff';
                 ctx.fill();
+
+                ctx.font = 'bold 12px Inter';
+                ctx.fillStyle = '#00d4ff';
+                ctx.fillText('地震力 F', -buildingW / 2 - 90, arrowY - 20);
             }
 
             ctx.restore();
 
-            // Labels
-            ctx.font = 'bold 14px Inter';
+            // Status text
+            ctx.font = 'bold 16px Inter';
             ctx.fillStyle = '#888';
             ctx.fillText('锤击效应演示', 20, 30);
 
-            if (state.phase === 4) {
+            if (state.phase === 3 && state.shakeIntensity > 0.1) {
                 ctx.fillStyle = '#ff6b6b';
-                ctx.font = 'bold 18px Inter';
-                ctx.fillText(`冲击力: ${state.impactForce.toFixed(1)}× 静载`, 20, 60);
+                ctx.font = 'bold 24px Inter';
+                ctx.fillText(`💥 冲击! ${state.impactForce.toFixed(1)}× 静载`, 20, 65);
             }
         }
 
-        // Event listeners
+        // Events
         btnPlay.addEventListener('click', () => {
             if (state.isPlaying) {
                 state.isPlaying = false;
-                btnPlay.innerHTML = '<span>▶</span> 继续';
+                btnPlay.textContent = '▶ 继续';
             } else {
-                if (state.phase === 0 || state.phase === 4) {
-                    // Start new animation
-                    state.phase = 1;
+                if (state.phase < 0 || state.phase === 3) {
+                    // Start new
+                    state.phase = 0;
                     state.time = 0;
                     state.tilt = 0;
                     state.upliftHeight = 0;
                     state.impactForce = 1;
                     state.shakeIntensity = 0;
                     state.damageLevel = 0;
-                    updatePhase(1);
-                    addLog('动画开始');
+                    state.seismicPhase = 0;
+                    updatePhaseDisplay(0);
                 }
                 state.isPlaying = true;
-                btnPlay.innerHTML = '<span>⏸</span> 暂停';
+                btnPlay.textContent = '⏸ 暂停';
                 animate();
             }
         });
 
         btnReset.addEventListener('click', () => {
             state.isPlaying = false;
-            state.phase = 0;
+            state.phase = -1;
             state.time = 0;
             state.tilt = 0;
             state.upliftHeight = 0;
             state.impactForce = 1;
             state.shakeIntensity = 0;
             state.damageLevel = 0;
-            updatePhase(0);
-            updateForceMeter(1);
-            btnPlay.innerHTML = '<span>▶</span> 播放动画';
+
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`phase-${i}`).classList.remove('active', 'done');
+            }
+            document.getElementById('phase-0').classList.add('active');
+
+            updateForceDisplay(1);
+            expTitle.textContent = '准备就绪';
+            expText.textContent = '点击"播放动画"观看锤击效应的完整过程。';
+            btnPlay.textContent = '▶ 播放动画';
             draw();
+        });
+
+        upliftSlider.addEventListener('input', (e) => {
+            state.targetUplift = parseInt(e.target.value);
+            document.getElementById('height-value').textContent = state.targetUplift + ' mm';
         });
 
         speedSlider.addEventListener('input', (e) => {
@@ -915,13 +879,8 @@
             document.getElementById('speed-value').textContent = state.speed.toFixed(1) + '×';
         });
 
-        upliftSlider.addEventListener('input', (e) => {
-            state.maxUplift = parseInt(e.target.value);
-            document.getElementById('height-value').textContent = state.maxUplift + ' mm';
-        });
-
-        // Initial draw
-        updatePhase(0);
+        // Init
+        updatePhaseDisplay(-1);
         draw();
     </script>
 </body>
