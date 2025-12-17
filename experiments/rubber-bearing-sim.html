@@ -1126,9 +1126,53 @@
             // ΣN = W 必须满足
             const avgDelta = totalDeltaN / 6;
 
-            // 第三步：检查力矩平衡，计算需要的修正
-            // Σ(ΔN × x) = 0, Σ(ΔN × y) = 0
-            let sumMx = 0, sumMy = 0;
+            // 第三步：计算结构倾角和重力倾覆力矩 (P-Delta效应)
+            // 假设重心高度 H_cg (m)
+            const H_cg = 0.5;
+
+            // 简单线性回归拟合平面求倾角
+            // z = A*x + B*y + C -> 倾角 tan(θy)=A, tan(θx)=B
+            // 由于是对称布置，简化计算：
+            // θy = (avg_h_right - avg_h_left) / Dist_X
+            let h_right = (state.heights['25'] + state.heights['30']) / 2;
+            let h_left = (state.heights['8'] + state.heights['4']) / 2;
+            let theta_y = (h_right - h_left) / 1000 / (TOTAL_LENGTH); // rad
+
+            let h_top = (state.heights['8'] + state.heights['11'] + state.heights['25']) / 3;
+            let h_bottom = (state.heights['4'] + state.heights['16'] + state.heights['30']) / 3;
+            let theta_x = (h_top - h_bottom) / 1000 / TOTAL_WIDTH; // rad
+
+            // 倾覆力矩 M = W * H_cg * sin(θ)
+            // 注意方向：
+            // 右边抬高(h_right>h_left) -> theta_y > 0 -> 结构向左倾斜 -> 重心向左偏移(-x)
+            // 重力产生的力矩倾向于压低左边(+RotY力矩?? 需注意坐标系定义)
+            // 坐标定义：z向上, x向右. 
+            // 结构左倾 -> x_cg < 0. W向下(-z). 力矩 M = r x F.
+            // r=(-e, 0, H). F=(0, 0, -W).
+            // r x F = (0, -e*(-W), 0) = (0, e*W, 0). 绕y轴正向力矩.
+            // 也就是压右边？不对。
+            // 直观理解：向左倾 -> 左边受压大 -> 左边反力增加.
+            // 左边是 x<0. 反力N增加. M_y = N*x 会更负.
+            // 所以目标静力矩应该是非零值
+
+            // 计算重心偏移
+            const ex_g = -theta_y * H_cg; // 绕y轴转(xz平面). 右高->左倾->x负
+            const ey_g = -theta_x * H_cg; // 绕x轴转(yz平面). 上高->下倾->y负
+
+            // 目标平衡方程: Σ(N*x) - W*ex_g = 0  => Target My = W*ex_g
+            // 解释：外力矩 + 反力矩 = 0.
+            // 重力矩 = W * ex_g (作用在x处). 
+            // My_target = W * ex_g
+            const My_target = TOTAL_WEIGHT * ex_g;
+            const Mx_target = TOTAL_WEIGHT * ey_g;
+
+            console.log(`倾斜分析: θy=${(theta_y * 1000).toFixed(2)}mrad, M_target_y=${My_target.toFixed(2)}kNm`);
+
+            // 第四步：检查当前力矩并进行修正
+            // 现在的 ΔN (仅由弹性刚度产生) 对中心的力矩
+            // 还要加上初始反力的力矩 (通常为0，但为了严谨)
+
+            let sumMx_curr = 0, sumMy_curr = 0;
             let sumKx2 = 0, sumKy2 = 0;
 
             SUPPORT_IDS.forEach(id => {
@@ -1137,18 +1181,34 @@
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
                 const effectiveK = bearingParams.Kv * alpha;
 
-                const adjustedDelta = deltaN[id] - avgDelta;
-                sumMx += adjustedDelta * x;
-                sumMy += adjustedDelta * y;
+                // 当前预测的反力增量 (去均值后)
+                const currentDelta = deltaN[id] - avgDelta;
+                // 初始反力力矩 (假设初始平衡，sum≈0，但我们要计算全量)
+                const N_base = INITIAL_REACTIONS[id];
+
+                // 当前总力矩 (相对于原点)
+                // My = N * x
+                sumMy_curr += (N_base + currentDelta) * x;
+                sumMx_curr += (N_base + currentDelta) * y;
+
                 sumKx2 += effectiveK * x * x;
                 sumKy2 += effectiveK * y * y;
             });
 
-            // 力矩修正系数
-            const corrX = sumKx2 > 0 ? -sumMx / sumKx2 : 0;
-            const corrY = sumKy2 > 0 ? -sumMy / sumKy2 : 0;
+            // 力矩差 (需要修正的量)
+            // 目标: sumMy_final = My_target
+            // diff = My_target - sumMy_curr
+            const diffMy = My_target - sumMy_curr;
+            const diffMx = Mx_target - sumMx_curr;
 
-            // 第四步：计算最终反力
+            // 力矩修正系数 (通过旋转平面产生附加反力)
+            // Corr force F_i = K_i * (Cy * xi + Cx * yi)
+            // Moment M_y = Σ F_i * xi = Σ K_i * Cy * xi^2 = Cy * Σ K_i * xi^2
+            // Cy = diffMy / sumKx2
+            const Cy = sumKx2 > 0 ? diffMy / sumKx2 : 0;
+            const Cx = sumKy2 > 0 ? diffMx / sumKy2 : 0;
+
+            // 第五步：计算最终反力
             let totalN = 0;
             SUPPORT_IDS.forEach(id => {
                 const x = SUPPORT_POSITIONS[id].x;
@@ -1157,10 +1217,12 @@
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
                 const effectiveK = bearingParams.Kv * alpha;
 
-                // 反力 = 初始反力 + 高差导致的变化 - 平均值 + 力矩修正
+                // 反力 = 初始反力 + 高差导致的变化 (去均值) + 力矩修正
                 const adjustedDelta = deltaN[id] - avgDelta;
-                const momentCorr = effectiveK * (corrX * x + corrY * y);
-                const newN = baseN + adjustedDelta + momentCorr;
+                // momentCorr = K * (Cy * x + Cx * y)
+                // Cy对应x方向力矩需求 -> 产生N分布与x相关
+                const momentCorr = effectiveK * (Cy * x + Cx * y);
+                const newN = Math.max(0.1, baseN + adjustedDelta + momentCorr); // 最小保留0.1防除0
 
                 totalN += newN;
 
