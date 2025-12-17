@@ -697,42 +697,41 @@
                     </div>
                 </div>
 
-                <!-- Seismic Force -->
+                <!-- Seismic Input -->
                 <div class="section">
-                    <h3>地震力控制</h3>
-                    <div class="slider-group">
-                        <div class="slider-label">
-                            <span>力大小 |F|</span>
-                            <span class="slider-value" id="force-value">0 kN</span>
-                        </div>
-                        <input type="range" id="force-slider" min="0" max="50" value="0">
+                    <h3>🌊 地震波输入</h3>
+                    <div class="param-item" style="margin-bottom: 8px;">
+                        <label>选择地震波</label>
+                        <select id="wave-select"
+                            style="width: 100%; padding: 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: #fff;">
+                            <option value="sine">简谐波 (正弦)</option>
+                            <option value="cape-mendocino">SCB1: Cape Mendocino</option>
+                            <option value="northridge">SCB2: Northridge</option>
+                            <option value="th3tg045">SCB3: TH3TG045 (人工波)</option>
+                            <option value="coalinga">SCB4: Coalinga</option>
+                            <option value="chi-chi">SCB5: Chi-Chi 台湾</option>
+                        </select>
                     </div>
                     <div class="slider-group">
                         <div class="slider-label">
-                            <span>Y/X幅度比</span>
-                            <span class="slider-value" id="ratio-value">1.0</span>
+                            <span>PGA (g)</span>
+                            <span class="slider-value" id="pga-value">0.4</span>
                         </div>
-                        <input type="range" id="ratio-slider" min="0" max="2" value="1" step="0.1">
+                        <input type="range" id="pga-slider" min="0.1" max="1.0" value="0.4" step="0.05">
                     </div>
                     <div class="slider-group">
                         <div class="slider-label">
-                            <span>Y相位差 Δφ</span>
-                            <span class="slider-value" id="phase-value">0°</span>
+                            <span>阻尼比 ξ</span>
+                            <span class="slider-value" id="damping-value">0.10</span>
                         </div>
-                        <input type="range" id="phase-slider" min="0" max="180" value="0">
-                    </div>
-                    <div class="preset-btns" style="margin-top: 8px;">
-                        <div class="preset-btn" data-wave="line-x">X向直线</div>
-                        <div class="preset-btn" data-wave="line-y">Y向直线</div>
-                        <div class="preset-btn" data-wave="circle">圆形</div>
-                        <div class="preset-btn" data-wave="ellipse">椭圆</div>
+                        <input type="range" id="damping-slider" min="0.05" max="0.20" value="0.10" step="0.01">
                     </div>
                 </div>
 
                 <!-- Motion Response -->
                 <div class="eccentricity-display"
                     style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3);">
-                    <div class="ecc-title" style="color: #00d4ff;">📍 运动响应</div>
+                    <div class="ecc-title" style="color: #00d4ff;">📍 相对位移响应</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
                             <div class="ecc-label">u<sub>x</sub></div>
@@ -743,8 +742,31 @@
                             <div class="ecc-value" id="disp-y" style="color: #2ed573;">0.0 mm</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">φ</div>
-                            <div class="ecc-value" id="rotation-angle" style="color: #f472b6;">0.00°</div>
+                            <div class="ecc-label">γ</div>
+                            <div class="ecc-value" id="shear-strain" style="color: #ffa502;">0%</div>
+                        </div>
+                    </div>
+                    <div class="info-text" style="margin-top: 6px; font-size: 0.55rem;">
+                        γ = u / T<sub>r</sub> (剪应变，限值约250%)
+                    </div>
+                </div>
+
+                <!-- System Properties -->
+                <div class="eccentricity-display"
+                    style="background: rgba(46, 213, 115, 0.1); border-color: rgba(46, 213, 115, 0.3);">
+                    <div class="ecc-title" style="color: #2ed573;">⚡ 隔震系统参数</div>
+                    <div class="ecc-values">
+                        <div class="ecc-item">
+                            <div class="ecc-label">周期 T</div>
+                            <div class="ecc-value" id="period" style="color: #2ed573;">1.0 s</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">ΣK<sub>h</sub></div>
+                            <div class="ecc-value" id="total-kh" style="color: #2ed573;">180 kN/m</div>
+                        </div>
+                        <div class="ecc-item">
+                            <div class="ecc-label">max u</div>
+                            <div class="ecc-value" id="max-disp" style="color: #ff6b6b;">0 mm</div>
                         </div>
                     </div>
                 </div>
@@ -752,19 +774,19 @@
                 <!-- Torsion Result -->
                 <div class="eccentricity-display"
                     style="background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3);">
-                    <div class="ecc-title" style="color: #ff6b6b;">⚠️ 扭转力矩</div>
+                    <div class="ecc-title" style="color: #ff6b6b;">⚠️ 扭转效应</div>
                     <div class="ecc-values">
                         <div class="ecc-item">
+                            <div class="ecc-label">φ</div>
+                            <div class="ecc-value" id="rotation-angle" style="color: #f472b6;">0.00°</div>
+                        </div>
+                        <div class="ecc-item">
                             <div class="ecc-label">M<sub>T</sub></div>
-                            <div class="ecc-value" id="torsion-moment" style="color: #ff6b6b;">0.000 kN·m</div>
+                            <div class="ecc-value" id="torsion-moment" style="color: #ff6b6b;">0 kN·m</div>
                         </div>
                         <div class="ecc-item">
-                            <div class="ecc-label">F<sub>x</sub></div>
-                            <div class="ecc-value" id="force-x" style="color: #00d4ff;">0.0 kN</div>
-                        </div>
-                        <div class="ecc-item">
-                            <div class="ecc-label">F<sub>y</sub></div>
-                            <div class="ecc-value" id="force-y" style="color: #00d4ff;">0.0 kN</div>
+                            <div class="ecc-label">|e|</div>
+                            <div class="ecc-value" id="ecc-disp" style="color: #ffa502;">0 mm</div>
                         </div>
                     </div>
                 </div>
@@ -951,20 +973,28 @@
             view: 'plan',
             heights: { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 }, // mm
             supports: {},
-            // 双向地震输入参数
-            force: 0,           // 力大小 (kN)
-            yxRatio: 1.0,       // Y/X幅度比
-            phaseDiff: 0,       // Y相位差 (度)
+            // 地震波输入参数
+            selectedWave: 'sine',   // 选择的地震波
+            pga: 0.4,               // 峰值加速度 (g)
+            damping: 0.10,          // 阻尼比
+            // 系统参数（计算得到）
+            totalKh: 0,             // 总水平刚度 (kN/m)
+            mass: TOTAL_WEIGHT / 9.81,  // 质量 (t)
+            period: 0,              // 周期 (s)
+            omega: 0,               // 圆频率 (rad/s)
             // 运动响应
             displacement: 0,
+            velocity: 0,
             rotation: 0,
+            maxDisp: 0,
             // 动画状态
             buildingDisp: { x: 0, y: 0, rot: 0 },
+            buildingVel: { x: 0, y: 0 },
             isAnimating: false,
             animTime: 0,
             // 轨迹记录
             trajectory: [],
-            maxTrajectoryPoints: 200
+            maxTrajectoryPoints: 300
         };
 
         // ============================================================
@@ -1095,17 +1125,10 @@
             document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
             document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
 
-            // Calculate force components (for static display, use max values)
-            const Fx = state.force;
-            const Fy = state.force * state.yxRatio;
-
-            // Calculate torsion moment: MT = Fx * ey - Fy * ex (cross product)
-            const torsionMoment = Fx * cs.ey - Fy * cs.ex;
-
-            // Calculate displacement: u = F / ΣKh
-            const totalForce = Math.sqrt(Fx * Fx + Fy * Fy);
-            const ux = cs.totalK > 0 ? Fx / cs.totalK : 0;
-            const uy = cs.totalK > 0 ? Fy / cs.totalK : 0;
+            // Calculate system parameters
+            state.totalKh = cs.totalK;
+            state.omega = Math.sqrt(state.totalKh / state.mass); // rad/s
+            state.period = 2 * Math.PI / state.omega; // s
 
             // Calculate torsional stiffness: J = Σ(Kh × r²)
             let J = 0;
@@ -1114,29 +1137,42 @@
                 const r2 = s.x * s.x + s.y * s.y;
                 J += s.Kh * r2;
             });
+            state.J = J;
+            state.cs = cs;
 
-            // Calculate rotation: φ = MT / J
-            const rotation = J > 0 ? torsionMoment / J : 0;
+            // Calculate average rubber thickness for shear strain
+            const avgTr = (calc.edge.totalRubberT + calc.mid.totalRubberT) / 2;
 
-            // Update force and torsion display
-            document.getElementById('force-x').textContent = Fx.toFixed(1) + ' kN';
-            document.getElementById('force-y').textContent = Fy.toFixed(1) + ' kN';
-            document.getElementById('torsion-moment').textContent = torsionMoment.toFixed(3) + ' kN·m';
+            // Update system parameters display
+            document.getElementById('period').textContent = state.period.toFixed(2) + ' s';
+            document.getElementById('total-kh').textContent = state.totalKh.toFixed(0) + ' kN/m';
+            document.getElementById('ecc-disp').textContent = (cs.e_mag * 1000).toFixed(1) + ' mm';
+
+            // Update shear strain display (based on current displacement)
+            const currentDisp = Math.sqrt(state.buildingDisp.x * state.buildingDisp.x + state.buildingDisp.y * state.buildingDisp.y);
+            const shearStrain = (currentDisp / avgTr) * 100;
+            document.getElementById('shear-strain').textContent = shearStrain.toFixed(0) + '%';
+
+            // Color code shear strain
+            const strainEl = document.getElementById('shear-strain');
+            if (shearStrain > 200) {
+                strainEl.style.color = '#ff6b6b';
+            } else if (shearStrain > 150) {
+                strainEl.style.color = '#ffa502';
+            } else {
+                strainEl.style.color = '#2ed573';
+            }
 
             // Update displacement display
-            document.getElementById('disp-x').textContent = (ux * 1000).toFixed(1) + ' mm';
-            document.getElementById('disp-y').textContent = (uy * 1000).toFixed(1) + ' mm';
-            document.getElementById('rotation-angle').textContent = (rotation * 180 / Math.PI).toFixed(2) + '°';
+            document.getElementById('disp-x').textContent = (state.buildingDisp.x * 1000).toFixed(1) + ' mm';
+            document.getElementById('disp-y').textContent = (state.buildingDisp.y * 1000).toFixed(1) + ' mm';
+            document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
+            document.getElementById('max-disp').textContent = (state.maxDisp * 1000).toFixed(1) + ' mm';
+            document.getElementById('torsion-moment').textContent = '0 kN·m';
 
             // Update stats
             document.getElementById('total-weight').textContent = TOTAL_WEIGHT.toFixed(2) + ' kN';
             document.getElementById('bearing-diameter').textContent = params.edgeDiameter + '/' + params.midDiameter + ' mm';
-
-            // Store for animation
-            state.displacement = Math.sqrt(ux * ux + uy * uy);
-            state.rotation = rotation;
-            state.J = J;
-            state.cs = cs;
 
             draw();
         }
@@ -1227,61 +1263,29 @@
             });
         });
 
-        // Force slider
-        const forceSlider = document.getElementById('force-slider');
-        const forceValue = document.getElementById('force-value');
-        forceSlider.addEventListener('input', (e) => {
-            state.force = parseFloat(e.target.value);
-            forceValue.textContent = state.force.toFixed(0) + ' kN';
+        // PGA slider
+        const pgaSlider = document.getElementById('pga-slider');
+        const pgaValue = document.getElementById('pga-value');
+        pgaSlider.addEventListener('input', (e) => {
+            state.pga = parseFloat(e.target.value);
+            pgaValue.textContent = state.pga.toFixed(2);
             updateUI();
         });
 
-        // Y/X Ratio slider
-        const ratioSlider = document.getElementById('ratio-slider');
-        const ratioValue = document.getElementById('ratio-value');
-        ratioSlider.addEventListener('input', (e) => {
-            state.yxRatio = parseFloat(e.target.value);
-            ratioValue.textContent = state.yxRatio.toFixed(1);
+        // Damping slider
+        const dampingSlider = document.getElementById('damping-slider');
+        const dampingValue = document.getElementById('damping-value');
+        dampingSlider.addEventListener('input', (e) => {
+            state.damping = parseFloat(e.target.value);
+            dampingValue.textContent = state.damping.toFixed(2);
             updateUI();
         });
 
-        // Phase difference slider
-        const phaseSlider = document.getElementById('phase-slider');
-        const phaseValue = document.getElementById('phase-value');
-        phaseSlider.addEventListener('input', (e) => {
-            state.phaseDiff = parseFloat(e.target.value);
-            phaseValue.textContent = state.phaseDiff.toFixed(0) + '°';
-            updateUI();
-        });
-
-        // Wave preset buttons
-        document.querySelectorAll('.preset-btn[data-wave]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const wave = btn.dataset.wave;
-                switch (wave) {
-                    case 'line-x':
-                        state.yxRatio = 0;
-                        state.phaseDiff = 0;
-                        break;
-                    case 'line-y':
-                        state.yxRatio = 1000; // Very large = Y only
-                        state.phaseDiff = 0;
-                        break;
-                    case 'circle':
-                        state.yxRatio = 1;
-                        state.phaseDiff = 90;
-                        break;
-                    case 'ellipse':
-                        state.yxRatio = 0.5;
-                        state.phaseDiff = 90;
-                        break;
-                }
-                ratioSlider.value = Math.min(2, state.yxRatio);
-                ratioValue.textContent = state.yxRatio.toFixed(1);
-                phaseSlider.value = state.phaseDiff;
-                phaseValue.textContent = state.phaseDiff.toFixed(0) + '°';
-                updateUI();
-            });
+        // Wave select
+        const waveSelect = document.getElementById('wave-select');
+        waveSelect.addEventListener('change', (e) => {
+            state.selectedWave = e.target.value;
+            console.log('Selected wave:', state.selectedWave);
         });
 
         // Animation
@@ -1305,11 +1309,10 @@
             state.isAnimating = false;
             cancelAnimationFrame(animationId);
             state.buildingDisp = { x: 0, y: 0, rot: 0 };
+            state.buildingVel = { x: 0, y: 0 };
             state.animTime = 0;
             state.trajectory = [];
-            state.force = 0;
-            forceSlider.value = 0;
-            forceValue.textContent = '0 kN';
+            state.maxDisp = 0;
             btnAnimate.textContent = '▶ 地震模拟';
             updateUI();
         });
@@ -1317,54 +1320,101 @@
         function animate() {
             if (!state.isAnimating) return;
 
-            // Time-based animation (2Hz frequency)
-            state.animTime += 0.04;
-            const omega = 2 * Math.PI * 2; // 2Hz
+            const dt = 0.02; // 时间步长 (s)
+            state.animTime += dt;
             const t = state.animTime;
 
-            // X force: sin(ωt)
-            const Fx_t = Math.sin(omega * t) * 40;
-            // Y force: sin(ωt + φ) × ratio
-            const phaseRad = state.phaseDiff * Math.PI / 180;
-            const Fy_t = Math.sin(omega * t + phaseRad) * 40 * state.yxRatio;
+            // 地震加速度输入 (简谐波或模拟真实地震波)
+            let ag_x, ag_y;
+            const g = 9.81; // m/s²
 
-            // Update force slider display with X component amplitude
-            state.force = 40;
-            forceSlider.value = 40;
-            forceValue.textContent = '40 kN';
+            if (state.selectedWave === 'sine') {
+                // 简谐波: 频率约等于系统固有频率以产生共振
+                const exciteFreq = 1 / state.period * 0.8; // 略低于共振频率
+                const omega_e = 2 * Math.PI * exciteFreq;
+                ag_x = state.pga * g * Math.sin(omega_e * t);
+                ag_y = state.pga * g * Math.sin(omega_e * t + Math.PI / 4); // 45度相位差
+            } else {
+                // 模拟真实地震波的随机特性
+                const envelope = Math.exp(-0.1 * Math.abs(t - 2)) * (t < 10 ? 1 : 0);
+                const highFreq = Math.sin(2 * Math.PI * 5 * t) + 0.5 * Math.sin(2 * Math.PI * 8 * t);
+                const lowFreq = Math.sin(2 * Math.PI * 1.5 * t);
+                ag_x = state.pga * g * envelope * (0.7 * lowFreq + 0.3 * highFreq);
+                ag_y = state.pga * g * envelope * (0.7 * Math.sin(2 * Math.PI * 1.3 * t) + 0.3 * Math.sin(2 * Math.PI * 6 * t + 1));
+            }
 
+            // Newmark-β 积分 (β=1/4, γ=1/2 为常加速度法)
+            const beta = 0.25;
+            const gamma = 0.5;
+            const omega = state.omega;
+            const xi = state.damping;
+            const K = state.totalKh;
+            const M = state.mass;
+            const C = 2 * xi * omega * M; // 阻尼系数
+
+            // X方向 SDOF
+            const ax_old = -omega * omega * state.buildingDisp.x - 2 * xi * omega * state.buildingVel.x - ag_x / M * M;
+            const Keff_x = M / (beta * dt * dt) + gamma / (beta * dt) * C + K;
+            const Reff_x = -M * ag_x + M * (state.buildingDisp.x / (beta * dt * dt) + state.buildingVel.x / (beta * dt) + (1 / (2 * beta) - 1) * ax_old);
+            const du_x = Reff_x / Keff_x;
+
+            // 简化为欧拉法更直观
+            // ü + 2ξωu̇ + ω²u = -a_g
+            const acc_x = -2 * xi * omega * state.buildingVel.x - omega * omega * state.buildingDisp.x - ag_x;
+            const acc_y = -2 * xi * omega * state.buildingVel.y - omega * omega * state.buildingDisp.y - ag_y;
+
+            state.buildingVel.x += acc_x * dt;
+            state.buildingVel.y += acc_y * dt;
+            state.buildingDisp.x += state.buildingVel.x * dt;
+            state.buildingDisp.y += state.buildingVel.y * dt;
+
+            // 扭转响应 (简化)
             const cs = state.cs || calculateStiffnessCenter();
             const J = state.J || 0.1;
+            // 扭转力矩由偏心引起
+            const Fx = K * state.buildingDisp.x;
+            const Fy = K * state.buildingDisp.y;
+            const torsionMoment = Fx * cs.ey - Fy * cs.ex;
+            const torsionOmega = Math.sqrt(J / state.mass);
+            state.buildingDisp.rot = state.buildingDisp.rot * 0.95 + (torsionMoment / J) * 0.05;
 
-            // Calculate displacement: u = F / ΣK
-            const ux = cs.totalK > 0 ? Fx_t / cs.totalK : 0;
-            const uy = cs.totalK > 0 ? Fy_t / cs.totalK : 0;
+            // 更新最大位移
+            const currentDisp = Math.sqrt(state.buildingDisp.x * state.buildingDisp.x + state.buildingDisp.y * state.buildingDisp.y);
+            if (currentDisp > state.maxDisp) {
+                state.maxDisp = currentDisp;
+            }
 
-            // Calculate torsion moment and rotation
-            const torsionMoment = Fx_t * cs.ey - Fy_t * cs.ex;
-            const rotation = J > 0 ? torsionMoment / J : 0;
-
-            // Smooth building response
-            state.buildingDisp.x = state.buildingDisp.x * 0.8 + ux * 0.2;
-            state.buildingDisp.y = state.buildingDisp.y * 0.8 + uy * 0.2;
-            state.buildingDisp.rot = state.buildingDisp.rot * 0.8 + rotation * 0.2;
-
-            // Record trajectory
+            // 记录轨迹
             state.trajectory.push({
                 x: state.buildingDisp.x * 1000, // mm
                 y: state.buildingDisp.y * 1000, // mm
                 rot: state.buildingDisp.rot
             });
 
-            // Limit trajectory length
+            // 限制轨迹长度
             if (state.trajectory.length > state.maxTrajectoryPoints) {
                 state.trajectory.shift();
             }
 
-            // Update displacement display
+            // 更新显示
             document.getElementById('disp-x').textContent = (state.buildingDisp.x * 1000).toFixed(1) + ' mm';
             document.getElementById('disp-y').textContent = (state.buildingDisp.y * 1000).toFixed(1) + ' mm';
             document.getElementById('rotation-angle').textContent = (state.buildingDisp.rot * 180 / Math.PI).toFixed(2) + '°';
+            document.getElementById('max-disp').textContent = (state.maxDisp * 1000).toFixed(1) + ' mm';
+            document.getElementById('torsion-moment').textContent = torsionMoment.toFixed(2) + ' kN·m';
+
+            // 更新剪应变
+            const avgTr = (calc.edge.totalRubberT + calc.mid.totalRubberT) / 2;
+            const shearStrain = (currentDisp / avgTr) * 100;
+            document.getElementById('shear-strain').textContent = shearStrain.toFixed(0) + '%';
+            const strainEl = document.getElementById('shear-strain');
+            if (shearStrain > 200) {
+                strainEl.style.color = '#ff6b6b';
+            } else if (shearStrain > 150) {
+                strainEl.style.color = '#ffa502';
+            } else {
+                strainEl.style.color = '#2ed573';
+            }
 
             draw();
             animationId = requestAnimationFrame(animate);
