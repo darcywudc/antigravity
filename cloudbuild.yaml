@@ -26,12 +26,12 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-      - '--port'
-      - '5050'
       - '--memory'
       - '2Gi'
       - '--cpu'
       - '2'
+      - '--timeout'
+      - '300'
 
 images:
   - 'gcr.io/$PROJECT_ID/opensees-analysis:$COMMIT_SHA'

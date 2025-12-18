@@ -668,10 +668,16 @@ def health():
 
 
 if __name__ == '__main__':
+    # Cloud Run使用PORT环境变量，本地默认5050
+    port = int(os.environ.get('PORT', 5050))
+    
     print('='*60)
     print('  OpenSees计算后端服务')
-    print('  静力分析: http://localhost:5050/api/calculate')
-    print('  动力分析: http://localhost:5050/api/dynamic')
-    print('  反应谱:   http://localhost:5050/api/spectrum')
+    print(f'  端口: {port}')
+    print(f'  静力分析: http://localhost:{port}/api/calculate')
+    print(f'  动力分析: http://localhost:{port}/api/dynamic')
     print('='*60)
-    app.run(host='0.0.0.0', port=5050, debug=True)
+    
+    # Cloud Run不支持debug模式
+    debug = os.environ.get('K_SERVICE') is None  # K_SERVICE在Cloud Run中自动设置
+    app.run(host='0.0.0.0', port=port, debug=debug)
