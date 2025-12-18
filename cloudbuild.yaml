@@ -1,29 +1,40 @@
 steps:
-  # 1. 构建 Docker 镜像
+  # 1. 构建 Docker 镜像 (指定 amd64 平台)
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/linear-algebra-mastery:$COMMIT_SHA', '.']
+    args: 
+      - 'build'
+      - '--platform=linux/amd64'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/opensees-analysis:$COMMIT_SHA'
+      - '.'
 
   # 2. 推送镜像到 Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/linear-algebra-mastery:$COMMIT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/opensees-analysis:$COMMIT_SHA']
 
-  # 3. 部署到 Cloud Run (服务名: linear-algebra-mastery)
+  # 3. 部署到 Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
-      - 'linear-algebra-mastery'
+      - 'opensees-analysis'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/linear-algebra-mastery:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/opensees-analysis:$COMMIT_SHA'
       - '--region'
       - 'us-central1'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--port'
+      - '5050'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '2'
 
 images:
-  - 'gcr.io/$PROJECT_ID/linear-algebra-mastery:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/opensees-analysis:$COMMIT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY

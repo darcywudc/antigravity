@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenSees动力学分析 - 隔震支座时程分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            color: #00d4ff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #00d4ff;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #00d4ff;
+            color: #0a0a1a;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .panel h3 {
+            font-size: 1rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #0088ff);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .chart-container h4 {
+            font-size: 0.85rem;
+            color: #00ff88;
+            margin-bottom: 8px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 200px !important;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .result-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .result-card .label {
+            font-size: 0.7rem;
+            color: #888;
+            margin-bottom: 3px;
+        }
+
+        .result-card .value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .result-card .unit {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .result-card.highlight {
+            border: 1px solid #00ff88;
+        }
+
+        .result-card.warning {
+            border: 1px solid #ffa502;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .status-bar.connected {
+            border-left: 3px solid #00ff88;
+        }
+
+        .status-bar.disconnected {
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .status-bar.running {
+            border-left: 3px solid #ffa502;
+        }
+
+        .info-text {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .ground-motion-preset {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .preset-chip {
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-chip:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+        }
+
+        .preset-chip.active {
+            background: #00d4ff;
+            color: #0a0a1a;
+        }
+
+        .static-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+
+        .static-info-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .static-info-item .label {
+            color: #888;
+            font-size: 0.7rem;
+        }
+
+        .static-info-item .value {
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .eccentricity-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .ecc-diagram {
+            width: 80px;
+            height: 80px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .ecc-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .ecc-point.mass {
+            background: #ff6b6b;
+        }
+
+        .ecc-point.stiffness {
+            background: #00ff88;
+        }
+
+        .ecc-legend {
+            font-size: 0.7rem;
+        }
+
+        .ecc-legend span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🌊 OpenSees动力学分析 - 考虑偏心效应</h1>
+            <a href="rubber-bearing-sim.html" class="nav-link">← 返回静力分析</a>
+        </header>
+
+        <div class="main-grid">
+            <div class="sidebar">
+                <div class="panel">
+                    <h3>结构参数</h3>
+                    <div class="form-group">
+                        <label>总重量 (kN)</label>
+                        <input type="number" id="total-weight" value="85.58" step="0.1">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>边缘支座Kh (kN/m)</label>
+                            <input type="number" id="edge-kh" value="55.2" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>中间支座Kh (kN/m)</label>
+                            <input type="number" id="mid-kh" value="134.75" step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>质心位置（偏心设置）</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>质心X (m)</label>
+                            <input type="number" id="mass-center-x" value="0" step="0.01" min="-0.5" max="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>质心Y (m)</label>
+                            <input type="number" id="mass-center-y" value="0" step="0.01" min="-0.3" max="0.3">
+                        </div>
+                    </div>
+                    <div class="eccentricity-display">
+                        <div class="ecc-diagram" id="ecc-diagram">
+                            <div class="ecc-point stiffness" id="ecc-stiffness" style="left:50%;top:50%;"></div>
+                            <div class="ecc-point mass" id="ecc-mass" style="left:50%;top:50%;"></div>
+                        </div>
+                        <div class="ecc-legend">
+                            <div><span style="background:#00ff88;"></span>刚度中心</div>
+                            <div><span style="background:#ff6b6b;"></span>质心</div>
+                            <div id="ecc-value" style="color:#ffa502;margin-top:5px;">偏心: 0.00m</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>地震动输入</h3>
+                    <div class="ground-motion-preset">
+                        <div class="preset-chip active" data-gm="sine">正弦波</div>
+                        <div class="preset-chip" data-gm="elcentro">El Centro</div>
+                        <div class="preset-chip" data-gm="pulse">脉冲</div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>峰值加速度PGA (g)</label>
+                            <input type="number" id="pga" value="0.2" step="0.05" min="0.05" max="1.0">
+                        </div>
+                        <div class="form-group">
+                            <label>主周期 (s)</label>
+                            <input type="number" id="period-input" value="1.0" step="0.1" min="0.1" max="5">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>持时 (s)</label>
+                            <input type="number" id="duration" value="5" step="1" min="3" max="20">
+                        </div>
+                        <div class="form-group">
+                            <label>时间步长 (s)</label>
+                            <input type="number" id="dt" value="0.02" step="0.01" min="0.01" max="0.05">
+                        </div>
+                    </div>
+                    <p class="info-text">提示: 结构周期约0.84s，输入周期≈结构周期时会共振</p>
+                </div>
+
+                <div class="panel">
+                    <h3>分析控制</h3>
+                    <button class="btn btn-primary" id="btn-run">▶ 运行时程分析</button>
+                    <p class="info-text" id="analysis-status">准备就绪</p>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <!-- 动力特性 -->
+                <div class="panel">
+                    <h3>动力特性</h3>
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <div class="label">平动周期 Tx</div>
+                            <div class="value" id="period-x">--</div>
+                            <div class="unit">s</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">扭转周期 Tθ</div>
+                            <div class="value" id="period-theta">--</div>
+                            <div class="unit">s</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">周期比 Tθ/Tx</div>
+                            <div class="value" id="omega-ratio">--</div>
+                            <div class="unit"></div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">总水平刚度 Kh</div>
+                            <div class="value" id="total-kh-result">--</div>
+                            <div class="unit">kN/m</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">偏心距</div>
+                            <div class="value" id="ecc-mag">--</div>
+                            <div class="unit">m</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 峰值响应 -->
+                <div class="panel">
+                    <h3>峰值响应</h3>
+                    <div class="result-grid">
+                        <div class="result-card highlight">
+                            <div class="label">上部位移 (矢量)</div>
+                            <div class="value" id="max-disp">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">隔震层变形 X</div>
+                            <div class="value" id="max-relative-x">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">隔震层变形 Y</div>
+                            <div class="value" id="max-relative-y">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">扭转角</div>
+                            <div class="value" id="max-rotation">--</div>
+                            <div class="unit">mrad</div>
+                        </div>
+                        <div class="result-card warning">
+                            <div class="label">输入PGA</div>
+                            <div class="value" id="max-ground">--</div>
+                            <div class="unit"></div>
+                        </div>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-card highlight">
+                            <div class="label">上部加速度 (矢量)</div>
+                            <div class="value" id="max-accel">--</div>
+                            <div class="unit">g</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">加速度放大 X</div>
+                            <div class="value" id="amp-x">--</div>
+                            <div class="unit">倍</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">加速度放大 Y</div>
+                            <div class="value" id="amp-y">--</div>
+                            <div class="unit">倍</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">输入PGA X</div>
+                            <div class="value" id="pga-x">--</div>
+                            <div class="unit">g</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">输入PGA Y</div>
+                            <div class="value" id="pga-y">--</div>
+                            <div class="unit">g</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 支座变形 -->
+                <div class="panel">
+                    <h3>支座变形峰值</h3>
+                    <div class="result-grid" id="bearing-grid">
+                        <div class="result-card">
+                            <div class="label">支座8 (左上)</div>
+                            <div class="value" id="bearing-8">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">支座25 (右上)</div>
+                            <div class="value" id="bearing-25">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">支座4 (左下)</div>
+                            <div class="value" id="bearing-4">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">支座30 (右下)</div>
+                            <div class="value" id="bearing-30">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card highlight">
+                            <div class="label">最大变形</div>
+                            <div class="value" id="bearing-max">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 时程图 -->
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h4>输入地震动 (g)</h4>
+                        <canvas id="inputChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>隔震层变形 (mm)</h4>
+                        <canvas id="dispChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>上部加速度响应 (g)</h4>
+                        <canvas id="accelChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>隔震层变形 X-Y (mm)</h4>
+                        <canvas id="relativeChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>扭转角时程 (mrad)</h4>
+                        <canvas id="rotationChart"></canvas>
+                    </div>
+                    <div class="chart-container" style="position:relative;">
+                        <h4>位移轨迹 <button id="btn-animate"
+                                style="float:right;padding:2px 8px;font-size:0.7rem;cursor:pointer;">▶ 动画</button></h4>
+                        <canvas id="trajectoryCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar disconnected" id="status-bar">OpenSees: 检查中...</div>
+
+    <script>
+        const API_BASE = 'http://localhost:5050';
+        let currentGroundMotion = 'sine';
+
+        async function checkHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                const data = await response.json();
+                document.getElementById('status-bar').className = 'status-bar connected';
+                document.getElementById('status-bar').textContent = `OpenSees: 已连接`;
+                return true;
+            } catch (e) {
+                document.getElementById('status-bar').className = 'status-bar disconnected';
+                document.getElementById('status-bar').textContent = 'OpenSees: 未连接';
+                return false;
+            }
+        }
+
+        function generateGroundMotion(type, pga, period, duration, dt) {
+            // 使用周期(s)而不是频率(Hz)
+            const freq = 1 / period;  // 从周期转换为频率
+            const n = Math.floor(duration / dt);
+            const ax = [], ay = [];
+
+            for (let i = 0; i < n; i++) {
+                const t = i * dt;
+                let accX = 0, accY = 0;
+                const env = Math.sin(Math.PI * t / duration);
+
+                switch (type) {
+                    case 'sine':
+                        accX = pga * env * Math.sin(2 * Math.PI * freq * t);
+                        accY = pga * env * 0.7 * Math.sin(2 * Math.PI * freq * t + 0.5);
+                        break;
+                    case 'elcentro':
+                        // El Centro主频约2.5Hz，周期约0.4s
+                        const fEC = 1 / period;
+                        const t1 = 1, t2 = 3;
+                        let envEC = t < t1 ? t / t1 : (t < t2 ? 1 : Math.exp(-(t - t2) / 2));
+                        accX = pga * envEC * (Math.sin(2 * Math.PI * fEC * t) + 0.5 * Math.sin(2 * Math.PI * fEC * 0.4 * t));
+                        accY = pga * envEC * 0.7 * Math.sin(2 * Math.PI * fEC * 0.8 * t + 0.3);
+                        break;
+                    case 'pulse':
+                        if (t > 0.2 * period && t < 1.2 * period) accX = pga * Math.sin(Math.PI * (t - 0.2 * period) / period);
+                        if (t > 0.5 * period && t < 1.5 * period) accY = pga * 0.8 * Math.sin(Math.PI * (t - 0.5 * period) / period);
+                        break;
+                }
+                ax.push(accX);
+                ay.push(accY);
+            }
+            return { ax, ay };
+        }
+
+        function drawChart(canvas, datasets, labels, colors, title) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.offsetWidth * 2;
+            const h = canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+
+            const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+            const pad = { left: 45, right: 15, top: 15, bottom: 25 };
+            const plotW = cw - pad.left - pad.right;
+            const plotH = ch - pad.top - pad.bottom;
+
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(0, 0, cw, ch);
+
+            let maxVal = 0.001;
+            datasets.forEach(s => s.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); }));
+
+            // Grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.top + plotH * i / 4;
+                ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(cw - pad.right, y); ctx.stroke();
+            }
+
+            // Y labels
+            ctx.fillStyle = '#666';
+            ctx.font = '9px sans-serif';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.top + plotH * i / 4;
+                const val = maxVal * (1 - i / 2);
+                ctx.fillText(val.toFixed(2), pad.left - 3, y + 3);
+            }
+
+            // Zero line
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(pad.left, pad.top + plotH / 2);
+            ctx.lineTo(cw - pad.right, pad.top + plotH / 2);
+            ctx.stroke();
+
+            // Data
+            datasets.forEach((series, idx) => {
+                if (!series.length) return;
+                ctx.strokeStyle = colors[idx] || '#00d4ff';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                for (let i = 0; i < series.length; i++) {
+                    const x = pad.left + (i / series.length) * plotW;
+                    const y = pad.top + plotH / 2 - (series[i] / maxVal) * (plotH / 2);
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            });
+
+            // Legend
+            ctx.font = '9px sans-serif';
+            labels.forEach((label, idx) => {
+                ctx.fillStyle = colors[idx];
+                ctx.fillText(label, pad.left + idx * 50, ch - 5);
+            });
+        }
+
+        function drawTrajectory(canvas, dispX, dispY) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.offsetWidth * 2;
+            const h = canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+
+            const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+            const cx = cw / 2, cy = ch / 2;
+
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(0, 0, cw, ch);
+
+            let maxVal = 1;
+            dispX.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+            dispY.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+
+            const scale = (Math.min(cw, ch) / 2 - 25) / maxVal;
+
+            // Grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(25, cy); ctx.lineTo(cw - 25, cy);
+            ctx.moveTo(cx, 25); ctx.lineTo(cx, ch - 25);
+            ctx.stroke();
+
+            [0.5, 1].forEach(r => {
+                ctx.beginPath();
+                ctx.arc(cx, cy, r * maxVal * scale, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+
+            ctx.fillStyle = '#666';
+            ctx.font = '8px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('X', cw - 12, cy + 3);
+            ctx.fillText('Y', cx, 12);
+            ctx.fillText(maxVal.toFixed(1), cw - 25, cy - 5);
+
+            if (dispX.length && dispY.length) {
+                ctx.strokeStyle = 'rgba(0,212,255,0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let i = 0; i < dispX.length; i++) {
+                    const x = cx + dispX[i] * scale;
+                    const y = cy - dispY[i] * scale;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Max point
+                let maxIdx = 0, maxD = 0;
+                for (let i = 0; i < dispX.length; i++) {
+                    const d = dispX[i] ** 2 + dispY[i] ** 2;
+                    if (d > maxD) { maxD = d; maxIdx = i; }
+                }
+                ctx.fillStyle = '#ff6b6b';
+                ctx.beginPath();
+                ctx.arc(cx + dispX[maxIdx] * scale, cy - dispY[maxIdx] * scale, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function updateEccDiagram() {
+            const mcx = parseFloat(document.getElementById('mass-center-x').value) || 0;
+            const mcy = parseFloat(document.getElementById('mass-center-y').value) || 0;
+
+            // 假设刚度中心在(0,0)
+            const scx = 0, scy = 0;
+
+            const scale = 80;  // 80px = 1m
+            const massEl = document.getElementById('ecc-mass');
+            const stiffEl = document.getElementById('ecc-stiffness');
+
+            massEl.style.left = (50 + mcx * scale) + '%';
+            massEl.style.top = (50 - mcy * scale) + '%';
+            stiffEl.style.left = (50 + scx * scale) + '%';
+            stiffEl.style.top = (50 - scy * scale) + '%';
+
+            const ecc = Math.sqrt(mcx ** 2 + mcy ** 2);
+            document.getElementById('ecc-value').textContent = `偏心: ${ecc.toFixed(3)}m`;
+        }
+
+        async function runAnalysis() {
+            const btn = document.getElementById('btn-run');
+            btn.disabled = true;
+            btn.textContent = '⏳ 分析中...';
+            document.getElementById('status-bar').className = 'status-bar running';
+            document.getElementById('analysis-status').textContent = '正在运行OpenSees时程分析...';
+
+            try {
+                const totalWeight = parseFloat(document.getElementById('total-weight').value);
+                const edgeKh = parseFloat(document.getElementById('edge-kh').value);
+                const midKh = parseFloat(document.getElementById('mid-kh').value);
+                const massCenterX = parseFloat(document.getElementById('mass-center-x').value) || 0;
+                const massCenterY = parseFloat(document.getElementById('mass-center-y').value) || 0;
+                const pga = parseFloat(document.getElementById('pga').value);
+                const period = parseFloat(document.getElementById('period-input').value);
+                const duration = parseFloat(document.getElementById('duration').value);
+                const dt = parseFloat(document.getElementById('dt').value);
+
+                const supports = {
+                    '8': { x: -0.6, y: 0.2, Kv: 5520, Kh: edgeKh },
+                    '11': { x: 0, y: 0.2, Kv: 13475, Kh: midKh },
+                    '25': { x: 0.6, y: 0.2, Kv: 5520, Kh: edgeKh },
+                    '4': { x: -0.6, y: -0.2, Kv: 5520, Kh: edgeKh },
+                    '16': { x: 0, y: -0.2, Kv: 13475, Kh: midKh },
+                    '30': { x: 0.6, y: -0.2, Kv: 5520, Kh: edgeKh }
+                };
+
+                const gm = generateGroundMotion(currentGroundMotion, pga, period, duration, dt);
+
+                drawChart(document.getElementById('inputChart'), [gm.ax, gm.ay], ['X', 'Y'], ['#ff6b6b', '#00ff88'], 'Input');
+
+                const response = await fetch(`${API_BASE}/api/dynamic`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        supports,
+                        total_weight: totalWeight,
+                        heights: {},
+                        ground_motion: gm,
+                        dt, duration,
+                        mass_center: { x: massCenterX, y: massCenterY }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // 动力特性
+                    document.getElementById('period-x').textContent = data.period_x.toFixed(3);
+                    document.getElementById('period-theta').textContent = data.period_theta.toFixed(3);
+                    document.getElementById('omega-ratio').textContent = data.period_ratio.toFixed(2);
+                    document.getElementById('total-kh-result').textContent = data.total_kh.toFixed(1);
+                    document.getElementById('ecc-mag').textContent = data.eccentricity.magnitude.toFixed(4);
+
+                    // 峰值响应
+                    document.getElementById('max-disp').textContent = data.max_disp.toFixed(2);
+                    document.getElementById('max-relative-x').textContent = data.max_disp_x.toFixed(2);
+                    document.getElementById('max-relative-y').textContent = data.max_disp_y.toFixed(2);
+                    document.getElementById('max-rotation').textContent = data.max_rot_z.toFixed(3);
+                    document.getElementById('max-ground').textContent = (data.pga_x).toFixed(3) + 'g';
+
+                    document.getElementById('max-accel').textContent = data.max_accel.toFixed(3);
+                    document.getElementById('amp-x').textContent = data.amplification_x.toFixed(2);
+                    document.getElementById('amp-y').textContent = data.amplification_y.toFixed(2);
+                    document.getElementById('pga-x').textContent = data.pga_x.toFixed(3);
+                    document.getElementById('pga-y').textContent = data.pga_y.toFixed(3);
+
+                    // 支座变形
+                    if (data.bearing_max) {
+                        ['8', '25', '4', '30'].forEach(sid => {
+                            const el = document.getElementById('bearing-' + sid);
+                            if (el && data.bearing_max[sid]) {
+                                el.textContent = data.bearing_max[sid].mag.toFixed(1);
+                            }
+                        });
+                        // 最大变形
+                        let maxBearing = 0;
+                        Object.values(data.bearing_max).forEach(b => {
+                            if (b.mag > maxBearing) maxBearing = b.mag;
+                        });
+                        document.getElementById('bearing-max').textContent = maxBearing.toFixed(1);
+                    }
+
+                    // 图表 - 使用新的字段名
+                    drawChart(document.getElementById('dispChart'),
+                        [data.center_disp_x, data.center_disp_y], ['变形X', '变形Y'], ['#00d4ff', '#00ff88'], '');
+                    drawChart(document.getElementById('accelChart'),
+                        [data.center_accel_x, data.center_accel_y, data.input_accel_x], ['上部X', '上部Y', '地面X'], ['#00d4ff', '#00ff88', '#ff6b6b'], '');
+                    drawChart(document.getElementById('relativeChart'),
+                        [data.center_disp_x, data.center_disp_y], ['X', 'Y'], ['#ffa502', '#00ff88'], '');
+                    drawChart(document.getElementById('rotationChart'),
+                        [data.center_rot_z], ['θz'], ['#ff6b6b'], '');
+                    drawTrajectory(document.getElementById('trajectoryCanvas'), data.center_disp_x, data.center_disp_y);
+
+                    // 保存数据用于动画
+                    window.lastAnalysisData = data;
+
+                    document.getElementById('analysis-status').textContent =
+                        `分析完成 (${data.time.length}步) | 最大支座变形: ${document.getElementById('bearing-max').textContent}mm`;
+                    document.getElementById('status-bar').className = 'status-bar connected';
+                } else {
+                    throw new Error(data.error || '分析失败');
+                }
+            } catch (e) {
+                console.error('分析失败:', e);
+                document.getElementById('analysis-status').textContent = '失败: ' + e.message;
+                document.getElementById('status-bar').className = 'status-bar disconnected';
+            }
+
+            btn.disabled = false;
+            btn.textContent = '▶ 运行时程分析';
+        }
+
+        // 动画播放功能
+        let animationId = null;
+        function playAnimation() {
+            const data = window.lastAnalysisData;
+            if (!data || !data.center_disp_x) return;
+
+            const canvas = document.getElementById('trajectoryCanvas');
+            const ctx = canvas.getContext('2d');
+            const dispX = data.center_disp_x;
+            const dispY = data.center_disp_y;
+            const n = dispX.length;
+
+            let frame = 0;
+            const speed = 5; // 每帧跳过的步数
+
+            function animate() {
+                // 绘制轨迹
+                drawTrajectory(canvas, dispX.slice(0, frame), dispY.slice(0, frame));
+
+                // 绘制当前点
+                const w = canvas.width = canvas.offsetWidth * 2;
+                const h = canvas.height = canvas.offsetHeight * 2;
+                ctx.scale(2, 2);
+                const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+                const cx = cw / 2, cy = ch / 2;
+
+                let maxVal = 1;
+                dispX.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+                dispY.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+                const scale = (Math.min(cw, ch) / 2 - 25) / maxVal;
+
+                if (frame < n) {
+                    ctx.fillStyle = '#00ff88';
+                    ctx.beginPath();
+                    ctx.arc(cx + dispX[frame] * scale, cy - dispY[frame] * scale, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                frame += speed;
+                if (frame < n) {
+                    animationId = requestAnimationFrame(animate);
+                } else {
+                    document.getElementById('btn-animate').textContent = '▶ 动画';
+                    animationId = null;
+                }
+            }
+
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+                document.getElementById('btn-animate').textContent = '▶ 动画';
+                drawTrajectory(canvas, dispX, dispY);
+            } else {
+                document.getElementById('btn-animate').textContent = '⏸ 停止';
+                animate();
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkHealth();
+
+            document.querySelectorAll('.preset-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentGroundMotion = chip.dataset.gm;
+                });
+            });
+
+            document.getElementById('btn-run').addEventListener('click', runAnalysis);
+            document.getElementById('btn-animate').addEventListener('click', playAnimation);
+            document.getElementById('mass-center-x').addEventListener('input', updateEccDiagram);
+            document.getElementById('mass-center-y').addEventListener('input', updateEccDiagram);
+
+            // Init
+            updateEccDiagram();
+            ['dispChart', 'accelChart', 'relativeChart', 'rotationChart', 'inputChart'].forEach(id => {
+                drawChart(document.getElementById(id), [[]], [''], ['#666'], '');
+            });
+            drawTrajectory(document.getElementById('trajectoryCanvas'), [], []);
+        });
+    </script>
+</body>
+
+</html>

@@ -502,6 +502,9 @@
             <a href="index.html" class="back-link">← 返回概览</a>
             <h1>🏢 橡胶隔震支座仿真</h1>
             <p class="subtitle">振动台缩尺模型 - 支座高度调节与刚度中心偏移</p>
+            <a href="opensees-dynamic.html"
+                style="color:#00d4ff;text-decoration:none;padding:8px 16px;border:1px solid #00d4ff;border-radius:6px;margin-left:auto;">🌊
+                动力学分析 →</a>
         </header>
 
         <div class="main-layout">
@@ -618,46 +621,37 @@
                         <div class="height-control">
                             <div class="height-control-label">支座 8</div>
                             <div class="height-control-value" id="h8-value">0</div>
-                            <input type="range" class="height-slider" id="h8" min="-10" max="10" value="0" step="0.5">
+                            <input type="range" class="height-slider" id="h8" min="-3" max="3" value="0" step="0.1">
                         </div>
                         <div class="height-control">
                             <div class="height-control-label">支座 11</div>
                             <div class="height-control-value" id="h11-value">0</div>
-                            <input type="range" class="height-slider" id="h11" min="-10" max="10" value="0" step="0.5">
+                            <input type="range" class="height-slider" id="h11" min="-3" max="3" value="0" step="0.1">
                         </div>
                         <div class="height-control">
                             <div class="height-control-label">支座 25</div>
                             <div class="height-control-value" id="h25-value">0</div>
-                            <input type="range" class="height-slider" id="h25" min="-10" max="10" value="0" step="0.5">
+                            <input type="range" class="height-slider" id="h25" min="-3" max="3" value="0" step="0.1">
                         </div>
                         <div class="height-control">
                             <div class="height-control-label">支座 4</div>
                             <div class="height-control-value" id="h4-value">0</div>
-                            <input type="range" class="height-slider" id="h4" min="-10" max="10" value="0" step="0.5">
+                            <input type="range" class="height-slider" id="h4" min="-3" max="3" value="0" step="0.1">
                         </div>
                         <div class="height-control">
                             <div class="height-control-label">支座 16</div>
                             <div class="height-control-value" id="h16-value">0</div>
-                            <input type="range" class="height-slider" id="h16" min="-10" max="10" value="0" step="0.5">
+                            <input type="range" class="height-slider" id="h16" min="-3" max="3" value="0" step="0.1">
                         </div>
                         <div class="height-control">
                             <div class="height-control-label">支座 30</div>
                             <div class="height-control-value" id="h30-value">0</div>
-                            <input type="range" class="height-slider" id="h30" min="-10" max="10" value="0" step="0.5">
+                            <input type="range" class="height-slider" id="h30" min="-3" max="3" value="0" step="0.1">
                         </div>
                     </div>
                 </div>
 
-                <!-- Preset Configurations -->
-                <div class="section">
-                    <h3>预设配置</h3>
-                    <div class="preset-btns">
-                        <div class="preset-btn active" data-preset="level">水平</div>
-                        <div class="preset-btn" data-preset="mid-settle">中间沉降</div>
-                        <div class="preset-btn" data-preset="tilt-x">X向倾斜</div>
-                        <div class="preset-btn" data-preset="twist">扭转</div>
-                    </div>
-                </div>
+                <!-- 预设配置已删除，使用滑块手动调节 -->
 
                 <!-- Support Info -->
                 <div class="section">
@@ -1090,115 +1084,109 @@
         }
 
         // ============================================================
-        // 刚性板 + 弹性支座模型
-        // 
-        // 这是正确的力学模型！
-        // 
-        // 板有3个刚体自由度：
-        //   z0 - 竖向平移
-        //   θx - 绕X轴转角 (Y方向倾斜)
-        //   θy - 绕Y轴转角 (X方向倾斜)
-        // 
-        // 板在支座i处的位移: di = z0 + θx×yi + θy×xi
-        // 支座反力: Ni = Kvi × (di - hi)
-        // 
-        // 平衡方程:
-        //   Σ Ni = W
-        //   Σ Ni×yi = 0
-        //   Σ Ni×xi = 0
-        // 
-        // 整理成矩阵形式 [K]{d} = {F}
+        // 使用OpenSees API进行静力计算（强制使用，无回退）
         // ============================================================
 
-        function calculateReactions() {
-            // 组装3x3刚度矩阵
-            // K = Σ Kv × [1, yi, xi; yi, yi², xi×yi; xi, xi×yi, xi²]
-            let K = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-            let F = [0, 0, 0];
+        const OPENSEES_API = 'http://localhost:5050/api/calculate';
+        let lastOpenSeesResult = null;
+        let openSeesReady = false;
 
+        async function calculateReactionsFromOpenSees() {
+            // 构建完整的支座数据（包含位置和刚度）
+            const supports = {};
             SUPPORT_IDS.forEach(id => {
-                const x = SUPPORT_POSITIONS[id].x;
-                const y = SUPPORT_POSITIONS[id].y;
+                const pos = SUPPORT_POSITIONS[id];
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const kv = bearingParams.Kv;
-                const h = state.heights[id] / 1000; // mm -> m
-
-                // 刚度矩阵贡献
-                K[0][0] += kv;
-                K[0][1] += kv * y;
-                K[0][2] += kv * x;
-                K[1][0] += kv * y;
-                K[1][1] += kv * y * y;
-                K[1][2] += kv * x * y;
-                K[2][0] += kv * x;
-                K[2][1] += kv * x * y;
-                K[2][2] += kv * x * x;
-
-                // 荷载向量: F = [W + Σ(Kv×h), Σ(Kv×h×y), Σ(Kv×h×x)]
-                F[0] += kv * h;
-                F[1] += kv * h * y;
-                F[2] += kv * h * x;
+                supports[id] = {
+                    x: pos.x,
+                    y: pos.y,
+                    Kv: bearingParams.Kv
+                };
             });
 
-            // 加上重力
-            F[0] += TOTAL_WEIGHT;
+            // 构建高程变化数据（读取当前所有支座的高度）
+            // state.heights: 正值=抬高，负值=沉降
+            const heights = {};
+            SUPPORT_IDS.forEach(id => {
+                heights[id] = state.heights[id];
+            });
 
-            // 求解 3x3 线性方程组 (克莱默法则)
-            const detK = K[0][0] * (K[1][1] * K[2][2] - K[1][2] * K[2][1])
-                - K[0][1] * (K[1][0] * K[2][2] - K[1][2] * K[2][0])
-                + K[0][2] * (K[1][0] * K[2][1] - K[1][1] * K[2][0]);
+            // 构建完整请求数据
+            const requestData = {
+                supports: supports,
+                total_weight: TOTAL_WEIGHT,
+                heights: heights
+            };
 
-            if (Math.abs(detK) < 1e-10) {
-                console.error('刚度矩阵奇异');
+            // 打印发送给OpenSees的完整数据
+            console.log('=====================================');
+            console.log('发送给OpenSees的数据:');
+            console.log('  总重:', TOTAL_WEIGHT, 'kN');
+            console.log('  支座刚度:');
+            SUPPORT_IDS.forEach(id => {
+                console.log('    ' + id + ': x=' + supports[id].x + ', y=' + supports[id].y +
+                    ', Kv=' + supports[id].Kv.toFixed(0) + ' kN/m, h=' + heights[id] + ' mm');
+            });
+            console.log('=====================================');
+
+            const response = await fetch(OPENSEES_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                throw new Error('OpenSees API error: ' + response.status);
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                lastOpenSeesResult = data;
+                openSeesReady = true;
+
+                // 打印返回的反力
+                console.log('OpenSees返回反力:');
+                let total = 0;
+                SUPPORT_IDS.forEach(id => {
+                    const N = data.reactions[id];
+                    total += N;
+                    console.log('  ' + id + ': ' + N.toFixed(2) + ' kN (h=' + heights[id] + 'mm)');
+                });
+                console.log('  总计: ' + total.toFixed(2) + ' kN');
+                console.log('  刚度中心: x=' + data.stiffness_center.x.toFixed(4) + 'm, y=' + data.stiffness_center.y.toFixed(4) + 'm');
+                console.log('=====================================');
+
+                return data.reactions;
+            } else {
+                throw new Error(data.error || 'Calculation failed');
+            }
+        }
+
+        // 同步版本的calculateReactions（用于updateUI）
+        // 只使用缓存的OpenSees结果
+        function calculateReactions() {
+            if (!lastOpenSeesResult) {
+                console.warn('⚠ 等待OpenSees结果...');
                 return;
             }
 
-            // z0
-            const detK1 = F[0] * (K[1][1] * K[2][2] - K[1][2] * K[2][1])
-                - K[0][1] * (F[1] * K[2][2] - K[1][2] * F[2])
-                + K[0][2] * (F[1] * K[2][1] - K[1][1] * F[2]);
-            const z0 = detK1 / detK;
-
-            // θx
-            const detK2 = K[0][0] * (F[1] * K[2][2] - K[1][2] * F[2])
-                - F[0] * (K[1][0] * K[2][2] - K[1][2] * K[2][0])
-                + K[0][2] * (K[1][0] * F[2] - F[1] * K[2][0]);
-            const theta_x = detK2 / detK;
-
-            // θy
-            const detK3 = K[0][0] * (K[1][1] * F[2] - F[1] * K[2][1])
-                - K[0][1] * (K[1][0] * F[2] - F[1] * K[2][0])
-                + F[0] * (K[1][0] * K[2][1] - K[1][1] * K[2][0]);
-            const theta_y = detK3 / detK;
-
-            console.log(`刚性板求解: z0=${(z0 * 1000).toFixed(3)}mm, θx=${(theta_x * 1000).toFixed(3)}mrad, θy=${(theta_y * 1000).toFixed(3)}mrad`);
-
-            // 计算各支座反力
+            const reactions = lastOpenSeesResult.reactions;
             let totalN = 0;
-            let reactionLog = '反力变化: ';
+            let reactionLog = '[OpenSees] 反力: ';
 
             SUPPORT_IDS.forEach(id => {
                 const x = SUPPORT_POSITIONS[id].x;
                 const y = SUPPORT_POSITIONS[id].y;
                 const bearingParams = isEdgeSupport(id) ? calc.edge : calc.mid;
-                const kv = bearingParams.Kv;
-                const h = state.heights[id] / 1000;
 
-                // 板在该点的位移
-                const d = z0 + theta_x * y + theta_y * x;
-
-                // 支座反力 = Kv × (板位移 - 地基位移)
-                const N = kv * (d - h);
-
+                const N = reactions[id];
                 totalN += N;
 
                 const baseN = INITIAL_REACTIONS[id];
                 const deltaN = N - baseN;
-                reactionLog += `${id}:${deltaN >= 0 ? '+' : ''}${deltaN.toFixed(1)} `;
+                reactionLog += `${id}:${N.toFixed(1)}(${deltaN >= 0 ? '+' : ''}${deltaN.toFixed(1)}) `;
 
-                // 处理提离情况
                 const newN = Math.max(0, N);
-
                 const pressure = (newN * 1000) / (bearingParams.area * 1e6);
                 const Kh = newN > 0 ? calcEffectiveKh(pressure, bearingParams) : 0;
                 const stiffnessRatio = newN > 0 ? Kh / bearingParams.Kh0 : 0;
@@ -1221,7 +1209,13 @@
             });
 
             console.log(reactionLog);
-            console.log(`总反力: ${totalN.toFixed(2)} kN (目标: ${TOTAL_WEIGHT.toFixed(2)} kN)`);
+            console.log(`总反力: ${totalN.toFixed(2)} kN (OpenSees: ${lastOpenSeesResult ? 'Yes' : 'No'})`);
+        }
+
+        // 异步更新函数
+        async function refreshFromOpenSees() {
+            await calculateReactionsFromOpenSees();
+            updateUI();
         }
 
         // 计算刚度中心
@@ -1262,27 +1256,36 @@
 
             SUPPORT_IDS.forEach(id => {
                 const s = state.supports[id];
+                const h = state.heights[id];  // 当前高度
                 const statusColor = s.stiffnessRatio > 0.9 ? '#2ed573' :
                     s.stiffnessRatio > 0.7 ? '#ffa502' : '#ff6b6b';
 
                 const div = document.createElement('div');
                 div.className = 'support-info';
                 div.innerHTML = `
-                    <div class="support-info-label">支座 ${id}</div>
+                    <div class="support-info-label">支座 ${id} <span style="color:#888;font-size:0.6rem;">(h=${h.toFixed(1)}mm)</span></div>
                     <div class="support-info-value" style="color: ${statusColor}">
                         ${s.N.toFixed(1)}kN / ${s.pressure.toFixed(1)}MPa
                     </div>
                     <div class="support-info-value" style="color: #00d4ff; font-size: 0.6rem;">
-                        Kh=${(s.stiffnessRatio * 100).toFixed(0)}%
+                        Kv=${(s.Kv / 1000).toFixed(1)}k, Kh=${(s.stiffnessRatio * 100).toFixed(0)}%
                     </div>
                 `;
                 grid.appendChild(div);
             });
 
-            // Update eccentricity display
-            document.getElementById('ecc-x').textContent = cs.ex.toFixed(4) + ' m';
-            document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
-            document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
+            // Update eccentricity display - 使用Python计算的刚度中心
+            if (lastOpenSeesResult && lastOpenSeesResult.stiffness_center) {
+                const sc = lastOpenSeesResult.stiffness_center;
+                document.getElementById('ecc-x').textContent = sc.x.toFixed(4) + ' m';
+                document.getElementById('ecc-y').textContent = sc.y.toFixed(4) + ' m';
+                const e_mag = Math.sqrt(sc.x * sc.x + sc.y * sc.y);
+                document.getElementById('ecc-mag').textContent = e_mag.toFixed(4) + ' m';
+            } else {
+                document.getElementById('ecc-x').textContent = cs.ex.toFixed(4) + ' m';
+                document.getElementById('ecc-y').textContent = cs.ey.toFixed(4) + ' m';
+                document.getElementById('ecc-mag').textContent = cs.e_mag.toFixed(4) + ' m';
+            }
 
             // Calculate system parameters
             state.totalKh = cs.totalK;
@@ -1475,54 +1478,22 @@
             const slider = document.getElementById('h' + id);
             const valueEl = document.getElementById('h' + id + '-value');
 
-            slider.addEventListener('input', (e) => {
+            slider.addEventListener('input', async (e) => {
                 const val = parseFloat(e.target.value);
                 state.heights[id] = val;
                 valueEl.textContent = val.toFixed(1);
-                updateUI();
-            });
-        });
 
-        // Preset configurations
-        document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.preset-btn[data-preset]').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                const preset = btn.dataset.preset;
-
-                switch (preset) {
-                    case 'level':
-                        state.heights = { '8': 0, '11': 0, '25': 0, '4': 0, '16': 0, '30': 0 };
-                        break;
-                    case 'tilt-x':
-                        // X向倾斜：右侧高
-                        state.heights = { '8': -3, '11': 0, '25': 3, '4': -3, '16': 0, '30': 3 };
-                        break;
-                    case 'tilt-y':
-                        // Y向倾斜：上侧高
-                        state.heights = { '8': 3, '11': 3, '25': 3, '4': -3, '16': -3, '30': -3 };
-                        break;
-                    case 'mid-settle':
-                        // 中间沉降：中间支座下沉3mm，两边不动
-                        // 这会强迫梁弯曲，产生明显的反力变化
-                        state.heights = { '8': 0, '11': -3, '25': 0, '4': 0, '16': -3, '30': 0 };
-                        break;
-                    case 'twist':
-                        // 扭转：对角高
-                        state.heights = { '8': 5, '11': 0, '25': -5, '4': -5, '16': 0, '30': 5 };
-                        break;
+                // 必须等待OpenSees计算完成
+                try {
+                    await refreshFromOpenSees();
+                } catch (err) {
+                    console.error('OpenSees计算失败:', err);
+                    alert('OpenSees后端不可用！请确保服务已启动。');
                 }
-
-                // Update sliders
-                SUPPORT_IDS.forEach(id => {
-                    document.getElementById('h' + id).value = state.heights[id];
-                    document.getElementById('h' + id + '-value').textContent = state.heights[id].toFixed(1);
-                });
-
-                updateUI();
             });
         });
+
+        // 预设配置已删除
 
         // Parameter apply button
         document.getElementById('btn-apply-params').addEventListener('click', () => {
@@ -2275,11 +2246,18 @@
         }
 
         // ============================================================
-        // INITIALIZATION
+        // INITIALIZATION (仅使用OpenSees)
         // ============================================================
 
-        calculateReactions();
-        updateUI();
+        (async function () {
+            try {
+                await refreshFromOpenSees();
+                console.log('✓ OpenSees初始化完成 - 所有计算将使用OpenSees');
+            } catch (e) {
+                console.error('✗ OpenSees初始化失败:', e);
+                alert('OpenSees后端不可用！请确保已启动：\n\narch -x86_64 bash\nsource opensees_x86_env/bin/activate\npython3 opensees_server.py');
+            }
+        })();
     </script>
 </body>
 

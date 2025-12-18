@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenSees综合分析 - 静力+动力</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1900px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr 1fr;
+            gap: 15px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .panel h3 {
+            font-size: 0.9rem;
+            color: #00d4ff;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel h3.static {
+            color: #ffa502;
+        }
+
+        .panel h3.dynamic {
+            color: #00ff88;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 3px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 6px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: #fff;
+            font-size: 0.8rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .slider-group {
+            margin-bottom: 8px;
+        }
+
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+            margin-top: 3px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .btn-static {
+            background: linear-gradient(135deg, #ffa502, #ff6b6b);
+            color: #fff;
+        }
+
+        .btn-dynamic {
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #0a0a1a;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .result-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .result-card .label {
+            font-size: 0.65rem;
+            color: #888;
+        }
+
+        .result-card .value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .result-card .unit {
+            font-size: 0.65rem;
+            color: #666;
+        }
+
+        .result-card.highlight {
+            border: 1px solid #00ff88;
+        }
+
+        .result-card.warning {
+            border: 1px solid #ffa502;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            font-size: 0.7rem;
+        }
+
+        .support-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .support-item .name {
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .support-item .val {
+            color: #00ff88;
+        }
+
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chart-container h4 {
+            font-size: 0.75rem;
+            color: #00ff88;
+            margin-bottom: 6px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 150px !important;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
+        .status-bar.connected {
+            border-left: 3px solid #00ff88;
+        }
+
+        .status-bar.disconnected {
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .info-text {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .ecc-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .ecc-diagram {
+            width: 60px;
+            height: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .ecc-point {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .ecc-point.stiffness {
+            background: #00ff88;
+        }
+
+        .ecc-point.mass {
+            background: #ff6b6b;
+        }
+
+        .arrow {
+            color: #00d4ff;
+            font-size: 1.5rem;
+        }
+
+        .gm-presets {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .gm-chip {
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .gm-chip:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .gm-chip.active {
+            background: #00d4ff;
+            color: #0a0a1a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 OpenSees综合分析 - 静力学 → 动力学</h1>
+            <div class="status-bar disconnected" id="status-bar">检查连接...</div>
+        </header>
+
+        <div class="main-layout">
+            <!-- 左侧：参数设置 -->
+            <div class="sidebar">
+                <div class="panel">
+                    <h3>结构参数</h3>
+                    <div class="form-group">
+                        <label>总重量 (kN)</label>
+                        <input type="number" id="total-weight" value="85.58" step="0.1">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>X方向间距 (m)</label>
+                            <input type="number" id="spacing-x" value="0.6" step="0.1" min="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Y方向间距 (m)</label>
+                            <input type="number" id="spacing-y" value="0.2" step="0.05" min="0.05">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>边缘支座Kv (kN/m)</label>
+                            <input type="number" id="edge-kv" value="5520" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label>中间支座Kv (kN/m)</label>
+                            <input type="number" id="mid-kv" value="13475" step="100">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>边缘支座Kh (kN/m)</label>
+                            <input type="number" id="edge-kh" value="55.2" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>中间支座Kh (kN/m)</label>
+                            <input type="number" id="mid-kh" value="134.75" step="1">
+                        </div>
+                    </div>
+                    <p class="info-text">布置: 2行×3列, 共6个支座</p>
+                </div>
+
+                <div class="panel">
+                    <h3 class="static">⚙ 高度调整（静力学输入）</h3>
+                    <div class="slider-group">
+                        <label>支座8 (左上) <span id="h8-val">0.0</span> mm</label>
+                        <input type="range" id="h8" min="-3" max="3" step="0.1" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label>支座11 (中上) <span id="h11-val">0.0</span> mm</label>
+                        <input type="range" id="h11" min="-3" max="3" step="0.1" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label>支座25 (右上) <span id="h25-val">0.0</span> mm</label>
+                        <input type="range" id="h25" min="-3" max="3" step="0.1" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label>支座4 (左下) <span id="h4-val">0.0</span> mm</label>
+                        <input type="range" id="h4" min="-3" max="3" step="0.1" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label>支座16 (中下) <span id="h16-val">0.0</span> mm</label>
+                        <input type="range" id="h16" min="-3" max="3" step="0.1" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label>支座30 (右下) <span id="h30-val">0.0</span> mm</label>
+                        <input type="range" id="h30" min="-3" max="3" step="0.1" value="0">
+                    </div>
+                    <button class="btn btn-static" id="btn-static">📐 运行静力分析</button>
+                </div>
+
+                <div class="panel">
+                    <h3 class="dynamic">🌊 地震动输入</h3>
+                    <div class="gm-presets">
+                        <div class="gm-chip active" data-gm="sine">正弦波</div>
+                        <div class="gm-chip" data-gm="elcentro">El Centro</div>
+                        <div class="gm-chip" data-gm="pulse">脉冲</div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>PGA (g)</label>
+                            <input type="number" id="pga" value="0.2" step="0.05" min="0.05" max="1.0">
+                        </div>
+                        <div class="form-group">
+                            <label>主周期 (s)</label>
+                            <input type="number" id="gm-period" value="2.0" step="0.1" min="0.1" max="5">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>持时 (s)</label>
+                            <input type="number" id="duration" value="5" step="1" min="3" max="15">
+                        </div>
+                        <div class="form-group">
+                            <label>dt (s)</label>
+                            <input type="number" id="dt" value="0.02" step="0.01">
+                        </div>
+                    </div>
+                    <button class="btn btn-dynamic" id="btn-dynamic" disabled>🌊 运行动力分析（需先运行静力）</button>
+                    <p class="info-text" id="status-text">请先运行静力分析</p>
+                </div>
+            </div>
+
+            <!-- 中间：静力学结果 -->
+            <div class="static-results">
+                <div class="panel">
+                    <h3 class="static">静力学分析结果</h3>
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <div class="label">刚度中心 X</div>
+                            <div class="value" id="sc-x">--</div>
+                            <div class="unit">m</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">刚度中心 Y</div>
+                            <div class="value" id="sc-y">--</div>
+                            <div class="unit">m</div>
+                        </div>
+                        <div class="result-card warning">
+                            <div class="label">偏心距</div>
+                            <div class="value" id="ecc">--</div>
+                            <div class="unit">m</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">总刚度 Kh</div>
+                            <div class="value" id="total-kh">--</div>
+                            <div class="unit">kN/m</div>
+                        </div>
+                    </div>
+                    <div class="ecc-display">
+                        <div class="ecc-diagram" id="ecc-diagram">
+                            <div class="ecc-point stiffness" id="ecc-sc" style="left:50%;top:50%;"></div>
+                            <div class="ecc-point mass" style="left:50%;top:50%;"></div>
+                        </div>
+                        <div style="font-size:0.7rem;">
+                            <div><span style="color:#00ff88;">●</span> 刚度中心(等效)</div>
+                            <div><span style="color:#ff6b6b;">●</span> 质心(0,0)</div>
+                            <div style="color:#ffa502;margin-top:5px;" id="ecc-text">偏心: --</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div style="font-size:0.7rem;color:#00d4ff;">动力学分析<br>将使用此偏心</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="static">支座反力 (kN)</h3>
+                    <div class="support-grid" id="reaction-grid">
+                        <div class="support-item">
+                            <div class="name">支座8</div>
+                            <div class="val" id="r8">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座11</div>
+                            <div class="val" id="r11">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座25</div>
+                            <div class="val" id="r25">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座4</div>
+                            <div class="val" id="r4">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座16</div>
+                            <div class="val" id="r16">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座30</div>
+                            <div class="val" id="r30">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="dynamic">动力特性</h3>
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <div class="label">平动周期 Tx</div>
+                            <div class="value" id="period-x">--</div>
+                            <div class="unit">s</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">扭转周期 Tθ</div>
+                            <div class="value" id="period-theta">--</div>
+                            <div class="unit">s</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">周期比 Tθ/Tx</div>
+                            <div class="value" id="period-ratio">--</div>
+                            <div class="unit"></div>
+                        </div>
+                        <div class="result-card highlight">
+                            <div class="label">放大系数</div>
+                            <div class="value" id="amp">--</div>
+                            <div class="unit">倍</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="dynamic">支座变形峰值 (mm)</h3>
+                    <div class="support-grid" id="bearing-grid">
+                        <div class="support-item">
+                            <div class="name">支座8</div>
+                            <div class="val" id="b8">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座11</div>
+                            <div class="val" id="b11">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座25</div>
+                            <div class="val" id="b25">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座4</div>
+                            <div class="val" id="b4">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座16</div>
+                            <div class="val" id="b16">--</div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座30</div>
+                            <div class="val" id="b30">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：动力学结果 -->
+            <div class="dynamic-results">
+                <div class="panel">
+                    <h3 class="dynamic">动力学峰值响应</h3>
+                    <div class="result-grid">
+                        <div class="result-card highlight">
+                            <div class="label">质心位移X</div>
+                            <div class="value" id="max-disp-x">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card highlight">
+                            <div class="label">质心位移Y</div>
+                            <div class="value" id="max-disp-y">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">最大加速度</div>
+                            <div class="value" id="max-accel">--</div>
+                            <div class="unit">g</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="label">最大转角</div>
+                            <div class="value" id="max-rot">--</div>
+                            <div class="unit">mrad</div>
+                        </div>
+                    </div>
+                    <div class="result-grid" style="margin-top:8px;">
+                        <div class="result-card">
+                            <div class="label">矢量位移</div>
+                            <div class="value" id="max-disp">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card warning">
+                            <div class="label">最大支座变形</div>
+                            <div class="value" id="max-bearing">--</div>
+                            <div class="unit">mm</div>
+                        </div>
+                        <div class="result-card" style="grid-column: span 2;">
+                            <div class="label">放大系数 (max_accel / PGA)</div>
+                            <div class="value" id="amp2">--</div>
+                            <div class="unit">倍</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-container">
+                        <h4>输入地震动 (g)</h4>
+                        <canvas id="inputChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>隔震层变形 (mm)</h4>
+                        <canvas id="dispChart"></canvas>
+                    </div>
+                </div>
+                <div class="charts-row">
+                    <div class="chart-container">
+                        <h4>加速度响应 (g)</h4>
+                        <canvas id="accelChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>扭转角 (mrad)</h4>
+                        <canvas id="rotChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h4>位移轨迹
+                        <select id="compare-bearing" style="float:right;font-size:0.65rem;padding:2px;">
+                            <option value="">质心</option>
+                            <option value="8">vs 支座8(左上)</option>
+                            <option value="25">vs 支座25(右上)</option>
+                            <option value="30">vs 支座30(右下)</option>
+                            <option value="4">vs 支座4(左下)</option>
+                        </select>
+                        <button id="btn-animate"
+                            style="float:right;padding:2px 6px;font-size:0.65rem;cursor:pointer;margin-right:5px;">▶
+                            动画</button>
+                    </h4>
+                    <canvas id="trajectoryChart" style="height:180px !important;"></canvas>
+                    <div style="font-size:0.6rem;color:#888;margin-top:3px;" id="trajectory-legend">
+                        <span style="color:#00d4ff;">━ </span>质心轨迹
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 根据当前环境确定API地址
+        const API = window.location.protocol === 'file:'
+            ? 'http://localhost:5050'  // 本地文件访问
+            : '';  // 云端部署，使用相对路径
+        let staticResult = null;  // 保存静力学结果
+        let dynamicResult = null;
+        let currentGM = 'sine';
+
+        // 支座位置名称
+        const SUPPORT_NAMES = {
+            '8': '左上', '11': '中上', '25': '右上',
+            '4': '左下', '16': '中下', '30': '右下'
+        };
+
+        async function checkHealth() {
+            try {
+                const r = await fetch(`${API}/api/health`);
+                document.getElementById('status-bar').className = 'status-bar connected';
+                document.getElementById('status-bar').textContent = 'OpenSees: 已连接';
+            } catch (e) {
+                document.getElementById('status-bar').className = 'status-bar disconnected';
+                document.getElementById('status-bar').textContent = 'OpenSees: 未连接';
+            }
+        }
+
+        function getSupports() {
+            const sx = parseFloat(document.getElementById('spacing-x').value);  // X方向间距
+            const sy = parseFloat(document.getElementById('spacing-y').value);  // Y方向间距
+            const edgeKv = parseFloat(document.getElementById('edge-kv').value);
+            const midKv = parseFloat(document.getElementById('mid-kv').value);
+            const edgeKh = parseFloat(document.getElementById('edge-kh').value);
+            const midKh = parseFloat(document.getElementById('mid-kh').value);
+
+            // 支座位置基于间距计算
+            // 布置: 2行×3列
+            //   左(-sx)  中(0)  右(+sx)
+            // 上(+sy)  8      11     25
+            // 下(-sy)  4      16     30
+            return {
+                '8': { x: -sx, y: sy, Kv: edgeKv, Kh: edgeKh, pos: '左上' },
+                '11': { x: 0, y: sy, Kv: midKv, Kh: midKh, pos: '中上' },
+                '25': { x: sx, y: sy, Kv: edgeKv, Kh: edgeKh, pos: '右上' },
+                '4': { x: -sx, y: -sy, Kv: edgeKv, Kh: edgeKh, pos: '左下' },
+                '16': { x: 0, y: -sy, Kv: midKv, Kh: midKh, pos: '中下' },
+                '30': { x: sx, y: -sy, Kv: edgeKv, Kh: edgeKh, pos: '右下' }
+            };
+        }
+
+        function getHeights() {
+            return {
+                '8': parseFloat(document.getElementById('h8').value),
+                '11': parseFloat(document.getElementById('h11').value),
+                '25': parseFloat(document.getElementById('h25').value),
+                '4': parseFloat(document.getElementById('h4').value),
+                '16': parseFloat(document.getElementById('h16').value),
+                '30': parseFloat(document.getElementById('h30').value)
+            };
+        }
+
+        async function runStatic() {
+            const btn = document.getElementById('btn-static');
+            btn.disabled = true;
+            btn.textContent = '⏳ 分析中...';
+
+            try {
+                const r = await fetch(`${API}/api/calculate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        supports: getSupports(),
+                        total_weight: parseFloat(document.getElementById('total-weight').value),
+                        heights: getHeights()
+                    })
+                });
+                const data = await r.json();
+
+                if (data.success) {
+                    staticResult = data;
+
+                    // 显示刚度中心和偏心（基于等效Kh，会随高度变化）
+                    const sc = data.stiffness_center || { x: 0, y: 0 };
+                    const ecc = data.eccentricity || { x: 0, y: 0, magnitude: 0 };
+
+                    document.getElementById('sc-x').textContent = sc.x.toFixed(4);
+                    document.getElementById('sc-y').textContent = sc.y.toFixed(4);
+                    document.getElementById('ecc').textContent = ecc.magnitude.toFixed(4);
+                    document.getElementById('ecc-text').textContent = `偏心: ${ecc.magnitude.toFixed(4)}m`;
+
+                    // 更新偏心图（刚度中心位置）
+                    const scEl = document.getElementById('ecc-sc');
+                    // 放大显示，用2倍因子使小偏心也能清晰看到
+                    scEl.style.left = (50 + sc.x * 200) + '%';
+                    scEl.style.top = (50 - sc.y * 200) + '%';
+
+                    // 显示等效总刚度
+                    const totalKh = data.total_kh_effective || 490;
+                    document.getElementById('total-kh').textContent = totalKh.toFixed(1);
+
+                    // 显示反力
+                    Object.entries(data.reactions).forEach(([sid, r]) => {
+                        const el = document.getElementById('r' + sid);
+                        if (el) el.textContent = r.toFixed(2);
+                    });
+
+                    // 启用动力分析按钮
+                    document.getElementById('btn-dynamic').disabled = false;
+                    document.getElementById('btn-dynamic').textContent = '🌊 运行动力分析';
+                    document.getElementById('status-text').textContent = `静力分析完成，刚度偏心=${ecc.magnitude.toFixed(4)}m`;
+                }
+            } catch (e) {
+                document.getElementById('status-text').textContent = '静力分析失败: ' + e.message;
+            }
+
+            btn.disabled = false;
+            btn.textContent = '📐 运行静力分析';
+        }
+
+        function generateGM(type, pga, period, duration, dt) {
+            const freq = 1 / period;
+            const n = Math.floor(duration / dt);
+            let ax = [], ay = [];
+
+            // 先生成原始波形
+            for (let i = 0; i < n; i++) {
+                const t = i * dt;
+                const env = Math.sin(Math.PI * t / duration);
+                let accX = 0, accY = 0;
+                switch (type) {
+                    case 'sine':
+                        accX = env * Math.sin(2 * Math.PI * freq * t);
+                        accY = env * 0.7 * Math.sin(2 * Math.PI * freq * t + 0.5);
+                        break;
+                    case 'elcentro':
+                        // El Centro风格：多频成分，快速衰减
+                        const t1 = 1, t2 = 3;
+                        let envEC = t < t1 ? t / t1 : (t < t2 ? 1 : Math.exp(-(t - t2) / 2));
+                        accX = envEC * (Math.sin(2 * Math.PI * freq * t) + 0.5 * Math.sin(2 * Math.PI * freq * 0.4 * t));
+                        accY = envEC * 0.7 * Math.sin(2 * Math.PI * freq * 0.8 * t + 0.3);
+                        break;
+                    case 'pulse':
+                        if (t > 0.2 * period && t < 1.2 * period) accX = Math.sin(Math.PI * (t - 0.2 * period) / period);
+                        if (t > 0.5 * period && t < 1.5 * period) accY = 0.8 * Math.sin(Math.PI * (t - 0.5 * period) / period);
+                        break;
+                }
+                ax.push(accX);
+                ay.push(accY);
+            }
+
+            // 归一化到指定的PGA
+            const maxX = Math.max(...ax.map(Math.abs)) || 1;
+            const maxY = Math.max(...ay.map(Math.abs)) || 1;
+            ax = ax.map(v => v / maxX * pga);
+            ay = ay.map(v => v / maxY * pga * 0.7);  // Y方向为X方向的70%
+
+            return { ax, ay };
+        }
+
+        async function runDynamic() {
+            if (!staticResult) {
+                alert('请先运行静力分析');
+                return;
+            }
+
+            const btn = document.getElementById('btn-dynamic');
+            btn.disabled = true;
+            btn.textContent = '⏳ 动力分析中...';
+
+            try {
+                const pga = parseFloat(document.getElementById('pga').value);
+                const period = parseFloat(document.getElementById('gm-period').value);
+                const duration = parseFloat(document.getElementById('duration').value);
+                const dt = parseFloat(document.getElementById('dt').value);
+
+                console.log('=== 动力分析参数 ===');
+                console.log('PGA:', pga, 'g');
+                console.log('输入周期:', period, 's');
+                console.log('持时:', duration, 's');
+                console.log('dt:', dt, 's');
+
+                const gm = generateGM(currentGM, pga, period, duration, dt);
+                const pgaActual = Math.max(...gm.ax.map(Math.abs));
+                console.log('生成的地震动 PGA:', pgaActual.toFixed(3), 'g');
+                console.log('地震动点数:', gm.ax.length);
+
+                drawChart(document.getElementById('inputChart'), [gm.ax, gm.ay], ['X', 'Y'], ['#ff6b6b', '#00ff88'], duration);
+
+                // 使用静力学得到的刚度中心作为偏心
+                const sc = staticResult.stiffness_center || { x: 0, y: 0 };
+                const ecc = staticResult.eccentricity || { x: 0, y: 0, magnitude: 0 };
+
+                // 质心位置 = -刚度中心偏移（这样质心相对刚度中心有偏心）
+                const massCenterX = -sc.x;
+                const massCenterY = -sc.y;
+                console.log('质心偏移:', massCenterX.toFixed(4), massCenterY.toFixed(4));
+
+                const requestBody = {
+                    supports: getSupports(),
+                    total_weight: parseFloat(document.getElementById('total-weight').value),
+                    heights: getHeights(),
+                    ground_motion: gm,
+                    dt, duration,
+                    mass_center: { x: massCenterX, y: massCenterY }
+                };
+                console.log('请求体:', JSON.stringify(requestBody).substring(0, 500) + '...');
+
+                const r = await fetch(`${API}/api/dynamic`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await r.json();
+                dynamicResult = data;
+
+                console.log('=== 后端返回数据 ===');
+                console.log('成功:', data.success);
+                console.log('结构周期:', data.period_x);
+                console.log('PGA_x:', data.pga_x);
+                console.log('最大加速度:', data.max_accel_x);
+                console.log('放大系数:', data.amplification_x);
+                console.log('最大位移:', data.max_disp);
+
+                if (data.success) {
+                    // 动力特性
+                    document.getElementById('period-x').textContent = data.period_x.toFixed(3);
+                    document.getElementById('period-theta').textContent = data.period_theta.toFixed(3);
+                    document.getElementById('period-ratio').textContent = data.period_ratio.toFixed(2);
+                    document.getElementById('amp').textContent = data.amplification_x.toFixed(2);
+
+                    // 峰值响应 - 质心位移
+                    document.getElementById('max-disp-x').textContent = data.max_disp_x.toFixed(1);
+                    document.getElementById('max-disp-y').textContent = data.max_disp_y.toFixed(1);
+                    document.getElementById('max-disp').textContent = data.max_disp.toFixed(1);
+                    document.getElementById('max-accel').textContent = data.max_accel.toFixed(3);
+                    document.getElementById('max-rot').textContent = data.max_rot_z.toFixed(2);
+                    document.getElementById('amp2').textContent = data.amplification_x.toFixed(2);
+
+                    // 支座变形
+                    let maxBearing = 0;
+                    Object.entries(data.bearing_max || {}).forEach(([sid, b]) => {
+                        const el = document.getElementById('b' + sid);
+                        if (el) el.textContent = b.mag.toFixed(1);
+                        if (b.mag > maxBearing) maxBearing = b.mag;
+                    });
+                    document.getElementById('max-bearing').textContent = maxBearing.toFixed(1);
+
+                    // 图表 (传入duration用于X轴标签)
+                    const dur = parseFloat(document.getElementById('duration').value);
+                    drawChart(document.getElementById('dispChart'), [data.center_disp_x, data.center_disp_y], ['X', 'Y'], ['#00d4ff', '#00ff88'], dur);
+                    drawChart(document.getElementById('accelChart'), [data.center_accel_x, data.center_accel_y], ['X', 'Y'], ['#00d4ff', '#00ff88'], dur);
+                    drawChart(document.getElementById('rotChart'), [data.center_rot_z], ['θz'], ['#ff6b6b'], dur);
+
+                    // 绘制轨迹（根据选择的对比支座）
+                    updateTrajectory();
+
+                    document.getElementById('status-text').textContent = `动力分析完成 (${data.time.length}步) | 输入周期=${period}s | 放大=${data.amplification_x.toFixed(2)}`;
+                }
+            } catch (e) {
+                document.getElementById('status-text').textContent = '动力分析失败: ' + e.message;
+            }
+
+            btn.disabled = false;
+            btn.textContent = '🌊 运行动力分析';
+        }
+
+        function drawChart(canvas, datasets, labels, colors, duration) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.offsetWidth * 2;
+            const h = canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+            const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+            const pad = { left: 40, right: 10, top: 15, bottom: 25 };
+            const plotW = cw - pad.left - pad.right;
+            const plotH = ch - pad.top - pad.bottom;
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(0, 0, cw, ch);
+
+            let maxVal = 0.001;
+            datasets.forEach(s => s && s.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); }));
+            // 调整到好看的刻度
+            maxVal = Math.ceil(maxVal * 10) / 10;
+            if (maxVal < 0.1) maxVal = 0.1;
+
+            // 绘制坐标轴
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 0.5;
+            // Y轴
+            ctx.beginPath();
+            ctx.moveTo(pad.left, pad.top);
+            ctx.lineTo(pad.left, pad.top + plotH);
+            ctx.stroke();
+            // X轴 (中央)
+            ctx.beginPath();
+            ctx.moveTo(pad.left, pad.top + plotH / 2);
+            ctx.lineTo(cw - pad.right, pad.top + plotH / 2);
+            ctx.stroke();
+            // X轴底部
+            ctx.beginPath();
+            ctx.moveTo(pad.left, pad.top + plotH);
+            ctx.lineTo(cw - pad.right, pad.top + plotH);
+            ctx.stroke();
+
+            // Y轴刻度
+            ctx.fillStyle = '#888';
+            ctx.font = '8px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(maxVal.toFixed(2), pad.left - 3, pad.top + 4);
+            ctx.fillText('0', pad.left - 3, pad.top + plotH / 2 + 3);
+            ctx.fillText((-maxVal).toFixed(2), pad.left - 3, pad.top + plotH);
+
+            // 绘制网格线
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            [0.25, 0.5, 0.75].forEach(r => {
+                ctx.beginPath();
+                ctx.moveTo(pad.left, pad.top + plotH * r);
+                ctx.lineTo(cw - pad.right, pad.top + plotH * r);
+                ctx.stroke();
+            });
+
+            // 绘制数据
+            datasets.forEach((series, idx) => {
+                if (!series || !series.length) return;
+                ctx.strokeStyle = colors[idx] || '#00d4ff';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let i = 0; i < series.length; i++) {
+                    const x = pad.left + (i / series.length) * plotW;
+                    const y = pad.top + plotH / 2 - (series[i] / maxVal) * (plotH / 2);
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            });
+
+            // 图例
+            ctx.textAlign = 'left';
+            labels.forEach((l, i) => {
+                ctx.fillStyle = colors[i];
+                ctx.fillText(l, pad.left + i * 30, ch - 5);
+            });
+
+            // X轴标签 (时间)
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'right';
+            const dataLen = datasets[0] ? datasets[0].length : 0;
+            const dur = duration || (dataLen * 0.02);
+            ctx.fillText(dur.toFixed(1) + 's', cw - pad.right, ch - 5);
+        }
+
+        function drawTrajectory(canvas, dispX, dispY, bearingX, bearingY) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.offsetWidth * 2;
+            const h = canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+            const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+            const cx = cw / 2, cy = ch / 2;
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(0, 0, cw, ch);
+
+            if (!dispX || !dispX.length) return;
+
+            // 计算最大值时包括支座位移
+            let maxVal = 1;
+            dispX.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+            dispY.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+            if (bearingX) bearingX.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+            if (bearingY) bearingY.forEach(v => { if (Math.abs(v) > maxVal) maxVal = Math.abs(v); });
+            const scale = (Math.min(cw, ch) / 2 - 20) / maxVal;
+
+            // 坐标轴
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(20, cy); ctx.lineTo(cw - 20, cy);
+            ctx.moveTo(cx, 20); ctx.lineTo(cx, ch - 20);
+            ctx.stroke();
+
+            // 刻度
+            ctx.fillStyle = '#666';
+            ctx.font = '8px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(maxVal.toFixed(0) + 'mm', cw - 22, cy - 3);
+
+            // 绘制支座轨迹（如果有）
+            if (bearingX && bearingY && bearingX.length) {
+                ctx.strokeStyle = 'rgba(255,107,107,0.7)';  // 红色
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let i = 0; i < bearingX.length; i++) {
+                    const x = cx + bearingX[i] * scale;
+                    const y = cy - bearingY[i] * scale;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+
+            // 绘制质心轨迹
+            ctx.strokeStyle = 'rgba(0,212,255,0.8)';  // 青色
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            for (let i = 0; i < dispX.length; i++) {
+                const x = cx + dispX[i] * scale;
+                const y = cy - dispY[i] * scale;
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        // 滑块更新
+        ['8', '11', '25', '4', '16', '30'].forEach(sid => {
+            const slider = document.getElementById('h' + sid);
+            const valEl = document.getElementById('h' + sid + '-val');
+            slider.addEventListener('input', () => {
+                valEl.textContent = parseFloat(slider.value).toFixed(1);
+            });
+        });
+
+        // 地震动类型选择
+        document.querySelectorAll('.gm-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.gm-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentGM = chip.dataset.gm;
+            });
+        });
+
+        // 更新轨迹图（质心+可选支座对比）
+        function updateTrajectory() {
+            if (!dynamicResult) return;
+            const canvas = document.getElementById('trajectoryChart');
+            const centerX = dynamicResult.center_disp_x;
+            const centerY = dynamicResult.center_disp_y;
+
+            const bearingId = document.getElementById('compare-bearing').value;
+            let bearingX = null, bearingY = null;
+            let legendText = '<span style="color:#00d4ff;">━ </span>质心轨迹';
+
+            if (bearingId && dynamicResult.bearing_disp && dynamicResult.bearing_disp[bearingId]) {
+                const bd = dynamicResult.bearing_disp[bearingId];
+                bearingX = bd.map(d => d.x);
+                bearingY = bd.map(d => d.y);
+                legendText += '  <span style="color:#ff6b6b;">━ </span>支座' + bearingId;
+            }
+
+            document.getElementById('trajectory-legend').innerHTML = legendText;
+            drawTrajectory(canvas, centerX, centerY, bearingX, bearingY);
+        }
+
+        // 支座对比选择
+        document.getElementById('compare-bearing').addEventListener('change', () => {
+            updateTrajectory();
+        });
+
+        // 动画
+        let animId = null;
+        document.getElementById('btn-animate').addEventListener('click', () => {
+            if (!dynamicResult) return;
+            const canvas = document.getElementById('trajectoryChart');
+            const dispX = dynamicResult.center_disp_x;
+            const dispY = dynamicResult.center_disp_y;
+
+            if (animId) {
+                cancelAnimationFrame(animId);
+                animId = null;
+                drawTrajectory(canvas, dispX, dispY);
+                return;
+            }
+
+            let frame = 0;
+            function animate() {
+                drawTrajectory(canvas, dispX.slice(0, frame), dispY.slice(0, frame));
+                frame += 3;
+                if (frame < dispX.length) animId = requestAnimationFrame(animate);
+                else { animId = null; drawTrajectory(canvas, dispX, dispY); }
+            }
+            animate();
+        });
+
+        document.getElementById('btn-static').addEventListener('click', runStatic);
+        document.getElementById('btn-dynamic').addEventListener('click', runDynamic);
+
+        checkHealth();
+    </script>
+</body>
+
+</html>

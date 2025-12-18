@@ -1,14 +1,27 @@
-# 使用官方 Nginx 镜像作为基础
-FROM nginx:alpine
+# 使用 x86 Python 基础镜像（OpenSeesPy 需要）
+FROM --platform=linux/amd64 python:3.9-slim
 
-# 将当前目录下的所有文件复制到 Nginx 的默认静态文件目录
-COPY . /usr/share/nginx/html
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    libgomp1 \
+    libgfortran5 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 设置工作目录
+WORKDIR /app
 
-# Expose port 8080 (Cloud Run expectation)
-EXPOSE 8080
+# 安装 Python 依赖
+RUN pip install --no-cache-dir flask flask-cors openseespy
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# 复制服务器代码
+COPY opensees_server.py .
+
+# 复制前端文件
+COPY experiments/ ./experiments/
+COPY index.html .
+
+# 暴露端口
+EXPOSE 5050
+
+# 启动服务器
+CMD ["python", "opensees_server.py"]
