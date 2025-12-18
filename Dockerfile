@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     libgfortran5 \
     libblas3 \
     liblapack3 \
-    libopenblas-base \
     libgcc-s1 \
     libstdc++6 \
     && rm -rf /var/lib/apt/lists/*
