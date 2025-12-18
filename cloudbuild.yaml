@@ -12,7 +12,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/opensees-analysis:$COMMIT_SHA']
 
-  # 3. 部署到 Cloud Run
+  # 3. 部署到 Cloud Run (指定端口8080)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -26,6 +26,8 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
       - '--memory'
       - '2Gi'
       - '--cpu'

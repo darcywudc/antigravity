@@ -20,8 +20,8 @@ COPY opensees_server.py .
 COPY experiments/ ./experiments/
 COPY index.html .
 
-# 暴露端口
-EXPOSE 5050
+# 设置默认端口环境变量（Cloud Run会覆盖）
+ENV PORT=8080
 
 # 启动服务器
 CMD ["python", "opensees_server.py"]
