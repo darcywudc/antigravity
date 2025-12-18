@@ -480,7 +480,7 @@
                         </div>
                         <div class="form-group">
                             <label>主周期 (s)</label>
-                            <input type="number" id="gm-period" value="2.0" step="0.1" min="0.1" max="5">
+                            <input type="number" id="gm-period" value="0.3" step="0.1" min="0.1" max="5">
                         </div>
                     </div>
                     <div class="form-row">
@@ -569,6 +569,41 @@
                     </div>
                 </div>
 
+                <div class="panel">
+                    <h3 class="static">等效水平刚度 Kh_eff (kN/m)</h3>
+                    <p class="info-text" style="font-size:0.6rem;margin-bottom:8px;color:#ffa502;">
+                        Kh_eff = Kh₀×(1-(σ/σcr)²) | 括号内为变化率
+                    </p>
+                    <div class="support-grid" id="kh-grid">
+                        <div class="support-item">
+                            <div class="name">支座8</div>
+                            <div class="val"><span id="kh8">--</span> <small id="kh8-pct"></small></div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座11</div>
+                            <div class="val"><span id="kh11">--</span> <small id="kh11-pct"></small></div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座25</div>
+                            <div class="val"><span id="kh25">--</span> <small id="kh25-pct"></small></div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座4</div>
+                            <div class="val"><span id="kh4">--</span> <small id="kh4-pct"></small></div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座16</div>
+                            <div class="val"><span id="kh16">--</span> <small id="kh16-pct"></small></div>
+                        </div>
+                        <div class="support-item">
+                            <div class="name">支座30</div>
+                            <div class="val"><span id="kh30">--</span> <small id="kh30-pct"></small></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:8px;font-size:0.75rem;">
+                        总等效Kh: <span id="total-kh" style="color:#00ff88;">--</span> kN/m
+                    </div>
+                </div>
                 <div class="panel">
                     <h3 class="dynamic">动力特性</h3>
                     <div class="result-grid">
@@ -881,20 +916,38 @@
                     scEl.style.left = (50 + sc.x * 200) + '%';
                     scEl.style.top = (50 - sc.y * 200) + '%';
 
-                    // 显示等效总刚度
-                    const totalKh = data.total_kh_effective || 490;
-                    document.getElementById('total-kh').textContent = totalKh.toFixed(1);
-
                     // 显示反力
                     Object.entries(data.reactions).forEach(([sid, r]) => {
                         const el = document.getElementById('r' + sid);
                         if (el) el.textContent = r.toFixed(2);
                     });
 
+                    // 显示等效Kh及变化率
+                    const supports = getSupports();
+                    Object.entries(data.kh_effective || {}).forEach(([sid, kh_eff]) => {
+                        const khEl = document.getElementById('kh' + sid);
+                        const pctEl = document.getElementById('kh' + sid + '-pct');
+                        if (khEl) {
+                            khEl.textContent = kh_eff.toFixed(1);
+                            // 计算相对于初始Kh的变化
+                            const kh0 = supports[sid]?.Kh || kh_eff;
+                            const pct = ((kh_eff / kh0) - 1) * 100;
+                            if (pctEl) {
+                                const color = pct >= 0 ? '#2ed573' : '#ff6b6b';
+                                pctEl.style.color = color;
+                                pctEl.textContent = `(${pct >= 0 ? '+' : ''}${pct.toFixed(0)}%)`;
+                            }
+                        }
+                    });
+
+                    // 显示等效总刚度
+                    const totalKh = data.total_kh_effective || 0;
+                    document.getElementById('total-kh').textContent = totalKh.toFixed(1);
+
                     // 启用动力分析按钮
                     document.getElementById('btn-dynamic').disabled = false;
                     document.getElementById('btn-dynamic').textContent = '🌊 运行动力分析';
-                    document.getElementById('status-text').textContent = `静力分析完成，刚度偏心=${ecc.magnitude.toFixed(4)}m`;
+                    document.getElementById('status-text').textContent = `静力分析完成，刚度中心偏移=${ecc.magnitude.toFixed(4)}m`;
                 } else {
                     // 分析失败
                     document.getElementById('status-text').textContent = '分析失败: ' + (data.error || '未知错误');
