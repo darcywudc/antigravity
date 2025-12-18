@@ -4,3 +4,15 @@
 .vscode
 tmp
 *.log
+
+# Python虚拟环境（本地Mac专用，不上传到云端）
+opensees_env/
+opensees_x86_env/
+
+# Python缓存
+__pycache__/
+*.pyc
+
+# 文档
+docs/
+*.md
