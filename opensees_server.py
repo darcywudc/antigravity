@@ -4,14 +4,31 @@ OpenSees静力与动力计算后端服务
 
 提供REST API供HTML前端调用，计算支座反力分配和时程响应。
 """
+import sys
+import os
+
+# 先启动Flask，延迟导入OpenSeesPy
+print("Starting server...", flush=True)
+
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import openseespy.opensees as ops
 import math
-import os
 
 app = Flask(__name__, static_folder='experiments')
 CORS(app)
+
+# 延迟导入OpenSeesPy
+ops = None
+
+def get_ops():
+    """延迟加载OpenSeesPy"""
+    global ops
+    if ops is None:
+        print("Loading OpenSeesPy...", flush=True)
+        import openseespy.opensees as _ops
+        ops = _ops
+        print("OpenSeesPy loaded successfully", flush=True)
+    return ops
 
 
 # 静态文件服务
@@ -39,6 +56,7 @@ def analyze_static(supports, total_weight, heights_mm):
     Returns:
         dict, 反力结果 {id: reaction_kN}
     """
+    ops = get_ops()  # 延迟加载OpenSeesPy
     ops.wipe()
     ops.model('basic', '-ndm', 3, '-ndf', 3)
     
@@ -268,6 +286,7 @@ def analyze_dynamic(supports, total_weight, heights_mm, ground_motion, dt, durat
     
     # ========== OpenSees模型 ==========
     # 使用真实的多支座空间模型
+    ops = get_ops()  # 延迟加载OpenSeesPy
     ops.wipe()
     ops.model('basic', '-ndm', 3, '-ndf', 6)
     
