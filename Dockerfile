@@ -5,6 +5,7 @@ FROM --platform=linux/amd64 python:3.9-slim
 RUN apt-get update && apt-get install -y \
     libgomp1 \
     libgfortran5 \
+    libquadmath0 \
     libblas3 \
     liblapack3 \
     libgcc-s1 \
