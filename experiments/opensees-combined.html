@@ -329,7 +329,88 @@
             <!-- 左侧：参数设置 -->
             <div class="sidebar">
                 <div class="panel">
-                    <h3>结构参数</h3>
+                    <h3>📐 支座参数 <button onclick="toggleBearingMode()" id="btn-mode"
+                            style="float:right;font-size:0.65rem;padding:2px 6px;">切换模式</button></h3>
+
+                    <!-- 模式1: 物理参数（自动计算刚度）-->
+                    <div id="mode-physical">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>边缘支座直径 (mm)</label>
+                                <input type="number" id="edge-diameter" value="300" step="10"
+                                    onchange="calcBearingStiffness()">
+                            </div>
+                            <div class="form-group">
+                                <label>中间支座直径 (mm)</label>
+                                <input type="number" id="mid-diameter" value="400" step="10"
+                                    onchange="calcBearingStiffness()">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>橡胶层数 (边缘/中间)</label>
+                                <input type="number" id="edge-layers" value="5" step="1" min="1"
+                                    onchange="calcBearingStiffness()">
+                            </div>
+                            <div class="form-group">
+                                <label>中间支座层数</label>
+                                <input type="number" id="mid-layers" value="5" step="1" min="1"
+                                    onchange="calcBearingStiffness()">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>单层橡胶厚度 (mm)</label>
+                                <input type="number" id="rubber-layer-t" value="10" step="1" min="1"
+                                    onchange="calcBearingStiffness()">
+                            </div>
+                            <div class="form-group">
+                                <label>剪切模量 G (MPa)</label>
+                                <input type="number" id="shear-modulus" value="0.8" step="0.1" min="0.1"
+                                    onchange="calcBearingStiffness()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>屈服压应力 σcr (MPa)</label>
+                            <input type="number" id="yield-pressure" value="12" step="1" min="1"
+                                onchange="calcBearingStiffness()">
+                        </div>
+                        <p class="info-text"
+                            style="background:rgba(0,212,255,0.1);padding:5px;border-radius:5px;margin-top:8px;">
+                            <strong>计算结果:</strong><br>
+                            边缘: Kv=<span id="calc-edge-kv">--</span> kN/m, Kh0=<span id="calc-edge-kh">--</span>
+                            kN/m<br>
+                            中间: Kv=<span id="calc-mid-kv">--</span> kN/m, Kh0=<span id="calc-mid-kh">--</span> kN/m
+                        </p>
+                    </div>
+
+                    <!-- 模式2: 直接输入刚度 -->
+                    <div id="mode-direct" style="display:none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>边缘支座Kv (kN/m)</label>
+                                <input type="number" id="edge-kv" value="5520" step="100">
+                            </div>
+                            <div class="form-group">
+                                <label>中间支座Kv (kN/m)</label>
+                                <input type="number" id="mid-kv" value="13475" step="100">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>边缘支座Kh (kN/m)</label>
+                                <input type="number" id="edge-kh" value="55.2" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label>中间支座Kh (kN/m)</label>
+                                <input type="number" id="mid-kh" value="134.75" step="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>结构布置</h3>
                     <div class="form-group">
                         <label>总重量 (kN)</label>
                         <input type="number" id="total-weight" value="85.58" step="0.1">
@@ -342,26 +423,6 @@
                         <div class="form-group">
                             <label>Y方向间距 (m)</label>
                             <input type="number" id="spacing-y" value="0.2" step="0.05" min="0.05">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>边缘支座Kv (kN/m)</label>
-                            <input type="number" id="edge-kv" value="5520" step="100">
-                        </div>
-                        <div class="form-group">
-                            <label>中间支座Kv (kN/m)</label>
-                            <input type="number" id="mid-kv" value="13475" step="100">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>边缘支座Kh (kN/m)</label>
-                            <input type="number" id="edge-kh" value="55.2" step="1">
-                        </div>
-                        <div class="form-group">
-                            <label>中间支座Kh (kN/m)</label>
-                            <input type="number" id="mid-kh" value="134.75" step="1">
                         </div>
                     </div>
                     <p class="info-text">布置: 2行×3列, 共6个支座</p>
@@ -651,12 +712,75 @@
         let staticResult = null;  // 保存静力学结果
         let dynamicResult = null;
         let currentGM = 'sine';
+        let bearingMode = 'physical';  // 'physical' or 'direct'
+
+        // 计算的刚度值
+        let calcEdgeKv = 5520, calcEdgeKh = 55.2;
+        let calcMidKv = 13475, calcMidKh = 134.75;
 
         // 支座位置名称
         const SUPPORT_NAMES = {
             '8': '左上', '11': '中上', '25': '右上',
             '4': '左下', '16': '中下', '30': '右下'
         };
+
+        // 切换输入模式
+        function toggleBearingMode() {
+            if (bearingMode === 'physical') {
+                bearingMode = 'direct';
+                document.getElementById('mode-physical').style.display = 'none';
+                document.getElementById('mode-direct').style.display = 'block';
+                document.getElementById('btn-mode').textContent = '物理参数';
+            } else {
+                bearingMode = 'physical';
+                document.getElementById('mode-physical').style.display = 'block';
+                document.getElementById('mode-direct').style.display = 'none';
+                document.getElementById('btn-mode').textContent = '切换模式';
+            }
+        }
+
+        // 计算支座刚度（基于物理参数）
+        function calcBearingStiffness() {
+            const edgeDiameter = parseFloat(document.getElementById('edge-diameter').value) / 1000;  // m
+            const midDiameter = parseFloat(document.getElementById('mid-diameter').value) / 1000;
+            const edgeLayers = parseFloat(document.getElementById('edge-layers').value);
+            const midLayers = parseFloat(document.getElementById('mid-layers').value);
+            const rubberLayerT = parseFloat(document.getElementById('rubber-layer-t').value) / 1000;  // m
+            const G = parseFloat(document.getElementById('shear-modulus').value) * 1000;  // kN/m² (MPa -> kN/m²)
+
+            // 边缘支座
+            const edgeArea = Math.PI * Math.pow(edgeDiameter / 2, 2);  // m²
+            const edgeTotalT = rubberLayerT * edgeLayers;  // 总橡胶厚度
+            const edgeS = edgeDiameter / (4 * rubberLayerT);  // 形状系数 S = D/(4*tr)
+
+            // 水平刚度 Kh0 = G × A / Tr
+            calcEdgeKh = G * edgeArea / edgeTotalT;
+            // 等效压缩模量 Ec = 6 × G × S²
+            const edgeEc = 6 * G * edgeS * edgeS;
+            // 竖向刚度 Kv = Ec × A / Tr
+            calcEdgeKv = edgeEc * edgeArea / edgeTotalT;
+
+            // 中间支座
+            const midArea = Math.PI * Math.pow(midDiameter / 2, 2);
+            const midTotalT = rubberLayerT * midLayers;
+            const midS = midDiameter / (4 * rubberLayerT);
+
+            calcMidKh = G * midArea / midTotalT;
+            const midEc = 6 * G * midS * midS;
+            calcMidKv = midEc * midArea / midTotalT;
+
+            // 更新显示
+            document.getElementById('calc-edge-kv').textContent = calcEdgeKv.toFixed(0);
+            document.getElementById('calc-edge-kh').textContent = calcEdgeKh.toFixed(1);
+            document.getElementById('calc-mid-kv').textContent = calcMidKv.toFixed(0);
+            document.getElementById('calc-mid-kh').textContent = calcMidKh.toFixed(1);
+
+            // 同时更新直接输入框（保持同步）
+            document.getElementById('edge-kv').value = calcEdgeKv.toFixed(0);
+            document.getElementById('edge-kh').value = calcEdgeKh.toFixed(1);
+            document.getElementById('mid-kv').value = calcMidKv.toFixed(0);
+            document.getElementById('mid-kh').value = calcMidKh.toFixed(1);
+        }
 
         async function checkHealth() {
             try {
@@ -677,18 +801,27 @@
             const edgeKh = parseFloat(document.getElementById('edge-kh').value);
             const midKh = parseFloat(document.getElementById('mid-kh').value);
 
+            // 计算支座面积（用于Kh_effective非线性公式）
+            let edgeArea = 0, midArea = 0;
+            if (bearingMode === 'physical') {
+                const edgeDiameter = parseFloat(document.getElementById('edge-diameter').value) / 1000;
+                const midDiameter = parseFloat(document.getElementById('mid-diameter').value) / 1000;
+                edgeArea = Math.PI * Math.pow(edgeDiameter / 2, 2);
+                midArea = Math.PI * Math.pow(midDiameter / 2, 2);
+            }
+
             // 支座位置基于间距计算
             // 布置: 2行×3列
             //   左(-sx)  中(0)  右(+sx)
             // 上(+sy)  8      11     25
             // 下(-sy)  4      16     30
             return {
-                '8': { x: -sx, y: sy, Kv: edgeKv, Kh: edgeKh, pos: '左上' },
-                '11': { x: 0, y: sy, Kv: midKv, Kh: midKh, pos: '中上' },
-                '25': { x: sx, y: sy, Kv: edgeKv, Kh: edgeKh, pos: '右上' },
-                '4': { x: -sx, y: -sy, Kv: edgeKv, Kh: edgeKh, pos: '左下' },
-                '16': { x: 0, y: -sy, Kv: midKv, Kh: midKh, pos: '中下' },
-                '30': { x: sx, y: -sy, Kv: edgeKv, Kh: edgeKh, pos: '右下' }
+                '8': { x: -sx, y: sy, Kv: edgeKv, Kh: edgeKh, area: edgeArea, pos: '左上' },
+                '11': { x: 0, y: sy, Kv: midKv, Kh: midKh, area: midArea, pos: '中上' },
+                '25': { x: sx, y: sy, Kv: edgeKv, Kh: edgeKh, area: edgeArea, pos: '右上' },
+                '4': { x: -sx, y: -sy, Kv: edgeKv, Kh: edgeKh, area: edgeArea, pos: '左下' },
+                '16': { x: 0, y: -sy, Kv: midKv, Kh: midKh, area: midArea, pos: '中下' },
+                '30': { x: sx, y: -sy, Kv: edgeKv, Kh: edgeKh, area: edgeArea, pos: '右下' }
             };
         }
 
@@ -1131,6 +1264,7 @@
         document.getElementById('btn-dynamic').addEventListener('click', runDynamic);
 
         checkHealth();
+        calcBearingStiffness();  // 页面加载时计算刚度
     </script>
 </body>
 

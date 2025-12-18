@@ -142,24 +142,41 @@ def analyze_static(supports, total_weight, heights_mm):
     }
     
     # 计算等效水平刚度Kh_eff
-    # 假设: Kh与竖向荷载成正比 (线性关系)
-    # Kh_eff = Kh_design × (R_actual / R_design)
-    # 其中 R_design = 总重 / 支座数 × Kv_i / Kv_avg
+    # 使用非线性公式: Kh = Kh0 × (1 - (σ/σcr)²)
+    # 其中 σ = R / A (压应力), σcr = 屈服压应力
+    # 
+    # 如果没有提供面积和屈服应力，则使用线性比例近似
     total_weight_calc = sum(reactions.values())  # 实际总竖向反力
     total_kv = sum(p['Kv'] for p in supports.values())
     
+    # 默认屈服压应力 (MPa)
+    yield_pressure = 12.0  # MPa
+    
     kh_effective = {}
     for sid, p in supports.items():
-        # 设计反力 = 总重 × (Kv_i / 总Kv)
-        design_reaction = total_weight_calc * (p['Kv'] / total_kv) if total_kv > 0 else 0
-        actual_reaction = reactions[sid]
+        actual_reaction = reactions[sid]  # kN
         
-        # 等效Kh = 设计Kh × (实际反力 / 设计反力)
-        if design_reaction > 0 and actual_reaction > 0:
-            ratio = actual_reaction / design_reaction
-            kh_effective[sid] = p['Kh'] * ratio
+        # 获取支座面积（如果提供）
+        area = p.get('area', None)  # m²
+        
+        if area and area > 0 and actual_reaction > 0:
+            # 使用非线性公式: Kh = Kh0 × (1 - (σ/σcr)²)
+            # 压应力 σ = R / A (kN/m² = kPa, 需转换为MPa)
+            pressure = (actual_reaction / area) / 1000  # MPa
+            sigma_ratio = pressure / yield_pressure
+            # 限制比例不超过1（否则Kh会变负）
+            sigma_ratio = min(sigma_ratio, 0.99)
+            kh_effective[sid] = p['Kh'] * max(0.1, 1 - sigma_ratio * sigma_ratio)
+        elif actual_reaction > 0:
+            # 没有面积信息，使用线性比例近似
+            design_reaction = total_weight_calc * (p['Kv'] / total_kv) if total_kv > 0 else 0
+            if design_reaction > 0:
+                ratio = actual_reaction / design_reaction
+                kh_effective[sid] = p['Kh'] * ratio
+            else:
+                kh_effective[sid] = p['Kh']
         else:
-            kh_effective[sid] = 0  # 如果反力为0或负，Kh_eff = 0
+            kh_effective[sid] = 0  # 如果反力为0或负
     
     # 计算基于等效Kh的刚度中心（这个会随高度变化）
     sum_khx = 0
