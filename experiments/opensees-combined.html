@@ -719,6 +719,7 @@
                     })
                 });
                 const data = await r.json();
+                console.log('静力分析返回:', data);
 
                 if (data.success) {
                     staticResult = data;
@@ -752,8 +753,13 @@
                     document.getElementById('btn-dynamic').disabled = false;
                     document.getElementById('btn-dynamic').textContent = '🌊 运行动力分析';
                     document.getElementById('status-text').textContent = `静力分析完成，刚度偏心=${ecc.magnitude.toFixed(4)}m`;
+                } else {
+                    // 分析失败
+                    document.getElementById('status-text').textContent = '分析失败: ' + (data.error || '未知错误');
+                    console.error('分析失败:', data);
                 }
             } catch (e) {
+                console.error('请求错误:', e);
                 document.getElementById('status-text').textContent = '静力分析失败: ' + e.message;
             }
 
