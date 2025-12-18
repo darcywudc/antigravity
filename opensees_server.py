@@ -200,14 +200,26 @@ def analyze_static(supports, total_weight, heights_mm):
         'magnitude': math.sqrt(effective_stiffness_center['x']**2 + effective_stiffness_center['y']**2)
     }
     
+    # 计算各支座的压应力（用于显示）
+    pressures = {}
+    for sid, p in supports.items():
+        area = p.get('area', None)
+        if area and area > 0 and reactions[sid] > 0:
+            # 压应力 σ = R / A (kN/m² -> MPa)
+            pressures[sid] = (reactions[sid] / area) / 1000  # MPa
+        else:
+            pressures[sid] = 0
+    
     return {
         'reactions': reactions,
         'displacement_mm': displacement,
+        'pressures': pressures,  # 各支座压应力 (MPa)
         'kh_effective': kh_effective,
         'total_kh_effective': sum_kh,
         'nominal_stiffness_center': nominal_stiffness_center,
-        'stiffness_center': effective_stiffness_center,  # 用于兼容
-        'eccentricity': eccentricity
+        'stiffness_center': effective_stiffness_center,
+        'eccentricity': eccentricity,
+        'yield_pressure': yield_pressure  # 屈服压应力 (MPa)
     }
 
 

@@ -540,32 +540,41 @@
                 </div>
 
                 <div class="panel">
-                    <h3 class="static">支座反力 (kN)</h3>
+                    <h3 class="static">支座反力 (kN) / 压应力 σ (MPa)</h3>
                     <div class="support-grid" id="reaction-grid">
                         <div class="support-item">
                             <div class="name">支座8</div>
-                            <div class="val" id="r8">--</div>
+                            <div class="val"><span id="r8">--</span> / <small id="p8" style="color:#ffa502">--</small>
+                            </div>
                         </div>
                         <div class="support-item">
                             <div class="name">支座11</div>
-                            <div class="val" id="r11">--</div>
+                            <div class="val"><span id="r11">--</span> / <small id="p11" style="color:#ffa502">--</small>
+                            </div>
                         </div>
                         <div class="support-item">
                             <div class="name">支座25</div>
-                            <div class="val" id="r25">--</div>
+                            <div class="val"><span id="r25">--</span> / <small id="p25" style="color:#ffa502">--</small>
+                            </div>
                         </div>
                         <div class="support-item">
                             <div class="name">支座4</div>
-                            <div class="val" id="r4">--</div>
+                            <div class="val"><span id="r4">--</span> / <small id="p4" style="color:#ffa502">--</small>
+                            </div>
                         </div>
                         <div class="support-item">
                             <div class="name">支座16</div>
-                            <div class="val" id="r16">--</div>
+                            <div class="val"><span id="r16">--</span> / <small id="p16" style="color:#ffa502">--</small>
+                            </div>
                         </div>
                         <div class="support-item">
                             <div class="name">支座30</div>
-                            <div class="val" id="r30">--</div>
+                            <div class="val"><span id="r30">--</span> / <small id="p30" style="color:#ffa502">--</small>
+                            </div>
                         </div>
+                    </div>
+                    <div style="margin-top:5px;font-size:0.65rem;color:#888;">
+                        屈服压应力: σcr = <span id="sigma-cr">30</span> MPa
                     </div>
                 </div>
 
@@ -916,10 +925,23 @@
                     scEl.style.left = (50 + sc.x * 200) + '%';
                     scEl.style.top = (50 - sc.y * 200) + '%';
 
-                    // 显示反力
+                    // 显示反力和压应力
                     Object.entries(data.reactions).forEach(([sid, r]) => {
-                        const el = document.getElementById('r' + sid);
-                        if (el) el.textContent = r.toFixed(2);
+                        const rEl = document.getElementById('r' + sid);
+                        if (rEl) rEl.textContent = r.toFixed(2);
+                    });
+
+                    // 显示压应力
+                    const pressures = data.pressures || {};
+                    const yieldPressure = data.yield_pressure || 30;
+                    document.getElementById('sigma-cr').textContent = yieldPressure;
+                    Object.entries(pressures).forEach(([sid, p]) => {
+                        const pEl = document.getElementById('p' + sid);
+                        if (pEl) {
+                            pEl.textContent = p.toFixed(1);
+                            // 高压应力显示红色警告
+                            pEl.style.color = (p / yieldPressure) > 0.5 ? '#ff6b6b' : '#ffa502';
+                        }
                     });
 
                     // 显示等效Kh及变化率
