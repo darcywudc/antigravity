@@ -337,50 +337,59 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>边缘支座直径 (mm)</label>
-                                <input type="number" id="edge-diameter" value="300" step="10"
+                                <input type="number" id="edge-diameter" value="44" step="1"
                                     onchange="calcBearingStiffness()">
                             </div>
                             <div class="form-group">
                                 <label>中间支座直径 (mm)</label>
-                                <input type="number" id="mid-diameter" value="400" step="10"
+                                <input type="number" id="mid-diameter" value="55" step="1"
                                     onchange="calcBearingStiffness()">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>橡胶层数 (边缘/中间)</label>
-                                <input type="number" id="edge-layers" value="5" step="1" min="1"
+                                <input type="number" id="edge-layers" value="10" step="1" min="1"
                                     onchange="calcBearingStiffness()">
                             </div>
                             <div class="form-group">
                                 <label>中间支座层数</label>
-                                <input type="number" id="mid-layers" value="5" step="1" min="1"
+                                <input type="number" id="mid-layers" value="10" step="1" min="1"
                                     onchange="calcBearingStiffness()">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>单层橡胶厚度 (mm)</label>
-                                <input type="number" id="rubber-layer-t" value="10" step="1" min="1"
+                                <input type="number" id="rubber-layer-t" value="2" step="0.5" min="0.5"
                                     onchange="calcBearingStiffness()">
                             </div>
                             <div class="form-group">
                                 <label>剪切模量 G (MPa)</label>
-                                <input type="number" id="shear-modulus" value="0.8" step="0.1" min="0.1"
+                                <input type="number" id="shear-modulus" value="0.4" step="0.1" min="0.1"
                                     onchange="calcBearingStiffness()">
                             </div>
                         </div>
                         <div class="form-group">
                             <label>屈服压应力 σcr (MPa)</label>
-                            <input type="number" id="yield-pressure" value="12" step="1" min="1"
+                            <input type="number" id="yield-pressure" value="30" step="1" min="1"
                                 onchange="calcBearingStiffness()">
                         </div>
                         <p class="info-text"
                             style="background:rgba(0,212,255,0.1);padding:5px;border-radius:5px;margin-top:8px;">
+                            <strong>计算公式:</strong><br>
+                            <span style="font-size:0.65rem;color:#aaa;">
+                                形状系数 S = D/(4tr)<br>
+                                Kh₀ = G·A/Tr &nbsp; Kv = 6GS²A/Tr<br>
+                                <span style="color:#00ff88;">Kh = Kh₀×(1-(σ/σcr)²)</span>
+                            </span>
+                        </p>
+                        <p class="info-text"
+                            style="background:rgba(255,165,2,0.1);padding:5px;border-radius:5px;margin-top:5px;">
                             <strong>计算结果:</strong><br>
-                            边缘: Kv=<span id="calc-edge-kv">--</span> kN/m, Kh0=<span id="calc-edge-kh">--</span>
+                            边缘: Kv=<span id="calc-edge-kv">--</span> kN/m, Kh₀=<span id="calc-edge-kh">--</span>
                             kN/m<br>
-                            中间: Kv=<span id="calc-mid-kv">--</span> kN/m, Kh0=<span id="calc-mid-kh">--</span> kN/m
+                            中间: Kv=<span id="calc-mid-kv">--</span> kN/m, Kh₀=<span id="calc-mid-kh">--</span> kN/m
                         </p>
                     </div>
 

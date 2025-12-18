@@ -149,8 +149,8 @@ def analyze_static(supports, total_weight, heights_mm):
     total_weight_calc = sum(reactions.values())  # 实际总竖向反力
     total_kv = sum(p['Kv'] for p in supports.values())
     
-    # 默认屈服压应力 (MPa)
-    yield_pressure = 12.0  # MPa
+    # 默认屈服压应力 (MPa) - 与rubber-bearing-sim.html一致
+    yield_pressure = 30.0  # MPa
     
     kh_effective = {}
     for sid, p in supports.items():
