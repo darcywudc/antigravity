@@ -1,0 +1,65 @@
+# Physics Simulation Configuration
+
+simulation:
+  # Time step for physics engine (seconds)
+  physics_dt: 0.016667  # 1/60
+  
+  # Time step for rendering (seconds)
+  rendering_dt: 0.033333  # 1/30
+  
+  # Gravity (m/s²)
+  gravity:
+    direction: [0, -1, 0]
+    magnitude: 9.81
+  
+  # Solver settings
+  solver:
+    type: "TGS"  # Temporal Gauss-Seidel
+    position_iterations: 8
+    velocity_iterations: 4
+
+materials:
+  steel:
+    density: 7850  # kg/m³
+    youngs_modulus: 200e9  # Pa
+    poissons_ratio: 0.3
+    yield_strength: 250e6  # Pa
+    color: [0.7, 0.7, 0.8]
+    
+  concrete:
+    density: 2400
+    youngs_modulus: 30e9
+    poissons_ratio: 0.2
+    compressive_strength: 30e6
+    color: [0.6, 0.6, 0.6]
+    
+  wood:
+    density: 600
+    youngs_modulus: 12e9
+    poissons_ratio: 0.35
+    color: [0.6, 0.4, 0.2]
+
+bridge:
+  # Default bridge parameters
+  span: 20.0  # meters
+  width: 4.0
+  height: 3.0
+  num_segments: 6
+  beam_thickness: 0.2
+  
+  # Load test parameters
+  test_load: 50000  # Newtons (50kN)
+  load_duration: 2.0  # seconds
+
+training:
+  # RL training parameters (for future use)
+  algorithm: "PPO"
+  learning_rate: 0.0003
+  batch_size: 64
+  n_epochs: 10
+  
+  # Reward function weights
+  rewards:
+    structural_integrity: 1.0
+    material_efficiency: 0.5
+    deflection_penalty: -0.1

@@ -1,0 +1,62 @@
+# .gitignore for Omniverse Physics Playground
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Omniverse / Isaac Sim
+.thumbs/
+_build/
+*.usd.cache
+*.usda.cache
+*.usdc.cache
+
+# Generated files
+scenes/*.usda
+scenes/*.usd
+!scenes/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Training outputs
+outputs/
+checkpoints/
+tensorboard/
+
+# OS
+.DS_Store
+Thumbs.db

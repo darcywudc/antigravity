@@ -1,0 +1,25 @@
+# Omniverse Physics Playground Dependencies
+
+# Core USD
+usd-core>=24.8
+
+# For standalone scripts (without Isaac Sim)
+numpy>=1.24.0
+scipy>=1.11.0
+matplotlib>=3.7.0
+
+# Configuration
+pyyaml>=6.0
+omegaconf>=2.3.0
+
+# RL Training (when using Isaac Lab)
+# stable-baselines3>=2.0.0
+# gymnasium>=0.29.0
+
+# Utilities
+tqdm>=4.65.0
+pandas>=2.0.0
+
+# Note: Isaac Sim has its own Python environment with PhysX, USD, etc.
+# Use Isaac Sim's Python interpreter for full functionality:
+# ~/.local/share/ov/pkg/isaac-sim-*/python.sh
