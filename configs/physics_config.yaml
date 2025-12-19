@@ -63,3 +63,4 @@ training:
     structural_integrity: 1.0
     material_efficiency: 0.5
     deflection_penalty: -0.1
+# Trigger rebuild
