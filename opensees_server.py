@@ -275,10 +275,37 @@ def analyze_dynamic(supports, total_weight, heights_mm, ground_motion, dt, durat
     g = 9.81  # m/s²
     mass = total_weight / g * 1000  # kg
     
-    # 计算刚度中心
+    # 默认屈服压应力 (MPa) - 与静力分析一致
+    yield_pressure = 30.0  # MPa
+    
+    # ========== 先计算静力反力，用于确定kh_effective ==========
+    # 简化方法：根据Kv分配竖向反力
+    total_kv = sum(p['Kv'] for p in supports.values())
+    
+    kh_effective = {}
+    for sid, p in supports.items():
+        # 根据Kv比例分配反力
+        reaction = total_weight * (p['Kv'] / total_kv) if total_kv > 0 else 0
+        
+        # 获取支座面积（如果提供）
+        area = p.get('area', None)  # m²
+        kh0 = p.get('Kh', p['Kv'] * 0.01)  # 原始水平刚度
+        
+        if area and area > 0 and reaction > 0:
+            # 使用非线性公式: Kh = Kh0 × (1 - (σ/σcr)²)
+            # 压应力 σ = R / A (kN/m² -> MPa)
+            pressure = (reaction / area) / 1000  # MPa
+            sigma_ratio = pressure / yield_pressure
+            sigma_ratio = min(sigma_ratio, 0.99)  # 限制比例
+            kh_effective[sid] = kh0 * max(0.1, 1 - sigma_ratio * sigma_ratio)
+        else:
+            # 没有面积信息，直接使用原始Kh
+            kh_effective[sid] = kh0
+    
+    # 计算刚度中心 - 使用kh_effective
     sum_kx, sum_ky, sum_k = 0, 0, 0
     for sid, p in supports.items():
-        kh = p.get('Kh', p['Kv'] * 0.01)
+        kh = kh_effective[sid]
         sum_kx += kh * p['x']
         sum_ky += kh * p['y']
         sum_k += kh
@@ -296,7 +323,7 @@ def analyze_dynamic(supports, total_weight, heights_mm, ground_motion, dt, durat
     # 扭转刚度 J = Σ(Kh × r²)，r是到刚度中心的距离
     J = 0
     for sid, p in supports.items():
-        kh = p.get('Kh', p['Kv'] * 0.01) * 1000  # N/m
+        kh = kh_effective[sid] * 1000  # N/m
         dx = p['x'] - stiffness_center[0]
         dy = p['y'] - stiffness_center[1]
         r2 = dx**2 + dy**2
