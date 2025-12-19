@@ -1,0 +1,63 @@
+# Cloud Build configuration for Omniverse Isaac Sim
+# Triggers on push to 'omniverse' branch
+
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/isaac-sim-bridge:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/isaac-sim-bridge:latest'
+      - '.'
+
+  # Step 2: Push image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/isaac-sim-bridge:$COMMIT_SHA']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/isaac-sim-bridge:latest']
+
+  # Step 3: Deploy to GPU-enabled GCE VM
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'compute'
+      - 'instances'
+      - 'create-with-container'
+      - 'isaac-sim-runner'
+      - '--zone=us-central1-a'
+      - '--machine-type=g2-standard-8'
+      - '--accelerator=type=nvidia-l4,count=1'
+      - '--container-image=gcr.io/$PROJECT_ID/isaac-sim-bridge:$COMMIT_SHA'
+      - '--container-restart-policy=never'
+      - '--maintenance-policy=TERMINATE'
+      - '--boot-disk-size=200GB'
+      - '--boot-disk-type=pd-ssd'
+      - '--metadata=google-logging-enabled=true'
+      - '--scopes=cloud-platform'
+    # Allow failure if instance already exists
+    allowFailure: true
+
+  # Step 4: If instance exists, update container
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'compute'
+      - 'instances'
+      - 'update-container'
+      - 'isaac-sim-runner'
+      - '--zone=us-central1-a'
+      - '--container-image=gcr.io/$PROJECT_ID/isaac-sim-bridge:$COMMIT_SHA'
+    allowFailure: true
+
+images:
+  - 'gcr.io/$PROJECT_ID/isaac-sim-bridge:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/isaac-sim-bridge:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+timeout: '3600s'  # 1 hour timeout for large image build
