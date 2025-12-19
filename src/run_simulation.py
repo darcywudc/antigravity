@@ -108,14 +108,94 @@ def run_seismic_analysis(config: dict) -> dict:
     Returns:
         Analysis results
     """
-    # TODO: Implement seismic ground motion input
-    # This will apply time-varying base excitation
+    if not ISAAC_AVAILABLE:
+        # Demo mode without Isaac Sim
+        from src.seismic_analysis import GroundMotion
+        
+        print("Running in demo mode (no physics simulation)")
+        
+        # Generate ground motion info
+        gm = GroundMotion.from_el_centro(scale_factor=config.get("pga_scale", 1.0))
+        
+        results = {
+            "type": "seismic_analysis",
+            "mode": "demo",
+            "status": "completed",
+            "ground_motion": {
+                "name": "El Centro 1940 (simplified)",
+                "duration": gm.duration,
+                "pga": gm.pga,
+                "pga_g": gm.pga / 9.81,
+                "dt": gm.dt,
+                "num_points": len(gm.acceleration)
+            },
+            "bridge": {
+                "span": config.get("span", 20.0),
+                "height": config.get("height", 3.0),
+                "num_segments": config.get("num_segments", 6)
+            },
+            "message": "Full simulation requires Isaac Sim GPU environment"
+        }
+        
+        return results
     
-    results = {
-        "type": "seismic_analysis",
-        "status": "not_implemented",
-        "message": "Seismic analysis module coming soon"
-    }
+    # Full simulation with Isaac Sim
+    from omni.isaac.kit import SimulationApp
+    simulation_app = SimulationApp({"headless": True})
+    
+    from omni.isaac.core import World
+    from src.bridge_builder import BridgeBuilder
+    from src.seismic_analysis import SeismicAnalyzer, GroundMotion
+    
+    print(f"Starting seismic analysis: {json.dumps(config, indent=2)}")
+    
+    # Create world with higher physics rate for seismic analysis
+    world = World(
+        physics_dt=1/120,  # 120 Hz for better accuracy
+        rendering_dt=1/30,
+        stage_units_in_meters=1.0
+    )
+    
+    # Build bridge
+    builder = BridgeBuilder(world.stage)
+    span = config.get("span", 20.0)
+    bridge_parts = builder.create_truss_bridge(
+        span=span,
+        width=config.get("width", 4.0),
+        height=config.get("height", 3.0),
+        num_segments=config.get("num_segments", 6)
+    )
+    
+    # Add supports
+    builder.add_support((-span/2, -1, 0), "left_support")
+    builder.add_support((span/2, -1, 0), "right_support")
+    
+    # Create analyzer
+    analyzer = SeismicAnalyzer(world)
+    analyzer.track_prim("/World/Bridge/deck", "deck")
+    
+    # Set ground motion
+    earthquake_type = config.get("earthquake", "el_centro")
+    pga_scale = config.get("pga_scale", 1.0)
+    
+    if earthquake_type == "el_centro":
+        gm = GroundMotion.from_el_centro(scale_factor=pga_scale)
+    else:
+        gm = GroundMotion.from_sine_wave(
+            amplitude=0.3 * pga_scale * 9.81,
+            frequency=config.get("frequency", 2.0),
+            duration=config.get("duration", 10.0)
+        )
+    
+    analyzer.set_ground_motion(gm)
+    
+    # Run analysis
+    results = analyzer.run_analysis(output_interval=0.05)
+    results["config"] = config
+    results["start_time"] = datetime.now().isoformat()
+    
+    # Cleanup
+    simulation_app.close()
     
     return results
 
